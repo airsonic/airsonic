@@ -1,0 +1,91 @@
+/*
+ * CSS styleshet for monochrome style
+ *
+ * Author: David D ddavis1@gmail.com
+ */
+
+@import "default.css";
+
+/* highlights to contrast with bgcolor2. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+  background-color: #EEE;
+}
+
+/* The primary background colour, light blue, primary theme colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #CCC;
+}
+
+/* The secondary foreground colour used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #000000;
+}
+
+/* Foreground colour used for h2, bold and tr. */
+h2, b, tr {
+    color: #000000;
+}
+
+/* Table sizing */
+table {
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe, .rightframe {
+    background-color: #EEE;
+}
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #000000;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #FFFFFF;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #990099;
+}
+
+/* Background colour for form controls. */
+input, select {
+    color: #333;
+    background-color: #EEE;
+}
+
+/* The primary foreground colour. */
+body {
+    background-color: #EEEEEE;
+}
+
+/* The album comments. */
+.albumComment {
+    width: 50em;
+    font-size: 8pt;
+    line-height: 1.4em;
+    padding-top: 0.25em;
+    color: #000000;
+}
+
+/* The log. */
+.log {
+    font-weight: bold;
+    white-space: nowrap;
+    font-size: 8pt;
+    line-height: 1em;
+    color: #000000;
+    background-color: #C0C0C0;
+}
+
+/* The help, status & web payer settings tables. */
+.ruleTableHeader, .ruleTableCell {
+    margin: 5px;
+    padding: 5px;
+    color: #FFFFFF;
+    background-color: #C0C0C0;
+}

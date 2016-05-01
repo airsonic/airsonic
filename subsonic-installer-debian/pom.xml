@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.subsonic</groupId>
+    <artifactId>subsonic-installer-debian</artifactId>
+    <packaging>pom</packaging>
+    <name>Subsonic Installer for Debian</name>
+
+    <parent>
+        <groupId>net.sourceforge.subsonic</groupId>
+        <artifactId>subsonic</artifactId>
+        <version>5.3</version>
+    </parent>
+
+    <profiles>
+
+        <profile>
+            <id>debian</id>
+            <activation>
+                <property>
+                    <name>debian</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>dpkg</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>Creating Debian package...</echo>
+                                        <copy todir="${project.build.directory}/deb">
+                                            <fileset dir="${basedir}/src"/>
+                                            <filterset>
+                                                <filter token="VERSION" value="${project.version}"/>
+                                            </filterset>
+                                        </copy>
+
+                                        <copy file="../subsonic-booter/src/main/script/subsonic.sh" todir="${project.build.directory}/deb/usr/share/subsonic"/>
+                                        <copy file="../subsonic-booter/target/subsonic-booter-jar-with-dependencies.jar" todir="${project.build.directory}/deb/usr/share/subsonic"/>
+                                        <copy file="../subsonic-main/target/subsonic.war" todir="${project.build.directory}/deb/usr/share/subsonic"/>
+                                        <copy file="../subsonic-transcode/linux/ffmpeg" todir="${project.build.directory}/deb/var/subsonic/transcode"/>
+                                        <copy file="../subsonic-transcode/linux/lame" todir="${project.build.directory}/deb/var/subsonic/transcode"/>
+
+                                        <exec executable="chmod">
+                                            <arg value="oug+x"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/preinst"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/postinst"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/prerm"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/postrm"/>
+                                            <arg value="${project.build.directory}/deb/usr/share/subsonic/subsonic.sh"/>
+                                            <arg value="${project.build.directory}/deb/etc/init.d/subsonic"/>
+                                            <arg value="${project.build.directory}/deb/var/subsonic/transcode/ffmpeg"/>
+                                            <arg value="${project.build.directory}/deb/var/subsonic/transcode/lame"/>
+                                        </exec>
+                                        <exec executable="sleep">
+                                            <arg value="2"/>
+                                        </exec>
+                                        <exec executable="fakeroot">
+                                            <arg value="dpkg"/>
+                                            <arg value="--build"/>
+                                            <arg value="${project.build.directory}/deb"/>
+                                            <arg value="${project.build.directory}/subsonic-${project.version}.deb"/>
+                                        </exec>
+                                        <exec executable="lintian">
+                                            <arg value="${project.build.directory}/subsonic-${project.version}.deb"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+</project>

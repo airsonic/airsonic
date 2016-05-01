@@ -1,0 +1,16 @@
+#! /bin/sh
+
+set -e
+
+ln -sf /usr/share/subsonic/subsonic.sh /usr/bin/subsonic
+
+chmod 750 /var/subsonic
+
+# Clear jetty cache.
+rm -rf /var/subsonic/jetty
+
+# Configure Subsonic service.
+update-rc.d subsonic defaults 99
+
+# Start Subsonic service.
+invoke-rc.d subsonic start

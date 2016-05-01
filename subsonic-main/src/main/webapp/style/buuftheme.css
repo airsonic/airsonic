@@ -1,0 +1,112 @@
+/*
+ * CSS styleshet for the "Cool and Clean" theme.
+ *
+ * Author: Dan Eriksen (dan.o.eriksen[at]gmail.com)
+ *
+ * Icons used are released under Creative Commons.
+ * Heading icons are part of the Albook icon pack created by Laurent Baumann (http://lbaumann.com/)
+ * Main theme icon part of itunes icon pack created by Michael Flarup (http://pixelresort.com)
+ * 
+ *
+ * Edited for BUUF Theme by Fractal Systems
+ * BUUF artwork: Based on icons by Paul Davey aka Mattahan. All rights reserved.
+ */
+
+@import "default.css";
+
+/* The primary background colour, light gray. Images used to force background on left frame headings and playlist. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-image:url( "../icons/buuftheme/list_heading.png" );
+    background-repeat:repeat;
+    background-color: #3C2D22;
+}
+
+/* The secondary background colour, light blue, primary theme colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #4C4039;
+}
+
+/* Foreground colour used for h1, h2, b, tr, details and albumcomments. */
+h1, h2, b, tr, .detail, .albumComment {
+    color: #ffAE00;
+}
+
+/* Table sizing */
+table {
+    font-size: 100%;
+    line-height: 130%;
+    padding: 0;
+    border: 0;
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe {
+    background-image:url( "../icons/buuftheme/background_main.png" );
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-color: #4C4039;
+    background-position:right;
+}
+
+/* Right frame background. */
+.rightframe {
+    background-color: #4C4039;
+    background-image:none;
+}
+
+/* Back image */
+.back {
+    background-image:url( "../icons/buuftheme/back.png" );
+}
+
+/* Forward image */
+.forward {
+    background-image:url( "../icons/buuftheme/forward.png" );
+}
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #ffAE00;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: none;
+    color: #169F30;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #AA1F15;
+}
+
+/* The primary foreground colour. */
+body {
+    background-color: #D1D9E1;
+    scrollbar-arrow-color: #636363;
+    scrollbar-track-color: #D1D9E1;
+}
+
+/* The album comments. */
+.albumComment {
+    width: 50em;
+    font-size: 8pt;
+    line-height: 1.4em;
+    padding-top: 0.25em;
+}
+
+/* The log. */
+.log {
+    font-weight: bold;
+    white-space: nowrap;
+    font-size: 8pt;
+    line-height: 1em;
+}
+
+/* The help, status & web payer settings tables. */
+.ruleTableHeader, .ruleTableCell {
+    margin: 5px;
+    padding: 5px;
+}
+

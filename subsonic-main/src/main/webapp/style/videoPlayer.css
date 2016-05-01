@@ -1,0 +1,187 @@
+/*
+ * This file is part of Subsonic.
+ *
+ *  Subsonic is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Subsonic is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  Copyright 2014 (C) Sindre Mehus
+ */
+
+body {
+    background-color: #F2F2F2;
+}
+
+#overlay {
+    width: 640px;
+    height: 360px;
+    position: absolute;
+    z-index: 1;
+    background-color: #000;
+    display: none;
+}
+
+#overlay_text {
+    font-size: 19px;
+    text-align: center;
+    margin-top: 170px;
+    color: white;
+    display: none;
+}
+
+#media_control {
+    width: 640px;
+    height: 50px;
+    background-color: #444;
+}
+
+#progress_slider {
+    margin-bottom: 8px;
+    margin-left: 8px;
+    width: 623px;
+    height: 4px;
+}
+
+#volume_slider {
+    float:left;
+    margin-top: 7px;
+    margin-left: 10px;
+    margin-right: 120px;
+    width: 90px;
+    height: 4px;
+}
+
+#play {
+    margin-left: 8px;
+    float: left;
+    width: 24px;
+    height: 24px;
+    background-image: url('../icons/video/play.png');
+    cursor: pointer;
+}
+
+#pause {
+    display: none;
+    margin-left: 8px;
+    float: left;
+    width: 24px;
+    height: 24px;
+    background-image: url('../icons/video/pause.png');
+    cursor: pointer;
+}
+
+#play:hover, #pause:hover {
+    opacity: 0.8;
+}
+
+#casticonactive {
+    float: right;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    margin-top: -5px;
+    display: none;
+    background-image: url('../icons/video/cast_active.png');
+    cursor: pointer;
+}
+
+#casticonidle {
+    float: right;
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    margin-top: -5px;
+    display: none;
+    background-image: url('../icons/video/cast_idle.png');
+    cursor: pointer;
+}
+
+#audio_off {
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin-left: 15px;
+    margin-top: -5px;
+    display: none;
+    background-image: url('../icons/video/audio_off.png');
+    cursor: pointer;
+}
+
+#audio_on {
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin-left: 15px;
+    margin-top: -5px;
+    display: block;
+    background-image: url('../icons/video/audio_on.png');
+    cursor: pointer;
+}
+
+#progress {
+    font-size: 12px;
+    float: left;
+    color: #fff;
+    margin-top: 1px;
+    margin-left: 10px;
+    display: block;
+}
+
+#duration {
+    font-size: 12px;
+    float: left;
+    color: #c4c4c4;
+    margin-top: 1px;
+    margin-left: 10px;
+    display: block;
+}
+
+#bitrate_menu {
+    font-size: 12px;
+    float: left;
+    color: #c4c4c4;
+    background-color: #444;
+    display: block;
+}
+
+#share {
+    float: left;
+    width: 24px;
+    height: 24px;
+    margin-left: 15px;
+    background-image: url('../icons/video/share.png');
+    cursor: pointer;
+}
+
+#download {
+    float: left;
+    width: 24px;
+    height: 24px;
+    margin-top: -2px;
+    margin-left: 5px;
+    background-image: url('../icons/video/download.png');
+    cursor: pointer;
+}
+
+.ui-slider .ui-slider-handle {
+    width: 11px;
+    height: 11px;
+    cursor: pointer;
+}
+
+.ui-slider {
+    cursor: pointer;
+}
+
+.ui-slider-handle:focus {
+    outline:none;
+}

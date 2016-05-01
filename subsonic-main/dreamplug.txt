@@ -1,0 +1,102 @@
+
+Dreamplug
+===========
+The Access Point uap0 is set to 192.168.1.1. If your router already uses this set of IP address,
+you will run into a conflict and the internet connection will go.
+Two things you can do.
+  change the default ip address in /root/init_setup.sh
+  and you can take down the AP if you are purely not interested in it.
+ifconfig uap0 down
+and comment out the call to the init_setup.sh in /etc/rc.local
+ http://www.newit.co.uk/forum/index.php?topic=1078.15
+http://plugcomputer.org/plugwiki/index.php/New_Plugger_How_To
+sdf
+Login : root
+Password: nosoup4u
+
+type wlan.sh command to switch from WLAN AP to client mode.
+
+
+-----
+
+root@ubuntu:~# apt-get install openjdk-6-jre
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  libgif4 libice6 libpulse0 libsm6 libxi6 libxrender1 libxtst6
+Suggested packages:
+  pulseaudio icedtea6-plugin
+The following NEW packages will be installed:
+  libgif4 libice6 libpulse0 libsm6 libxi6 libxrender1 libxtst6 openjdk-6-jre
+0 upgraded, 8 newly installed, 0 to remove and 35 not upgraded.
+Need to get 615kB of archives.
+After this operation, 1978kB of additional disk space will be used.
+Do you want to continue [Y/n]?
+Get:1 http://ports.ubuntu.com jaunty/main libgif4 4.1.6-6 [39.2kB]
+Get:2 http://ports.ubuntu.com jaunty/main libice6 2:1.0.4-1 [44.3kB]
+Get:3 http://ports.ubuntu.com jaunty/main libsm6 2:1.1.0-1 [21.6kB]
+Get:4 http://ports.ubuntu.com jaunty-updates/main libpulse0 1:0.9.14-0ubuntu20.3 [178kB]
+Get:5 http://ports.ubuntu.com jaunty-updates/main libxi6 2:1.2.0-1ubuntu1.1 [26.5kB]
+Get:6 http://ports.ubuntu.com jaunty/main libxrender1 1:0.9.4-2 [28.2kB]
+Get:7 http://ports.ubuntu.com jaunty/main libxtst6 2:1.0.3-1ubuntu2 [12.8kB]
+Get:8 http://ports.ubuntu.com jaunty-updates/main openjdk-6-jre 6b18-1.8.2-4ubuntu1~9.04.1 [264kB]
+Fetched 615kB in 0s (726kB/s)
+Selecting previously deselected package libgif4.
+(Reading database ... 21520 files and directories currently installed.)
+Unpacking libgif4 (from .../libgif4_4.1.6-6_armel.deb) ...
+Selecting previously deselected package libice6.
+Unpacking libice6 (from .../libice6_2%3a1.0.4-1_armel.deb) ...
+Selecting previously deselected package libsm6.
+Unpacking libsm6 (from .../libsm6_2%3a1.1.0-1_armel.deb) ...
+Selecting previously deselected package libpulse0.
+Unpacking libpulse0 (from .../libpulse0_1%3a0.9.14-0ubuntu20.3_armel.deb) ...
+Selecting previously deselected package libxi6.
+Unpacking libxi6 (from .../libxi6_2%3a1.2.0-1ubuntu1.1_armel.deb) ...
+Selecting previously deselected package libxrender1.
+Unpacking libxrender1 (from .../libxrender1_1%3a0.9.4-2_armel.deb) ...
+Selecting previously deselected package libxtst6.
+Unpacking libxtst6 (from .../libxtst6_2%3a1.0.3-1ubuntu2_armel.deb) ...
+Selecting previously deselected package openjdk-6-jre.
+Unpacking openjdk-6-jre (from .../openjdk-6-jre_6b18-1.8.2-4ubuntu1~9.04.1_armel.deb) ...
+Setting up libgif4 (4.1.6-6) ...
+
+Setting up libice6 (2:1.0.4-1) ...
+
+Setting up libsm6 (2:1.1.0-1) ...
+
+Setting up libpulse0 (1:0.9.14-0ubuntu20.3) ...
+
+Setting up libxi6 (2:1.2.0-1ubuntu1.1) ...
+
+Setting up libxrender1 (1:0.9.4-2) ...
+
+Setting up libxtst6 (2:1.0.3-1ubuntu2) ...
+
+Setting up openjdk-6-jre (6b18-1.8.2-4ubuntu1~9.04.1) ...
+
+Processing triggers for libc6 ...
+ldconfig deferred processing now taking place
+root@ubuntu:~#
+
+root@ubuntu:~# java -version
+java version "1.6.0_18"
+OpenJDK Runtime Environment (IcedTea6 1.8.2) (6b18-1.8.2-4ubuntu1~9.04.1)
+OpenJDK Zero VM (build 14.0-b16, mixed mode)
+
+root@ubuntu:/tmp# dpkg -i subsonic-4.4.deb
+Selecting previously deselected package subsonic.
+(Reading database ... 21622 files and directories currently installed.)
+Unpacking subsonic (from subsonic-4.4.deb) ...
+Setting up subsonic (4.4) ...
+ Adding system startup for /etc/init.d/subsonic ...
+   /etc/rc0.d/K99subsonic -> ../init.d/subsonic
+   /etc/rc1.d/K99subsonic -> ../init.d/subsonic
+   /etc/rc6.d/K99subsonic -> ../init.d/subsonic
+   /etc/rc2.d/S99subsonic -> ../init.d/subsonic
+   /etc/rc3.d/S99subsonic -> ../init.d/subsonic
+   /etc/rc4.d/S99subsonic -> ../init.d/subsonic
+   /etc/rc5.d/S99subsonic -> ../init.d/subsonic
+Started Subsonic [PID 2596, /var/subsonic/subsonic_sh.log]
+
+http://192.168.0.100:4040

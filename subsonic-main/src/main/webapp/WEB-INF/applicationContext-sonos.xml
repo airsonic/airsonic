@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+    <jaxws:endpoint id="sonosEndpoint" implementor="#sonosService" address="/Sonos">
+        <jaxws:outFaultInterceptors>
+            <bean class="net.sourceforge.subsonic.service.sonos.SonosFaultInterceptor"/>
+        </jaxws:outFaultInterceptors>
+    </jaxws:endpoint>
+
+    <bean id="sonosHelper" class="net.sourceforge.subsonic.service.sonos.SonosHelper">
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="musicIndexService" ref="musicIndexService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="ratingService" ref="ratingService"/>
+        <property name="lastFmService" ref="lastFmService"/>
+        <property name="podcastService" ref="podcastService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+    </bean>
+
+</beans>

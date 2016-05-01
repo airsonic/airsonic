@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# subsonic      This shell script takes care of starting and stopping Subsonic
+#
+# chkconfig: - 80 20
+#
+### BEGIN INIT INFO
+# Provides: subsonic
+# Required-Start: $network $syslog
+# Required-Stop: $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Subsonic daemon
+# Description:       Starts the Subsonic daemon. Subsonic is a web-based
+#                    music streamer, jukebox and Podcast receiver.
+#                    See http://subsonic.org for more details.
+### END INIT INFO
+
+# Author: Sindre Mehus <sindre@activeobjects.no>
+
+# To change the startup parameters of Subsonic, modify the service
+# configuration file /etc/sysconfig/subsonic rather than this file. 
+[ -r /etc/sysconfig/subsonic ] && . /etc/sysconfig/subsonic
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
+DESC="Subsonic Daemon"
+NAME=subsonic
+PIDFILE=/var/run/$NAME.pid
+LOCKFILE=/var/lock/subsys/$NAME
+DAEMON=/usr/bin/$NAME
+DAEMON_ARGS="--pidfile=$PIDFILE $SUBSONIC_ARGS"
+SCRIPTNAME=/etc/init.d/$NAME
+
+# Exit if the package is not installed.
+[ -x "$DAEMON" ] || exit 0
+
+# Run as root if SUBSONIC_USER is not set.
+[ "$SUBSONIC_USER" = "" ] && SUBSONIC_USER=root
+
+# Source function library.
+. /etc/init.d/functions
+
+#
+# Function that starts the daemon/service
+#
+do_start()
+{
+    # Check if daemon is already running.
+    if [ -e $PIDFILE ]
+    then
+	ps -p $(cat $PIDFILE) > /dev/null
+	[ "$?" = 0 ] && return 1
+    fi
+
+    touch $PIDFILE
+    chown $SUBSONIC_USER $PIDFILE
+    [ -e /var/subsonic ] && chown -R $SUBSONIC_USER /var/subsonic
+    [ -e /tmp/subsonic ] && chown -R $SUBSONIC_USER /tmp/subsonic
+
+    echo $"Starting $NAME ..."
+    su -c "$DAEMON $DAEMON_ARGS" $SUBSONIC_USER
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && touch $LOCKFILE
+    return $RETVAL
+}
+
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+    # Check if pidfile exists
+    [ ! -e $PIDFILE ] && return 1
+
+    echo -n $"Stopping $NAME ..."
+    killproc -p $PIDFILE $DAEMON
+    RETVAL=$?
+    echo
+    [ $RETVAL -eq 0 ] && rm -f $LOCKFILE
+    return $RETVAL
+}
+
+case "$1" in
+  start)
+	do_start
+	;;
+  stop)
+	do_stop
+	;;
+  status)
+       status -p $PIDFILE "$NAME"
+       ;;
+  restart|force-reload)
+	do_stop
+	do_start
+	;;
+  *)
+	echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+	exit 3
+	;;
+esac
+
+:

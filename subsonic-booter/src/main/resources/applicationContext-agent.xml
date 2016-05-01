@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="service" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+        <property name="serviceUrl" value="rmi://localhost:9412/SubsonicDeployerService"/>
+        <property name="serviceInterface" value="net.sourceforge.subsonic.booter.deployer.SubsonicDeployerService"/>
+        <property name="lookupStubOnStartup" value="false"/>
+        <property name="refreshStubOnConnectFailure" value="true"/>
+    </bean>
+
+    <bean id="agent" class="net.sourceforge.subsonic.booter.agent.SubsonicAgent">
+        <constructor-arg ref="service"/>
+        <property name="frame" ref="frame"/>
+    </bean>
+
+    <bean id="frame" class="net.sourceforge.subsonic.booter.agent.SubsonicFrame">
+        <constructor-arg ref="agent"/>
+        <constructor-arg ref="statusPanel"/>
+        <constructor-arg ref="settingsPanel"/>
+    </bean>
+
+    <bean id="settingsPanel" class="net.sourceforge.subsonic.booter.agent.SettingsPanel">
+        <constructor-arg ref="agent"/>
+    </bean>
+
+    <bean id="statusPanel" class="net.sourceforge.subsonic.booter.agent.StatusPanel">
+        <constructor-arg ref="agent"/>
+    </bean>
+
+</beans>

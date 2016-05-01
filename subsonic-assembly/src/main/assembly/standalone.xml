@@ -1,0 +1,43 @@
+<!-- Defines the set of files that should be included in the standalone distribution. -->
+
+<assembly>
+    <id>standalone</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>../subsonic-main</directory>
+            <outputDirectory/>
+            <includes>
+                <include>README.TXT</include>
+                <include>LICENSE.TXT</include>
+                <include>Getting Started.html</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../subsonic-main/target</directory>
+            <outputDirectory/>
+            <includes>
+                <include>*.war</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../subsonic-booter/target</directory>
+            <outputDirectory/>
+            <includes>
+                <include>subsonic-booter-jar-with-dependencies.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>../subsonic-booter/src/main/script</directory>
+            <outputDirectory/>
+            <includes>
+                <include>subsonic.sh</include>
+                <include>subsonic.bat</include>
+            </includes>
+            <fileMode>0777</fileMode>
+        </fileSet>
+    </fileSets>
+</assembly>

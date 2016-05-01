@@ -1,0 +1,39 @@
+/*
+ * CSS styleshet for the "Sandstorm" theme.
+ *
+ * Author: Sindre Mehus
+ */
+
+@import "default.css";
+
+/* The primary background color. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #F5F5D0
+}
+
+/* The secondary background color. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd)  {
+    background-color: #CCCC99
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #057368
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #DD6900
+}
+
+/* Scrollbar colors (supported on IE and Opera) */
+body {
+    scrollbar-face-color: #CCCC99;
+    scrollbar-highlight-color: #F5F5D0;
+    scrollbar-shadow-color: #CCCC99;
+    scrollbar-3dlight-color: #CCCC99;
+    scrollbar-arrow-color: #F5F5D0;
+    scrollbar-track-color: #F5F5D0;
+    scrollbar-darkshadow-color: #F5F5D0;
+}

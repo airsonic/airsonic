@@ -1,0 +1,147 @@
+/*
+ This file is part of Subsonic.
+
+ Subsonic is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Subsonic is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Subsonic.  If not, see <http://www.gnu.org/licenses/>.
+
+ Copyright 2009 (C) Sindre Mehus
+ */
+package net.sourceforge.subsonic.filter;
+
+import net.sourceforge.subsonic.Logger;
+import net.sourceforge.subsonic.util.StringUtil;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
+/**
+ * Servlet filter which decodes HTTP request parameters.  If a parameter name ends with
+ * "Utf8Hex" ({@link #PARAM_SUFFIX}) , the corresponding parameter value is assumed to be the
+ * hexadecimal representation of the UTF-8 bytes of the value.
+ * <p/>
+ * Used to support request parameter values of any character encoding.
+ *
+ * @author Sindre Mehus
+ */
+public class ParameterDecodingFilter implements Filter {
+
+    public static final String PARAM_SUFFIX = "Utf8Hex";
+    private static final Logger LOG = Logger.getLogger(ParameterDecodingFilter.class);
+
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        // Wrap request in decoder.
+        ServletRequest decodedRequest = new DecodingServletRequestWrapper((HttpServletRequest) request);
+
+        // Pass the request/response on
+        chain.doFilter(decodedRequest, response);
+    }
+
+    public void init(FilterConfig filterConfig) {
+    }
+
+    public void destroy() {
+    }
+
+    private static class DecodingServletRequestWrapper extends HttpServletRequestWrapper {
+
+        public DecodingServletRequestWrapper(HttpServletRequest servletRequest) {
+            super(servletRequest);
+        }
+
+        @Override
+        public String getParameter(String name) {
+            String[] values = getParameterValues(name);
+            if (values == null || values.length == 0) {
+                return null;
+            }
+            return values[0];
+        }
+
+        @Override
+        public Map getParameterMap() {
+            Map map = super.getParameterMap();
+            Map<String, String[]> result = new HashMap<String, String[]>();
+
+            for (Object o : map.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
+                String name = (String) entry.getKey();
+                String[] values = (String[]) entry.getValue();
+
+                if (name.endsWith(PARAM_SUFFIX)) {
+                    result.put(name.replace(PARAM_SUFFIX, ""), decode(values));
+                } else {
+                    result.put(name, values);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public Enumeration getParameterNames() {
+            Enumeration e = super.getParameterNames();
+            Vector<String> v = new Vector<String>();
+            while (e.hasMoreElements()) {
+                String name = (String) e.nextElement();
+                if (name.endsWith(PARAM_SUFFIX)) {
+                    name = name.replace(PARAM_SUFFIX, "");
+                }
+                v.add(name);
+            }
+
+            return v.elements();
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            String[] values = super.getParameterValues(name);
+            if (values != null) {
+                return values;
+            }
+
+            values = super.getParameterValues(name + PARAM_SUFFIX);
+            if (values != null) {
+                return decode(values);
+            }
+
+            return null;
+        }
+
+        private String[] decode(String[] values) {
+            if (values == null) {
+                return null;
+            }
+
+            String[] result = new String[values.length];
+            for (int i = 0; i < values.length; i++) {
+                try {
+                    result[i] = StringUtil.utf8HexDecode(values[i]);
+                } catch (Exception x) {
+                    LOG.error("Failed to decode parameter value '" + values[i] + "'");
+                    result[i] = values[i];
+                }
+            }
+
+            return result;
+        }
+
+    }
+
+}

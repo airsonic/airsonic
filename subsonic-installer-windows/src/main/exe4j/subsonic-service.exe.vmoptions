@@ -1,0 +1,6 @@
+-Xmx150m
+-verbose:gc
+-Dsubsonic.host=0.0.0.0
+-Dsubsonic.port=4040
+-Dsubsonic.httpsPort=0
+-Dsubsonic.contextPath=/

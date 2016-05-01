@@ -1,0 +1,56 @@
+<!-- Defines the set of files that should be included in the source distribution. -->
+
+<assembly>
+    <id>src</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <fileSets>
+
+        <fileSet>
+            <directory>..</directory>
+            <includes>
+                <include>pom.xml</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../repo</directory>
+            <outputDirectory>repo</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../subsonic-main</directory>
+            <includes>
+                <include>src/**</include>
+                <include>pom.xml</include>
+                <include>target/classes/build_number.txt</include>
+                <include>LICENSE.TXT</include>
+                <include>README.TXT</include>
+                <include>Getting Started.html</include>
+            </includes>
+            <outputDirectory>subsonic-main</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../subsonic-rest-api</directory>
+            <includes>
+                <include>src/**</include>
+                <include>pom.xml</include>
+            </includes>
+            <outputDirectory>subsonic-rest-api</outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>../subsonic-sonos-api</directory>
+            <includes>
+                <include>src/**</include>
+                <include>pom.xml</include>
+            </includes>
+            <outputDirectory>subsonic-sonos-api</outputDirectory>
+        </fileSet>
+
+    </fileSets>
+</assembly>

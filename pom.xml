@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.subsonic</groupId>
+    <artifactId>subsonic</artifactId>
+    <version>5.3</version>
+    <name>Subsonic</name>
+    <packaging>pom</packaging>
+    <organization>
+        <name>Subsonic</name>
+        <url>http://subsonic.org/</url>
+    </organization>
+    <inceptionYear>2004</inceptionYear>
+
+    <properties>
+        <failOnDependencyWarning>true</failOnDependencyWarning>
+        <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
+        <cxf.version>2.4.2</cxf.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>local1</id>
+            <name>Local Repository 1</name>
+            <url>file:repo</url>
+        </repository>
+        <repository>
+            <id>local2</id>
+            <name>Local Repository 2</name>
+            <url>file:../repo</url>
+        </repository>
+        <repository>
+            <id>java_net</id>
+            <name>download.java.net</name>
+            <url>http://download.java.net/maven/2/</url>
+        </repository>
+        <repository>
+            <id>teleal</id>
+            <name>teleal</name>
+            <url>http://teleal.org/m2</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>local1</id>
+            <name>Local Repository 1</name>
+            <url>file:repo</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>local2</id>
+            <name>Local Repository 2</name>
+            <url>file:../repo</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>Codehaus Repository</id>
+            <url>http://repository.codehaus.org/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <scm>
+        <connection>scm:svn:svn+ssh://sindre_mehus@svn.code.sf.net/p/subsonic/code/trunk</connection>
+        <developerConnection>scm:svn:svn+ssh://sindre_mehus@svn.code.sf.net/p/subsonic/code/trunk</developerConnection>
+        <url>https://sourceforge.net/p/subsonic/code</url>
+    </scm>
+
+    <ciManagement>
+        <system>continuum</system>
+        <notifiers>
+            <notifier>
+                <type>mail</type>
+                <configuration>
+                    <address>sindre@activeobjects.no</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+
+    <developers>
+        <developer>
+            <name>Sindre Mehus</name>
+            <email>sindre@activeobjects.no</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>subsonic-rest-api</module>
+        <module>subsonic-sonos-api</module>
+        <module>subsonic-main</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>full</id>
+            <modules>
+                <module>subsonic-booter</module>
+                <module>subsonic-installer-windows</module>
+                <module>subsonic-installer-mac</module>
+                <module>subsonic-installer-debian</module>
+                <module>subsonic-installer-rpm</module>
+                <module>subsonic-backend</module>
+                <module>subsonic-site</module>
+                <module>subsonic-assembly</module>
+            </modules>
+        </profile>
+
+    </profiles>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>buildnumber-maven-plugin</artifactId>
+                    <version>1.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-codegen-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jvnet.jaxb2.maven2</groupId>
+                    <artifactId>maven-jaxb2-plugin</artifactId>
+                    <version>0.8.3</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>ISO-8859-1</encoding>
+                    <verbose>false</verbose>
+                    <compilerVersion>1.6</compilerVersion>
+                    <showWarnings>true</showWarnings>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>analyze</id>
+                        <goals>
+                            <goal>analyze-only</goal>
+                        </goals>
+                        <configuration>
+                            <failOnWarning>${failOnDependencyWarning}</failOnWarning>
+                            <ignoreNonCompile>true</ignoreNonCompile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,15 @@
+#! /bin/sh
+
+set -e
+
+# Stop Subsonic service.
+if [ -e /etc/init.d/subsonic ]; then
+  invoke-rc.d subsonic stop
+fi
+
+# Backup database.
+if [ -e /var/subsonic/db ]; then
+  rm -rf /var/subsonic/db.backup
+  cp -R /var/subsonic/db /var/subsonic/db.backup
+fi
+

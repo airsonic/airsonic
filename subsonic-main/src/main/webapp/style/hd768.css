@@ -1,0 +1,16 @@
+/*
+ * CSS styleshet for the "HD-768" theme.
+ *
+ * Author: Sindre Mehus
+ */
+
+@import "hd.css";
+
+body {
+    margin:0.5em;
+    font-size: 12pt;
+}
+
+.detail, .albumComment, .log {
+    font-size: 10pt;
+}

@@ -1,0 +1,83 @@
+/*
+ * CSS styleshet for the "HD-1080" theme.
+ *
+ * Author: Sindre Mehus
+ */
+
+@import "midnight.css";
+
+/* The primary background color. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #000843;
+}
+
+/* The secondary background color. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #00042E
+}
+
+/* Put stuff here if you need to customize the body of the main frame. */
+.mainframe {
+    background-image:url('../icons/hd/background.png');
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-color: #00042E
+}
+
+/* The primary foreground color. */
+body {
+    color: #CFD1D6;
+}
+
+/* The secondary foreground color used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #CFD1D6;
+}
+
+/* Foreground color used for h2, bold and tr. */
+h2, b, tr {
+    color: #CFD1D6;
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #97D9FF
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    color: orange;
+}
+
+/* Scrollbar colors (supported on IE and Opera) */
+body {
+    scrollbar-face-color: #00042E;
+    scrollbar-highlight-color: #000843;
+    scrollbar-shadow-color: #00042E;
+    scrollbar-3dlight-color: #00042E;
+    scrollbar-arrow-color: #000843;
+    scrollbar-track-color: #000843;
+    scrollbar-darkshadow-color: #000843;
+}
+
+body {
+    margin:1.5em;
+    font-size: 14pt;
+}
+
+h1, h2, th {
+    font-weight:normal;
+}
+
+input, select {
+    font-size: 100%;
+}
+
+.detail {
+    font-size: 12pt;
+}
+
+.albumComment, .log {
+    font-size: 12pt;
+}
+

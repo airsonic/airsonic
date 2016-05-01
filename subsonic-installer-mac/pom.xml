@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>net.sourceforge.subsonic</groupId>
+    <artifactId>subsonic-installer-mac</artifactId>
+    <packaging>pom</packaging>
+    <name>Subsonic Installer for Mac</name>
+
+    <parent>
+        <groupId>net.sourceforge.subsonic</groupId>
+        <artifactId>subsonic</artifactId>
+        <version>5.3</version>
+    </parent>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>net.sourceforge.subsonic</groupId>
+            <artifactId>subsonic-main</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.subsonic</groupId>
+            <artifactId>subsonic-booter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <taskdef name="appbundler" classname="com.oracle.appbundler.AppBundlerTask"/>
+                                        <mkdir dir="${project.build.directory}"/>
+
+                                        <appbundler outputdirectory="target"
+                                                    name="Subsonic"
+                                                    displayname="Subsonic"
+                                                    icon="src/subsonic.icns"
+                                                    identifier="net.sourceforge.subsonic"
+                                                    shortversion="${project.version}"
+                                                    mainclassname="net.sourceforge.subsonic.booter.Main">
+                                            <runtime dir="${env.JAVA_HOME}"/>
+                                            <classpath dir="..">
+                                                <include name="subsonic-booter/target/subsonic-booter-jar-with-dependencies.jar"/>
+                                                <include name="subsonic-main/target/subsonic.war"/>
+                                            </classpath>
+                                            <option value="-Dsubsonic.war=$APP_ROOT/Contents/Java/subsonic.war"/>
+                                            <option value="-Dsubsonic.home=/Library/Application Support/Subsonic"/>
+                                            <option value="-Dsubsonic.defaultMusicFolder=/Users/Shared/Music/iTunes/iTunes Media"/>
+                                            <option value="-Dsubsonic.defaultPodcastFolder=/Users/Shared/Podcasts"/>
+                                            <option value="-Dsubsonic.defaultPlaylistFolder=/Users/Shared/Playlists"/>
+                                            <option value="-Dsubsonic.port=4040"/>
+                                            <option value="-Dsubsonic.httpsPort=0"/>
+                                            <option value="-Dsubsonic.contextPath=/"/>
+                                            <option value="-Dapple.awt.UIElement=true"/>
+                                            <option value="-Xmx150m"/>
+                                            <argument value="-mac"/>
+                                        </appbundler>
+
+                                        <!--Requires installation of Packages, see http://s.sudre.free.fr/Software/Packages/about.html or subsonic-tools-->
+                                        <exec executable="/usr/local/bin/packagesbuild">
+                                            <arg value="-v"/>
+                                            <arg value="${project.basedir}/src/subsonic.pkgproj"/>
+                                        </exec>
+
+                                        <exec executable="/usr/bin/productsign">
+                                            <arg value="--sign"/>
+                                            <arg value="Sindre Mehus"/>
+                                            <arg value="${project.build.directory}/subsonic.pkg"/>
+                                            <arg value="${project.build.directory}/subsonic-${project.version}.pkg"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.oracle</groupId>
+                                <artifactId>appbundler</artifactId>
+                                <version>1.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

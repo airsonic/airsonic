@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<stringtables xmlns="http://sonos.com/sonosapi">
+
+    <stringtable rev="5" xml:lang="en-US">
+        <string stringId="ServicePromo">Stream music from your own Subsonic server. Please log on with an existing Subsonic account. Requires Subsonic Premium.</string>
+        <string stringId="Error0Message">Sorry, wrong Subsonic username or password.</string>
+        <string stringId="Error1Message">Please upgrade to Subsonic Premium to continue to use this service.</string>
+    </stringtable>
+
+</stringtables>

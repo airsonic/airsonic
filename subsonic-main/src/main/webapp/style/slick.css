@@ -1,0 +1,89 @@
+/*
+ * CSS styleshet for the "Slick" theme.
+ *
+ * Author: Jeebs (Fisher Evans)
+ */
+
+@import "default.css";
+
+table {
+	color: #0e0e0e;
+}
+
+/* The primary background color. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #0e0e0e;
+}
+
+/* The secondary background color. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #0e0e0e;
+}
+
+body.bgcolor2 {
+    border-bottom: 1px solid #67778c;
+}
+
+.bgcolor2 {
+	background-image:url(../icons/slick/top_bg.jpg);
+}
+
+/* Background color for selected header, log etc. */
+.headerSelected {
+    color: #0e0e0e;
+    background-color: #8eacc4;
+}
+
+/* The primary foreground color. */
+body {
+    color: #ccd5dc;
+}
+
+/* The secondary foreground color used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #ccd5dc;
+}
+
+/* Foreground color used for h2, bold and tr. */
+h2, b, tr {
+    color: #ccd5dc;
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #8a9aa7
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #d2d9df;
+}
+
+/* Color for warning messages. */
+.warning {
+    color: #ff4800;
+}
+
+/* Simple border. */
+.border1, .ruleTableHeader, .ruleTableCell, .headerSelected, .log {
+    border: 1px solid #67778c;
+}
+
+/* Scrollbar colors (supported on IE and Opera) */
+body {
+    scrollbar-face-color: #8eacc4;
+    scrollbar-highlight-color: #67778c;
+    scrollbar-shadow-color: #8eacc4;
+    scrollbar-3dlight-color: #8eacc4;
+    scrollbar-arrow-color: #67778c;
+    scrollbar-track-color: #67778c;
+    scrollbar-darkshadow-color: #67778c;
+}
+
+.back {
+    background-image:url("../icons/default_dark/back.png");background-position: 0px 3px; background-repeat:no-repeat; padding-left: 16px; line-height: 16px;
+}
+.forward {
+    background-image:url("../icons/default_dark/forward.png");background-position: 0px 3px; background-repeat:no-repeat; padding-left: 16px; line-height: 16px;
+}

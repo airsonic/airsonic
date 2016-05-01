@@ -1,0 +1,71 @@
+/*
+ * CSS styleshet for the "2 Minutes To Midnight" theme.
+ *
+ * Author: Sindre Mehus
+ */
+
+@import "default.css";
+
+/* The primary background color. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #656569;
+}
+
+/* The secondary background color. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #4D4C52
+}
+
+/* The primary foreground color. */
+body {
+    color: #DDDDDD;
+}
+
+/* The secondary foreground color used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #DDDDDD;
+}
+
+/* Foreground color used for h2, bold and tr. */
+h2, b, tr {
+    color: #DDDDDD;
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #BAD9F2
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: orange;
+}
+
+/* Color for warning messages. */
+.warning {
+    color: orange;
+}
+
+/* Simple border. */
+.border1, .ruleTableHeader, .ruleTableCell, .log {
+    border: 1px solid white;
+}
+
+/* Scrollbar colors (supported on IE and Opera) */
+body {
+    scrollbar-face-color: #4D4C52;
+    scrollbar-highlight-color: #656569;
+    scrollbar-shadow-color: #4D4C52;
+    scrollbar-3dlight-color: #4D4C52;
+    scrollbar-arrow-color: #656569;
+    scrollbar-track-color: #656569;
+    scrollbar-darkshadow-color: #656569;
+}
+
+.back {
+    background-image:url("../icons/default_dark/back.png");
+}
+.forward {
+    background-image:url("../icons/default_dark/forward.png");
+}

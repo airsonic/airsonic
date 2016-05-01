@@ -1,0 +1,9 @@
+#! /bin/sh
+
+set -e
+
+# Remove symlink.
+rm -f /usr/bin/subsonic
+
+# Remove startup scripts.
+update-rc.d -f subsonic remove

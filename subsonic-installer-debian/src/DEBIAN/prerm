@@ -1,0 +1,8 @@
+#! /bin/sh
+
+set -e
+
+# Stop Subsonic service.
+if [ -e /etc/init.d/subsonic ]; then
+  invoke-rc.d subsonic stop
+fi

@@ -1,0 +1,15 @@
+/*
+ * CSS styleshet for the "Barents Sea" theme.
+ *
+ * Author: Sindre Mehus
+ */
+
+@import "hd.css";
+
+body {
+    font-size: 10pt;
+}
+
+.detail, .albumComment, .log {
+    font-size: 9pt;
+}
