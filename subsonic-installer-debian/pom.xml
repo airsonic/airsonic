@@ -16,11 +16,11 @@
     <profiles>
 
         <profile>
-            <id>debian</id>
+            <id>linux</id>
             <activation>
-                <property>
-                    <name>debian</name>
-                </property>
+                <os>
+                    <family>linux</family>
+                </os>
             </activation>
 
             <build>
