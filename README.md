@@ -40,4 +40,4 @@ The original Subsonic was released under the GPLv3 through version 5.3. Beginnin
 Usage
 -----
 
-A WAR compiled from the latest tag is provided on the [Releases page](https://github.com/Libresonic/libresonic/releases). This can be installed as a Tomcat or compatible webapp, and should "just work". Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/release/INSTALL.md) for instructions on building from source.
+Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/develop/INSTALL.md) for instructions on building from source.
