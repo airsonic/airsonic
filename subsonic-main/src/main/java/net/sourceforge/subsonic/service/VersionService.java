@@ -69,7 +69,7 @@ public class VersionService {
     /**
      * URL from which to fetch latest versions.
      */
-    private static final String VERSION_URL = "http://subsonic.org/backend/version.view";
+    private static final String VERSION_URL = "https://libresonic.org/backend/version.view";
 
     public void init() {
         ServiceLocator.setVersionService(this);
