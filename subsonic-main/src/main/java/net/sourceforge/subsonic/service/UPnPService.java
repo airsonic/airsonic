@@ -131,7 +131,7 @@ public class UPnPService {
                 new ModelDetails(serverName, licenseString, versionString),
                 new DLNADoc[]{new DLNADoc("DMS", DLNADoc.Version.V1_5)}, null);
 
-        Icon icon = new Icon("image/png", 512, 512, 32, getClass().getResource("subsonic-512.png"));
+        Icon icon = new Icon("image/png", 512, 512, 32, getClass().getResource("logo-512.png"));
 
         LocalService<FolderBasedContentDirectory> contentDirectoryservice = new AnnotationLocalServiceBinder().read(FolderBasedContentDirectory.class);
         contentDirectoryservice.setManager(new DefaultServiceManager<FolderBasedContentDirectory>(contentDirectoryservice) {
