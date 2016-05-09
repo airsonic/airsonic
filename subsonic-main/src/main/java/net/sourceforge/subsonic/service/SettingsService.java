@@ -1028,7 +1028,7 @@ public class SettingsService {
      * @return The brand name.
      */
     public String getBrand() {
-        return "Subsonic";
+        return "Libresonic";
     }
 
     /**
