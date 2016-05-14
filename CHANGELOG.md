@@ -3,6 +3,13 @@
 # Libresonic/libresonic
 # -->
 
+v6.1-alpha1
+-----------
+
+  * Search+replace subsonic-->libresonic
+  * Move out of org.sourceforge.subsonic namespace
+  * Develop becomes horribly unstable, you shouldn't be using this.
+
 v6.0.1
 ------
 
