@@ -393,8 +393,8 @@
                         <configuration>
                             <target>
                                 <tstamp/>
-                                <copy file="${basedir}/src/main/resources/org.libresonic.player/i18n/ResourceBundle_en.properties"
-                                      tofile="${project.build.directory}/classes/org.libresonic.player/i18n/ResourceBundle.properties"/>
+                                <copy file="${basedir}/src/main/resources/org/libresonic/player/i18n/ResourceBundle_en.properties"
+                                      tofile="${project.build.directory}/classes/org/libresonic/player/i18n/ResourceBundle.properties"/>
                                 <echo file="${project.build.directory}/classes/build_number.txt">${buildNumber}</echo>
                                 <echo file="${project.build.directory}/classes/build_date.txt">${DSTAMP}</echo>
                                 <echo file="${project.build.directory}/classes/version.txt">${project.version}</echo>
