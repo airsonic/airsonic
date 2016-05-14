@@ -34,10 +34,14 @@ License
 
 Libresonic is free software and licensed under the [GNU General Public License version 3](http://www.gnu.org/copyleft/gpl.html). The code in this repository(and associated binaries) are free of any "license key" or other restrictions. If you wish to thank the maintainer of this repository, please consider a donation to the [Electronic Frontier Foundation](https://supporters.eff.org/donate).
 
-The original Subsonic was released under the GPLv3 through version 5.3. Beginning with 6.0, the software is only available under a commercial license. There is a [Subsonic Premium](http://www.subsonic.org/pages/premium.jsp) package which offers extra functionality. Subsonic also offers RPM, Deb, Exe, and other pre-built packages that Libresonic does not.
+The [Subsonic source code](https://github.com/Libresonic/subsonic-svn) was released under the GPLv3 through version 6.0-beta1. Beginning with 6.0-beta2, source is no longer provided. Binaries of Subsonic are only available under a commercial license. There is a [Subsonic Premium](http://www.subsonic.org/pages/premium.jsp) service which adds functionality not available in Libresonic. Subsonic also offers RPM, Deb, Exe, and other pre-built packages that Libresonic [currently does not](https://github.com/Libresonic/libresonic/issues/65).
 
 
 Usage
 -----
+
+Libresonic can be downloaded from [Github](https://github.com/Libresonic/libresonic/releases) for personal usage. Packagers can reference the [release repository](https://libresonic.org/release/), but pleasse contact the maintainer or wait until a [stable release policy](https://github.com/Libresonic/libresonic/issues/73) is available.
+
+Libresonic is packaged in [WAR format](https://en.wikipedia.org/wiki/WAR_(file_format)), suitable for deployment as a [webapp under Tomcat](https://tomcat.apache.org/tomcat-6.0-doc/deployer-howto.html). Comprehensive install documentation [is pending](https://github.com/Libresonic/libresonic/issues/64).
 
 Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/develop/INSTALL.md) for instructions on building from source.

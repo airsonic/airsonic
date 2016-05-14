@@ -9,8 +9,8 @@
 
     <parent>
         <groupId>net.sourceforge.subsonic</groupId>
-        <artifactId>subsonic</artifactId>
-        <version>5.3</version>
+        <artifactId>libresonic</artifactId>
+        <version>6.0</version>
     </parent>
 
     <dependencies>
