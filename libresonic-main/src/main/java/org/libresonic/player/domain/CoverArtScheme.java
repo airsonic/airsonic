@@ -14,7 +14,8 @@
  You should have received a copy of the GNU General Public License
  along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2009 (C) Sindre Mehus
+ Copyright 2016 (C) Libresonic Authors
+ Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
 package org.libresonic.player.domain;
 
