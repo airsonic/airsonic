@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.libresonic.player</groupId>
+    <artifactId>libresonic-installer-mac</artifactId>
+    <packaging>pom</packaging>
+    <name>Libresonic Installer for Mac</name>
+
+    <parent>
+        <groupId>org.libresonic.player</groupId>
+        <artifactId>libresonic</artifactId>
+        <version>6.0.1</version>
+    </parent>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.libresonic.player</groupId>
+            <artifactId>libresonic-main</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.libresonic.player</groupId>
+            <artifactId>libresonic-booter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <taskdef name="appbundler" classname="com.oracle.appbundler.AppBundlerTask"/>
+                                        <mkdir dir="${project.build.directory}"/>
+
+                                        <appbundler outputdirectory="target"
+                                                    name="Libresonic"
+                                                    displayname="Libresonic"
+                                                    icon="src/libresonic.icns"
+                                                    identifier="org.libresonic.player"
+                                                    shortversion="${project.version}"
+                                                    mainclassname="org.libresonic.player.booter.Main">
+                                            <runtime dir="${env.JAVA_HOME}"/>
+                                            <classpath dir="..">
+                                                <include name="libresonic-booter/target/libresonic-booter-jar-with-dependencies.jar"/>
+                                                <include name="libresonic-main/target/libresonic.war"/>
+                                            </classpath>
+                                            <option value="-Dlibresonic.war=$APP_ROOT/Contents/Java/libresonic.war"/>
+                                            <option value="-Dlibresonic.home=/Library/Application Support/Libresonic"/>
+                                            <option value="-Dlibresonic.defaultMusicFolder=/Users/Shared/Music/iTunes/iTunes Media"/>
+                                            <option value="-Dlibresonic.defaultPodcastFolder=/Users/Shared/Podcasts"/>
+                                            <option value="-Dlibresonic.defaultPlaylistFolder=/Users/Shared/Playlists"/>
+                                            <option value="-Dlibresonic.port=4040"/>
+                                            <option value="-Dlibresonic.httpsPort=0"/>
+                                            <option value="-Dlibresonic.contextPath=/"/>
+                                            <option value="-Dapple.awt.UIElement=true"/>
+                                            <option value="-Xmx150m"/>
+                                            <argument value="-mac"/>
+                                        </appbundler>
+
+                                        <!--Requires installation of Packages, see http://s.sudre.free.fr/Software/Packages/about.html or libresonic-tools-->
+                                        <exec executable="/usr/local/bin/packagesbuild">
+                                            <arg value="-v"/>
+                                            <arg value="${project.basedir}/src/libresonic.pkgproj"/>
+                                        </exec>
+
+                                        <exec executable="/usr/bin/productsign">
+                                            <arg value="--sign"/>
+                                            <arg value="Sindre Mehus"/>
+                                            <arg value="${project.build.directory}/libresonic.pkg"/>
+                                            <arg value="${project.build.directory}/libresonic-${project.version}.pkg"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.oracle</groupId>
+                                <artifactId>appbundler</artifactId>
+                                <version>1.0</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

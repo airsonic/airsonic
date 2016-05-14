@@ -1,0 +1,88 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.libresonic.player</groupId>
+    <artifactId>libresonic-installer-debian</artifactId>
+    <packaging>pom</packaging>
+    <name>Libresonic Installer for Debian</name>
+
+    <parent>
+        <groupId>org.libresonic.player</groupId>
+        <artifactId>libresonic</artifactId>
+        <version>6.0.1</version>
+    </parent>
+
+    <profiles>
+
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>dpkg</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>Creating Debian package...</echo>
+                                        <copy todir="${project.build.directory}/deb">
+                                            <fileset dir="${basedir}/src"/>
+                                            <filterset>
+                                                <filter token="VERSION" value="${project.version}"/>
+                                            </filterset>
+                                        </copy>
+
+                                        <copy file="../libresonic-booter/src/main/script/libresonic.sh" todir="${project.build.directory}/deb/usr/share/libresonic"/>
+                                        <copy file="../libresonic-booter/target/libresonic-booter-jar-with-dependencies.jar" todir="${project.build.directory}/deb/usr/share/libresonic"/>
+                                        <copy file="../libresonic-main/target/libresonic.war" todir="${project.build.directory}/deb/usr/share/libresonic"/>
+                                        <copy file="../libresonic-transcode/linux/ffmpeg" todir="${project.build.directory}/deb/var/libresonic/transcode"/>
+                                        <copy file="../libresonic-transcode/linux/lame" todir="${project.build.directory}/deb/var/libresonic/transcode"/>
+
+                                        <exec executable="chmod">
+                                            <arg value="oug+x"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/preinst"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/postinst"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/prerm"/>
+                                            <arg value="${project.build.directory}/deb/DEBIAN/postrm"/>
+                                            <arg value="${project.build.directory}/deb/usr/share/libresonic/libresonic.sh"/>
+                                            <arg value="${project.build.directory}/deb/etc/init.d/libresonic"/>
+                                            <arg value="${project.build.directory}/deb/var/libresonic/transcode/ffmpeg"/>
+                                            <arg value="${project.build.directory}/deb/var/libresonic/transcode/lame"/>
+                                        </exec>
+                                        <exec executable="sleep">
+                                            <arg value="2"/>
+                                        </exec>
+                                        <exec executable="fakeroot">
+                                            <arg value="dpkg"/>
+                                            <arg value="--build"/>
+                                            <arg value="${project.build.directory}/deb"/>
+                                            <arg value="${project.build.directory}/libresonic-${project.version}.deb"/>
+                                        </exec>
+                                        <exec executable="lintian">
+                                            <arg value="${project.build.directory}/libresonic-${project.version}.deb"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+</project>

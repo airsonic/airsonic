@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sourceforge.subsonic</groupId>
+    <groupId>org.libresonic.player</groupId>
     <artifactId>libresonic</artifactId>
     <version>6.0.1</version>
     <name>Libresonic</name>
@@ -81,21 +81,21 @@
     </developers>
 
     <modules>
-        <module>subsonic-rest-api</module>
-        <module>subsonic-sonos-api</module>
-        <module>subsonic-main</module>
+        <module>libresonic-rest-api</module>
+        <module>libresonic-sonos-api</module>
+        <module>libresonic-main</module>
     </modules>
 
     <profiles>
         <profile>
             <id>full</id>
             <modules>
-                <module>subsonic-booter</module>
-                <module>subsonic-installer-windows</module>
-                <module>subsonic-installer-mac</module>
-                <module>subsonic-installer-debian</module>
-                <module>subsonic-installer-rpm</module>
-                <module>subsonic-assembly</module>
+                <module>libresonic-booter</module>
+                <module>libresonic-installer-windows</module>
+                <module>libresonic-installer-mac</module>
+                <module>libresonic-installer-debian</module>
+                <module>libresonic-installer-rpm</module>
+                <module>libresonic-assembly</module>
             </modules>
         </profile>
 

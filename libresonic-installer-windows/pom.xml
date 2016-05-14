@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.libresonic.player</groupId>
+    <artifactId>libresonic-installer-windows</artifactId>
+    <packaging>pom</packaging>
+    <name>Libresonic Installer for Windows</name>
+
+    <parent>
+        <groupId>org.libresonic.player</groupId>
+        <artifactId>libresonic</artifactId>
+        <version>6.0.1</version>
+    </parent>
+
+    <properties>
+        <exe4j.home>c:/Program Files/exe4j</exe4j.home>
+        <nsis.home>c:/Program Files (x86)/NSIS</nsis.home>
+    </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.libresonic.player</groupId>
+            <artifactId>libresonic-main</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.libresonic.player</groupId>
+            <artifactId>libresonic-booter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+
+        <profile>
+            <id>windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>exe4j</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>Compiling exe4j...</echo>
+                                        <copy file="${basedir}/src/main/exe4j/libresonic-agent.exe.vmoptions" todir="${project.build.directory}"/>
+                                        <copy file="${basedir}/src/main/exe4j/libresonic-agent-elevated.exe.vmoptions" todir="${project.build.directory}"/>
+                                        <copy file="${basedir}/src/main/exe4j/libresonic-service.exe.vmoptions" todir="${project.build.directory}"/>
+                                        <exec executable="${exe4j.home}/bin/exe4jc">
+                                            <arg value="--license=L-SINDRE_MEHUS#14926715500010001-1ty7dbe11l10ll#140"/>
+                                        </exec>
+                                        <exec executable="${exe4j.home}/bin/exe4jc">
+                                            <arg value="${basedir}/src/main/exe4j/libresonic-agent.exe4j"/>
+                                        </exec>
+                                        <exec executable="${exe4j.home}/bin/exe4jc">
+                                            <arg value="${basedir}/src/main/exe4j/libresonic-agent-elevated.exe4j"/>
+                                        </exec>
+                                        <exec executable="${exe4j.home}/bin/exe4jc">
+                                            <arg value="${basedir}/src/main/exe4j/libresonic-service.exe4j"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                            <execution>
+                                <id>nsis</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>Compiling NSIS script...</echo>
+                                        <mkdir dir="${project.build.directory}"/>
+                                        <exec executable="${nsis.home}/makensis">
+                                            <arg value="${basedir}/src/main/nsis/libresonic.nsi"/>
+                                            <arg value="-XOutFile ${project.build.directory}/libresonic-${project.version}-setup.exe"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                </plugins>
+            </build>
+
+        </profile>
+    </profiles>
+</project>

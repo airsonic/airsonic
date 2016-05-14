@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="loginFailureLogger" class="org.libresonic.player.security.LoginFailureLogger"/>
+
+    <bean class="org.libresonic.player.security.LibresonicApplicationEventListener">
+        <property name="loginFailureLogger" ref="loginFailureLogger"/>
+    </bean>
+
+    <bean id="filterChainProxy" class="org.acegisecurity.util.FilterChainProxy">
+        <property name="filterInvocationDefinitionSource">
+            <value>
+                PATTERN_TYPE_APACHE_ANT
+                /wap**=httpSessionContextIntegrationFilter,logoutFilter,basicProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor
+                /podcastChannel**=httpSessionContextIntegrationFilter,logoutFilter,authenticationProcessingFilter,basicProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+                /podcast**=httpSessionContextIntegrationFilter,logoutFilter,basicProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor
+                /rest/**=httpSessionContextIntegrationFilter,logoutFilter,basicProcessingFilter,restRequestParameterProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor
+                /**=httpSessionContextIntegrationFilter,logoutFilter,authenticationProcessingFilter,basicProcessingFilter,securityContextHolderAwareRequestFilter,rememberMeProcessingFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor
+            </value>
+        </property>
+    </bean>
+
+    <bean id="httpSessionContextIntegrationFilter" class="org.acegisecurity.context.HttpSessionContextIntegrationFilter"/>
+
+    <bean id="logoutFilter" class="org.acegisecurity.ui.logout.LogoutFilter">
+        <constructor-arg value="/login.view?logout"/>
+        <!-- URL redirected to after logout -->
+        <constructor-arg>
+            <list>
+                <ref bean="rememberMeServices"/>
+                <bean class="org.acegisecurity.ui.logout.SecurityContextLogoutHandler"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="authenticationProcessingFilter" class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationFailureUrl" value="/login.view?error"/>
+        <property name="defaultTargetUrl" value="/"/>
+        <property name="alwaysUseDefaultTargetUrl" value="true"/>
+        <property name="filterProcessesUrl" value="/j_acegi_security_check"/>
+        <property name="rememberMeServices" ref="rememberMeServices"/>
+    </bean>
+
+    <bean id="basicProcessingFilter" class="org.acegisecurity.ui.basicauth.BasicProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="authenticationEntryPoint" ref="basicProcessingFilterEntryPoint"/>
+    </bean>
+
+    <bean id="restRequestParameterProcessingFilter" class="org.libresonic.player.security.RESTRequestParameterProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="loginFailureLogger" ref="loginFailureLogger"/>
+    </bean>
+
+    <bean id="basicProcessingFilterEntryPoint" class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+        <property name="realmName" value="Libresonic"/>
+    </bean>
+
+    <bean id="securityContextHolderAwareRequestFilter" class="org.acegisecurity.wrapper.SecurityContextHolderAwareRequestFilter"/>
+
+    <bean id="rememberMeProcessingFilter" class="org.acegisecurity.ui.rememberme.RememberMeProcessingFilter">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="rememberMeServices" ref="rememberMeServices"/>
+    </bean>
+
+    <bean id="anonymousProcessingFilter" class="org.acegisecurity.providers.anonymous.AnonymousProcessingFilter">
+        <property name="key" value="libresonic"/>
+        <property name="userAttribute" value="anonymousUser,ROLE_ANONYMOUS"/>
+    </bean>
+
+    <bean id="exceptionTranslationFilter" class="org.acegisecurity.ui.ExceptionTranslationFilter">
+        <property name="authenticationEntryPoint">
+            <bean class="org.acegisecurity.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+                <property name="loginFormUrl" value="/login.view?"/>
+                <property name="forceHttps" value="false"/>
+            </bean>
+        </property>
+        <property name="accessDeniedHandler">
+            <bean class="org.acegisecurity.ui.AccessDeniedHandlerImpl">
+                <property name="errorPage" value="/accessDenied.view"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="basicExceptionTranslationFilter" class="org.acegisecurity.ui.ExceptionTranslationFilter">
+        <property name="authenticationEntryPoint">
+            <bean class="org.acegisecurity.ui.basicauth.BasicProcessingFilterEntryPoint">
+                <property name="realmName" value="Libresonic"/>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="filterInvocationInterceptor" class="org.acegisecurity.intercept.web.FilterSecurityInterceptor">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="alwaysReauthenticate" value="true"/>
+        <property name="accessDecisionManager" ref="accessDecisionManager"/>
+        <property name="objectDefinitionSource">
+            <value>
+                PATTERN_TYPE_APACHE_ANT
+
+                /login.view=IS_AUTHENTICATED_ANONYMOUSLY
+                /recover.view=IS_AUTHENTICATED_ANONYMOUSLY
+                /accessDenied.view=IS_AUTHENTICATED_ANONYMOUSLY
+                /coverArt.view=IS_AUTHENTICATED_ANONYMOUSLY
+                /hls/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /stream/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /ws/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /share/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /style/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /icons/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /flash/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /script/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /sonos/**=IS_AUTHENTICATED_ANONYMOUSLY
+                /crossdomain.xml=IS_AUTHENTICATED_ANONYMOUSLY
+
+                /personalSettings.view=ROLE_SETTINGS
+                /passwordSettings.view=ROLE_SETTINGS
+                /playerSettings.view=ROLE_SETTINGS
+                /shareSettings.view=ROLE_SETTINGS
+
+                /generalSettings.view=ROLE_ADMIN
+                /advancedSettings.view=ROLE_ADMIN
+                /userSettings.view=ROLE_ADMIN
+                /musicFolderSettings.view=ROLE_ADMIN
+                /networkSettings.view=ROLE_ADMIN
+                /dlnaSettings.view=ROLE_ADMIN
+                /sonosSettings.view=ROLE_ADMIN
+                /transcodingSettings.view=ROLE_ADMIN
+                /internetRadioSettings.view=ROLE_ADMIN
+                /podcastSettings.view=ROLE_ADMIN
+                /db.view=ROLE_ADMIN
+
+                /deletePlaylist.view=ROLE_PLAYLIST
+                /savePlaylist.view=ROLE_PLAYLIST
+
+                /download.view=ROLE_DOWNLOAD
+
+                /upload.view=ROLE_UPLOAD
+
+                /createShare.view=ROLE_SHARE
+
+                /changeCoverArt.view=ROLE_COVERART
+                /editTags.view=ROLE_COVERART
+
+                /setMusicFileInfo.view=ROLE_COMMENT
+
+                /podcastReceiverAdmin.view=ROLE_PODCAST
+
+                /**=IS_AUTHENTICATED_REMEMBERED
+            </value>
+        </property>
+    </bean>
+
+    <bean id="accessDecisionManager" class="org.acegisecurity.vote.AffirmativeBased">
+        <property name="allowIfAllAbstainDecisions" value="false"/>
+        <property name="decisionVoters">
+            <list>
+                <bean class="org.acegisecurity.vote.RoleVoter"/>
+                <bean class="org.acegisecurity.vote.AuthenticatedVoter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="rememberMeServices" class="org.acegisecurity.ui.rememberme.TokenBasedRememberMeServices">
+        <property name="userDetailsService" ref="securityService"/>
+        <property name="tokenValiditySeconds" value="31536000"/>
+        <!-- One year -->
+        <property name="key" value="libresonic"/>
+    </bean>
+
+    <bean id="authenticationManager" class="org.acegisecurity.providers.ProviderManager">
+        <property name="providers">
+            <list>
+                <ref local="daoAuthenticationProvider"/>
+                <ref local="ldapAuthenticationProvider"/>
+                <bean class="org.acegisecurity.providers.anonymous.AnonymousAuthenticationProvider">
+                    <property name="key" value="libresonic"/>
+                </bean>
+                <bean class="org.acegisecurity.providers.rememberme.RememberMeAuthenticationProvider">
+                    <property name="key" value="libresonic"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="daoAuthenticationProvider" class="org.acegisecurity.providers.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="securityService"/>
+        <property name="userCache" ref="userCacheWrapper"/>
+    </bean>
+
+    <bean id="userCacheWrapper" class="org.acegisecurity.providers.dao.cache.EhCacheBasedUserCache">
+        <property name="cache" ref="userCache"/>
+    </bean>
+
+    <bean id="ldapAuthenticationProvider" class="org.acegisecurity.providers.ldap.LdapAuthenticationProvider">
+        <constructor-arg ref="bindAuthenticator"/>
+        <constructor-arg ref="userDetailsServiceBasedAuthoritiesPopulator"/>
+        <property name="userCache" ref="userCacheWrapper"/>
+    </bean>
+
+    <bean id="bindAuthenticator" class="org.libresonic.player.ldap.LibresonicLdapBindAuthenticator">
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+
+    <bean id="userDetailsServiceBasedAuthoritiesPopulator"
+          class="org.libresonic.player.ldap.UserDetailsServiceBasedAuthoritiesPopulator">
+        <property name="userDetailsService" ref="securityService"/>
+    </bean>
+
+    <!-- Authorization of AJAX services. -->
+    <bean id="ajaxServiceInterceptor" class="org.acegisecurity.intercept.method.aopalliance.MethodSecurityInterceptor">
+        <property name="authenticationManager" ref="authenticationManager"/>
+        <property name="accessDecisionManager" ref="accessDecisionManager"/>
+        <property name="objectDefinitionSource">
+            <value>
+                org.libresonic.player.ajax.TagService.setTags=ROLE_COVERART
+                org.libresonic.player.ajax.TransferService.getUploadInfo=ROLE_UPLOAD
+            </value>
+        </property>
+    </bean>
+
+    <bean id="ajaxTagServiceSecure" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="ajaxTagService"/>
+        <property name="interceptorNames">
+            <list>
+                <idref local="ajaxServiceInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="ajaxTransferServiceSecure" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="target" ref="ajaxTransferService"/>
+        <property name="interceptorNames">
+            <list>
+                <idref local="ajaxServiceInterceptor"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

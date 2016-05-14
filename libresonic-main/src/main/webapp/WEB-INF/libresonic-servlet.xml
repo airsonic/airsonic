@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean id="leftController" class="org.libresonic.player.controller.LeftController">
+        <property name="viewName" value="left"/>
+        <property name="mediaScannerService" ref="mediaScannerService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="musicIndexService" ref="musicIndexService"/>
+        <property name="playerService" ref="playerService"/>
+    </bean>
+    <bean id="rightController" class="org.libresonic.player.controller.RightController">
+        <property name="viewName" value="right"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="versionService" ref="versionService"/>
+    </bean>
+    <bean id="statusController" class="org.libresonic.player.controller.StatusController">
+        <property name="viewName" value="status"/>
+        <property name="statusService" ref="statusService"/>
+    </bean>
+    <bean id="mainController" class="org.libresonic.player.controller.MainController">
+        <property name="securityService" ref="securityService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="ratingService" ref="ratingService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="adService" ref="adService"/>
+    </bean>
+    <bean id="playlistController" class="org.libresonic.player.controller.PlaylistController">
+        <property name="viewName" value="playlist"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playerService" ref="playerService"/>
+    </bean>
+    <bean id="playlistsController" class="org.libresonic.player.controller.PlaylistsController">
+        <property name="viewName" value="playlists"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="playlistService" ref="playlistService"/>
+    </bean>
+    <bean id="importPlaylistController" class="org.libresonic.player.controller.ImportPlaylistController">
+        <property name="viewName" value="importPlaylist"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="playlistService" ref="playlistService"/>
+    </bean>
+    <bean id="topController" class="org.libresonic.player.controller.TopController">
+        <property name="viewName" value="top"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="helpController" class="org.libresonic.player.controller.HelpController">
+        <property name="viewName" value="help"/>
+        <property name="versionService" ref="versionService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="moreController" class="org.libresonic.player.controller.MoreController">
+        <property name="viewName" value="more"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="playerService" ref="playerService"/>
+    </bean>
+    <bean id="uploadController" class="org.libresonic.player.controller.UploadController">
+        <property name="viewName" value="upload"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="lyricsController" class="org.libresonic.player.controller.LyricsController">
+        <property name="viewName" value="lyrics"/>
+    </bean>
+    <bean id="allmusicController" class="org.libresonic.player.controller.AllmusicController">
+        <property name="viewName" value="allmusic"/>
+    </bean>
+    <bean id="podcastController" class="org.libresonic.player.controller.PodcastController">
+        <property name="viewName" value="podcast"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="podcastChannelsController" class="org.libresonic.player.controller.PodcastChannelsController">
+        <property name="viewName" value="podcastChannels"/>
+        <property name="podcastService" ref="podcastService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="podcastChannelController" class="org.libresonic.player.controller.PodcastChannelController">
+        <property name="viewName" value="podcastChannel"/>
+        <property name="podcastService" ref="podcastService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="podcastReceiverAdminController" class="org.libresonic.player.controller.PodcastReceiverAdminController">
+        <property name="podcastService" ref="podcastService"/>
+    </bean>
+    <bean id="setMusicFileInfoController" class="org.libresonic.player.controller.SetMusicFileInfoController">
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+    <bean id="shareManagementController" class="org.libresonic.player.controller.ShareManagementController">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="shareService" ref="shareService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="setRatingController" class="org.libresonic.player.controller.SetRatingController">
+        <property name="ratingService" ref="ratingService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="randomPlayQueueController" class="org.libresonic.player.controller.RandomPlayQueueController">
+        <property name="viewName" value="reload"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="reloadFrames">
+            <list>
+                <bean class="org.libresonic.player.controller.ReloadFrame">
+                    <property name="frame" value="playQueue"/>
+                    <property name="view" value="playQueue.view?"/>
+                </bean>
+                <bean class="org.libresonic.player.controller.ReloadFrame">
+                    <property name="frame" value="main"/>
+                    <property name="view" value="more.view"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean id="changeCoverArtController" class="org.libresonic.player.controller.ChangeCoverArtController">
+        <property name="viewName" value="changeCoverArt"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+    <bean id="nowPlayingController" class="org.libresonic.player.controller.NowPlayingController">
+        <property name="playerService" ref="playerService"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+    <bean id="starredController" class="org.libresonic.player.controller.StarredController">
+        <property name="viewName" value="starred"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+    <bean id="searchController" class="org.libresonic.player.controller.SearchController">
+        <property name="commandClass" value="org.libresonic.player.command.SearchCommand"/>
+        <property name="successView" value="search"/>
+        <property name="formView" value="search"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playerService" ref="playerService"/>
+    </bean>
+    <bean id="settingsController" class="org.libresonic.player.controller.SettingsController">
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="playerSettingsController" class="org.libresonic.player.controller.PlayerSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.PlayerSettingsCommand"/>
+        <property name="successView" value="playerSettings"/>
+        <property name="formView" value="playerSettings"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+    </bean>
+    <bean id="dlnaSettingsController" class="org.libresonic.player.controller.DLNASettingsController">
+        <property name="viewName" value="dlnaSettings"/>
+        <property name="upnpService" ref="upnpService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="sonosSettingsController" class="org.libresonic.player.controller.SonosSettingsController">
+        <property name="viewName" value="sonosSettings"/>
+        <property name="sonosService" ref="sonosService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="shareSettingsController" class="org.libresonic.player.controller.ShareSettingsController">
+        <property name="viewName" value="shareSettings"/>
+        <property name="shareService" ref="shareService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="musicFolderSettingsController" class="org.libresonic.player.controller.MusicFolderSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.MusicFolderSettingsCommand"/>
+        <property name="successView" value="musicFolderSettings"/>
+        <property name="formView" value="musicFolderSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaScannerService" ref="mediaScannerService"/>
+        <property name="artistDao" ref="artistDao"/>
+        <property name="albumDao" ref="albumDao"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+    </bean>
+    <bean id="networkSettingsController" class="org.libresonic.player.controller.NetworkSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.NetworkSettingsCommand"/>
+        <property name="successView" value="networkSettings"/>
+        <property name="formView" value="networkSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="networkService" ref="networkService"/>
+    </bean>
+    <bean id="transcodingSettingsController" class="org.libresonic.player.controller.TranscodingSettingsController">
+        <property name="viewName" value="transcodingSettings"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="internetRadioSettingsController"
+          class="org.libresonic.player.controller.InternetRadioSettingsController">
+        <property name="viewName" value="internetRadioSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="podcastSettingsController" class="org.libresonic.player.controller.PodcastSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.PodcastSettingsCommand"/>
+        <property name="successView" value="podcastSettings"/>
+        <property name="formView" value="podcastSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="podcastService" ref="podcastService"/>
+    </bean>
+    <bean id="generalSettingsController" class="org.libresonic.player.controller.GeneralSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.GeneralSettingsCommand"/>
+        <property name="successView" value="generalSettings"/>
+        <property name="formView" value="generalSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="advancedSettingsController" class="org.libresonic.player.controller.AdvancedSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.AdvancedSettingsCommand"/>
+        <property name="successView" value="advancedSettings"/>
+        <property name="formView" value="advancedSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="personalSettingsController" class="org.libresonic.player.controller.PersonalSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.PersonalSettingsCommand"/>
+        <property name="successView" value="personalSettings"/>
+        <property name="formView" value="personalSettings"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="avatarUploadController" class="org.libresonic.player.controller.AvatarUploadController">
+        <property name="viewName" value="avatarUploadResult"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="userSettingsController" class="org.libresonic.player.controller.UserSettingsController">
+        <property name="sessionForm" value="true"/>
+        <property name="commandClass" value="org.libresonic.player.command.UserSettingsCommand"/>
+        <property name="validator" ref="userSettingsValidator"/>
+        <property name="successView" value="userSettings"/>
+        <property name="formView" value="userSettings"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+    </bean>
+    <bean id="passwordSettingsController" class="org.libresonic.player.controller.PasswordSettingsController">
+        <property name="sessionForm" value="true"/>
+        <property name="commandClass" value="org.libresonic.player.command.PasswordSettingsCommand"/>
+        <property name="validator" ref="passwordSettingsValidator"/>
+        <property name="successView" value="passwordSettings"/>
+        <property name="formView" value="passwordSettings"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="homeController" class="org.libresonic.player.controller.HomeController">
+        <property name="viewName" value="home"/>
+        <property name="ratingService" ref="ratingService"/>
+        <property name="mediaScannerService" ref="mediaScannerService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="editTagsController" class="org.libresonic.player.controller.EditTagsController">
+        <property name="viewName" value="editTags"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
+    </bean>
+    <bean id="playQueueController" class="org.libresonic.player.controller.PlayQueueController">
+        <property name="viewName" value="playQueue"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="coverArtController" class="org.libresonic.player.controller.CoverArtController" init-method="init">
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="podcastService" ref="podcastService"/>
+        <property name="artistDao" ref="artistDao"/>
+        <property name="albumDao" ref="albumDao"/>
+    </bean>
+    <bean id="avatarController" class="org.libresonic.player.controller.AvatarController">
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="proxyController" class="org.libresonic.player.controller.ProxyController"/>
+    <bean id="statusChartController" class="org.libresonic.player.controller.StatusChartController">
+        <property name="statusService" ref="statusService"/>
+    </bean>
+    <bean id="userChartController" class="org.libresonic.player.controller.UserChartController">
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="m3uController" class="org.libresonic.player.controller.M3UController">
+        <property name="playerService" ref="playerService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+    </bean>
+    <bean id="streamController" class="org.libresonic.player.controller.StreamController">
+        <property name="playerService" ref="playerService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="audioScrobblerService" ref="audioScrobblerService"/>
+    </bean>
+    <bean id="hlsController" class="org.libresonic.player.controller.HLSController">
+        <property name="playerService" ref="playerService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="videoPlayerController" class="org.libresonic.player.controller.VideoPlayerController">
+        <property name="viewName" value="videoPlayer"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="externalPlayerController" class="org.libresonic.player.controller.ExternalPlayerController">
+        <property name="viewName" value="externalPlayer"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="shareService" ref="shareService"/>
+    </bean>
+    <bean id="downloadController" class="org.libresonic.player.controller.DownloadController">
+        <property name="playerService" ref="playerService"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+    <bean id="premiumSettingsController" class="org.libresonic.player.controller.PremiumSettingsController">
+        <property name="commandClass" value="org.libresonic.player.command.PremiumSettingsCommand"/>
+        <property name="successView" value="premiumSettings"/>
+        <property name="formView" value="premiumSettings"/>
+        <property name="validator" ref="premiumSettingsValidator"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+    <bean id="multiController" class="org.libresonic.player.controller.MultiController">
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playlistService" ref="playlistService"/>
+    </bean>
+    <bean id="wapController" class="org.libresonic.player.controller.WapController">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="musicIndexService" ref="musicIndexService"/>
+    </bean>
+    <bean id="restController" class="org.libresonic.player.controller.RESTController" init-method="init">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="lastFmService" ref="lastFmService"/>
+        <property name="musicIndexService" ref="musicIndexService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="jukeboxService" ref="jukeboxService"/>
+        <property name="audioScrobblerService" ref="audioScrobblerService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="playQueueService" ref="ajaxPlayQueueService"/>
+        <property name="ratingService" ref="ratingService"/>
+        <property name="chatService" ref="ajaxChatService"/>
+        <property name="lyricsService" ref="ajaxLyricsService"/>
+        <property name="podcastService" ref="podcastService"/>
+        <property name="shareService" ref="shareService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="artistDao" ref="artistDao"/>
+        <property name="albumDao" ref="albumDao"/>
+        <property name="bookmarkDao" ref="bookmarkDao"/>
+        <property name="playQueueDao" ref="playQueueDao"/>
+        <property name="downloadController" ref="downloadController"/>
+        <property name="streamController" ref="streamController"/>
+        <property name="hlsController" ref="hlsController"/>
+        <property name="coverArtController" ref="coverArtController"/>
+        <property name="avatarController" ref="avatarController"/>
+        <property name="userSettingsController" ref="userSettingsController"/>
+        <property name="leftController" ref="leftController"/>
+    </bean>
+    <bean id="dbController" class="org.libresonic.player.controller.DBController">
+        <property name="viewName" value="db"/>
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+    <bean id="premiumSettingsValidator" class="org.libresonic.player.validator.PremiumSettingsValidator">
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="userSettingsValidator" class="org.libresonic.player.validator.UserSettingsValidator">
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+    <bean id="passwordSettingsValidator" class="org.libresonic.player.validator.PasswordSettingsValidator"/>
+
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="mappings">
+            <props>
+                <prop key="/main.view">mainController</prop>
+                <prop key="/playlist.view">playlistController</prop>
+                <prop key="/playlists.view">playlistsController</prop>
+                <prop key="/help.view">helpController</prop>
+                <prop key="/lyrics.view">lyricsController</prop>
+                <prop key="/left.view">leftController</prop>
+                <prop key="/right.view">rightController</prop>
+                <prop key="/status.view">statusController</prop>
+                <prop key="/more.view">moreController</prop>
+                <prop key="/upload.view">uploadController</prop>
+                <prop key="/importPlaylist.view">importPlaylistController</prop>
+                <prop key="/exportPlaylist.view">multiController</prop>
+                <prop key="/setMusicFileInfo.view">setMusicFileInfoController</prop>
+                <prop key="/createShare.view">shareManagementController</prop>
+                <prop key="/setRating.view">setRatingController</prop>
+                <prop key="/top.view">topController</prop>
+                <prop key="/randomPlayQueue.view">randomPlayQueueController</prop>
+                <prop key="/changeCoverArt.view">changeCoverArtController</prop>
+                <prop key="/login.view">multiController</prop>
+                <prop key="/recover.view">multiController</prop>
+                <prop key="/accessDenied.view">multiController</prop>
+                <prop key="/notFound.view">multiController</prop>
+                <prop key="/gettingStarted.view">multiController</prop>
+                <prop key="/index.view">multiController</prop>
+                <prop key="/videoPlayer.view">videoPlayerController</prop>
+                <prop key="/nowPlaying.view">nowPlayingController</prop>
+                <prop key="/starred.view">starredController</prop>
+                <prop key="/search.view">searchController</prop>
+                <prop key="/settings.view">settingsController</prop>
+                <prop key="/playerSettings.view">playerSettingsController</prop>
+                <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
+                <prop key="/sonosSettings.view">sonosSettingsController</prop>
+                <prop key="/shareSettings.view">shareSettingsController</prop>
+                <prop key="/musicFolderSettings.view">musicFolderSettingsController</prop>
+                <prop key="/networkSettings.view">networkSettingsController</prop>
+                <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
+                <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
+                <prop key="/podcastSettings.view">podcastSettingsController</prop>
+                <prop key="/generalSettings.view">generalSettingsController</prop>
+                <prop key="/advancedSettings.view">advancedSettingsController</prop>
+                <prop key="/personalSettings.view">personalSettingsController</prop>
+                <prop key="/avatarUpload.view">avatarUploadController</prop>
+                <prop key="/userSettings.view">userSettingsController</prop>
+                <prop key="/passwordSettings.view">passwordSettingsController</prop>
+                <prop key="/premiumSettings.view">premiumSettingsController</prop>
+                <prop key="/allmusic.view">allmusicController</prop>
+                <prop key="/home.view">homeController</prop>
+                <prop key="/editTags.view">editTagsController</prop>
+                <prop key="/playQueue.view">playQueueController</prop>
+                <prop key="/coverArt.view">coverArtController</prop>
+                <prop key="/avatar.view">avatarController</prop>
+                <prop key="/proxy.view">proxyController</prop>
+                <prop key="/statusChart.view">statusChartController</prop>
+                <prop key="/userChart.view">userChartController</prop>
+                <prop key="/download.view">downloadController</prop>
+                <prop key="/db.view">dbController</prop>
+                <prop key="/test.view">multiController</prop>
+                <prop key="/podcastChannels.view">podcastChannelsController</prop>
+                <prop key="/podcastChannel.view">podcastChannelController</prop>
+                <prop key="/podcastReceiverAdmin.view">podcastReceiverAdminController</prop>
+                <prop key="/podcast.view">podcastController</prop>
+                <prop key="/podcast/**">podcastController</prop>
+                <prop key="/wap/download.view">downloadController</prop>
+                <prop key="/wap/**">wapController</prop>
+                <prop key="/rest/**">restController</prop>
+                <prop key="/play.m3u">m3uController</prop>
+                <prop key="/stream/**">streamController</prop>
+                <prop key="/hls/**">hlsController</prop>
+                <prop key="/share/**">externalPlayerController</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="org.libresonic.player.i18n.ResourceBundle"/>
+    </bean>
+
+    <bean id="themeSource" class="org.libresonic.player.theme.LibresonicThemeSource">
+        <property name="basenamePrefix" value="org.libresonic.player.theme."/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+
+    <bean id="themeResolver" class="org.libresonic.player.theme.LibresonicThemeResolver">
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+</beans>
