@@ -3,6 +3,13 @@
 # Libresonic/libresonic
 # -->
 
+v6.0.1
+------
+
+  * First recommended release
+  * Updated Help/About page text
+
+
 v6.0
 ----
 
