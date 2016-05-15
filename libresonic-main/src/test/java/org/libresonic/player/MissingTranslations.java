@@ -19,11 +19,11 @@ public class MissingTranslations  {
 
     private static void diff(String locale1, String locale2) throws IOException {
         Properties en = new Properties();
-        en.load(MissingTranslations.class.getResourceAsStream("/org.libresonic.player/i18n/ResourceBundle_" + locale1 + ".properties"));
+        en.load(MissingTranslations.class.getResourceAsStream("/org/libresonic/player/i18n/ResourceBundle_" + locale1 + ".properties"));
         SortedMap<Object,Object> enSorted = new TreeMap<Object, Object>(en);
 
         Properties mk = new Properties();
-        mk.load(MissingTranslations.class.getResourceAsStream("/org.libresonic.player/i18n/ResourceBundle_" + locale2 + ".properties"));
+        mk.load(MissingTranslations.class.getResourceAsStream("/org/libresonic/player/i18n/ResourceBundle_" + locale2 + ".properties"));
 
         System.out.println("\nMessages present in locale " + locale1 + " and missing in locale " + locale2 + ":");
         int count = 0;

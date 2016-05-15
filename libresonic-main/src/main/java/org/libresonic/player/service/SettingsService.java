@@ -218,8 +218,8 @@ public class SettingsService {
             "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", "UrlRedirectTrialExpires", "VideoTrialExpires",
             "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort");
 
-    private static final String LOCALES_FILE = "/org.libresonic.player/i18n/locales.txt";
-    private static final String THEMES_FILE = "/org.libresonic.player/theme/themes.txt";
+    private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
+    private static final String THEMES_FILE = "/org/libresonic/player/theme/themes.txt";
 
     private static final Logger LOG = Logger.getLogger(SettingsService.class);
 
