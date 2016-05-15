@@ -163,7 +163,7 @@ public class StreamController implements Controller {
                     response.setContentType(StringUtil.getMimeType("ts")); // HLS is always MPEG TS.
                 } else {
                     String transcodedSuffix = transcodingService.getSuffix(player, file, preferredTargetFormat);
-                    boolean sonos = SonosHelper.SUBSONIC_CLIENT_ID.equals(player.getClientId());
+                    boolean sonos = SonosHelper.LIBRESONIC_CLIENT_ID.equals(player.getClientId());
                     response.setContentType(StringUtil.getMimeType(transcodedSuffix, sonos));
                     setContentDuration(response, file);
                 }

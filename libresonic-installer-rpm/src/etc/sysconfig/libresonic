@@ -3,7 +3,7 @@
 # (/etc/init.d/libresonic)
 #
 # To change the startup parameters of Libresonic, modify
-# the SUBSONIC_ARGS variable below.
+# the LIBRESONIC_ARGS variable below.
 #
 # Type "/usr/share/libresonic/libresonic.sh --help" on the command line to read an
 # explanation of the different options.
@@ -12,9 +12,9 @@
 # and 443 (for https), and use a Java memory heap size of 200 MB, use
 # the following:
 #
-# SUBSONIC_ARGS="--port=80 --https-port=443 --max-memory=200"
+# LIBRESONIC_ARGS="--port=80 --https-port=443 --max-memory=200"
 
-SUBSONIC_ARGS="--max-memory=150"
+LIBRESONIC_ARGS="--max-memory=150"
 
 
 # The user which should run the Libresonic process. Default "root".
@@ -22,4 +22,4 @@ SUBSONIC_ARGS="--max-memory=150"
 # below 1024. Also make sure to grant the user write permissions in
 # the music directories, otherwise changing album art and tags will fail.
 
-SUBSONIC_USER=root
+LIBRESONIC_USER=root

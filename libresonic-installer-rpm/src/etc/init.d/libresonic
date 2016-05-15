@@ -28,14 +28,14 @@ NAME=libresonic
 PIDFILE=/var/run/$NAME.pid
 LOCKFILE=/var/lock/subsys/$NAME
 DAEMON=/usr/bin/$NAME
-DAEMON_ARGS="--pidfile=$PIDFILE $SUBSONIC_ARGS"
+DAEMON_ARGS="--pidfile=$PIDFILE $LIBRESONIC_ARGS"
 SCRIPTNAME=/etc/init.d/$NAME
 
 # Exit if the package is not installed.
 [ -x "$DAEMON" ] || exit 0
 
-# Run as root if SUBSONIC_USER is not set.
-[ "$SUBSONIC_USER" = "" ] && SUBSONIC_USER=root
+# Run as root if LIBRESONIC_USER is not set.
+[ "$LIBRESONIC_USER" = "" ] && LIBRESONIC_USER=root
 
 # Source function library.
 . /etc/init.d/functions
@@ -53,12 +53,12 @@ do_start()
     fi
 
     touch $PIDFILE
-    chown $SUBSONIC_USER $PIDFILE
-    [ -e /var/libresonic ] && chown -R $SUBSONIC_USER /var/libresonic
-    [ -e /tmp/libresonic ] && chown -R $SUBSONIC_USER /tmp/libresonic
+    chown $LIBRESONIC_USER $PIDFILE
+    [ -e /var/libresonic ] && chown -R $LIBRESONIC_USER /var/libresonic
+    [ -e /tmp/libresonic ] && chown -R $LIBRESONIC_USER /tmp/libresonic
 
     echo $"Starting $NAME ..."
-    su -c "$DAEMON $DAEMON_ARGS" $SUBSONIC_USER
+    su -c "$DAEMON $DAEMON_ARGS" $LIBRESONIC_USER
     RETVAL=$?
     echo
     [ $RETVAL -eq 0 ] && touch $LOCKFILE

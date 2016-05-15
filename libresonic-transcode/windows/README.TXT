@@ -1,5 +1,5 @@
 ==========================================================
-            SUBSONIC TRANSCODING PACK
+            LIBRESONIC TRANSCODING PACK
 ==========================================================
 
 This is a collection of free audio codecs for Windows.

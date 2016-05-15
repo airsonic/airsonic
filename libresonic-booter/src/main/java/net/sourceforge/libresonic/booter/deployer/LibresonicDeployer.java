@@ -48,8 +48,8 @@ public class LibresonicDeployer implements LibresonicDeployerService {
     private static final int HEADER_BUFFER_SIZE = 64 * 1024;
 
     // Libresonic home directory.
-    private static final File SUBSONIC_HOME_WINDOWS = new File("c:/libresonic");
-    private static final File SUBSONIC_HOME_OTHER = new File("/var/libresonic");
+    private static final File LIBRESONIC_HOME_WINDOWS = new File("c:/libresonic");
+    private static final File LIBRESONIC_HOME_OTHER = new File("/var/libresonic");
 
     private Throwable exception;
     private File libresonicHome;
@@ -311,7 +311,7 @@ public class LibresonicDeployer implements LibresonicDeployerService {
             home = new File(overrideHome);
         } else {
             boolean isWindows = System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
-            home = isWindows ? SUBSONIC_HOME_WINDOWS : SUBSONIC_HOME_OTHER;
+            home = isWindows ? LIBRESONIC_HOME_WINDOWS : LIBRESONIC_HOME_OTHER;
         }
 
         // Attempt to create home directory if it doesn't exist.

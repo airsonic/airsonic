@@ -78,7 +78,7 @@ import org.libresonic.player.util.Util;
  */
 public class SonosHelper {
 
-    public static final String SUBSONIC_CLIENT_ID = "sonos";
+    public static final String LIBRESONIC_CLIENT_ID = "sonos";
 
     private MediaFileService mediaFileService;
     private PlaylistService playlistService;
@@ -674,17 +674,17 @@ public class SonosHelper {
     }
 
     private Player createPlayerIfNecessary(String username) {
-        List<Player> players = playerService.getPlayersForUserAndClientId(username, SUBSONIC_CLIENT_ID);
+        List<Player> players = playerService.getPlayersForUserAndClientId(username, LIBRESONIC_CLIENT_ID);
 
         // If not found, create it.
         if (players.isEmpty()) {
             Player player = new Player();
             player.setUsername(username);
-            player.setClientId(SUBSONIC_CLIENT_ID);
+            player.setClientId(LIBRESONIC_CLIENT_ID);
             player.setName("Sonos");
             player.setTechnology(PlayerTechnology.EXTERNAL_WITH_PLAYLIST);
             playerService.createPlayer(player);
-            players = playerService.getPlayersForUserAndClientId(username, SUBSONIC_CLIENT_ID);
+            players = playerService.getPlayersForUserAndClientId(username, LIBRESONIC_CLIENT_ID);
         }
 
         return players.get(0);

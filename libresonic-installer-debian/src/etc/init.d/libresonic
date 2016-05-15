@@ -22,14 +22,14 @@ DESC="Libresonic Daemon"
 NAME=libresonic
 PIDFILE=/var/run/$NAME.pid
 DAEMON=/usr/bin/$NAME
-DAEMON_ARGS="--pidfile=$PIDFILE $SUBSONIC_ARGS"
+DAEMON_ARGS="--pidfile=$PIDFILE $LIBRESONIC_ARGS"
 SCRIPTNAME=/etc/init.d/$NAME
 
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
 
-# Run as root if SUBSONIC_USER is not set.
-[ "$SUBSONIC_USER" = "" ] && SUBSONIC_USER=root
+# Run as root if LIBRESONIC_USER is not set.
+[ "$LIBRESONIC_USER" = "" ] && LIBRESONIC_USER=root
 
 # Make sure Libresonic is started with system locale
 if [ -r /etc/default/locale ]; then
@@ -61,11 +61,11 @@ do_start()
     fi
 
     touch $PIDFILE
-    chown $SUBSONIC_USER $PIDFILE
-    [ -e /var/libresonic ] && chown -R $SUBSONIC_USER /var/libresonic
-    [ -e /tmp/libresonic ] && chown -R $SUBSONIC_USER /tmp/libresonic
+    chown $LIBRESONIC_USER $PIDFILE
+    [ -e /var/libresonic ] && chown -R $LIBRESONIC_USER /var/libresonic
+    [ -e /tmp/libresonic ] && chown -R $LIBRESONIC_USER /tmp/libresonic
 
-    start-stop-daemon --start -c $SUBSONIC_USER --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS || return 2
+    start-stop-daemon --start -c $LIBRESONIC_USER --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_ARGS || return 2
 }
 
 #

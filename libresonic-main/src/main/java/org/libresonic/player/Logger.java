@@ -29,7 +29,7 @@ import java.text.*;
 import java.util.*;
 
 /**
- * Logger implementation which logs to SUBSONIC_HOME/libresonic.log.
+ * Logger implementation which logs to LIBRESONIC_HOME/libresonic.log.
  * <br/>
  * Note: Third party logging libraries (such as log4j and Commons logging) are intentionally not
  * used. These libraries causes a lot of headache when deploying to some application servers

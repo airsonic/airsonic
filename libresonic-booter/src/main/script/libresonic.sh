@@ -6,16 +6,16 @@
 # Author: Sindre Mehus
 ###################################################################################
 
-SUBSONIC_HOME=/var/libresonic
-SUBSONIC_HOST=0.0.0.0
-SUBSONIC_PORT=4040
-SUBSONIC_HTTPS_PORT=0
-SUBSONIC_CONTEXT_PATH=/
-SUBSONIC_MAX_MEMORY=150
-SUBSONIC_PIDFILE=
-SUBSONIC_DEFAULT_MUSIC_FOLDER=/var/music
-SUBSONIC_DEFAULT_PODCAST_FOLDER=/var/music/Podcast
-SUBSONIC_DEFAULT_PLAYLIST_FOLDER=/var/playlists
+LIBRESONIC_HOME=/var/libresonic
+LIBRESONIC_HOST=0.0.0.0
+LIBRESONIC_PORT=4040
+LIBRESONIC_HTTPS_PORT=0
+LIBRESONIC_CONTEXT_PATH=/
+LIBRESONIC_MAX_MEMORY=150
+LIBRESONIC_PIDFILE=
+LIBRESONIC_DEFAULT_MUSIC_FOLDER=/var/music
+LIBRESONIC_DEFAULT_PODCAST_FOLDER=/var/music/Podcast
+LIBRESONIC_DEFAULT_PLAYLIST_FOLDER=/var/playlists
 
 quiet=0
 
@@ -54,37 +54,37 @@ while [ $# -ge 1 ]; do
             usage
             ;;
         --home=?*)
-            SUBSONIC_HOME=${1#--home=}
+            LIBRESONIC_HOME=${1#--home=}
             ;;
         --host=?*)
-            SUBSONIC_HOST=${1#--host=}
+            LIBRESONIC_HOST=${1#--host=}
             ;;
         --port=?*)
-            SUBSONIC_PORT=${1#--port=}
+            LIBRESONIC_PORT=${1#--port=}
             ;;
         --https-port=?*)
-            SUBSONIC_HTTPS_PORT=${1#--https-port=}
+            LIBRESONIC_HTTPS_PORT=${1#--https-port=}
             ;;
         --context-path=?*)
-            SUBSONIC_CONTEXT_PATH=${1#--context-path=}
+            LIBRESONIC_CONTEXT_PATH=${1#--context-path=}
             ;;
         --max-memory=?*)
-            SUBSONIC_MAX_MEMORY=${1#--max-memory=}
+            LIBRESONIC_MAX_MEMORY=${1#--max-memory=}
             ;;
         --pidfile=?*)
-            SUBSONIC_PIDFILE=${1#--pidfile=}
+            LIBRESONIC_PIDFILE=${1#--pidfile=}
             ;;
         --quiet)
             quiet=1
             ;;
         --default-music-folder=?*)
-            SUBSONIC_DEFAULT_MUSIC_FOLDER=${1#--default-music-folder=}
+            LIBRESONIC_DEFAULT_MUSIC_FOLDER=${1#--default-music-folder=}
             ;;
         --default-podcast-folder=?*)
-            SUBSONIC_DEFAULT_PODCAST_FOLDER=${1#--default-podcast-folder=}
+            LIBRESONIC_DEFAULT_PODCAST_FOLDER=${1#--default-podcast-folder=}
             ;;
         --default-playlist-folder=?*)
-            SUBSONIC_DEFAULT_PLAYLIST_FOLDER=${1#--default-playlist-folder=}
+            LIBRESONIC_DEFAULT_PLAYLIST_FOLDER=${1#--default-playlist-folder=}
             ;;
         *)
             usage
@@ -101,8 +101,8 @@ if [ -e "${JAVA_HOME}" ]
 fi
 
 # Create Libresonic home directory.
-mkdir -p ${SUBSONIC_HOME}
-LOG=${SUBSONIC_HOME}/libresonic_sh.log
+mkdir -p ${LIBRESONIC_HOME}
+LOG=${LIBRESONIC_HOME}/libresonic_sh.log
 rm -f ${LOG}
 
 cd $(dirname $0)
@@ -110,22 +110,22 @@ if [ -L $0 ] && ([ -e /bin/readlink ] || [ -e /usr/bin/readlink ]); then
     cd $(dirname $(readlink $0))
 fi
 
-${JAVA} -Xmx${SUBSONIC_MAX_MEMORY}m \
-  -Dlibresonic.home=${SUBSONIC_HOME} \
-  -Dlibresonic.host=${SUBSONIC_HOST} \
-  -Dlibresonic.port=${SUBSONIC_PORT} \
-  -Dlibresonic.httpsPort=${SUBSONIC_HTTPS_PORT} \
-  -Dlibresonic.contextPath=${SUBSONIC_CONTEXT_PATH} \
-  -Dlibresonic.defaultMusicFolder=${SUBSONIC_DEFAULT_MUSIC_FOLDER} \
-  -Dlibresonic.defaultPodcastFolder=${SUBSONIC_DEFAULT_PODCAST_FOLDER} \
-  -Dlibresonic.defaultPlaylistFolder=${SUBSONIC_DEFAULT_PLAYLIST_FOLDER} \
+${JAVA} -Xmx${LIBRESONIC_MAX_MEMORY}m \
+  -Dlibresonic.home=${LIBRESONIC_HOME} \
+  -Dlibresonic.host=${LIBRESONIC_HOST} \
+  -Dlibresonic.port=${LIBRESONIC_PORT} \
+  -Dlibresonic.httpsPort=${LIBRESONIC_HTTPS_PORT} \
+  -Dlibresonic.contextPath=${LIBRESONIC_CONTEXT_PATH} \
+  -Dlibresonic.defaultMusicFolder=${LIBRESONIC_DEFAULT_MUSIC_FOLDER} \
+  -Dlibresonic.defaultPodcastFolder=${LIBRESONIC_DEFAULT_PODCAST_FOLDER} \
+  -Dlibresonic.defaultPlaylistFolder=${LIBRESONIC_DEFAULT_PLAYLIST_FOLDER} \
   -Djava.awt.headless=true \
   -verbose:gc \
   -jar libresonic-booter-jar-with-dependencies.jar > ${LOG} 2>&1 &
 
 # Write pid to pidfile if it is defined.
-if [ $SUBSONIC_PIDFILE ]; then
-    echo $! > ${SUBSONIC_PIDFILE}
+if [ $LIBRESONIC_PIDFILE ]; then
+    echo $! > ${LIBRESONIC_PIDFILE}
 fi
 
 if [ $quiet = 0 ]; then

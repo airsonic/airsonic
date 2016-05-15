@@ -246,8 +246,8 @@ public class VersionService {
         }
 
         BufferedReader reader = new BufferedReader(new StringReader(content));
-        Pattern finalPattern = Pattern.compile("SUBSONIC_FULL_VERSION_BEGIN(.*)SUBSONIC_FULL_VERSION_END");
-        Pattern betaPattern = Pattern.compile("SUBSONIC_BETA_VERSION_BEGIN(.*)SUBSONIC_BETA_VERSION_END");
+        Pattern finalPattern = Pattern.compile("LIBRESONIC_FULL_VERSION_BEGIN(.*)LIBRESONIC_FULL_VERSION_END");
+        Pattern betaPattern = Pattern.compile("LIBRESONIC_BETA_VERSION_BEGIN(.*)LIBRESONIC_BETA_VERSION_END");
 
         try {
             String line = reader.readLine();

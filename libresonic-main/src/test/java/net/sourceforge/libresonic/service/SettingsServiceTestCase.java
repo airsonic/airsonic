@@ -33,19 +33,19 @@ import junit.framework.TestCase;
  */
 public class SettingsServiceTestCase extends TestCase {
 
-    private static final File SUBSONIC_HOME = new File("/tmp/libresonic");
+    private static final File LIBRESONIC_HOME = new File("/tmp/libresonic");
 
     private SettingsService settingsService;
 
     @Override
     protected void setUp() throws Exception {
-        System.setProperty("libresonic.home", SUBSONIC_HOME.getPath());
-        new File(SUBSONIC_HOME, "libresonic.properties").delete();
+        System.setProperty("libresonic.home", LIBRESONIC_HOME.getPath());
+        new File(LIBRESONIC_HOME, "libresonic.properties").delete();
         settingsService = new SettingsService();
     }
 
     public void testLibresonicHome() {
-        assertEquals("Wrong Libresonic home.", SUBSONIC_HOME, SettingsService.getLibresonicHome());
+        assertEquals("Wrong Libresonic home.", LIBRESONIC_HOME, SettingsService.getLibresonicHome());
     }
 
     public void testDefaultValues() {
