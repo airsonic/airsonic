@@ -139,7 +139,7 @@ public class Schema35 extends Schema {
 
             InputStream in = null;
             try {
-                in = getClass().getResourceAsStream("/org.libresonic.player/dao/schema/" + avatar + ".png");
+                in = getClass().getResourceAsStream("/org/libresonic/player/dao/schema/" + avatar + ".png");
                 byte[] imageData = IOUtils.toByteArray(in);
                 template.update("insert into system_avatar values (null, ?, ?, ?, ?, ?, ?)",
                                 new Object[]{avatar, new Date(), "image/png", 48, 48, imageData});
