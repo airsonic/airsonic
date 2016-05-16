@@ -19,11 +19,11 @@
  */
 package org.libresonic.player.dao;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import org.libresonic.player.domain.Bookmark;
 
@@ -81,7 +81,7 @@ public class BookmarkDao extends AbstractDao {
         update("delete from bookmark where username=? and media_file_id=?", username, mediaFileId);
     }
 
-    private static class BookmarkRowMapper implements ParameterizedRowMapper<Bookmark> {
+    private static class BookmarkRowMapper implements RowMapper<Bookmark> {
         public Bookmark mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Bookmark(rs.getInt(1), rs.getInt(2), rs.getLong(3), rs.getString(4),
                     rs.getString(5), rs.getTimestamp(6), rs.getTimestamp(7));

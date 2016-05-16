@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Share;
@@ -53,7 +53,7 @@ public class ShareDao extends AbstractDao {
         update(sql, null, share.getName(), share.getDescription(), share.getUsername(), share.getCreated(),
                 share.getExpires(), share.getLastVisited(), share.getVisitCount());
 
-        int id = getJdbcTemplate().queryForInt("select max(id) from share");
+        int id = getJdbcTemplate().queryForObject("select max(id) from share", Integer.class);
         share.setId(id);
     }
 
@@ -129,14 +129,14 @@ public class ShareDao extends AbstractDao {
         update("delete from share where id=?", id);
     }
 
-    private static class ShareRowMapper implements ParameterizedRowMapper<Share> {
+    private static class ShareRowMapper implements RowMapper<Share> {
         public Share mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Share(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getTimestamp(5),
                     rs.getTimestamp(6), rs.getTimestamp(7), rs.getInt(8));
         }
     }
 
-    private static class ShareFileRowMapper implements ParameterizedRowMapper<String> {
+    private static class ShareFileRowMapper implements RowMapper<String> {
         public String mapRow(ResultSet rs, int rowNum) throws SQLException {
             return rs.getString(1);
         }

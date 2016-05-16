@@ -24,7 +24,6 @@ import org.libresonic.player.domain.Artist;
 import org.libresonic.player.domain.MusicFolder;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -199,7 +198,7 @@ public class ArtistDao extends AbstractDao {
         return queryForDate("select created from starred_artist where artist_id=? and username=?", null, artistId, username);
     }
 
-    private static class ArtistMapper implements ParameterizedRowMapper<Artist> {
+    private static class ArtistMapper implements RowMapper<Artist> {
         public Artist mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Artist(
                     rs.getInt(1),

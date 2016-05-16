@@ -24,7 +24,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import org.libresonic.player.domain.PodcastChannel;
 import org.libresonic.player.domain.PodcastEpisode;
@@ -55,7 +54,7 @@ public class PodcastDao extends AbstractDao {
         update(sql, null, channel.getUrl(), channel.getTitle(), channel.getDescription(), channel.getImageUrl(),
                 channel.getStatus().name(), channel.getErrorMessage());
 
-        return getJdbcTemplate().queryForInt("select max(id) from podcast_channel");
+        return getJdbcTemplate().queryForObject("select max(id) from podcast_channel", Integer.class);
     }
 
     /**
@@ -182,7 +181,7 @@ public class PodcastDao extends AbstractDao {
         }
     }
 
-    private static class PodcastEpisodeRowMapper implements ParameterizedRowMapper<PodcastEpisode> {
+    private static class PodcastEpisodeRowMapper implements RowMapper<PodcastEpisode> {
         public PodcastEpisode mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new PodcastEpisode(rs.getInt(1), rs.getInt(2), rs.getString(3), rs.getString(4), rs.getString(5),
                     rs.getString(6), rs.getTimestamp(7), rs.getString(8), (Long) rs.getObject(9),

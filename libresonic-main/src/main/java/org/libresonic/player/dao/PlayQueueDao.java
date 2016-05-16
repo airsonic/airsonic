@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import org.libresonic.player.domain.SavedPlayQueue;
 
@@ -60,7 +59,7 @@ public class PlayQueueDao extends AbstractDao {
         }
     }
 
-    private static class PlayQueueMapper implements ParameterizedRowMapper<SavedPlayQueue> {
+    private static class PlayQueueMapper implements RowMapper<SavedPlayQueue> {
         public SavedPlayQueue mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new SavedPlayQueue(rs.getInt(1),
                                       rs.getString(2),

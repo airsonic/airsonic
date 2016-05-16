@@ -23,7 +23,6 @@ import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.Playlist;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -125,7 +124,7 @@ public class PlaylistDao extends AbstractDao {
                 new Date(), playlist.getImportedFrom(), playlist.getId());
     }
 
-    private static class PlaylistMapper implements ParameterizedRowMapper<Playlist> {
+    private static class PlaylistMapper implements RowMapper<Playlist> {
         public Playlist mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Playlist(
                     rs.getInt(1),

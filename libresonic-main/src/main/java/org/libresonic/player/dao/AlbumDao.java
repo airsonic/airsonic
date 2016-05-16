@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 
 import org.libresonic.player.domain.Album;
 import org.libresonic.player.domain.MediaFile;
@@ -346,7 +345,7 @@ public class AlbumDao extends AbstractDao {
         return queryForDate("select created from starred_album where album_id=? and username=?", null, albumId, username);
     }
 
-    private static class AlbumMapper implements ParameterizedRowMapper<Album> {
+    private static class AlbumMapper implements RowMapper<Album> {
         public Album mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Album(
                     rs.getInt(1),
