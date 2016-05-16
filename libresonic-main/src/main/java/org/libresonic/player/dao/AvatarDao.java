@@ -20,7 +20,7 @@
 package org.libresonic.player.dao;
 
 import org.libresonic.player.domain.Avatar;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -85,7 +85,7 @@ public class AvatarDao extends AbstractDao {
         }
     }
 
-    private static class AvatarRowMapper implements ParameterizedRowMapper<Avatar> {
+    private static class AvatarRowMapper implements RowMapper<Avatar> {
         public Avatar mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Avatar(rs.getInt(1), rs.getString(2), rs.getTimestamp(3), rs.getString(4),
                               rs.getInt(5), rs.getInt(6), rs.getBytes(7));

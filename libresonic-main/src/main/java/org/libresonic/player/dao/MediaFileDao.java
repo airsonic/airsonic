@@ -19,22 +19,15 @@
  */
 package org.libresonic.player.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-
 import org.libresonic.player.domain.Genre;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
+import org.springframework.jdbc.core.RowMapper;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 import static org.libresonic.player.domain.MediaFile.MediaType;
 import static org.libresonic.player.domain.MediaFile.MediaType.*;
@@ -568,7 +561,7 @@ public class MediaFileDao extends AbstractDao {
         update("checkpoint");
     }
 
-    private static class MediaFileMapper implements ParameterizedRowMapper<MediaFile> {
+    private static class MediaFileMapper implements RowMapper<MediaFile> {
         public MediaFile mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new MediaFile(
                     rs.getInt(1),
@@ -604,7 +597,7 @@ public class MediaFileDao extends AbstractDao {
         }
     }
 
-    private static class MusicFileInfoMapper implements ParameterizedRowMapper<MediaFile> {
+    private static class MusicFileInfoMapper implements RowMapper<MediaFile> {
         public MediaFile mapRow(ResultSet rs, int rowNum) throws SQLException {
             MediaFile file = new MediaFile();
             file.setPlayCount(rs.getInt(1));
@@ -614,7 +607,7 @@ public class MediaFileDao extends AbstractDao {
         }
     }
 
-    private static class GenreMapper implements ParameterizedRowMapper<Genre> {
+    private static class GenreMapper implements RowMapper<Genre> {
         public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Genre(rs.getString(1), rs.getInt(2), rs.getInt(3));
         }

@@ -19,19 +19,14 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.util.StringUtil;
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.AvatarScheme;
-import org.libresonic.player.domain.TranscodeScheme;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.util.StringUtil;
 
 /**
  * Provides user-related database services.
@@ -296,7 +291,7 @@ public class UserDao extends AbstractDao {
         }
     }
 
-    private class UserRowMapper implements ParameterizedRowMapper<User> {
+    private class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             User user = new User(rs.getString(1), decrypt(rs.getString(2)), rs.getString(3), rs.getBoolean(4),
                                  rs.getLong(5), rs.getLong(6), rs.getLong(7));
@@ -305,7 +300,7 @@ public class UserDao extends AbstractDao {
         }
     }
 
-    private static class UserSettingsRowMapper implements ParameterizedRowMapper<UserSettings> {
+    private static class UserSettingsRowMapper implements RowMapper<UserSettings> {
         public UserSettings mapRow(ResultSet rs, int rowNum) throws SQLException {
             int col = 1;
             UserSettings settings = new UserSettings(rs.getString(col++));

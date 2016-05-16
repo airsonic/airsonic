@@ -19,22 +19,13 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.*;
+import org.springframework.jdbc.core.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.CoverArtScheme;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.PlayerTechnology;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.TranscodeScheme;
+import java.util.*;
 
 /**
  * Provides player-related database services.
@@ -95,7 +86,7 @@ public class PlayerDao extends AbstractDao {
      * @param player The player to create.
      */
     public synchronized void createPlayer(Player player) {
-        int id = getJdbcTemplate().queryForInt("select max(id) from player") + 1;
+        int id = getJdbcTemplate().queryForObject("select max(id) from player", Integer.class) + 1;
         player.setId(String.valueOf(id));
         String sql = "insert into player (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")";
         update(sql, player.getId(), player.getName(), player.getType(), player.getUsername(),
@@ -169,7 +160,7 @@ public class PlayerDao extends AbstractDao {
         player.setPlayQueue(playQueue);
     }
 
-    private class PlayerRowMapper implements ParameterizedRowMapper<Player> {
+    private class PlayerRowMapper implements RowMapper<Player> {
         public Player mapRow(ResultSet rs, int rowNum) throws SQLException {
             Player player = new Player();
             int col = 1;
