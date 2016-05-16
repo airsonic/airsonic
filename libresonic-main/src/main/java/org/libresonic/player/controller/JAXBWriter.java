@@ -134,7 +134,7 @@ public class JAXBWriter {
             if (jsonp) {
                 writer.append(jsonpCallback).append('(');
             }
-            marshaller.marshal(new ObjectFactory().createLibresonicResponse(jaxbResponse), writer);
+            marshaller.marshal(new ObjectFactory().createSubsonicResponse(jaxbResponse), writer);
             if (jsonp) {
                 writer.append(");");
             }
