@@ -6,7 +6,7 @@
            elementFormDefault="qualified"
            version="1.13.0">
 
-    <xs:element name="libresonic-response" type="sub:Response"/>
+    <xs:element name="subsonic-response" type="sub:Response"/>
 
     <xs:complexType name="Response">
         <xs:choice minOccurs="0" maxOccurs="1">
