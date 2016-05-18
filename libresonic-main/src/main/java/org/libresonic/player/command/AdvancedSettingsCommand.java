@@ -40,6 +40,12 @@ public class AdvancedSettingsCommand {
     private boolean isReloadNeeded;
     private boolean toast;
 
+    private String smtpServer;
+    private String smtpEncryption;
+    private int smtpPort;
+    private String smtpUser;
+    private String smtpPassword;
+
     public String getDownloadLimit() {
         return downloadLimit;
     }
@@ -126,5 +132,45 @@ public class AdvancedSettingsCommand {
 
     public void setToast(boolean toast) {
         this.toast = toast;
+    }
+
+    public String getSMTPServer() {
+        return smtpServer;
+    }
+
+    public void setSMTPServer(String smtpServer) {
+        this.smtpServer = smtpServer;
+    }
+
+    public String getSMTPEncryption() {
+        return smtpEncryption;
+    }
+
+    public void setSMTPEncryption(String smtpEncryption) {
+        this.smtpEncryption = smtpEncryption;
+    }
+
+    public int getSMTPPort() {
+        return smtpPort;
+    }
+
+    public void setSMTPPort(int smtpPort) {
+        this.smtpPort = smtpPort;
+    }
+
+    public String getSMTPUser() {
+        return smtpUser;
+    }
+
+    public void setSMTPUser(String smtpUser) {
+        this.smtpUser = smtpUser;
+    }
+
+    public String getSMTPPassword() {
+        return smtpPassword;
+    }
+
+    public void setSMTPPassword(String smtpPassword) {
+        this.smtpPassword = smtpPassword;
     }
 }

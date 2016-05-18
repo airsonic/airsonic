@@ -23,20 +23,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
@@ -137,32 +138,59 @@ public class MultiController extends MultiActionController {
     }
 
     private boolean emailPassword(String password, String username, String email) {
-        HttpClient client = new DefaultHttpClient();
-        try {
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-            HttpConnectionParams.setSoTimeout(client.getParams(), 10000);
-            HttpPost method = new HttpPost("http://libresonic.org/backend/sendMail.view");
+        String prot = "smtp";
 
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("from", "noreply@libresonic.org"));
-            params.add(new BasicNameValuePair("to", email));
-            params.add(new BasicNameValuePair("subject", "Libresonic Password"));
-            params.add(new BasicNameValuePair("text",
-                    "Hi there!\n\n" +
-                            "You have requested to reset your Libresonic password.  Please find your new login details below.\n\n" +
-                            "Username: " + username + "\n" +
-                            "Password: " + password + "\n\n" +
-                            "--\n" +
-                            "The Libresonic Team\n" +
-                            "libresonic.org"));
-            method.setEntity(new UrlEncodedFormEntity(params, StringUtil.ENCODING_UTF8));
-            client.execute(method);
+        if (settingsService.getSMTPServer() == null || settingsService.getSMTPServer().isEmpty()) {
+            LOG.warn("Can not send email; no SMTP server configured.");
+            return false;
+        }
+
+        Properties props = new Properties();
+        if (settingsService.getSMTPEncryption().equals("SSL/TLS")) {
+            prot = "smtps";
+            props.put("mail." + prot + ".ssl.enable", "true");
+        } else if (settingsService.getSMTPEncryption().equals("STARTTLS")) {
+            prot = "smtp";
+            props.put("mail." + prot + ".starttls.enable", "true");
+        }
+        props.put("mail." + prot + ".host", settingsService.getSMTPServer());
+        props.put("mail." + prot + ".port", settingsService.getSMTPPort());
+        if (settingsService.getSMTPUser() != null && !settingsService.getSMTPUser().isEmpty()) {
+            props.put("mail." + prot + ".auth", "true");
+        }
+
+        Session session = Session.getInstance(props, null);
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("libresonic@libresonic.org"));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+            message.setSubject("Libresonic Password");
+            message.setText("Hi there!\n\n" +
+                    "You have requested to reset your Libresonic password.  Please find your new login details below.\n\n" +
+                    "Username: " + username + "\n" +
+                    "Password: " + password + "\n\n" +
+                    "--\n" +
+                    "Your Libresonic server\n" +
+                    "libresonic.org");
+            message.setSentDate(new Date());
+            
+            Transport trans = session.getTransport(prot);
+            try {
+                if (settingsService.getSMTPUser() != null && !settingsService.getSMTPUser().isEmpty()) {
+                    trans.connect();
+                } else {
+                    trans.connect(settingsService.getSMTPServer(), settingsService.getSMTPUser(), settingsService.getSMTPPassword());
+                }
+                trans.sendMessage(message, message.getAllRecipients());
+            } finally {
+                trans.close();
+            }
             return true;
+
         } catch (Exception x) {
             LOG.warn("Failed to send email.", x);
             return false;
-        } finally {
-            client.getConnectionManager().shutdown();
         }
     }
 

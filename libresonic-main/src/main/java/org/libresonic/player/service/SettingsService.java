@@ -144,6 +144,12 @@ public class SettingsService {
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
 
+    private static final String KEY_SMTP_SERVER = "SMTPServer";
+    private static final String KEY_SMTP_ENCRYPTION = "SMTPEncryption";
+    private static final String KEY_SMTP_PORT = "SMTPPort";
+    private static final String KEY_SMTP_USER = "SMTPUser";
+    private static final String KEY_SMTP_PASSWORD = "SMTPPassword";
+
     // Default values.
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
     private static final String DEFAULT_IGNORED_ARTICLES = "The El La Los Las Le Les";
@@ -211,6 +217,12 @@ public class SettingsService {
     private static final boolean DEFAULT_SONOS_ENABLED = false;
     private static final String DEFAULT_SONOS_SERVICE_NAME = "Libresonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
+
+    private static final String DEFAULT_SMTP_SERVER = null;
+    private static final String DEFAULT_SMTP_ENCRYPTION = "None";
+    private static final String DEFAULT_SMTP_PORT = "25";
+    private static final String DEFAULT_SMTP_USER = null;
+    private static final String DEFAULT_SMTP_PASSWORD = null;
 
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
@@ -1052,7 +1064,7 @@ public class SettingsService {
         if (cachedMusicFolders == null) {
             cachedMusicFolders = musicFolderDao.getAllMusicFolders();
         }
-        
+
         List<MusicFolder> result = new ArrayList<MusicFolder>(cachedMusicFolders.size());
         for (MusicFolder folder : cachedMusicFolders) {
             if ((includeDisabled || folder.isEnabled()) && (includeNonExisting || FileUtil.exists(folder.getPath()))) {
@@ -1445,5 +1457,55 @@ public class SettingsService {
 
     public void setVersionService(VersionService versionService) {
         this.versionService = versionService;
+    }
+
+    public String getSMTPServer() {
+        return properties.getProperty(KEY_SMTP_SERVER, DEFAULT_SMTP_SERVER);
+    }
+
+    public void setSMTPServer(String smtpServer) {
+        setString(KEY_SMTP_SERVER, smtpServer);
+    }
+
+    public String getSMTPPort() {
+        return getString(KEY_SMTP_PORT, DEFAULT_SMTP_PORT);
+    }
+
+    public void setSMTPPort(String smtpPort) {
+        setString(KEY_SMTP_PORT, smtpPort);
+    }
+
+    public String getSMTPEncryption() {
+        return properties.getProperty(KEY_SMTP_ENCRYPTION, DEFAULT_SMTP_ENCRYPTION);
+    }
+
+    public void setSMTPEncryption(String encryptionMethod) {
+        setString(KEY_SMTP_ENCRYPTION, encryptionMethod);
+    }
+
+    public String getSMTPUser() {
+        return properties.getProperty(KEY_SMTP_USER, DEFAULT_SMTP_USER);
+    }
+
+    public void setSMTPUser(String smtpUser) {
+        setString(KEY_SMTP_USER, smtpUser);
+    }
+
+    public String getSMTPPassword() {
+        String s = properties.getProperty(KEY_SMTP_PASSWORD, DEFAULT_SMTP_PASSWORD);
+        try {
+            return StringUtil.utf8HexDecode(s);
+        } catch (Exception x) {
+            LOG.warn("Failed to decode SMTP password.", x);
+            return s;
+        }
+    }
+    public void setSMTPPassword(String smtpPassword) {
+        try {
+            smtpPassword = StringUtil.utf8HexEncode(smtpPassword);
+        } catch (Exception x) {
+            LOG.warn("Failed to encode SMTP password.", x);
+        }
+        properties.setProperty(KEY_SMTP_PASSWORD, smtpPassword);
     }
 }
