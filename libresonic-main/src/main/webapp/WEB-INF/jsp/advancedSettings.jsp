@@ -41,6 +41,56 @@
         </tr>
     </table>
 
+    <table style="white-space:nowrap" class="indent">
+        <tr>
+            <td><fmt:message key="advancedsettings.smtpServer"/></td>
+            <td>
+                <form:input path="smtpServer" size="50"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpServer"/></c:import>
+            </td>
+        </tr>
+
+        <tr>
+            <td><fmt:message key="advancedsettings.smtpPort"/></td>
+            <td>
+                <form:input path="smtpPort" size="5"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpPort"/></c:import>
+            </td>
+        </tr>
+
+        <tr>
+            <td><fmt:message key="advancedsettings.smtpEncryption"/></td>
+            <td>
+                <form:select path="smtpEncryption" cssStyle="width:20em">
+                    <fmt:message key="advancedsettings.smtpEncryption.none" var="none"/>
+                    <fmt:message key="advancedsettings.smtpEncryption.starttls" var="starttls"/>
+                    <fmt:message key="advancedsettings.smtpEncryption.ssl" var="ssl"/>
+
+                    <form:option value="None" label="None"/>
+                    <form:option value="STARTTLS" label="STARTTLS"/>
+                    <form:option value="SSL/TLS" label="SSL/TLS"/>
+                </form:select>
+            </td>
+        </tr>
+
+        <tr>
+            <td><fmt:message key="advancedsettings.smtpUser"/></td>
+            <td>
+                <form:input path="smtpUser" size="40"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpUser"/></c:import>
+            </td>
+        </tr>
+
+        <tr>
+            <td><fmt:message key="advancedsettings.smtpPassword"/></td>
+            <td>
+                <form:password path="smtpPassword" size="40"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpPassword"/></c:import>
+            </td>
+        </tr>
+
+    </table>
+
     <table class="indent"><tr><td>
         <form:checkbox path="ldapEnabled" id="ldap" cssClass="checkbox" onclick="enableLdapFields()"/>
         <label for="ldap"><fmt:message key="advancedsettings.ldapenabled"/></label>

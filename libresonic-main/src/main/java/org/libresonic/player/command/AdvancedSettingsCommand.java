@@ -134,43 +134,43 @@ public class AdvancedSettingsCommand {
         this.toast = toast;
     }
 
-    public String getSMTPServer() {
+    public String getSmtpServer() {
         return smtpServer;
     }
 
-    public void setSMTPServer(String smtpServer) {
+    public void setSmtpServer(String smtpServer) {
         this.smtpServer = smtpServer;
     }
 
-    public String getSMTPEncryption() {
+    public String getSmtpEncryption() {
         return smtpEncryption;
     }
 
-    public void setSMTPEncryption(String smtpEncryption) {
+    public void setSmtpEncryption(String smtpEncryption) {
         this.smtpEncryption = smtpEncryption;
     }
 
-    public String getSMTPPort() {
+    public String getSmtpPort() {
         return smtpPort;
     }
 
-    public void setSMTPPort(String smtpPort) {
+    public void setSmtpPort(String smtpPort) {
         this.smtpPort = smtpPort;
     }
 
-    public String getSMTPUser() {
+    public String getSmtpUser() {
         return smtpUser;
     }
 
-    public void setSMTPUser(String smtpUser) {
+    public void setSmtpUser(String smtpUser) {
         this.smtpUser = smtpUser;
     }
 
-    public String getSMTPPassword() {
+    public String getSmtpPassword() {
         return smtpPassword;
     }
 
-    public void setSMTPPassword(String smtpPassword) {
+    public void setSmtpPassword(String smtpPassword) {
         this.smtpPassword = smtpPassword;
     }
 }

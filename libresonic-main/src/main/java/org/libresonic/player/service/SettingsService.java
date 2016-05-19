@@ -144,11 +144,11 @@ public class SettingsService {
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
 
-    private static final String KEY_SMTP_SERVER = "SMTPServer";
-    private static final String KEY_SMTP_ENCRYPTION = "SMTPEncryption";
-    private static final String KEY_SMTP_PORT = "SMTPPort";
-    private static final String KEY_SMTP_USER = "SMTPUser";
-    private static final String KEY_SMTP_PASSWORD = "SMTPPassword";
+    private static final String KEY_SMTP_SERVER = "SmtpServer";
+    private static final String KEY_SMTP_ENCRYPTION = "SmtpEncryption";
+    private static final String KEY_SMTP_PORT = "SmtpPort";
+    private static final String KEY_SMTP_USER = "SmtpUser";
+    private static final String KEY_SMTP_PASSWORD = "SmtpPassword";
 
     // Default values.
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
@@ -1459,52 +1459,52 @@ public class SettingsService {
         this.versionService = versionService;
     }
 
-    public String getSMTPServer() {
+    public String getSmtpServer() {
         return properties.getProperty(KEY_SMTP_SERVER, DEFAULT_SMTP_SERVER);
     }
 
-    public void setSMTPServer(String smtpServer) {
+    public void setSmtpServer(String smtpServer) {
         setString(KEY_SMTP_SERVER, smtpServer);
     }
 
-    public String getSMTPPort() {
+    public String getSmtpPort() {
         return getString(KEY_SMTP_PORT, DEFAULT_SMTP_PORT);
     }
 
-    public void setSMTPPort(String smtpPort) {
+    public void setSmtpPort(String smtpPort) {
         setString(KEY_SMTP_PORT, smtpPort);
     }
 
-    public String getSMTPEncryption() {
+    public String getSmtpEncryption() {
         return properties.getProperty(KEY_SMTP_ENCRYPTION, DEFAULT_SMTP_ENCRYPTION);
     }
 
-    public void setSMTPEncryption(String encryptionMethod) {
+    public void setSmtpEncryption(String encryptionMethod) {
         setString(KEY_SMTP_ENCRYPTION, encryptionMethod);
     }
 
-    public String getSMTPUser() {
+    public String getSmtpUser() {
         return properties.getProperty(KEY_SMTP_USER, DEFAULT_SMTP_USER);
     }
 
-    public void setSMTPUser(String smtpUser) {
+    public void setSmtpUser(String smtpUser) {
         setString(KEY_SMTP_USER, smtpUser);
     }
 
-    public String getSMTPPassword() {
+    public String getSmtpPassword() {
         String s = properties.getProperty(KEY_SMTP_PASSWORD, DEFAULT_SMTP_PASSWORD);
         try {
             return StringUtil.utf8HexDecode(s);
         } catch (Exception x) {
-            LOG.warn("Failed to decode SMTP password.", x);
+            LOG.warn("Failed to decode Smtp password.", x);
             return s;
         }
     }
-    public void setSMTPPassword(String smtpPassword) {
+    public void setSmtpPassword(String smtpPassword) {
         try {
             smtpPassword = StringUtil.utf8HexEncode(smtpPassword);
         } catch (Exception x) {
-            LOG.warn("Failed to encode SMTP password.", x);
+            LOG.warn("Failed to encode Smtp password.", x);
         }
         properties.setProperty(KEY_SMTP_PASSWORD, smtpPassword);
     }

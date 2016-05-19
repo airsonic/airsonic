@@ -138,29 +138,29 @@ public class MultiController extends MultiActionController {
     }
 
     /*
-     * e-mail user new password via configured SMTP server
+     * e-mail user new password via configured Smtp server
      */
     private boolean emailPassword(String password, String username, String email) {
-        /* Default to protocol smtp when SMTPEncryption is set to "None" */
+        /* Default to protocol smtp when SmtpEncryption is set to "None" */
         String prot = "smtp";
 
-        if (settingsService.getSMTPServer() == null || settingsService.getSMTPServer().isEmpty()) {
-            LOG.warn("Can not send email; no SMTP server configured.");
+        if (settingsService.getSmtpServer() == null || settingsService.getSmtpServer().isEmpty()) {
+            LOG.warn("Can not send email; no Smtp server configured.");
             return false;
         }
 
         Properties props = new Properties();
-        if (settingsService.getSMTPEncryption().equals("SSL/TLS")) {
+        if (settingsService.getSmtpEncryption().equals("SSL/TLS")) {
             prot = "smtps";
             props.put("mail." + prot + ".ssl.enable", "true");
-        } else if (settingsService.getSMTPEncryption().equals("STARTTLS")) {
+        } else if (settingsService.getSmtpEncryption().equals("STARTTLS")) {
             prot = "smtp";
             props.put("mail." + prot + ".starttls.enable", "true");
         }
-        props.put("mail." + prot + ".host", settingsService.getSMTPServer());
-        props.put("mail." + prot + ".port", settingsService.getSMTPPort());
-        /* use authentication when SMTPUser is configured */
-        if (settingsService.getSMTPUser() != null && !settingsService.getSMTPUser().isEmpty()) {
+        props.put("mail." + prot + ".host", settingsService.getSmtpServer());
+        props.put("mail." + prot + ".port", settingsService.getSmtpPort());
+        /* use authentication when SmtpUser is configured */
+        if (settingsService.getSmtpUser() != null && !settingsService.getSmtpUser().isEmpty()) {
             props.put("mail." + prot + ".auth", "true");
         }
 
@@ -183,7 +183,7 @@ public class MultiController extends MultiActionController {
             Transport trans = session.getTransport(prot);
             try {
                 if (props.get("mail." + prot + ".auth").equals("true")) {
-                    trans.connect(settingsService.getSMTPServer(), settingsService.getSMTPUser(), settingsService.getSMTPPassword());
+                    trans.connect(settingsService.getSmtpServer(), settingsService.getSmtpUser(), settingsService.getSmtpPassword());
                 } else {
                     trans.connect();
                 }
