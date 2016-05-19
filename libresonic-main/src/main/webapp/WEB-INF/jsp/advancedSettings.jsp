@@ -70,6 +70,7 @@
                     <form:option value="STARTTLS" label="STARTTLS"/>
                     <form:option value="SSL/TLS" label="SSL/TLS"/>
                 </form:select>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpEncryption"/></c:import>
             </td>
         </tr>
 
@@ -85,7 +86,6 @@
             <td><fmt:message key="advancedsettings.smtpPassword"/></td>
             <td>
                 <form:password path="smtpPassword" size="40"/>
-                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpPassword"/></c:import>
             </td>
         </tr>
 
