@@ -137,7 +137,11 @@ public class MultiController extends MultiActionController {
         return new ModelAndView("recover", "model", map);
     }
 
+    /*
+     * e-mail user new password via configured SMTP server
+     */
     private boolean emailPassword(String password, String username, String email) {
+        /* Default to protocol smtp when SMTPEncryption is set to "None" */
         String prot = "smtp";
 
         if (settingsService.getSMTPServer() == null || settingsService.getSMTPServer().isEmpty()) {
@@ -155,6 +159,7 @@ public class MultiController extends MultiActionController {
         }
         props.put("mail." + prot + ".host", settingsService.getSMTPServer());
         props.put("mail." + prot + ".port", settingsService.getSMTPPort());
+        /* use authentication when SMTPUser is configured */
         if (settingsService.getSMTPUser() != null && !settingsService.getSMTPUser().isEmpty()) {
             props.put("mail." + prot + ".auth", "true");
         }
@@ -174,13 +179,13 @@ public class MultiController extends MultiActionController {
                     "Your Libresonic server\n" +
                     "libresonic.org");
             message.setSentDate(new Date());
-            
+
             Transport trans = session.getTransport(prot);
             try {
-                if (settingsService.getSMTPUser() != null && !settingsService.getSMTPUser().isEmpty()) {
-                    trans.connect();
-                } else {
+                if (props.get("mail." + prot + ".auth").equals("true")) {
                     trans.connect(settingsService.getSMTPServer(), settingsService.getSMTPUser(), settingsService.getSMTPPassword());
+                } else {
+                    trans.connect();
                 }
                 trans.sendMessage(message, message.getAllRecipients());
             } finally {

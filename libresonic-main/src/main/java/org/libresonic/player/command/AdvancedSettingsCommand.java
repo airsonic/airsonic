@@ -42,7 +42,7 @@ public class AdvancedSettingsCommand {
 
     private String smtpServer;
     private String smtpEncryption;
-    private int smtpPort;
+    private String smtpPort;
     private String smtpUser;
     private String smtpPassword;
 
@@ -150,11 +150,11 @@ public class AdvancedSettingsCommand {
         this.smtpEncryption = smtpEncryption;
     }
 
-    public int getSMTPPort() {
+    public String getSMTPPort() {
         return smtpPort;
     }
 
-    public void setSMTPPort(int smtpPort) {
+    public void setSMTPPort(String smtpPort) {
         this.smtpPort = smtpPort;
     }
 
