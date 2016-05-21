@@ -100,6 +100,17 @@ public class NetworkService {
      * @param test Whether to test that the redirection works.
      */
     public synchronized void initUrlRedirection(boolean test) {
+
+        if (true) {
+            // This feature isn't currently supported, since it's a public service of subsonic.org
+            // Display a warning message for now
+            boolean enabled = settingsService.isUrlRedirectionEnabled() && settingsService.getUrlRedirectType() == UrlRedirectType.NORMAL;
+            if (enabled) {
+                LOG.warn("The URL redirection service is currently not enabled!");
+            }
+            return;
+        }
+
         urlRedirectionStatus.setText("Idle");
         if (urlRedirectionFuture != null) {
             urlRedirectionFuture.cancel(true);

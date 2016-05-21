@@ -30,7 +30,7 @@
             var custom = $("#urlRedirectTypeCustom").is(":checked");
 
             $("#urlRedirectFrom").prop("disabled", !urlRedirectionEnabled || !normal);
-            $("#urlRedirectCustomUrl").prop("disabled", !urlRedirectionEnabled || !custom);
+            $("#urlRedirectCustomUrl").prop("disabled", !urlRedirectionEnabled || !custom);
             $("#urlRedirectTypeNormal").prop("disabled", !urlRedirectionEnabled);
             $("#urlRedirectTypeCustom").prop("disabled", !urlRedirectionEnabled);
         }
@@ -75,7 +75,7 @@
         <p>
             <form:radiobutton id="urlRedirectTypeNormal" path="urlRedirectType" value="NORMAL" onclick="enableUrlRedirectionFields()"/>
             <label for="urlRedirectTypeNormal"><fmt:message key="networksettings.normalurl"/></label>
-            http://<form:input id="urlRedirectFrom" path="urlRedirectFrom" size="16" cssStyle="margin-left:0.25em"/>.libresonic.org
+            http://<form:input id="urlRedirectFrom" path="urlRedirectFrom" size="16" cssStyle="margin-left:0.25em"/>.libresonic.org (<fmt:message key="networksettings.urlRedirectDisabled"/>)
         </p>
 
         <p>
