@@ -34,7 +34,7 @@ At this point you are ready to build the basic Subsonic WAR. This is required fo
 ```
 $ mvn package
 <lots of buildspam>
-[INFO] Building war: /path/to/repo/subsonic/subsonic-main/target/subsonic.war
+[INFO] Building war: /path/to/repo/libresonic/libresonic-main/target/libresonic.war
 <more buildspam>
 $
 ```
@@ -45,7 +45,7 @@ Tomcat Installation
 The WAR may be copied directly to a Tomcat server's webapps/ directory and deployed.
 
 ```
-$ cp subsonic-main/target/subsonic.war /var/lib/tomcat6/webapps/
+$ cp libresonic-main/target/libresonic.war /var/lib/tomcat6/webapps/
 $
 ```
 
@@ -56,9 +56,9 @@ Packaged .deb
 You can furthermore go ahead to create a .deb suitable for installation on Debian or Ubuntu. These instructions should similarly work with rpm(for RedHat/CentOS or Fedora), but it is has not been tested.
 
 ```
-$ mvn -P full -pl subsonic-booter -am install
-$ mvn -P full -pl subsonic-installer-debian/ -am install
-$ sudo dpkg -i ./subsonic-installer-debian/target/subsonic-*.deb
+$ mvn -P full -pl libresonic-booter -am install
+$ mvn -P full -pl libresonic-installer-debian/ -am install
+$ sudo dpkg -i ./libresonic-installer-debian/target/libresonic-*.deb
 $
 ```
 
