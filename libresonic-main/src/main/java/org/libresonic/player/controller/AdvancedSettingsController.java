@@ -47,6 +47,11 @@ public class AdvancedSettingsController extends SimpleFormController {
         command.setLdapAutoShadowing(settingsService.isLdapAutoShadowing());
         command.setBrand(settingsService.getBrand());
 
+        command.setSmtpServer(settingsService.getSmtpServer());
+        command.setSmtpEncryption(settingsService.getSmtpEncryption());
+        command.setSmtpPort(settingsService.getSmtpPort());
+        command.setSmtpUser(settingsService.getSmtpUser());
+
         return command;
     }
 
@@ -72,6 +77,15 @@ public class AdvancedSettingsController extends SimpleFormController {
 
         if (StringUtils.isNotEmpty(command.getLdapManagerPassword())) {
             settingsService.setLdapManagerPassword(command.getLdapManagerPassword());
+        }
+
+        settingsService.setSmtpServer(command.getSmtpServer());
+        settingsService.setSmtpEncryption(command.getSmtpEncryption());
+        settingsService.setSmtpPort(command.getSmtpPort());
+        settingsService.setSmtpUser(command.getSmtpUser());
+
+        if (StringUtils.isNotEmpty(command.getSmtpPassword())) {
+            settingsService.setSmtpPassword(command.getSmtpPassword());
         }
 
         settingsService.save();
