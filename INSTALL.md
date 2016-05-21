@@ -29,7 +29,7 @@ $
 Standalone WAR
 --------------
 
-At this point you are ready to build the basic Subsonic WAR. This is required for all the other build targets, so you should do it before proceeding. 
+At this point you are ready to build the basic Libresonic WAR. This is required for all the other build targets, so you should do it before proceeding. 
 
 ```
 $ mvn package
