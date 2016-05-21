@@ -182,7 +182,7 @@ public class MultiController extends MultiActionController {
 
             Transport trans = session.getTransport(prot);
             try {
-                if (props.get("mail." + prot + ".auth").equals("true")) {
+                if (props.get("mail." + prot + ".auth") != null && props.get("mail." + prot + ".auth").equals("true")) {
                     trans.connect(settingsService.getSmtpServer(), settingsService.getSmtpUser(), settingsService.getSmtpPassword());
                 } else {
                     trans.connect();
