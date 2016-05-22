@@ -1,5 +1,5 @@
 <!--
-# INSTALL.md
+# BUILD.md
 # Libresonic/libresonic
 -->
 Requirements
