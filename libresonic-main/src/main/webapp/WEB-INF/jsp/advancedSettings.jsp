@@ -41,7 +41,15 @@
         </tr>
     </table>
 
-    <table style="white-space:nowrap" class="indent">
+    <table class="indent">
+        <tr>
+            <td><fmt:message key="advancedsettings.smtpFrom"/></td>
+            <td>
+                <form:input path="smtpFrom" size="50"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpFrom"/></c:import>
+            </td>
+        </tr>
+
         <tr>
             <td><fmt:message key="advancedsettings.smtpServer"/></td>
             <td>
@@ -61,7 +69,7 @@
         <tr>
             <td><fmt:message key="advancedsettings.smtpEncryption"/></td>
             <td>
-                <form:select path="smtpEncryption" cssStyle="width:20em">
+                <form:select path="smtpEncryption" cssStyle="width:8em">
                     <fmt:message key="advancedsettings.smtpEncryption.none" var="none"/>
                     <fmt:message key="advancedsettings.smtpEncryption.starttls" var="starttls"/>
                     <fmt:message key="advancedsettings.smtpEncryption.ssl" var="ssl"/>
@@ -77,15 +85,10 @@
         <tr>
             <td><fmt:message key="advancedsettings.smtpUser"/></td>
             <td>
-                <form:input path="smtpUser" size="40"/>
-                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpUser"/></c:import>
-            </td>
-        </tr>
-
-        <tr>
-            <td><fmt:message key="advancedsettings.smtpPassword"/></td>
-            <td>
-                <form:password path="smtpPassword" size="40"/>
+                <form:input path="smtpUser" size="20"/>
+                <fmt:message key="advancedsettings.smtpPassword"/>
+                <form:password path="smtpPassword" size="20"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpCredentials"/></c:import>
             </td>
         </tr>
 

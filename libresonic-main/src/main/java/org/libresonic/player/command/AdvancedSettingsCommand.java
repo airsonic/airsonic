@@ -45,6 +45,7 @@ public class AdvancedSettingsCommand {
     private String smtpPort;
     private String smtpUser;
     private String smtpPassword;
+    private String smtpFrom;
 
     public String getDownloadLimit() {
         return downloadLimit;
@@ -172,5 +173,13 @@ public class AdvancedSettingsCommand {
 
     public void setSmtpPassword(String smtpPassword) {
         this.smtpPassword = smtpPassword;
+    }
+
+    public String getSmtpFrom() {
+        return smtpFrom;
+    }
+
+    public void setSmtpFrom(String smtpFrom) {
+        this.smtpFrom = smtpFrom;
     }
 }
