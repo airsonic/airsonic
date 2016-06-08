@@ -74,6 +74,9 @@ public class M3UController implements Controller {
     }
 
     private void createClientSidePlaylist(PrintWriter out, Player player, String url) throws Exception {
+        if (player.isM3uBomEnabled()) {
+            out.print("\ufeff");
+        }
         out.println("#EXTM3U");
         List<MediaFile> result;
         synchronized (player.getPlayQueue()) {
@@ -99,6 +102,9 @@ public class M3UController implements Controller {
             url += "&suffix=." + suffix;
         }
 
+        if (player.isM3uBomEnabled()) {
+            out.print("\ufeff");
+        }
         out.println("#EXTM3U");
         out.println("#EXTINF:-1,Libresonic");
         out.println(url);

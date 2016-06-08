@@ -53,6 +53,7 @@ import org.libresonic.player.dao.schema.hsql.Schema51;
 import org.libresonic.player.dao.schema.hsql.Schema52;
 import org.libresonic.player.dao.schema.hsql.Schema53;
 import org.libresonic.player.dao.schema.hsql.Schema61;
+import org.libresonic.player.dao.schema.hsql.Schema62;
 import org.libresonic.player.service.SettingsService;
 
 /**
@@ -68,7 +69,8 @@ public class HsqlDaoHelper implements DaoHelper {
                                 new Schema30(), new Schema31(), new Schema32(), new Schema33(), new Schema34(),
                                 new Schema35(), new Schema36(), new Schema37(), new Schema38(), new Schema40(),
                                 new Schema43(), new Schema45(), new Schema46(), new Schema47(), new Schema49(),
-                                new Schema50(), new Schema51(), new Schema52(), new Schema53(), new Schema61()};
+                                new Schema50(), new Schema51(), new Schema52(), new Schema53(), new Schema61(),
+                                new Schema62()};
     private DataSource dataSource;
     private static boolean shutdownHookAdded;
 
