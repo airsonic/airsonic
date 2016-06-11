@@ -25,7 +25,7 @@ Copy this
               xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
               version="1.0">
 
-	<role rolename="manager-gui"/>
+>	<role rolename="manager-gui"/>
  	<role rolename="manager-script"/>
  	<role rolename="manager-jmx"/>
  	<role rolename="manager-status"/>
