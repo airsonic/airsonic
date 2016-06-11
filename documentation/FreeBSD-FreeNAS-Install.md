@@ -20,7 +20,7 @@ Edit Tomcat's user configuration file with your favourite text editor.  We insta
 
 
 Copy this
->
+
 	<tomcat-users xmlns="http://tomcat.apache.org/xml"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
