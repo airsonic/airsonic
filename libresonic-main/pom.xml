@@ -291,6 +291,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- UPNP / DLNA -->
         <dependency>
             <groupId>org.fourthline.cling</groupId>
             <artifactId>cling-core</artifactId>
@@ -305,8 +306,14 @@
 
         <dependency>
             <groupId>org.seamless</groupId>
+            <artifactId>seamless-http</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.seamless</groupId>
             <artifactId>seamless-util</artifactId>
-            <version>1.0-alpha2</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
@@ -321,6 +328,7 @@
             <version>0.1.2</version>
         </dependency>
 
+        <!-- SONOS API / WSDL SUPPORT -->
         <dependency>
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-http</artifactId>
