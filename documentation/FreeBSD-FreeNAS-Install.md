@@ -84,7 +84,7 @@ Follow the prompts on the web page to change the password.  This will log you ou
 ### 8. Set up media
 If you are on FreeBSD in a jail, consult the documentation for your Jail Manager tool on how to pass through storage.  If using FreeNAS please use the FreeNAS webui to pass through the dataset containing your music.
 
-In Subsonic click 2. Setup Media folders.
+In Libresonic click 2. Setup Media folders.
 
 Name your media folder and put in the path to your music.  Then click "Scan media folders now"
 
@@ -95,7 +95,7 @@ Congratulations you have set up Libresonic
 If you want transcoding and DON'T need mp3 support
 
     #pkg install ffmpeg
-    #ln -s /usr/local/bin/ffmpeg /var/subsonic/transcode/ffmpeg
+    #ln -s /usr/local/bin/ffmpeg /var/libresonic/transcode/ffmpeg
     #service tomcat8 restart
 
 Congratulations you have transcoding enabled
