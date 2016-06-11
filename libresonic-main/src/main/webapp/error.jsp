@@ -17,7 +17,7 @@
 
 <p>
     Libresonic encountered an internal error. You can report this error in the
-    <a href="http://forum.libresonic.org" target="_blank">Libresonic Forum</a>.
+    <a href="https://www.reddit.com/r/libresonic" target="_blank">Libresonic Forum</a>.
     Please include the information below.
 </p>
 
