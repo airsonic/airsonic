@@ -149,6 +149,7 @@ public class SettingsService {
     private static final String KEY_SMTP_PORT = "SmtpPort";
     private static final String KEY_SMTP_USER = "SmtpUser";
     private static final String KEY_SMTP_PASSWORD = "SmtpPassword";
+    private static final String KEY_SMTP_FROM = "SmtpFrom";
 
     // Default values.
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
@@ -223,6 +224,7 @@ public class SettingsService {
     private static final String DEFAULT_SMTP_PORT = "25";
     private static final String DEFAULT_SMTP_USER = null;
     private static final String DEFAULT_SMTP_PASSWORD = null;
+    private static final String DEFAULT_SMTP_FROM = "libresonic@libresonic.org";
 
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
@@ -1507,5 +1509,13 @@ public class SettingsService {
             LOG.warn("Failed to encode Smtp password.", x);
         }
         properties.setProperty(KEY_SMTP_PASSWORD, smtpPassword);
+    }
+
+    public String getSmtpFrom() {
+        return properties.getProperty(KEY_SMTP_FROM, DEFAULT_SMTP_FROM);
+    }
+
+    public void setSmtpFrom(String smtpFrom) {
+        setString(KEY_SMTP_FROM, smtpFrom);
     }
 }

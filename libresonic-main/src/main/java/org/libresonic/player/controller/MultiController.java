@@ -168,7 +168,7 @@ public class MultiController extends MultiActionController {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("libresonic@libresonic.org"));
+            message.setFrom(new InternetAddress(settingsService.getSmtpFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("Libresonic Password");
             message.setText("Hi there!\n\n" +

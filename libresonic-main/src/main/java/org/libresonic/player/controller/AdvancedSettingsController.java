@@ -51,6 +51,7 @@ public class AdvancedSettingsController extends SimpleFormController {
         command.setSmtpEncryption(settingsService.getSmtpEncryption());
         command.setSmtpPort(settingsService.getSmtpPort());
         command.setSmtpUser(settingsService.getSmtpUser());
+        command.setSmtpFrom(settingsService.getSmtpFrom());
 
         return command;
     }
@@ -83,6 +84,7 @@ public class AdvancedSettingsController extends SimpleFormController {
         settingsService.setSmtpEncryption(command.getSmtpEncryption());
         settingsService.setSmtpPort(command.getSmtpPort());
         settingsService.setSmtpUser(command.getSmtpUser());
+        settingsService.setSmtpFrom(command.getSmtpFrom());
 
         if (StringUtils.isNotEmpty(command.getSmtpPassword())) {
             settingsService.setSmtpPassword(command.getSmtpPassword());
