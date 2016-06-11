@@ -1,4 +1,4 @@
-# Installing Libresonic 6.0.1 on FreeBSD 10.3 and FreeNAS 9.10
+# Installing Libresonic on FreeBSD 10.3 and FreeNAS 9.10
 
 ### Preamble
 This guide will wallk you through the process of deploying Libresonic on FreeBSD either in a Jail on on the main system.  The prerequisites are you have root access on your FreeBSD machine (or jail), the ip address of the machine (or jail) and the Libresonic war available at the [Libresonic github page](https://github.com/Libresonic/libresonic/releases)
@@ -20,7 +20,8 @@ Edit Tomcat's user configuration file with your favourite text editor.  We insta
 
 
 Copy this
-><tomcat-users xmlns="http://tomcat.apache.org/xml"
+
+	<tomcat-users xmlns="http://tomcat.apache.org/xml"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
               version="1.0">
@@ -46,6 +47,7 @@ If you wish to use a different username and password please append the second la
     #service tomcat8 start
 
 Test Tomcat is listening on port 8080
+
     # netstat -an | grep 8080
 It should return a line containing the IP address of your system (or jail).  ie mine returns
 
@@ -64,14 +66,15 @@ Open a web browser and enter your servers IP address in the url bar followed by 
 
 You should be greeted by the Apache Tomcat page.  Click on the Manager App button on the right of the page and enter the username and password used in step 3.  Default was username: admin and password: admin
 
-Scroll down to Deploy and the subheading "WAR file to deploy" hit choose file and select the libresonic.war downloaded in the preamble.  After selecting press the deploy button.  Scroll up and press start.  When the page refreshes a message "OK - Started application at context path /libresonic-v6.0.1" should be visible.
+Scroll down to Deploy and the subheading "WAR file to deploy" hit choose file and select the libresonic.war downloaded in the preamble.  After selecting press the deploy button.  Scroll up and press start.  When the page refreshes a message "OK - Started application at context path /libresonic-v6.1.beta1" should be visible.
 
 ### 6. Navigate to Libresonic
 
-In a browser.  Take your server IP address and port and append the name of the libresonic war file you deployed.
-ie if the War deployed was called libresonic-v6.0.1.war navigate to:
+In a browser.  Take your server IP address and port and append the the context path from above
 
-    10.0.0.10:8080/libresonic-v6.0.1/
+ie if the War deployed was called libresonic-v6.1.beta1.war navigate to:
+
+    10.0.0.10:8080/libresonic-v6.1.beta1/
 
 ### 7. Log into Libresonic
 
@@ -81,7 +84,7 @@ Follow the prompts on the web page to change the password.  This will log you ou
 ### 8. Set up media
 If you are on FreeBSD in a jail, consult the documentation for your Jail Manager tool on how to pass through storage.  If using FreeNAS please use the FreeNAS webui to pass through the dataset containing your music.
 
-In Subsonic click 2. Setup Media folders.
+In Libresonic click 2. Setup Media folders.
 
 Name your media folder and put in the path to your music.  Then click "Scan media folders now"
 
@@ -92,13 +95,14 @@ Congratulations you have set up Libresonic
 If you want transcoding and DON'T need mp3 support
 
     #pkg install ffmpeg
-    #ln -s /usr/local/bin/ffmpeg /var/subsonic/transcode/ffmpeg
+    #ln -s /usr/local/bin/ffmpeg /var/libresonic/transcode/ffmpeg
+    #service tomcat8 restart
 
 Congratulations you have transcoding enabled
 
 If you need mp3 support and most likely you will the process is more arduous as FreeBSD's ffmpeg doesn't contain mp3 support by default and must be configured and compiled by the user.
 
-### 1. Instell ffmpeg dependencies and Ports Tree
+### 1. Install ffmpeg dependencies and Ports Tree
 
 Install the dependencies required to build and use ffmpeg
 
@@ -124,12 +128,16 @@ The ffmpeg source files will automatically be downloaded then you will be presen
 
 Commence build and installation of ffmpeg
 
-    make install clean
+    #make install clean
 
 Building ffmpeg will take some time depending on the capabilities of your machine, please be patient.
 
 Link ffmpeg to where Libresonic expects the transcoder to be.  
 
-    cmd	ln -s /usr/local/bin/ffmpeg /var/subsonic/transcode/ffmpeg
+    #ln -s /usr/local/bin/ffmpeg /var/libresonic/transcode/ffmpeg
+    
+Finally restart tomcat
+
+    #service tomcat8 restart
 
 Congratulations you have ffmpeg with mp3 support installed ready for Libresonic to use.
