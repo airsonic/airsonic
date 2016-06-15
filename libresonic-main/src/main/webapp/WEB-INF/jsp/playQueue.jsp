@@ -37,6 +37,7 @@
     var songs = null;
     var currentStreamUrl = null;
     var repeatEnabled = false;
+    var isVisible = ${model.autoHidePlayQueue ? 'false' : 'true'};
     var CastPlayer = new CastPlayer();
     var ignore = false;
 
@@ -86,17 +87,30 @@
         getPlayQueue();
     }
 
+    function onHidePlayQueue() {
+      setFrameHeight(50);
+      isVisible = false;
+    }
+
+    function onShowPlayQueue() {
+      var height = $("body").height() + 25;
+      height = Math.min(height, window.top.innerHeight * 0.8);
+      setFrameHeight(height);
+      isVisible = true;
+    }
+
+    function onTogglePlayQueue() {
+      if (isVisible) onHidePlayQueue();
+      else onShowPlayQueue();
+    }
+
     function initAutoHide() {
         $(window).mouseleave(function (event) {
-            if (event.clientY < 30) {
-                setFrameHeight(50);
-            }
+            if (event.clientY < 30) onHidePlayQueue();
         });
 
         $(window).mouseenter(function () {
-            var height = $("body").height() + 25;
-            height = Math.min(height, window.top.innerHeight * 0.8);
-            setFrameHeight(height);
+            onShowPlayQueue();
         });
     }
 
@@ -155,12 +169,56 @@
             playQueueService.clear(playQueueCallback);
         }
     }
+
+    /**
+     * Start playing from the current playlist
+     */
     function onStart() {
-        playQueueService.start(playQueueCallback);
+        if (CastPlayer.castSession) {
+            CastPlayer.playCast();
+        } else if (jwplayer()) {
+            if (jwplayer().getState() == "IDLE") {
+                skip(0);
+            } else if (jwplayer().getState() == "PAUSED") {
+                jwplayer().play(true);
+            }
+        } else {
+            playQueueService.start(playQueueCallback);
+        }
     }
+
+    /**
+     * Pause playing
+     */
     function onStop() {
-        playQueueService.stop(playQueueCallback);
+        if (CastPlayer.castSession) {
+            CastPlayer.pauseCast();
+        } else if (jwplayer()) {
+            jwplayer().pause(true);
+        } else {
+            playQueueService.stop(playQueueCallback);
+        }
     }
+
+    /**
+     * Toggle play/pause
+     *
+     * FIXME: Only works for the Web player for now
+     */
+    function onToggleStartStop() {
+        var playing = false;
+        if (CastPlayer.castSession) {
+            playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
+        } else if (jwplayer()) {
+            playing = jwplayer().getState() == "PLAYING";
+        } else {
+            // FIXME for playQueueService
+        }
+
+        if (playing) onStop();
+        else onStart();
+    }
+
     function onGain(gain) {
         playQueueService.setGain(gain);
     }
@@ -172,6 +230,24 @@
         var value = parseInt($("#castVolume").slider("option", "value"));
         CastPlayer.setCastVolume(value / 100, false);
     }
+
+    /**
+     * Increase or decrease volume by a certain amount
+     *
+     * @param amount to add or remove from the current volume
+     */
+    function onGainAdd(gain) {
+        if (CastPlayer.castSession) {
+            var volume = parseInt($("#castVolume").slider("option", "value")) + gain;
+            $("#castVolume").slider("option", "value", volume);
+        } else if (jwplayer()) {
+            jwplayer().setVolume(jwplayer().getVolume() + gain);
+        } else {
+            var value = parseInt($("#jukeboxVolume").slider("option", "value"));
+            $("#jukeboxVolume").slider("option", "value", volume);
+        }
+    }
+
     function onSkip(index) {
     <c:choose>
     <c:when test="${model.player.web}">
@@ -188,10 +264,10 @@
         if (wrap) {
             index = index % songs.length;
         }
-        skip(index);
+        onSkip(index);
     }
     function onPrevious() {
-        skip(parseInt(getCurrentSongIndex()) - 1);
+        onSkip(parseInt(getCurrentSongIndex()) - 1);
     }
     function onPlay(id) {
         playQueueService.play(id, playQueueCallback);
@@ -234,6 +310,9 @@
     }
     function onStar(index) {
         playQueueService.toggleStar(index, playQueueCallback);
+    }
+    function onStarCurrent() {
+        onStar(getCurrentSongIndex());
     }
     function onRemove(index) {
         playQueueService.remove(index, playQueueCallback);
