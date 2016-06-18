@@ -241,7 +241,8 @@
             var volume = parseInt($("#castVolume").slider("option", "value")) + gain;
             $("#castVolume").slider("option", "value", volume);
         } else if (jwplayer()) {
-            jwplayer().setVolume(jwplayer().getVolume() + gain);
+            var volume = parseInt(jwplayer().getVolume());
+            jwplayer().setVolume(volume + gain);
         } else {
             var value = parseInt($("#jukeboxVolume").slider("option", "value"));
             $("#jukeboxVolume").slider("option", "value", volume);
