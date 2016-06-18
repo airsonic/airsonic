@@ -206,17 +206,16 @@
      * FIXME: Only works for the Web player for now
      */
     function onToggleStartStop() {
-        var playing = false;
         if (CastPlayer.castSession) {
-            playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
+            var playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
+            if (playing) onStop();
+            else onStart();
         } else if (jwplayer()) {
-            playing = jwplayer().getState() == "PLAYING";
+            if (jwplayer().getState() == "PLAYING") onStop();
+            else onStart();
         } else {
-            // FIXME for playQueueService
+            playQueueService.toggleStartStop(playQueueCallback);
         }
-
-        if (playing) onStop();
-        else onStart();
     }
 
     function onGain(gain) {
@@ -239,13 +238,21 @@
     function onGainAdd(gain) {
         if (CastPlayer.castSession) {
             var volume = parseInt($("#castVolume").slider("option", "value")) + gain;
-            $("#castVolume").slider("option", "value", volume);
+            if (volume > 100) volume = 100;
+            if (volume < 0) volume = 0;
+            CastPlayer.setCastVolume(volume / 100, false);
+            $("#castVolume").slider("option", "value", volume); // Need to update UI
         } else if (jwplayer()) {
-            var volume = parseInt(jwplayer().getVolume());
-            jwplayer().setVolume(volume + gain);
+            var volume = parseInt(jwplayer().getVolume()) + gain;
+            if (volume > 100) volume = 100;
+            if (volume < 0) volume = 0;
+            jwplayer().setVolume(volume);
         } else {
-            var value = parseInt($("#jukeboxVolume").slider("option", "value"));
-            $("#jukeboxVolume").slider("option", "value", volume);
+            var volume = parseInt($("#jukeboxVolume").slider("option", "value")) + gain;
+            if (volume > 100) volume = 100;
+            if (volume < 0) volume = 0;
+            onGain(volume / 100);
+            $("#jukeboxVolume").slider("option", "value", volume); // Need to update UI
         }
     }
 
