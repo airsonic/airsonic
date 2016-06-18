@@ -38,6 +38,7 @@ public class UserSettings {
     private boolean finalVersionNotificationEnabled;
     private boolean betaVersionNotificationEnabled;
     private boolean songNotificationEnabled;
+    private boolean keyboardShortcutsEnabled;
     private boolean autoHidePlayQueue;
     private boolean showSideBar;
     private boolean viewAsList;
@@ -219,6 +220,14 @@ public class UserSettings {
 
     public void setAutoHidePlayQueue(boolean autoHidePlayQueue) {
         this.autoHidePlayQueue = autoHidePlayQueue;
+    }
+
+    public boolean isKeyboardShortcutsEnabled() {
+        return keyboardShortcutsEnabled;
+    }
+
+    public void setKeyboardShortcutsEnabled(boolean keyboardShortcutsEnabled) {
+        this.keyboardShortcutsEnabled = keyboardShortcutsEnabled;
     }
 
     public boolean isShowSideBar() {

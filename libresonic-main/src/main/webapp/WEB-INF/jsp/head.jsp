@@ -11,9 +11,21 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300,400italic,500,300italic,500italic,700,700italic,100,100italic" type="text/css"/>
 <title>Libresonic</title>
 
+<!-- Import Mousetrap and enable shortcuts if necessary -->
+<script>
+function isKeyboardShortcutsEnabled() {
+    if (window === parent.frames.top) {
+        return ${model.keyboardShortcutsEnabled ? 'true' : 'false'};
+    } else {
+        return parent.frames.top.isKeyboardShortcutsEnabled();
+    }
+}
+</script>
+
+<!-- Bind shortcuts if enabled -->
 <script type="text/javascript" src="<c:url value="/script/mousetrap-1.6.0.js"/>"></script>
 <script type="text/javascript">
-
+if (isKeyboardShortcutsEnabled()) {
     Mousetrap.bind('space', function() { parent.frames.playQueue.onToggleStartStop(); return false; });
     Mousetrap.bind('left',  function() { parent.frames.playQueue.onPrevious(); });
     Mousetrap.bind('right', function() { parent.frames.playQueue.onNext(); });
@@ -33,8 +45,5 @@
     Mousetrap.bind('g r', function() { parent.frames.main.location.href = "more.view?"; });
     Mousetrap.bind('g a', function() { parent.frames.main.location.href = "help.view?"; });
     Mousetrap.bind('?',   function() { parent.frames.main.location.href = "more.view#shortcuts"; });
-
-    // Mousetrap.bind('shift+left', function() { getPlayerWindow().keyboardShortcut("seekBackward") });
-    // Mousetrap.bind('shift+right', function() { getPlayerWindow().keyboardShortcut("seekForward") });
-
+}
 </script>
