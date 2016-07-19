@@ -7,7 +7,9 @@
 
     <script type="text/javascript" language="javascript">
         function init() {
-            setTimeout("refresh()", 60000);
+            <c:if test="${model.listReloadDelay gt 0}">
+            setTimeout("refresh()", ${model.listReloadDelay * 1000});
+            </c:if>
 
             <c:if test="${not model.musicFoldersExist}">
             $().toastmessage("showNoticeToast", "<fmt:message key="top.missing"/>");
