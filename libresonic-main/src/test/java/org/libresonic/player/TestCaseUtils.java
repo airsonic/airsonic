@@ -25,19 +25,6 @@ public class TestCaseUtils {
     return targetDir + LIBRESONIC_HOME_FOR_TEST;
   }
 
-  /**
-   * Constructs the path of a resource according to the path of the current class.
-   *
-   * @param baseResources
-   * @return
-   */
-  private static String basePath(String baseResources) {
-    String basePath = TestCaseUtils.class.getResource(baseResources).toString();
-    if (basePath.startsWith("file:")) {
-      return TestCaseUtils.class.getResource(baseResources).toString().replace("file:","");
-    }
-    return basePath;
-  }
 
   public static void deleteLibresonicHome() throws IOException {
 
