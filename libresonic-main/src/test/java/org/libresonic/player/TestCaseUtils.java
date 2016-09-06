@@ -1,15 +1,59 @@
 package org.libresonic.player;
 
+import org.apache.commons.io.FileUtils;
 import org.libresonic.player.dao.DaoHelper;
 import org.libresonic.player.service.MediaScannerService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TestCaseUtils {
+
+  private static final String LIBRESONIC_HOME_FOR_TEST = "/tmp/libresonic";
+
+  public static String libresonicHomePathForTest() {
+
+    String targetDir = TestCaseUtils.class.getResource("/").toString().replaceFirst("/target.*","/target");
+    if (targetDir.startsWith("file:")) {
+      targetDir = targetDir.replace("file:","");
+    }
+    return targetDir + LIBRESONIC_HOME_FOR_TEST;
+  }
+
+  /**
+   * Constructs the path of a resource according to the path of the current class.
+   *
+   * @param baseResources
+   * @return
+   */
+  private static String basePath(String baseResources) {
+    String basePath = TestCaseUtils.class.getResource(baseResources).toString();
+    if (basePath.startsWith("file:")) {
+      return TestCaseUtils.class.getResource(baseResources).toString().replace("file:","");
+    }
+    return basePath;
+  }
+
+  public static void deleteLibresonicHome() throws IOException {
+
+    File libresonicHomeDir = new File(libresonicHomePathForTest());
+    if (libresonicHomeDir.exists() && libresonicHomeDir.isDirectory()) {
+      System.out.println("Delete libresonic home (ie. "+libresonicHomeDir.getAbsolutePath()+").");
+      try {
+        FileUtils.deleteDirectory(libresonicHomeDir);
+      } catch (IOException e) {
+        System.out.println("Error while deleting libresonic home.");
+        e.printStackTrace();
+        throw e;
+      }
+    }
+
+  }
 
   /**
    * Constructs a map of records count per table.
@@ -42,26 +86,6 @@ public class TestCaseUtils {
   }
 
 
-  /**
-   * Constructs the path of a resource according to the path of the current class.
-   *
-   * @param baseResources
-   * @return
-     */
-  private static String basePath(String baseResources) {
-    String basePath = TestCaseUtils.class.getResource(baseResources).toString();
-    if (basePath.startsWith("file:")) {
-      return TestCaseUtils.class.getResource(baseResources).toString().replace("file:","");
-    }
-    return basePath;
-  }
-
-
-  public static void setLibresonicHome(String baseResources) {
-    String subsoncicHome = basePath(baseResources);
-    System.setProperty("libresonic.home",subsoncicHome);
-  }
-
   public static ApplicationContext loadSpringApplicationContext(String baseResources) {
     String applicationContextService = baseResources + "applicationContext-service.xml";
     String applicationContextCache = baseResources + "applicationContext-cache.xml";
@@ -76,7 +100,7 @@ public class TestCaseUtils {
 
   /**
    * Scans the music library   * @param mediaScannerService
-     */
+   */
   public static void execScan(MediaScannerService mediaScannerService) {
     mediaScannerService.scanLibrary();
 

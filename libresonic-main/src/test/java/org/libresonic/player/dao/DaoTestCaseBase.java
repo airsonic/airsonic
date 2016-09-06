@@ -1,6 +1,7 @@
 package org.libresonic.player.dao;
 
 import junit.framework.TestCase;
+import org.libresonic.player.TestCaseUtils;
 import org.libresonic.player.util.FileUtil;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -61,7 +62,7 @@ public abstract class DaoTestCaseBase extends TestCase {
     }
 
     private static void deleteDatabase() {
-        File libresonicHome = new File("/tmp/libresonic");
+        File libresonicHome = new File(TestCaseUtils.libresonicHomePathForTest());
         File dbHome = new File(libresonicHome, "db");
         System.setProperty("libresonic.home", libresonicHome.getPath());
 
