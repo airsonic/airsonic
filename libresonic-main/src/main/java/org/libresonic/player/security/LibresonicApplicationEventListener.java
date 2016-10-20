@@ -19,11 +19,11 @@
 
 package org.libresonic.player.security;
 
-import org.acegisecurity.event.authentication.AbstractAuthenticationFailureEvent;
-import org.acegisecurity.providers.AbstractAuthenticationToken;
-import org.acegisecurity.ui.WebAuthenticationDetails;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
 /**
  * @author Sindre Mehus

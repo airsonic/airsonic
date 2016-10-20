@@ -19,25 +19,8 @@
  */
 package org.libresonic.player.security;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.acegisecurity.Authentication;
-import org.acegisecurity.AuthenticationException;
-import org.acegisecurity.context.SecurityContextHolder;
-import org.acegisecurity.providers.ProviderManager;
-import org.acegisecurity.providers.UsernamePasswordAuthenticationToken;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.controller.JAXBWriter;
 import org.libresonic.player.controller.RESTController;
@@ -47,6 +30,16 @@ import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Performs authentication based on credentials being present in the HTTP request parameters. Also checks
