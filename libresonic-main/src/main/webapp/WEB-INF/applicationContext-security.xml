@@ -56,7 +56,7 @@
 
         <!-- ROLE_USER -->
         <security:intercept-url pattern="/**" access="ROLE_USER" />
-        <security:form-login login-page="/login.view" default-target-url="/home.view" />
+        <security:form-login login-page="/login.view" default-target-url="/home.view" authentication-failure-url="/login.view?error=1"/>
     </security:http>
 
     <security:authentication-manager>
