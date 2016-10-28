@@ -1,0 +1,15 @@
+language: java
+sudo: required
+jdk:
+  - oraclejdk8
+cache:
+  directories:
+    - $HOME/.m2
+install:
+  - sudo apt-get -qq update
+  - sudo apt-get -y install lintian fakeroot rpm python-rpm
+  - git clone https://github.com/rpm-software-management/rpmlint -o rpmlint-1.9
+  - sudo make -C rpmlint install
+script:
+  - mvn -Pfull,rpm package install
+  - mvn -Pfull -pl libresonic-assembly assembly:single

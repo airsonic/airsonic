@@ -4,7 +4,7 @@ Section: Multimedia
 Priority: optional
 Recommends: ffmpeg
 Architecture: all
-Maintainer: Sindre Mehus <sindre@activeobjects.no>
+Maintainer: Eugene E. Kashpureff Jr <eugene@kashpureff.org>
 Description: A web-based music streamer, jukebox and Podcast receiver
  Libresonic is a web-based music streamer, jukebox and Podcast receiver,
  providing access to your music collection wherever you are. Use it

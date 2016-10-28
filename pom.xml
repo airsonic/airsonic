@@ -159,6 +159,10 @@
                         <configuration>
                             <failOnWarning>${failOnDependencyWarning}</failOnWarning>
                             <ignoreNonCompile>true</ignoreNonCompile>
+                            <ignoredUnusedDeclaredDependencies>
+                              <ignoredUnusedDeclaredDependency>com.sun.mail:javax.mail*</ignoredUnusedDeclaredDependency>
+                              <ignoredUnusedDeclaredDependency>org.seamless:seamless-http*</ignoredUnusedDeclaredDependency>
+                            </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
                 </executions>
