@@ -63,8 +63,11 @@
                         <option value="30"><fmt:message key="more.random.songs"><fmt:param value="30"/></fmt:message></option>
                         <option value="40"><fmt:message key="more.random.songs"><fmt:param value="40"/></fmt:message></option>
                         <option value="50"><fmt:message key="more.random.songs"><fmt:param value="50"/></fmt:message></option>
+                        <option value="100"><fmt:message key="more.random.songs"><fmt:param value="100"/></fmt:message></option>
                     </select>
                 </td>
+            </tr>
+            <tr>
                 <td><fmt:message key="more.random.genre"/></td>
                 <td>
                     <select name="genre">
@@ -74,6 +77,8 @@
                         </c:forEach>
                     </select>
                 </td>
+            </tr>
+            <tr>
                 <td><fmt:message key="more.random.year"/></td>
                 <td>
                     <select name="year">
@@ -95,6 +100,67 @@
                         <option value="0 1949">&lt; 1950</option>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.songrating"/></td>
+                <td>
+                    <select name="songRating">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="starred"><fmt:message key="more.random.starred"/></option>
+                        <option value="unstarred"><fmt:message key="more.random.unstarred"/></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.albumrating"/></td>
+                <td>
+                    <select name="albumRatingComp">
+                        <option value="lt">&lt;</option>
+                        <option value="le">&le;</option>
+                        <option value="eq">=</option>
+                        <option value="ge" selected="selected">&ge;</option>
+                        <option value="gt">&gt;</option>
+                    </select>
+                    <select name="albumRatingValue">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="0">0 <fmt:message key="more.random.stars"/></option>
+                        <option value="1">1 <fmt:message key="more.random.star"/></option>
+                        <option value="2">2 <fmt:message key="more.random.stars"/></option>
+                        <option value="3">3 <fmt:message key="more.random.stars"/></option>
+                        <option value="4">4 <fmt:message key="more.random.stars"/></option>
+                        <option value="5">5 <fmt:message key="more.random.stars"/></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.lastplayed"/></td>
+                <td>
+                    <select name="lastPlayedComp">
+                        <option value="lt" selected="selected"><fmt:message key="more.random.before"/></option>
+                        <option value="gt"><fmt:message key="more.random.after"/></option>
+                    </select>
+                    <select name="lastPlayedValue">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="1day"><fmt:message key="more.random.1day"/></option>
+                        <option value="1week"><fmt:message key="more.random.1week"/></option>
+                        <option value="1month"><fmt:message key="more.random.1month"/></option>
+                        <option value="3months"><fmt:message key="more.random.3months"/></option>
+                        <option value="6months"><fmt:message key="more.random.6months"/></option>
+                        <option value="1year"><fmt:message key="more.random.1year"/></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.format"/></td>
+                <td>
+                    <select name="format">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="flac">FLAC</option>
+                        <option value="mp3">MP3</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td><fmt:message key="more.random.folder"/></td>
                 <td>
                     <select name="musicFolderId">
@@ -104,8 +170,11 @@
                         </c:forEach>
                     </select>
                 </td>
+            </tr>
+            <tr>
                 <td>
-                    <input type="submit" value="<fmt:message key="more.random.ok"/>">
+                    <input type="submit" name="actionOk" value="<fmt:message key="more.random.ok"/>">
+                    <input type="submit" name="actionAdd" value="<fmt:message key="more.random.add"/>">
                 </td>
             </tr>
             <c:if test="${not model.clientSidePlaylist}">
