@@ -41,11 +41,7 @@ import net.sf.ehcache.Element;
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.Album;
-import org.libresonic.player.domain.Genre;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MediaFileComparator;
-import org.libresonic.player.domain.MusicFolder;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.metadata.JaudiotaggerParser;
 import org.libresonic.player.service.metadata.MetaData;
 import org.libresonic.player.service.metadata.MetaDataParser;
@@ -331,7 +327,7 @@ public class MediaFileService {
     }
 
     /**
-     * Returns random songs for the give parent.
+     * Returns random songs for the given parent.
      *
      * @param parent The parent.
      * @param count  Max number of songs to return.
@@ -346,6 +342,18 @@ public class MediaFileService {
         }
         Collections.shuffle(children);
         return children.subList(0, Math.min(count, children.size()));
+    }
+
+    /**
+     * Returns random songs matching search criteria.
+     *
+     * @param criteria Random search criteria.
+     * @param count    Max number of songs to return.
+     * @return Random songs
+     * @see SearchService.getRandomSongs
+     */
+    public List<MediaFile> getRandomSongs(RandomSearchCriteria criteria, String username) {
+        return mediaFileDao.getRandomSongs(criteria, username);
     }
 
     /**
