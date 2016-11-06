@@ -38,6 +38,12 @@
         }
     </script>
 
+    <style type="text/css">
+        .more-shortcut {
+            padding: 0 15px;
+        }
+    </style>
+
 </head>
 <body class="mainframe bgcolor1" onload="${model.user.uploadRole ? "refreshProgress()" : ""}">
 
