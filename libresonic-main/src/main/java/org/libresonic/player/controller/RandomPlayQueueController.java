@@ -166,6 +166,9 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         // Handle the music folder filter
         List<MusicFolder> musicFolders = getMusicFolders(request);
 
+        // Do we add to the current playlist or do we replace it?
+        boolean shouldAddToPlayList = ServletRequestUtils.getBooleanParameter(request, "addToPlaylist", false);
+
         // Search the database using these criteria
         RandomSearchCriteria criteria = new RandomSearchCriteria(
                 size,
@@ -184,7 +187,7 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         User user = securityService.getCurrentUser(request);
         Player player = playerService.getPlayer(request, response);
         PlayQueue playQueue = player.getPlayQueue();
-        playQueue.addFiles(false, mediaFileService.getRandomSongs(criteria, user.getUsername()));
+        playQueue.addFiles(shouldAddToPlayList, mediaFileService.getRandomSongs(criteria, user.getUsername()));
 
         if (request.getParameter("autoRandom") != null) {
             playQueue.setRandomSearchCriteria(criteria);

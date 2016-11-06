@@ -172,9 +172,9 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    <input type="submit" name="actionOk" value="<fmt:message key="more.random.ok"/>">
-                    <input type="submit" name="actionAdd" value="<fmt:message key="more.random.add"/>">
+                <td colspan="2">
+                  <input type="submit" value="<fmt:message key="more.random.ok"/>">
+                  <input type="checkbox" name="addToPlaylist" value="true"/> <fmt:message key="more.random.add"/>
                 </td>
             </tr>
             <c:if test="${not model.clientSidePlaylist}">
