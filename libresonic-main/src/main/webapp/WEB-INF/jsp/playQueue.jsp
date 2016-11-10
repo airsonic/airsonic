@@ -31,13 +31,13 @@
 
 <body class="bgcolor2 playlistframe" onload="init()">
 
-<span id="dummy-animation-target" style="max-width:50px;display: none"></span>
+<span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
 
 <script type="text/javascript" language="javascript">
     var songs = null;
     var currentStreamUrl = null;
     var repeatEnabled = false;
-    var isVisible = ${model.autoHidePlayQueue ? 'false' : 'true'};
+    var isVisible = ${model.autoHide ? 'false' : 'true'};
     var CastPlayer = new CastPlayer();
     var ignore = false;
 
