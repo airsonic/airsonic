@@ -15,6 +15,7 @@ PARAMETERS
   showZoom: Whether to display a link for zooming the cover art.
   showChange: Whether to display a link for changing the cover art.
   appearAfter: Fade in after this many milliseconds, or nil if no fading in should happen.
+  hideOverflow: Hide cover art overflow when height is greater than width
 --%>
 <c:choose>
     <c:when test="${empty param.coverArtSize}">
@@ -32,7 +33,7 @@ PARAMETERS
 <str:randomString count="5" type="alphabet" var="playId"/>
 
 <div class="coverart dropshadow">
-    <div style="width:${size};max-width:${size};height:${size};max-height:${size};cursor:pointer" title="${param.caption1}" id="${divId}">
+    <div style="width:${size};max-width:${size};height:${size};max-height:${size};cursor:pointer;<c:if test="${param.hideOverflow}">overflow:hidden</c:if>;" title="${param.caption1}" id="${divId}">
 
         <c:if test="${not empty param.albumId}">
             <c:url value="main.view" var="targetUrl">

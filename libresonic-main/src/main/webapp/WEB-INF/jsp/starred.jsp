@@ -73,6 +73,7 @@
                 <c:param name="coverArtSize" value="${model.coverArtSize}"/>
                 <c:param name="showLink" value="true"/>
                 <c:param name="appearAfter" value="${loopStatus.count * 30}"/>
+                <c:param name="hideOverflow" value="true"/>
             </c:import>
         </div>
     </c:forEach>
