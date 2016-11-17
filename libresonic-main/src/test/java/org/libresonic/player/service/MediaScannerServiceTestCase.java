@@ -72,9 +72,6 @@ public class MediaScannerServiceTestCase extends TestCase {
    */
   public void testScanLibrary() {
 
-    //startMetricsReport();
-
-
     Timer globalTimer = metrics.timer(MetricRegistry.name(MediaScannerServiceTestCase.class, "Timer.global"));
 
     Timer.Context globalTimerContext =  globalTimer.time();
@@ -107,9 +104,8 @@ public class MediaScannerServiceTestCase extends TestCase {
     Assert.assertEquals(5,allAlbums.size());
     System.out.println("--- *********************** ---");
 
-
-
     List<MediaFile> listeSongs = mediaFileDao.getSongsByGenre("Baroque Instrumental",0,0,musicFolderDao.getAllMusicFolders());
+    Assert.assertEquals(2,listeSongs.size());
 
     // display out metrics report
     ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
