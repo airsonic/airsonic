@@ -8,6 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,17 +17,35 @@ public class TestCaseUtils {
 
   private static final String LIBRESONIC_HOME_FOR_TEST = "/tmp/libresonic";
 
+  private static File libresonicHomeDirForTest = null;
+
+  /**
+   * Returns the path of the LIBRESONIC_HOME directory to use for tests.
+   * This will create a temporary directory.
+   *
+   * @return LIBRESONIC_HOME directory path.
+   * @throws RuntimeException if it fails to create the temp directory.
+   */
   public static String libresonicHomePathForTest() {
 
-    String targetDir = TestCaseUtils.class.getResource("/").toString().replaceFirst("/target.*","/target");
-    if (targetDir.startsWith("file:")) {
-      targetDir = targetDir.replace("file:","");
+    if (libresonicHomeDirForTest == null) {
+      try {
+        libresonicHomeDirForTest = Files.createTempDirectory("libresonic_test_").toFile();
+      } catch (IOException e) {
+        throw new RuntimeException("Error while creating temporary LIBRESONIC_HOME directory for tests");
+      }
+      System.out.println("LIBRESONIC_HOME directory will be "+libresonicHomeDirForTest.getAbsolutePath());
     }
-    return targetDir + LIBRESONIC_HOME_FOR_TEST;
+    return libresonicHomeDirForTest.getAbsolutePath();
   }
 
 
-  public static void deleteLibresonicHome() throws IOException {
+  /**
+   * Cleans the LIBRESONIC_HOME directory used for tests.
+   *
+   * @throws IOException
+     */
+  public static void cleanLibresonicHomeForTest() throws IOException {
 
     File libresonicHomeDir = new File(libresonicHomePathForTest());
     if (libresonicHomeDir.exists() && libresonicHomeDir.isDirectory()) {

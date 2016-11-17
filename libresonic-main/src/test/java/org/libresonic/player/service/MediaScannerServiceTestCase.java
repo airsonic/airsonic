@@ -5,7 +5,6 @@ import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import junit.framework.Assert;
-import junit.framework.Test;
 import junit.framework.TestCase;
 import org.libresonic.player.TestCaseUtils;
 import org.libresonic.player.dao.*;
@@ -53,7 +52,7 @@ public class MediaScannerServiceTestCase extends TestCase {
 
     System.setProperty("libresonic.home", TestCaseUtils.libresonicHomePathForTest());
 
-    TestCaseUtils.deleteLibresonicHome();
+    TestCaseUtils.cleanLibresonicHomeForTest();
 
     // load spring context
     ApplicationContext context = TestCaseUtils.loadSpringApplicationContext(baseResources);
