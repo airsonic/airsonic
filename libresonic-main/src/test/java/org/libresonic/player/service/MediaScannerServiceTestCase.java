@@ -121,23 +121,4 @@ public class MediaScannerServiceTestCase extends TestCase {
     System.out.print("End");
   }
 
-  /**
-   * Starts a Metrics Console and JMX reporter.
-   */
-  private void startMetricsReport() {
-
-    // Reporter console
-    ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-            .convertRatesTo(TimeUnit.SECONDS.SECONDS)
-            .convertDurationsTo(TimeUnit.MILLISECONDS)
-            .build();
-    reporter.start(10, TimeUnit.SECONDS);
-
-    // Jmx reporter
-    final JmxReporter jmxReporter = JmxReporter.forRegistry(metrics).build();
-    jmxReporter.start();
-  }
-
-
-
 }
