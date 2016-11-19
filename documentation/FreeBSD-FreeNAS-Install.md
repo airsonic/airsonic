@@ -66,15 +66,15 @@ Open a web browser and enter your servers IP address in the url bar followed by 
 
 You should be greeted by the Apache Tomcat page.  Click on the Manager App button on the right of the page and enter the username and password used in step 3.  Default was username: admin and password: admin
 
-Scroll down to Deploy and the subheading "WAR file to deploy" hit choose file and select the libresonic.war downloaded in the preamble.  After selecting press the deploy button.  Scroll up and press start.  When the page refreshes a message "OK - Started application at context path /libresonic-v6.1.beta1" should be visible.
+Scroll down to Deploy and the subheading "WAR file to deploy" hit choose file and select the libresonic.war downloaded in the preamble.  After selecting press the deploy button.  Scroll up and press start.  When the page refreshes a message "OK - Started application at context path /libresonic-v6.1.rc1" should be visible.
 
 ### 6. Navigate to Libresonic
 
 In a browser.  Take your server IP address and port and append the the context path from above
 
-ie if the War deployed was called libresonic-v6.1.beta1.war navigate to:
+ie if the War deployed was called libresonic-v6.1.rc1.war navigate to:
 
-    10.0.0.10:8080/libresonic-v6.1.beta1/
+    10.0.0.10:8080/libresonic-v6.1.rc1/
 
 ### 7. Log into Libresonic
 

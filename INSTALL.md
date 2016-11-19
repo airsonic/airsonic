@@ -23,7 +23,7 @@ Daily WAR files are built by Jenkins and available [here](https://jenkins.zifnab
 
 1.  Download the latest war file:
 
-		wget https://jenkins.zifnab.net/job/libresonic/lastSuccessfulBuild/artifact/.repository/org/libresonic/player/libresonic-main/6.1.beta1/libresonic-main-6.1.beta1.war -O /var/lib/tomcat8/webapps/libresonic.war
+		wget https://jenkins.zifnab.net/job/libresonic/lastSuccessfulBuild/artifact/.repository/org/libresonic/player/libresonic-main/6.1.rc1/libresonic-main-6.1.rc1.war -O /var/lib/tomcat8/webapps/libresonic.war
 
 	Note that this command copies the war file directly to the Tomcat webapps directory, and renames it to `libresonic.war`.
 
