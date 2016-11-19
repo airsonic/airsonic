@@ -3,6 +3,20 @@
 # Libresonic/libresonic
 # -->
 
+v6.1.beta2
+--------
+
+  * Metaproject: Jenkins builds!
+  * More documentation
+  * Translation updates
+  * Improve shuffling behaviour
+  * Lots of small fixes, many more to come
+
+v6.1.beta1
+----------
+
+  * Meant as a release candidate; failed to make it past the Primary election.
+
 v6.1-alpha1
 -----------
 
