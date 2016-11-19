@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>libresonic-installer-rpm</artifactId>
+    <packaging>pom</packaging>
+    <name>Libresonic Installer for RPM</name>
+
+    <parent>
+        <groupId>org.libresonic.player</groupId>
+        <artifactId>libresonic</artifactId>
+        <version>6.1.rc1</version>
+    </parent>
+
+    <profiles>
+
+        <profile>
+            <id>rpm</id>
+            <activation>
+                <property>
+                    <name>rpm</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>buildnumber-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>create</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <doCheck>false</doCheck>
+                            <doUpdate>false</doUpdate>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>rpm</id>
+                                <phase>compile</phase>
+                                <configuration>
+                                    <target>
+                                        <echo>Creating RPM package...</echo>
+
+                                        <copy file="${basedir}/src/libresonic.spec"
+                                              todir="${project.build.directory}/rpm/SPECS">
+                                            <filterset>
+                                                <filter token="VERSION" value="${project.version}"/>
+                                                <filter token="BUILD_NUMBER" value="${buildNumber}"/>
+                                            </filterset>
+                                        </copy>
+
+                                        <!--Remove ".beta" suffix from version tag.-->
+                                        <replace file="${project.build.directory}/rpm/SPECS/libresonic.spec">
+                                            <replacetoken>.beta1</replacetoken>
+                                            <replacetoken>.beta2</replacetoken>
+                                            <replacetoken>.beta3</replacetoken>
+                                            <replacetoken>.beta4</replacetoken>
+                                        </replace>
+
+                                        <mkdir dir="${project.build.directory}/rpm/RPMS/i386"/>
+
+                                        <copy file="${basedir}/src/etc/init.d/libresonic"
+                                              todir="${project.build.directory}/rpm/buildroot/etc/init.d"/>
+                                        <copy file="${basedir}/src/etc/sysconfig/libresonic"
+                                              todir="${project.build.directory}/rpm/buildroot/etc/sysconfig"/>
+                                        <copy file="../libresonic-booter/src/main/script/libresonic.sh"
+                                              todir="${project.build.directory}/rpm/buildroot/usr/share/libresonic"/>
+                                        <copy file="../libresonic-booter/target/libresonic-booter-jar-with-dependencies.jar"
+                                              todir="${project.build.directory}/rpm/buildroot/usr/share/libresonic"/>
+                                        <copy file="../libresonic-main/target/libresonic.war"
+                                              todir="${project.build.directory}/rpm/buildroot/usr/share/libresonic"/>
+                                        <copy file="../libresonic-transcode/linux/ffmpeg"
+                                              todir="${project.build.directory}/rpm/buildroot/var/libresonic/transcode"/>
+                                        <copy file="../libresonic-transcode/linux/lame"
+                                              todir="${project.build.directory}/rpm/buildroot/var/libresonic/transcode"/>
+
+                                        <exec executable="rpmbuild">
+                                            <arg value="-bb"/>
+                                            <arg value="--buildroot"/>
+                                            <arg value="${project.build.directory}/rpm/buildroot"/>
+                                            <arg value="--define"/>
+                                            <arg value="_topdir ${project.build.directory}/rpm"/>
+                                            <arg value="--target"/>
+                                            <arg value="i386"/>
+                                            <arg value="${project.build.directory}/rpm/SPECS/libresonic.spec"/>
+                                        </exec>
+
+                                        <copy tofile="${project.build.directory}/libresonic-${project.version}.rpm">
+                                            <fileset dir="${project.build.directory}/rpm/RPMS/i386">
+                                                <include name="*.rpm"/>
+                                            </fileset>
+                                        </copy>
+
+                                        <exec executable="rpmlint">
+                                            <arg value="${project.build.directory}/libresonic-${project.version}.rpm"/>
+                                        </exec>
+                                    </target>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <!-- DAO's -->
+
+    <bean id="playerDao" class="org.libresonic.player.dao.PlayerDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="mediaFileDao" class="org.libresonic.player.dao.MediaFileDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="artistDao" class="org.libresonic.player.dao.ArtistDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="albumDao" class="org.libresonic.player.dao.AlbumDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="playlistDao" class="org.libresonic.player.dao.PlaylistDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="playQueueDao" class="org.libresonic.player.dao.PlayQueueDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="internetRadioDao" class="org.libresonic.player.dao.InternetRadioDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="musicFileInfoDao" class="org.libresonic.player.dao.RatingDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="musicFolderDao" class="org.libresonic.player.dao.MusicFolderDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="userDao" class="org.libresonic.player.dao.UserDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="transcodingDao" class="org.libresonic.player.dao.TranscodingDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="podcastDao" class="org.libresonic.player.dao.PodcastDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="avatarDao" class="org.libresonic.player.dao.AvatarDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="shareDao" class="org.libresonic.player.dao.ShareDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="bookmarkDao" class="org.libresonic.player.dao.BookmarkDao">
+        <property name="daoHelper" ref="daoHelper"/>
+    </bean>
+
+    <bean id="daoHelper" class="org.libresonic.player.dao.DaoHelperFactory" factory-method="create"/>
+
+
+    <!-- Services -->
+
+    <bean id="mediaFileService" class="org.libresonic.player.service.MediaFileService">
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileMemoryCache" ref="mediaFileMemoryCache"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="albumDao" ref="albumDao"/>
+        <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
+    </bean>
+
+    <bean id="securityService" class="org.libresonic.player.service.SecurityService">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="userDao" ref="userDao"/>
+        <property name="userCache" ref="userCache"/>
+    </bean>
+
+    <bean id="settingsService" class="org.libresonic.player.service.SettingsService" init-method="init">
+        <property name="internetRadioDao" ref="internetRadioDao"/>
+        <property name="musicFolderDao" ref="musicFolderDao"/>
+        <property name="userDao" ref="userDao"/>
+        <property name="avatarDao" ref="avatarDao"/>
+        <property name="versionService" ref="versionService"/>
+    </bean>
+
+    <bean id="mediaScannerService" class="org.libresonic.player.service.MediaScannerService" init-method="init" depends-on="metaDataParserFactory">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="artistDao" ref="artistDao"/>
+        <property name="albumDao" ref="albumDao"/>
+        <property name="searchService" ref="searchService"/>
+    </bean>
+
+    <bean id="searchService" class="org.libresonic.player.service.SearchService">
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="artistDao" ref="artistDao"/>
+        <property name="albumDao" ref="albumDao"/>
+    </bean>
+
+    <bean id="networkService" class="org.libresonic.player.service.NetworkService" init-method="init">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="upnpService" ref="upnpService"/>
+    </bean>
+
+    <bean id="playerService" class="org.libresonic.player.service.PlayerService" init-method="init">
+        <property name="playerDao" ref="playerDao"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+    </bean>
+
+    <bean id="playlistService" class="org.libresonic.player.service.PlaylistService">
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="playlistDao" ref="playlistDao"/>
+    </bean>
+
+    <bean id="versionService" class="org.libresonic.player.service.VersionService" init-method="init"/>
+
+    <bean id="statusService" class="org.libresonic.player.service.StatusService">
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+
+    <bean id="ratingService" class="org.libresonic.player.service.RatingService">
+        <property name="ratingDao" ref="musicFileInfoDao"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+
+    <bean id="musicIndexService" class="org.libresonic.player.service.MusicIndexService">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+
+    <bean id="audioScrobblerService" class="org.libresonic.player.service.AudioScrobblerService">
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+
+    <bean id="transcodingService" class="org.libresonic.player.service.TranscodingService">
+        <property name="transcodingDao" ref="transcodingDao"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playerService" ref="playerService"/>
+    </bean>
+
+    <bean id="shareService" class="org.libresonic.player.service.ShareService">
+        <property name="shareDao" ref="shareDao"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+
+    <bean id="podcastService" class="org.libresonic.player.service.PodcastService" init-method="init">
+        <property name="podcastDao" ref="podcastDao"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
+    </bean>
+
+    <bean id="adService" class="org.libresonic.player.service.AdService">
+        <property name="adInterval" value="8"/>
+    </bean>
+
+    <bean id="jukeboxService" class="org.libresonic.player.service.JukeboxService">
+        <property name="statusService" ref="statusService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="audioScrobblerService" ref="audioScrobblerService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+
+    <bean id="folderBasedContentDirectory" class="org.libresonic.player.service.upnp.FolderBasedContentDirectory">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+
+    <bean id="upnpService" class="org.libresonic.player.service.UPnPService" init-method="init">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="versionService" ref="versionService"/>
+        <property name="folderBasedContentDirectory" ref="folderBasedContentDirectory"/>
+    </bean>
+
+    <bean id="lastFmService" class="org.libresonic.player.service.LastFmService" init-method="init">
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="artistDao" ref="artistDao"/>
+    </bean>
+
+    <bean id="sonosService" class="org.libresonic.player.service.SonosService" init-method="init">
+        <property name="sonosHelper" ref="sonosHelper"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="upnpService" ref="upnpService"/>
+    </bean>
+
+    <bean id="metaDataParserFactory" class="org.libresonic.player.service.metadata.MetaDataParserFactory">
+        <property name="parsers">
+            <list>
+                <bean class="org.libresonic.player.service.metadata.JaudiotaggerParser"/>
+                <bean class="org.libresonic.player.service.metadata.FFmpegParser">
+                    <property name="transcodingService" ref="transcodingService"/>
+                </bean>
+                <bean class="org.libresonic.player.service.metadata.DefaultMetaDataParser"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- AJAX services -->
+
+    <bean id="ajaxMultiService" class="org.libresonic.player.ajax.MultiService">
+        <property name="networkService" ref="networkService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="lastFmService" ref="lastFmService"/>
+    </bean>
+
+    <bean id="ajaxNowPlayingService" class="org.libresonic.player.ajax.NowPlayingService">
+        <property name="playerService" ref="playerService"/>
+        <property name="statusService" ref="statusService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaScannerService" ref="mediaScannerService"/>
+    </bean>
+
+    <bean id="ajaxPlayQueueService" class="org.libresonic.player.ajax.PlayQueueService">
+        <property name="playerService" ref="playerService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="lastFmService" ref="lastFmService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="playQueueDao" ref="playQueueDao"/>
+        <property name="jukeboxService" ref="jukeboxService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="searchService" ref="searchService"/>
+        <property name="ratingService" ref="ratingService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="podcastService" ref="podcastService"/>
+    </bean>
+
+    <bean id="ajaxPlaylistService" class="org.libresonic.player.ajax.PlaylistService">
+        <property name="playlistService" ref="playlistService"/>
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+        <property name="localeResolver" ref="localeResolver"/>
+    </bean>
+
+    <bean id="ajaxLyricsService" class="org.libresonic.player.ajax.LyricsService"/>
+
+    <bean id="ajaxCoverArtService" class="org.libresonic.player.ajax.CoverArtService">
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+    </bean>
+
+    <bean id="ajaxStarService" class="org.libresonic.player.ajax.StarService">
+        <property name="securityService" ref="securityService"/>
+        <property name="mediaFileDao" ref="mediaFileDao"/>
+    </bean>
+
+    <bean id="ajaxTagService" class="org.libresonic.player.ajax.TagService">
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
+    </bean>
+
+    <bean id="ajaxTransferService" class="org.libresonic.player.ajax.TransferService"/>
+
+    <bean id="ajaxChatService" class="org.libresonic.player.ajax.ChatService" init-method="init">
+        <property name="securityService" ref="securityService"/>
+    </bean>
+
+    <bean id="localeResolver" class="org.libresonic.player.i18n.LibresonicLocaleResolver">
+        <property name="securityService" ref="securityService"/>
+        <property name="settingsService" ref="settingsService"/>
+    </bean>
+
+</beans>

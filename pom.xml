@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sourceforge.subsonic</groupId>
+    <groupId>org.libresonic.player</groupId>
     <artifactId>libresonic</artifactId>
-    <version>6.0.1</version>
+    <version>6.1.rc1</version>
     <name>Libresonic</name>
     <packaging>pom</packaging>
     <organization>
@@ -22,13 +22,8 @@
     <repositories>
         <repository>
             <id>local1</id>
-            <name>Local Repository 1</name>
-            <url>file:repo</url>
-        </repository>
-        <repository>
-            <id>local2</id>
-            <name>Local Repository 2</name>
-            <url>file:../repo</url>
+            <name>Local Repository</name>
+            <url>file://${project.basedir}/../repo</url>
         </repository>
         <repository>
             <id>java_net</id>
@@ -45,13 +40,8 @@
     <pluginRepositories>
         <pluginRepository>
             <id>local1</id>
-            <name>Local Repository 1</name>
-            <url>file:repo</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>local2</id>
-            <name>Local Repository 2</name>
-            <url>file:../repo</url>
+            <name>Local Repository</name>
+            <url>file://${project.basedir}/../repo</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -81,21 +71,21 @@
     </developers>
 
     <modules>
-        <module>subsonic-rest-api</module>
-        <module>subsonic-sonos-api</module>
-        <module>subsonic-main</module>
+        <module>libresonic-rest-api</module>
+        <module>libresonic-sonos-api</module>
+        <module>libresonic-main</module>
     </modules>
 
     <profiles>
         <profile>
             <id>full</id>
             <modules>
-                <module>subsonic-booter</module>
-                <module>subsonic-installer-windows</module>
-                <module>subsonic-installer-mac</module>
-                <module>subsonic-installer-debian</module>
-                <module>subsonic-installer-rpm</module>
-                <module>subsonic-assembly</module>
+                <module>libresonic-booter</module>
+                <module>libresonic-installer-windows</module>
+                <module>libresonic-installer-mac</module>
+                <module>libresonic-installer-debian</module>
+                <module>libresonic-installer-rpm</module>
+                <module>libresonic-assembly</module>
             </modules>
         </profile>
 
@@ -107,27 +97,27 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
+                    <version>3.5.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.2.1</version>
+                    <version>2.6</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.6</version>
+                    <version>1.8</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.2</version>
+                    <version>2.10</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>buildnumber-maven-plugin</artifactId>
-                    <version>1.0</version>
+                    <version>1.4</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.cxf</groupId>
@@ -148,11 +138,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>ISO-8859-1</encoding>
                     <verbose>false</verbose>
-                    <compilerVersion>1.6</compilerVersion>
+                    <compilerVersion>1.8</compilerVersion>
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
@@ -169,6 +159,10 @@
                         <configuration>
                             <failOnWarning>${failOnDependencyWarning}</failOnWarning>
                             <ignoreNonCompile>true</ignoreNonCompile>
+                            <ignoredUnusedDeclaredDependencies>
+                              <ignoredUnusedDeclaredDependency>com.sun.mail:javax.mail*</ignoredUnusedDeclaredDependency>
+                              <ignoredUnusedDeclaredDependency>org.seamless:seamless-http*</ignoredUnusedDeclaredDependency>
+                            </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
                 </executions>

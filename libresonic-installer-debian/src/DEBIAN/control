@@ -1,0 +1,18 @@
+Package: libresonic
+Version: @VERSION@
+Section: Multimedia
+Priority: optional
+Recommends: ffmpeg
+Architecture: all
+Maintainer: Eugene E. Kashpureff Jr <eugene@kashpureff.org>
+Description: A web-based music streamer, jukebox and Podcast receiver
+ Libresonic is a web-based music streamer, jukebox and Podcast receiver,
+ providing access to your music collection wherever you are. Use it
+ to share your music with friends, or to listen to your music while away
+ from home.
+ .
+ Apps for Android, iPhone and Windows Phone are also available.
+ .
+ Java 1.6 or higher is required to run Libresonic.
+ .
+ Libresonic can be found at http://libresonic.org
