@@ -64,34 +64,6 @@ public class MultiController extends MultiActionController {
     private SettingsService settingsService;
     private PlaylistService playlistService;
 
-    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        // Auto-login if "user" and "password" parameters are given.
-        String username = request.getParameter("user");
-        String password = request.getParameter("password");
-        if (username != null && password != null) {
-            username = StringUtil.urlEncode(username);
-            password = StringUtil.urlEncode(password);
-            return new ModelAndView(new RedirectView("/j_spring_security_check?"+
-                    UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY+"=" + username +
-                    "&"+UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY+"=" + password
-            ));
-        }
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("logout", request.getParameter("logout") != null);
-        map.put("error", request.getParameter("error") != null);
-        map.put("brand", settingsService.getBrand());
-        map.put("loginMessage", settingsService.getLoginMessage());
-
-        User admin = securityService.getUserByName(User.USERNAME_ADMIN);
-        if (User.USERNAME_ADMIN.equals(admin.getPassword())) {
-            map.put("insecure", true);
-        }
-
-        return new ModelAndView("login", "model", map);
-    }
-
     public ModelAndView recover(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
