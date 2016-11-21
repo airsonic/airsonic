@@ -8,6 +8,7 @@ Requirements
   * Recent version of [Maven](http://maven.apache.org/).
   * A JDK installation. 1.8.x series of OpenJDK or Oracle JDK 8+ should work.
   * Optional: lintian and fakeroot, for .deb package
+  * Optional: rpm and rpmlint, for .rpm package
   * Test as follows:
 
 ```
@@ -53,14 +54,39 @@ $
 Packaged .deb
 -------------
 
-You can furthermore go ahead to create a .deb suitable for installation on Debian or Ubuntu. These instructions should similarly work with rpm(for RedHat/CentOS or Fedora), but it is has not been tested.
+You can furthermore go ahead to create a .deb suitable for installation on
+Debian or Ubuntu.
 
 ```
 $ mvn -P full -pl libresonic-booter -am install
-$ mvn -P full -pl libresonic-installer-debian/ -am install
+$ mvn -P full -pl libresonic-installer-debian -am install
 $ sudo dpkg -i ./libresonic-installer-debian/target/libresonic-*.deb
-$
 ```
 
-Good luck!
+Packaged RPM
+------------
 
+Building a RPM package is very similar :
+
+```
+$ mvn -P full -pl libresonic-booter -am install
+$ mvn -P full,rpm -pl libresonic-installer-rpm -am install
+$ sudo rpm -ivh libresonic-installer-rpm/target/libresonic-*.rpm
+```
+
+Additional release archives
+---------------------------
+
+Additional release archives can be built using the following commands :
+
+```
+$ mvn -Pfull -pl libresonic-assembly assembly:single
+```
+
+These archives are built in `libresonic-assembly/targets` and include :
+
+* The source distribution
+* The standalone archive (for use without a WAR container)
+* The WAR archive (for WAR containers)
+
+Good luck!

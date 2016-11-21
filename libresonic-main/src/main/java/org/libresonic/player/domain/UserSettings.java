@@ -46,6 +46,7 @@ public class UserSettings {
     private Visibility mainVisibility = new Visibility();
     private Visibility playlistVisibility = new Visibility();
     private boolean lastFmEnabled;
+    private int listReloadDelay;
     private String lastFmUsername;
     private String lastFmPassword;
     private TranscodeScheme transcodeScheme = TranscodeScheme.OFF;
@@ -154,6 +155,14 @@ public class UserSettings {
 
     public void setLastFmEnabled(boolean lastFmEnabled) {
         this.lastFmEnabled = lastFmEnabled;
+    }
+
+    public int getListReloadDelay() {
+        return listReloadDelay;
+    }
+
+    public void setListReloadDelay(int listReloadDelay) {
+        this.listReloadDelay = listReloadDelay;
     }
 
     public String getLastFmUsername() {

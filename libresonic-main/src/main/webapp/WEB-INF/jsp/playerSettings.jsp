@@ -132,6 +132,14 @@
             </td>
             <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="autocontrol"/></c:import></td>
         </tr>
+
+        <tr>
+            <td>
+                <form:checkbox path="m3uBomEnabled" id="m3uBomEnabled" cssClass="checkbox"/>
+                <label for="m3uBomEnabled"><fmt:message key="playersettings.m3ubom"/></label>
+            </td>
+            <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="m3ubom"/></c:import></td>
+        </tr>
     </table>
 
     <c:if test="${not empty command.allTranscodings}">

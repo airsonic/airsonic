@@ -72,6 +72,7 @@ public class PlayerSettingsController extends SimpleFormController {
             command.setLastSeen(player.getLastSeen());
             command.setDynamicIp(player.isDynamicIp());
             command.setAutoControlEnabled(player.isAutoControlEnabled());
+            command.setM3uBomEnabled(player.isM3uBomEnabled());
             command.setTranscodeSchemeName(player.getTranscodeScheme().name());
             command.setTechnologyName(player.getTechnology().name());
             command.setAllTranscodings(transcodingService.getAllTranscodings());
@@ -99,6 +100,7 @@ public class PlayerSettingsController extends SimpleFormController {
         Player player = playerService.getPlayerById(command.getPlayerId());
 
         player.setAutoControlEnabled(command.isAutoControlEnabled());
+        player.setM3uBomEnabled(command.isM3uBomEnabled());
         player.setDynamicIp(command.isDynamicIp());
         player.setName(StringUtils.trimToNull(command.getName()));
         player.setTranscodeScheme(TranscodeScheme.valueOf(command.getTranscodeSchemeName()));

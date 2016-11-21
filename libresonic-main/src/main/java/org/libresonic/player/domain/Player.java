@@ -40,6 +40,7 @@ public class Player {
     private String ipAddress;
     private boolean isDynamicIp = true;
     private boolean isAutoControlEnabled = true;
+    private boolean isM3uBomEnabled = true;
     private Date lastSeen;
     private TranscodeScheme transcodeScheme = TranscodeScheme.OFF;
     private PlayQueue playQueue;
@@ -186,6 +187,24 @@ public class Player {
      */
     public void setAutoControlEnabled(boolean isAutoControlEnabled) {
         this.isAutoControlEnabled = isAutoControlEnabled;
+    }
+
+    /**
+     * Returns whether apply BOM mark when generating a M3U file.
+     *
+     * @return Whether apply BOM mark when generating a M3U file.
+     */
+    public boolean isM3uBomEnabled() {
+        return isM3uBomEnabled;
+    }
+
+    /**
+     * Sets whether apply BOM mark when generating a M3U file.
+     *
+     * @param isM3uBomEnabled Whether apply BOM mark when generating a M3U file.
+     */
+    public void setM3uBomEnabled(boolean isM3uBomEnabled) {
+        this.isM3uBomEnabled = isM3uBomEnabled;
     }
 
     /**

@@ -7,7 +7,9 @@
 
     <script type="text/javascript" language="javascript">
         function init() {
-            setTimeout("refresh()", 60000);
+            <c:if test="${model.listReloadDelay gt 0}">
+            setTimeout("refresh()", ${model.listReloadDelay * 1000});
+            </c:if>
 
             <c:if test="${not model.musicFoldersExist}">
             $().toastmessage("showNoticeToast", "<fmt:message key="top.missing"/>");
@@ -109,6 +111,7 @@
             <c:param name="coverArtSize" value="${model.coverArtSize}"/>
             <c:param name="showLink" value="true"/>
             <c:param name="appearAfter" value="${loopStatus.count * 30}"/>
+            <c:param name="hideOverflow" value="true"/>
         </c:import>
 
         <c:if test="${not empty album.rating}">

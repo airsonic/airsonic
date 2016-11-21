@@ -76,8 +76,8 @@ public class HomeController extends ParameterizableViewController {
         }
         int listOffset = getIntParameter(request, "listOffset", 0);
         AlbumListType listType = AlbumListType.fromId(getStringParameter(request, "listType"));
+        UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
         if (listType == null) {
-            UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
             listType = userSettings.getDefaultAlbumList();
         }
 
@@ -140,6 +140,7 @@ public class HomeController extends ParameterizableViewController {
         map.put("coverArtSize", CoverArtScheme.MEDIUM.getSize());
         map.put("listOffset", listOffset);
         map.put("musicFolder", selectedMusicFolder);
+        map.put("listReloadDelay", userSettings.getListReloadDelay());
 
         ModelAndView result = super.handleRequestInternal(request, response);
         result.addObject("model", map);

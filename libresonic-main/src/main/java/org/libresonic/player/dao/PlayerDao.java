@@ -35,7 +35,7 @@ import java.util.*;
 public class PlayerDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(PlayerDao.class);
-    private static final String COLUMNS = "id, name, type, username, ip_address, auto_control_enabled, " +
+    private static final String COLUMNS = "id, name, type, username, ip_address, auto_control_enabled, m3u_bom_enabled, " +
                                           "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id";
 
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
@@ -94,7 +94,7 @@ public class PlayerDao extends AbstractDao {
         player.setId(String.valueOf(id));
         String sql = "insert into player (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")";
         update(sql, player.getId(), player.getName(), player.getType(), player.getUsername(),
-               player.getIpAddress(), player.isAutoControlEnabled(),
+               player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), CoverArtScheme.MEDIUM.name(),
                player.getTranscodeScheme().name(), player.isDynamicIp(),
                player.getTechnology().name(), player.getClientId());
@@ -143,6 +143,7 @@ public class PlayerDao extends AbstractDao {
                      "username = ?," +
                      "ip_address = ?," +
                      "auto_control_enabled = ?," +
+                     "m3u_bom_enabled = ?," +
                      "last_seen = ?," +
                      "transcode_scheme = ?, " +
                      "dynamic_ip = ?, " +
@@ -150,7 +151,7 @@ public class PlayerDao extends AbstractDao {
                      "client_id = ? " +
                      "where id = ?";
         update(sql, player.getName(), player.getType(), player.getUsername(),
-               player.getIpAddress(), player.isAutoControlEnabled(),
+               player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), player.getTranscodeScheme().name(), player.isDynamicIp(),
                player.getTechnology(), player.getClientId(), player.getId());
     }
@@ -174,6 +175,7 @@ public class PlayerDao extends AbstractDao {
             player.setUsername(rs.getString(col++));
             player.setIpAddress(rs.getString(col++));
             player.setAutoControlEnabled(rs.getBoolean(col++));
+            player.setM3uBomEnabled(rs.getBoolean(col++));
             player.setLastSeen(rs.getTimestamp(col++));
             col++; // Ignore cover art scheme.
             player.setTranscodeScheme(TranscodeScheme.valueOf(rs.getString(col++)));
