@@ -29,16 +29,10 @@ public class LoginController {
 
     private static final Logger LOG = Logger.getLogger(LoginController.class);
 
-    private final SecurityService securityService;
-    private final SettingsService settingsService;
-    private final PlaylistService playlistService;
-
     @Autowired
-    public LoginController(SecurityService securityService, SettingsService settingsService, PlaylistService playlistService) {
-        this.securityService = securityService;
-        this.settingsService = settingsService;
-        this.playlistService = playlistService;
-    }
+    private final SecurityService securityService = null;
+    @Autowired
+    private final SettingsService settingsService = null;
 
     @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
