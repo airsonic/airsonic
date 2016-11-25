@@ -2,6 +2,7 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
+    <%@ include file="jquery.jsp" %>
     <style type="text/css">
         #progressBar {width: 350px; height: 10px; border: 1px solid black; display:none;}
         #progressBarContent {width: 0; height: 10px; background: url("<c:url value="/icons/default_light/progress.png"/>") repeat;}
@@ -37,10 +38,62 @@
                 window.setTimeout("refreshProgress()", 5000);
             }
         }
+
+        // From Modernizr
+        // See: https://modernizr.com/
+        function isLocalStorageEnabled() {
+            var mod = 'modernizr';
+            try {
+                localStorage.setItem(mod, mod);
+                localStorage.removeItem(mod);
+                return true;
+            } catch(e) {
+                return false;
+            }
+        }
+
+
+        // Load previously used shuffle parameters
+        function loadShuffleForm() {
+            if (!isLocalStorageEnabled()) return;
+            var form = document.getElementById("randomPlayQueue");
+            try {
+                var data = JSON.parse(localStorage.getItem("randomPlayQueue"));
+            } catch(e) { return; }
+            elements = form.getElementsByTagName("input");
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "submit") continue;
+                if (data[elements[i].name]) elements[i].value = data[elements[i].name];
+            }
+            elements = form.getElementsByTagName("select");
+            for (var i = 0; i < elements.length; i++) {
+                if (data[elements[i].name]) elements[i].value = data[elements[i].name];
+            }
+        }
+
+        // Save shuffle parameters
+        function saveShuffleForm() {
+            if (!isLocalStorageEnabled()) return;
+            var form = document.getElementById("randomPlayQueue");
+            var data = {}
+            var elements = [];
+            elements = form.getElementsByTagName("input");
+            for (var i = 0; i < elements.length; i++) data[elements[i].name] = elements[i].value;
+            elements = form.getElementsByTagName("select");
+            for (var i = 0; i < elements.length; i++) data[elements[i].name] = elements[i].value;
+            localStorage.setItem("randomPlayQueue", JSON.stringify(data));
+        }
+
+        $(function() {
+            ${model.user.uploadRole ? "refreshProgress();" : ""}
+            $("#randomPlayQueue").on("submit", saveShuffleForm);
+            loadShuffleForm();
+        });
+
     </script>
 
 </head>
-<body class="mainframe bgcolor1" onload="${model.user.uploadRole ? "refreshProgress()" : ""}">
+<body class="mainframe bgcolor1">
 
 <h1>
     <img src="<spring:theme code="moreImage"/>" alt=""/>
