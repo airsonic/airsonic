@@ -498,6 +498,8 @@ public class MediaFileDao extends AbstractDao {
             put("maxLastPlayed", criteria.getMaxLastPlayedDate());
             put("minAlbumRating", criteria.getMinAlbumRating());
             put("maxAlbumRating", criteria.getMaxAlbumRating());
+            put("minPlayCount", criteria.getMinPlayCount());
+            put("maxPlayCount", criteria.getMaxPlayCount());
             put("starred", criteria.isShowStarredSongs());
             put("unstarred", criteria.isShowUnstarredSongs());
             put("format", criteria.getFormat());
@@ -560,6 +562,18 @@ public class MediaFileDao extends AbstractDao {
                 query += " and (user_rating.rating is null or user_rating.rating <= :maxAlbumRating)";
             } else {
                 query += " and user_rating.rating <= :maxAlbumRating";
+            }
+        }
+
+        if (criteria.getMinPlayCount() != null) {
+            query += " and media_file.play_count >= :minPlayCount";
+        }
+
+        if (criteria.getMaxPlayCount() != null) {
+            if (criteria.getMinPlayCount() == null) {
+                query += " and (media_file.play_count is null or media_file.play_count <= :maxPlayCount)";
+            } else {
+                query += " and media_file.play_count <= :maxPlayCount";
             }
         }
 

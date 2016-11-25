@@ -39,6 +39,8 @@ public class RandomSearchCriteria {
     private final Date maxLastPlayedDate;
     private final Integer minAlbumRating;
     private final Integer maxAlbumRating;
+    private final Integer minPlayCount;
+    private final Integer maxPlayCount;
     private final boolean showStarredSongs;
     private final boolean showUnstarredSongs;
     private final String format;
@@ -55,7 +57,7 @@ public class RandomSearchCriteria {
     public RandomSearchCriteria(int count, String genre, Integer fromYear, Integer toYear, List<MusicFolder> musicFolders) {
         this(
             count, genre, fromYear, toYear, musicFolders,
-            null, null, null, null, true, true, null
+            null, null, null, null, null, null, true, true, null
         );
     }
 
@@ -71,6 +73,8 @@ public class RandomSearchCriteria {
      * @param maxLastPlayedDate  Only return songs last played before this date. May be <code>null</code>.
      * @param minAlbumRating     Only return songs rated more or equalt to this value. May be <code>null</code>.
      * @param maxAlbumRating     Only return songs rated less or equal to this value. May be <code>null</code>.
+     * @param minPlayCount       Only return songs whose play count is more or equal to this value. May be <code>null</code>.
+     * @param maxPlayCount       Only return songs whose play count is less or equal to this value. May be <code>null</code>.
      * @param showStarredSongs   Show starred songs. May NOT be <code>null</code>.
      * @param showUnstarredSongs Show unstarred songs. May NOT be <code>null</code>.
      * @param format             Only return songs whose file format is equal to this value. May be <code>null</code>.
@@ -85,6 +89,8 @@ public class RandomSearchCriteria {
             Date maxLastPlayedDate,
             Integer minAlbumRating,
             Integer maxAlbumRating,
+            Integer minPlayCount,
+            Integer maxPlayCount,
             boolean showStarredSongs,
             boolean showUnstarredSongs,
             String format
@@ -99,6 +105,8 @@ public class RandomSearchCriteria {
         this.maxLastPlayedDate = maxLastPlayedDate;
         this.minAlbumRating = minAlbumRating;
         this.maxAlbumRating = maxAlbumRating;
+        this.minPlayCount = minPlayCount;
+        this.maxPlayCount = maxPlayCount;
         this.showStarredSongs = showStarredSongs;
         this.showUnstarredSongs = showUnstarredSongs;
         this.format = format;
@@ -150,5 +158,13 @@ public class RandomSearchCriteria {
 
     public String getFormat() {
         return format;
+    }
+
+    public Integer getMinPlayCount() {
+        return minPlayCount;
+    }
+
+    public Integer getMaxPlayCount() {
+        return maxPlayCount;
     }
 }

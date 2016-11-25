@@ -56,6 +56,8 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         Integer toYear = null;
         Integer minAlbumRating = null;
         Integer maxAlbumRating = null;
+        Integer minPlayCount = null;
+        Integer maxPlayCount = null;
         Date minLastPlayedDate = null;
         Date maxLastPlayedDate = null;
         boolean doesShowStarredSongs = false;
@@ -159,6 +161,36 @@ public class RandomPlayQueueController extends ParameterizableViewController {
             }
         }
 
+        // Handle the play count filter
+        Integer playCountValue = null;
+        try { playCountValue = Integer.parseInt(request.getParameter("playCountValue")); }
+        catch (NumberFormatException e) { }
+        String playCountComp = request.getParameter("playCountComp");
+        if (playCountValue != null) {
+            switch (playCountComp) {
+                case "lt":
+                    minPlayCount = null;
+                    maxPlayCount = playCountValue - 1;
+                    break;
+                case "gt":
+                    minPlayCount = playCountValue + 1;
+                    maxPlayCount = null;
+                    break;
+                case "le":
+                    minPlayCount = null;
+                    maxPlayCount = playCountValue;
+                    break;
+                case "ge":
+                    minPlayCount = playCountValue;
+                    maxPlayCount = null;
+                    break;
+                case "eq":
+                    minPlayCount = playCountValue;
+                    maxPlayCount = playCountValue;
+                    break;
+            }
+        }
+
         // Handle the format filter
         String format = request.getParameter("format");
         if (StringUtils.equalsIgnoreCase(format, "any")) format = null;
@@ -180,6 +212,8 @@ public class RandomPlayQueueController extends ParameterizableViewController {
                 maxLastPlayedDate,
                 minAlbumRating,
                 maxAlbumRating,
+                minPlayCount,
+                maxPlayCount,
                 doesShowStarredSongs,
                 doesShowUnstarredSongs,
                 format
