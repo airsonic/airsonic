@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import junit.framework.TestCase;
+import org.libresonic.player.TestCaseUtils;
 
 /**
  * Unit test of {@link SettingsService}.
@@ -33,19 +34,18 @@ import junit.framework.TestCase;
  */
 public class SettingsServiceTestCase extends TestCase {
 
-    private static final File LIBRESONIC_HOME = new File("/tmp/libresonic");
-
     private SettingsService settingsService;
 
     @Override
     protected void setUp() throws Exception {
-        System.setProperty("libresonic.home", LIBRESONIC_HOME.getPath());
-        new File(LIBRESONIC_HOME, "libresonic.properties").delete();
+        String libresonicHome = TestCaseUtils.libresonicHomePathForTest();
+        System.setProperty("libresonic.home", libresonicHome);
+        new File(libresonicHome, "libresonic.properties").delete();
         settingsService = new SettingsService();
     }
 
     public void testLibresonicHome() {
-        assertEquals("Wrong Libresonic home.", LIBRESONIC_HOME, SettingsService.getLibresonicHome());
+        assertEquals("Wrong Libresonic home.", TestCaseUtils.libresonicHomePathForTest(), SettingsService.getLibresonicHome().getAbsolutePath());
     }
 
     public void testDefaultValues() {

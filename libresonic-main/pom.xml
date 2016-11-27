@@ -12,6 +12,10 @@
         <version>6.1.beta2</version>
     </parent>
 
+    <properties>
+        <metrics.version>3.1.0</metrics.version>
+    </properties>
+
     <dependencies>
 
         <dependency>
@@ -25,6 +29,15 @@
             <artifactId>libresonic-sonos-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Metrics -->
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>${metrics.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework</groupId>
