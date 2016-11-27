@@ -2,9 +2,11 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
+    <%@ include file="jquery.jsp" %>
     <style type="text/css">
         #progressBar {width: 350px; height: 10px; border: 1px solid black; display:none;}
         #progressBarContent {width: 0; height: 10px; background: url("<c:url value="/icons/default_light/progress.png"/>") repeat;}
+        #randomPlayQueue td { padding: 0 5px; }
     </style>
     <script type="text/javascript" src="<c:url value="/dwr/interface/transferService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
@@ -36,6 +38,58 @@
                 window.setTimeout("refreshProgress()", 5000);
             }
         }
+
+        // From Modernizr
+        // See: https://modernizr.com/
+        function isLocalStorageEnabled() {
+            var mod = 'modernizr';
+            try {
+                localStorage.setItem(mod, mod);
+                localStorage.removeItem(mod);
+                return true;
+            } catch(e) {
+                return false;
+            }
+        }
+
+
+        // Load previously used shuffle parameters
+        function loadShuffleForm() {
+            if (!isLocalStorageEnabled()) return;
+            var form = document.getElementById("randomPlayQueue");
+            try {
+                var data = JSON.parse(localStorage.getItem("randomPlayQueue"));
+            } catch(e) { return; }
+            elements = form.getElementsByTagName("input");
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "submit") continue;
+                if (data[elements[i].name]) elements[i].value = data[elements[i].name];
+            }
+            elements = form.getElementsByTagName("select");
+            for (var i = 0; i < elements.length; i++) {
+                if (data[elements[i].name]) elements[i].value = data[elements[i].name];
+            }
+        }
+
+        // Save shuffle parameters
+        function saveShuffleForm() {
+            if (!isLocalStorageEnabled()) return;
+            var form = document.getElementById("randomPlayQueue");
+            var data = {}
+            var elements = [];
+            elements = form.getElementsByTagName("input");
+            for (var i = 0; i < elements.length; i++) data[elements[i].name] = elements[i].value;
+            elements = form.getElementsByTagName("select");
+            for (var i = 0; i < elements.length; i++) data[elements[i].name] = elements[i].value;
+            localStorage.setItem("randomPlayQueue", JSON.stringify(data));
+        }
+
+        $(function() {
+            ${model.user.uploadRole ? "refreshProgress();" : ""}
+            $("#randomPlayQueue").on("submit", saveShuffleForm);
+            loadShuffleForm();
+        });
+
     </script>
 
     <style type="text/css">
@@ -45,7 +99,7 @@
     </style>
 
 </head>
-<body class="mainframe bgcolor1" onload="${model.user.uploadRole ? "refreshProgress()" : ""}">
+<body class="mainframe bgcolor1">
 
 <h1>
     <img src="<spring:theme code="moreImage"/>" alt=""/>
@@ -58,31 +112,23 @@
         <span style="vertical-align: middle"><fmt:message key="more.random.title"/></span>
     </h2>
 
-    <form method="post" action="randomPlayQueue.view?">
+    <form id="randomPlayQueue" method="post" action="randomPlayQueue.view?">
         <table>
             <tr>
                 <td><fmt:message key="more.random.text"/></td>
                 <td>
-                    <select name="size">
+                    <select style="width: 100%;" name="size">
                         <option value="10"><fmt:message key="more.random.songs"><fmt:param value="10"/></fmt:message></option>
                         <option value="20" selected><fmt:message key="more.random.songs"><fmt:param value="20"/></fmt:message></option>
                         <option value="30"><fmt:message key="more.random.songs"><fmt:param value="30"/></fmt:message></option>
                         <option value="40"><fmt:message key="more.random.songs"><fmt:param value="40"/></fmt:message></option>
                         <option value="50"><fmt:message key="more.random.songs"><fmt:param value="50"/></fmt:message></option>
-                    </select>
-                </td>
-                <td><fmt:message key="more.random.genre"/></td>
-                <td>
-                    <select name="genre">
-                        <option value="any"><fmt:message key="more.random.anygenre"/></option>
-                        <c:forEach items="${model.genres}" var="genre">
-                            <option value="${genre.name}"><str:truncateNicely upper="20">${genre.name} (${genre.songCount})</str:truncateNicely></option>
-                        </c:forEach>
+                        <option value="100"><fmt:message key="more.random.songs"><fmt:param value="100"/></fmt:message></option>
                     </select>
                 </td>
                 <td><fmt:message key="more.random.year"/></td>
                 <td>
-                    <select name="year">
+                    <select style="width: 100%;" name="year">
                         <option value="any"><fmt:message key="more.random.anyyear"/></option>
 
                         <c:forEach begin="0" end="${model.currentYear - 2010}" var="yearOffset">
@@ -101,17 +147,99 @@
                         <option value="0 1949">&lt; 1950</option>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.genre"/></td>
+                <td>
+                    <select style="width: 100%;" name="genre">
+                        <option value="any"><fmt:message key="more.random.anygenre"/></option>
+                        <c:forEach items="${model.genres}" var="genre">
+                            <option value="${genre.name}"><str:truncateNicely upper="20">${genre.name} (${genre.songCount})</str:truncateNicely></option>
+                        </c:forEach>
+                    </select>
+                </td>
+                <td><fmt:message key="more.random.albumrating"/></td>
+                <td>
+                    <select name="albumRatingComp">
+                        <option value="lt">&lt;</option>
+                        <option value="le">&le;</option>
+                        <option value="eq">=</option>
+                        <option value="ge" selected="selected">&ge;</option>
+                        <option value="gt">&gt;</option>
+                    </select>
+                    <select name="albumRatingValue">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="0">0 <fmt:message key="more.random.stars"/></option>
+                        <option value="1">1 <fmt:message key="more.random.star"/></option>
+                        <option value="2">2 <fmt:message key="more.random.stars"/></option>
+                        <option value="3">3 <fmt:message key="more.random.stars"/></option>
+                        <option value="4">4 <fmt:message key="more.random.stars"/></option>
+                        <option value="5">5 <fmt:message key="more.random.stars"/></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.songrating"/></td>
+                <td>
+                    <select style="width: 100%;" name="songRating">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="starred"><fmt:message key="more.random.starred"/></option>
+                        <option value="unstarred"><fmt:message key="more.random.unstarred"/></option>
+                    </select>
+                </td>
+                <td><fmt:message key="more.random.lastplayed"/></td>
+                <td>
+                    <select name="lastPlayedComp">
+                        <option value="lt" selected="selected">&lt;</option>
+                        <option value="gt">&gt;</option>
+                    </select>
+                    <select name="lastPlayedValue">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="1day"><fmt:message key="more.random.1day"/></option>
+                        <option value="1week"><fmt:message key="more.random.1week"/></option>
+                        <option value="1month"><fmt:message key="more.random.1month"/></option>
+                        <option value="3months"><fmt:message key="more.random.3months"/></option>
+                        <option value="6months"><fmt:message key="more.random.6months"/></option>
+                        <option value="1year"><fmt:message key="more.random.1year"/></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
                 <td><fmt:message key="more.random.folder"/></td>
                 <td>
-                    <select name="musicFolderId">
+                    <select style="width: 100%;" name="musicFolderId">
                         <option value="-1"><fmt:message key="more.random.anyfolder"/></option>
                         <c:forEach items="${model.musicFolders}" var="musicFolder">
                             <option value="${musicFolder.id}">${musicFolder.name}</option>
                         </c:forEach>
                     </select>
                 </td>
+                <td><fmt:message key="more.random.playcount"/></td>
                 <td>
-                    <input type="submit" value="<fmt:message key="more.random.ok"/>">
+                    <select name="playCountComp">
+                        <option value="lt" selected="selected">&lt;</option>
+                        <option value="gt">&gt;</option>
+                    </select>
+                    <input type="number" name="playCountValue"/> times
+                </td>
+            </tr>
+            <tr>
+                <td><fmt:message key="more.random.format"/></td>
+                <td>
+                    <select style="width: 100%;" name="format">
+                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="flac">FLAC</option>
+                        <option value="mp3">MP3</option>
+                    </select>
+                </td>
+                <td><fmt:message key="more.random.addtoplaylist"/></td>
+                <td>
+                    <input name="addToPlaylist" value="true" type="checkbox"/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                  <input type="submit" value="<fmt:message key="more.random.ok"/>">
                 </td>
             </tr>
             <c:if test="${not model.clientSidePlaylist}">

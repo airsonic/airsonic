@@ -117,7 +117,7 @@
     <bean id="randomPlayQueueController" class="org.libresonic.player.controller.RandomPlayQueueController">
         <property name="viewName" value="reload"/>
         <property name="playerService" ref="playerService"/>
-        <property name="searchService" ref="searchService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
         <property name="securityService" ref="securityService"/>
         <property name="settingsService" ref="settingsService"/>
         <property name="reloadFrames">
