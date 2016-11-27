@@ -52,6 +52,7 @@ public class PersonalSettingsCommand {
     private boolean showArtistInfoEnabled;
     private boolean nowPlayingAllowed;
     private boolean autoHidePlayQueue;
+    private boolean keyboardShortcutsEnabled;
     private boolean finalVersionNotificationEnabled;
     private boolean betaVersionNotificationEnabled;
     private boolean songNotificationEnabled;
@@ -228,6 +229,14 @@ public class PersonalSettingsCommand {
 
     public void setAutoHidePlayQueue(boolean autoHidePlayQueue) {
         this.autoHidePlayQueue = autoHidePlayQueue;
+    }
+
+    public boolean isKeyboardShortcutsEnabled() {
+        return keyboardShortcutsEnabled;
+    }
+
+    public void setKeyboardShortcutsEnabled(boolean keyboardShortcutsEnabled) {
+        this.keyboardShortcutsEnabled = keyboardShortcutsEnabled;
     }
 
     public boolean isLastFmEnabled() {

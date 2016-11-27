@@ -119,6 +119,22 @@ public class PlayQueueService {
         return convert(request, player, true);
     }
 
+    public PlayQueueInfo toggleStartStop() throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        return doToggleStartStop(request, response);
+    }
+
+    public PlayQueueInfo doToggleStartStop(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Player player = getCurrentPlayer(request, response);
+        if (player.getPlayQueue().getStatus() == PlayQueue.Status.STOPPED) {
+            player.getPlayQueue().setStatus(PlayQueue.Status.PLAYING);
+        } else if (player.getPlayQueue().getStatus() == PlayQueue.Status.PLAYING) {
+            player.getPlayQueue().setStatus(PlayQueue.Status.STOPPED);
+        }
+        return convert(request, player, true);
+    }
+
     public PlayQueueInfo skip(int index) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();

@@ -238,6 +238,7 @@ public class MultiController extends MultiActionController {
         map.put("showRight", userSettings.isShowNowPlayingEnabled() || userSettings.isShowChatEnabled());
         map.put("autoHidePlayQueue", userSettings.isAutoHidePlayQueue());
         map.put("listReloadDelay", userSettings.getListReloadDelay());
+        map.put("keyboardShortcutsEnabled", userSettings.isKeyboardShortcutsEnabled());
         map.put("showSideBar", userSettings.isShowSideBar());
         map.put("brand", settingsService.getBrand());
         return new ModelAndView("index", "model", map);

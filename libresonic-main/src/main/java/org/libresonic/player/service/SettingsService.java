@@ -1264,6 +1264,7 @@ public class SettingsService {
         settings.setPartyModeEnabled(false);
         settings.setNowPlayingAllowed(true);
         settings.setAutoHidePlayQueue(true);
+        settings.setKeyboardShortcutsEnabled(false);
         settings.setShowSideBar(true);
         settings.setShowArtistInfoEnabled(true);
         settings.setViewAsList(false);

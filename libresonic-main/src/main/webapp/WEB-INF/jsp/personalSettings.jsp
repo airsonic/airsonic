@@ -181,6 +181,13 @@
 
     <table class="indent">
         <tr>
+            <td><form:checkbox path="keyboardShortcutsEnabled" id="keyboardShortcutsEnabled" cssClass="checkbox"/></td>
+            <td><label for="keyboardShortcutsEnabled"><fmt:message key="personalsettings.keyboardshortcutsenabled"/></label></td>
+        </tr>
+    </table>
+
+    <table class="indent">
+        <tr>
             <td><fmt:message key="personalsettings.listreloaddelay"/></td>
             <td><form:input path="listReloadDelay" size="24"/></td>
         </tr>

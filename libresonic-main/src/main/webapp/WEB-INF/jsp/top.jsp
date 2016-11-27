@@ -10,6 +10,7 @@
     <script type="text/javascript">
         var previousQuery = "";
         var instantSearchTimeout;
+        var showSideBar = ${model.showSideBar ? 'true' : 'false'};
 
         function triggerInstantSearch() {
             if (instantSearchTimeout) {
@@ -31,6 +32,7 @@
             $("#hide-left-frame").show();
             toggleLeftFrame(230);
             multiService.setShowSideBar(true);
+            showSideBar = true;
         }
 
         function hideLeftFrame() {
@@ -38,6 +40,12 @@
             $("#show-left-frame").show();
             toggleLeftFrame(0);
             multiService.setShowSideBar(false);
+            showSideBar = false;
+        }
+
+        function toggleLeftFrameVisible() {
+            if (showSideBar) hideLeftFrame();
+            else showLeftFrame();
         }
 
         function toggleLeftFrame(width) {

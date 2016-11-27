@@ -161,6 +161,8 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertFalse("Error in getUserSettings().", userSettings.isNowPlayingAllowed());
         assertSame("Error in getUserSettings().", AvatarScheme.NONE, userSettings.getAvatarScheme());
         assertNull("Error in getUserSettings().", userSettings.getSystemAvatarId());
+        assertEquals("Error in getUserSettings().", 0, userSettings.getListReloadDelay());
+        assertFalse("Error in getUserSettings().", userSettings.isKeyboardShortcutsEnabled());
 
         UserSettings settings = new UserSettings("sindre");
         settings.setLocale(Locale.SIMPLIFIED_CHINESE);
@@ -181,6 +183,8 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         settings.setAvatarScheme(AvatarScheme.SYSTEM);
         settings.setSystemAvatarId(1);
         settings.setChanged(new Date(9412L));
+        settings.setListReloadDelay(60);
+        settings.setKeyboardShortcutsEnabled(true);
 
         userDao.updateUserSettings(settings);
         userSettings = userDao.getUserSettings("sindre");
@@ -204,6 +208,8 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertSame("Error in getUserSettings().", AvatarScheme.SYSTEM, userSettings.getAvatarScheme());
         assertEquals("Error in getUserSettings().", 1, userSettings.getSystemAvatarId().intValue());
         assertEquals("Error in getUserSettings().", new Date(9412L), userSettings.getChanged());
+        assertEquals("Error in getUserSettings().", 60, userSettings.getListReloadDelay());
+        assertTrue("Error in getUserSettings().", userSettings.isKeyboardShortcutsEnabled());
 
         userDao.deleteUser("sindre");
         assertNull("Error in cascading delete.", userDao.getUserSettings("sindre"));

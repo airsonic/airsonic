@@ -44,5 +44,11 @@ public class Schema61 extends Schema {
             template.execute("alter table user_settings add list_reload_delay int default 60 not null");
             LOG.info("Database column 'user_settings.list_reload_delay' was added successfully.");
         }
+
+        if (!columnExists(template, "keyboard_shortcuts_enabled", "user_settings")) {
+            LOG.info("Database column 'user_settings.keyboard_shortcuts_enabled' not found.  Creating it.");
+            template.execute("alter table user_settings add keyboard_shortcuts_enabled boolean default false not null");
+            LOG.info("Database column 'user_settings.keyboard_shortcuts_enabled' was added successfully.");
+        }
     }
 }
