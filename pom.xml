@@ -218,8 +218,13 @@
                             <failOnWarning>${failOnDependencyWarning}</failOnWarning>
                             <ignoreNonCompile>true</ignoreNonCompile>
                             <ignoredUnusedDeclaredDependencies>
+
                               <ignoredUnusedDeclaredDependency>com.sun.mail:javax.mail*</ignoredUnusedDeclaredDependency>
                               <ignoredUnusedDeclaredDependency>org.seamless:seamless-http*</ignoredUnusedDeclaredDependency>
+
+                              <!-- Needed for libresonic-booter to load Libresonic correctly -->
+                              <ignoredUnusedDeclaredDependency>org.springframework.security:spring-security-config*</ignoredUnusedDeclaredDependency>
+
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
