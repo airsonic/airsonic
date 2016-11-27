@@ -54,7 +54,7 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
+            <artifactId>spring-context</artifactId>
         </dependency>
 
         <dependency>
