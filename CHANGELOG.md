@@ -3,6 +3,11 @@
 # Libresonic/libresonic
 # -->
 
+v6.1
+----
+
+  * First real stable release!
+
 v6.1.beta2
 --------
 
