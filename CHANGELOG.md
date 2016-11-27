@@ -3,7 +3,7 @@
 # Libresonic/libresonic
 # -->
 
-v6.1.rc1
+v6.1.beta2
 --------
 
   * Metaproject: Jenkins builds!
