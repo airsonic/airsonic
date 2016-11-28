@@ -30,9 +30,9 @@ public class LoginController {
     private static final Logger LOG = Logger.getLogger(LoginController.class);
 
     @Autowired
-    private final SecurityService securityService = null;
+    private SecurityService securityService;
     @Autowired
-    private final SettingsService settingsService = null;
+    private SettingsService settingsService;
 
     @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
