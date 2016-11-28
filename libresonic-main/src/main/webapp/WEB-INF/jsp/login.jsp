@@ -35,6 +35,10 @@
 
         <tr>
             <td align="left"><input name="submit" type="submit" value="<fmt:message key="login.login"/>" tabindex="4"></td>
+            <td align="left" class="detail">
+                <input type="checkbox" name="_spring_security_remember_me" id="remember" class="checkbox" tabindex="3">
+                <label for="remember"><fmt:message key="login.remember"/></label>
+            </td>
         </tr>
             <tr>
                 <td></td>
