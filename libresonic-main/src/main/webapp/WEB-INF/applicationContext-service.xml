@@ -86,12 +86,15 @@
         <property name="userCache" ref="userCache"/>
     </bean>
 
+    <bean id="configurationService" class="org.libresonic.player.service.ApacheCommonsConfigurationService" />
+
     <bean id="settingsService" class="org.libresonic.player.service.SettingsService" init-method="init">
         <property name="internetRadioDao" ref="internetRadioDao"/>
         <property name="musicFolderDao" ref="musicFolderDao"/>
         <property name="userDao" ref="userDao"/>
         <property name="avatarDao" ref="avatarDao"/>
         <property name="versionService" ref="versionService"/>
+        <property name="configurationService" ref="configurationService" />
     </bean>
 
     <bean id="mediaScannerService" class="org.libresonic.player.service.MediaScannerService" init-method="init" depends-on="metaDataParserFactory">
