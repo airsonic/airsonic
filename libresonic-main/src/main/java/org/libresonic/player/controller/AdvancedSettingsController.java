@@ -19,24 +19,33 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.command.AdvancedSettingsCommand;
 import org.libresonic.player.service.SettingsService;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.apache.commons.lang.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Controller for the page used to administrate advanced settings.
  *
  * @author Sindre Mehus
  */
-public class AdvancedSettingsController extends SimpleFormController {
+@Controller
+@RequestMapping("/advancedSettings")
+public class AdvancedSettingsController {
 
+    @Autowired
     private SettingsService settingsService;
 
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+    // TODO replace with @GetMapping in Spring 4
+    @RequestMapping(method = RequestMethod.GET)
+    protected String formBackingObject(Model model) throws Exception {
         AdvancedSettingsCommand command = new AdvancedSettingsCommand();
         command.setDownloadLimit(String.valueOf(settingsService.getDownloadBitrateLimit()));
         command.setUploadLimit(String.valueOf(settingsService.getUploadBitrateLimit()));
@@ -53,12 +62,12 @@ public class AdvancedSettingsController extends SimpleFormController {
         command.setSmtpUser(settingsService.getSmtpUser());
         command.setSmtpFrom(settingsService.getSmtpFrom());
 
-        return command;
+        model.addAttribute("command", command);
+        return "advancedSettings";
     }
 
-    @Override
-    protected void doSubmitAction(Object comm) throws Exception {
-        AdvancedSettingsCommand command = (AdvancedSettingsCommand) comm;
+    @RequestMapping(method = RequestMethod.POST)
+    protected String doSubmitAction(@ModelAttribute AdvancedSettingsCommand command,Model model) throws Exception {
 
         command.setToast(true);
         command.setReloadNeeded(false);
@@ -90,10 +99,8 @@ public class AdvancedSettingsController extends SimpleFormController {
             settingsService.setSmtpPassword(command.getSmtpPassword());
         }
 
-        settingsService.save();
+        model.addAttribute("command", command);
+        return "advancedSettings";
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 }

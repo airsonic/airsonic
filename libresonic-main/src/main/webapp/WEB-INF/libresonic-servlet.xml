@@ -225,23 +225,10 @@
         <property name="viewName" value="internetRadioSettings"/>
         <property name="settingsService" ref="settingsService"/>
     </bean>
-    <bean id="podcastSettingsController" class="org.libresonic.player.controller.PodcastSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.PodcastSettingsCommand"/>
-        <property name="successView" value="podcastSettings"/>
-        <property name="formView" value="podcastSettings"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="podcastService" ref="podcastService"/>
-    </bean>
     <bean id="generalSettingsController" class="org.libresonic.player.controller.GeneralSettingsController">
         <property name="commandClass" value="org.libresonic.player.command.GeneralSettingsCommand"/>
         <property name="successView" value="generalSettings"/>
         <property name="formView" value="generalSettings"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="advancedSettingsController" class="org.libresonic.player.controller.AdvancedSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.AdvancedSettingsCommand"/>
-        <property name="successView" value="advancedSettings"/>
-        <property name="formView" value="advancedSettings"/>
         <property name="settingsService" ref="settingsService"/>
     </bean>
     <bean id="personalSettingsController" class="org.libresonic.player.controller.PersonalSettingsController">
@@ -467,9 +454,7 @@
                 <prop key="/networkSettings.view">networkSettingsController</prop>
                 <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
-                <prop key="/podcastSettings.view">podcastSettingsController</prop>
                 <prop key="/generalSettings.view">generalSettingsController</prop>
-                <prop key="/advancedSettings.view">advancedSettingsController</prop>
                 <prop key="/personalSettings.view">personalSettingsController</prop>
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
                 <prop key="/userSettings.view">userSettingsController</prop>
