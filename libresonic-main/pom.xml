@@ -18,6 +18,34 @@
 
     <dependencies>
 
+        <!-- Adding Jetty for a simple developement embedded server  -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty-embedded</artifactId>
+            <version>6.1.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.servlet.jsp</groupId>
+                    <artifactId>jsp-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jsp-2.0</artifactId>
+            <version>6.1.5</version>
+            <type>pom</type>
+        </dependency>
+        <!-- END : Adding Jetty for a simple developement embedded server  -->
+
+
         <dependency>
             <groupId>org.libresonic.player</groupId>
             <artifactId>libresonic-rest-api</artifactId>
