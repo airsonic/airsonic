@@ -198,16 +198,6 @@
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="settingsService" ref="settingsService"/>
     </bean>
-    <bean id="musicFolderSettingsController" class="org.libresonic.player.controller.MusicFolderSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.MusicFolderSettingsCommand"/>
-        <property name="successView" value="musicFolderSettings"/>
-        <property name="formView" value="musicFolderSettings"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaScannerService" ref="mediaScannerService"/>
-        <property name="artistDao" ref="artistDao"/>
-        <property name="albumDao" ref="albumDao"/>
-        <property name="mediaFileDao" ref="mediaFileDao"/>
-    </bean>
     <bean id="transcodingSettingsController" class="org.libresonic.player.controller.TranscodingSettingsController">
         <property name="viewName" value="transcodingSettings"/>
         <property name="transcodingService" ref="transcodingService"/>
@@ -443,7 +433,6 @@
                 <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
                 <prop key="/sonosSettings.view">sonosSettingsController</prop>
                 <prop key="/shareSettings.view">shareSettingsController</prop>
-                <prop key="/musicFolderSettings.view">musicFolderSettingsController</prop>
                 <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
                 <prop key="/generalSettings.view">generalSettingsController</prop>

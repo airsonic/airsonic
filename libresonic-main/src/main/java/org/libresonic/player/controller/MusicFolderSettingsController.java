@@ -20,6 +20,7 @@
 package org.libresonic.player.controller;
 
 import org.libresonic.player.command.MusicFolderSettingsCommand;
+import org.libresonic.player.command.NetworkSettingsCommand;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.ArtistDao;
 import org.libresonic.player.dao.MediaFileDao;
@@ -27,6 +28,13 @@ import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.service.MediaScannerService;
 import org.libresonic.player.service.SettingsService;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -40,22 +48,33 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
-public class MusicFolderSettingsController extends SimpleFormController {
+@Controller
+@RequestMapping("/musicFolderSettings")
+public class MusicFolderSettingsController {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaScannerService mediaScannerService;
+    @Autowired
     private ArtistDao artistDao;
+    @Autowired
     private AlbumDao albumDao;
+    @Autowired
     private MediaFileDao mediaFileDao;
 
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    protected String formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
+                                       @RequestParam(value = "expunge",required = false) String expunge,
+                                       @RequestParam(value = "reload",required = false) String reload,
+                                       Model model) throws Exception {
         MusicFolderSettingsCommand command = new MusicFolderSettingsCommand();
 
-        if (request.getParameter("scanNow") != null) {
+        if (scanNow != null) {
             settingsService.clearMusicFolderCache();
             mediaScannerService.scanLibrary();
         }
-        if (request.getParameter("expunge") != null) {
+        if (expunge != null) {
             expunge();
         }
 
@@ -66,8 +85,10 @@ public class MusicFolderSettingsController extends SimpleFormController {
         command.setScanning(mediaScannerService.isScanning());
         command.setMusicFolders(wrap(settingsService.getAllMusicFolders(true, true)));
         command.setNewMusicFolder(new MusicFolderSettingsCommand.MusicFolderInfo());
-        command.setReload(request.getParameter("reload") != null || request.getParameter("scanNow") != null);
-        return command;
+        command.setReload(reload != null || scanNow != null);
+
+        model.addAttribute("command",command);
+        return "musicFolderSettings";
     }
 
     private void expunge() {
@@ -84,17 +105,18 @@ public class MusicFolderSettingsController extends SimpleFormController {
         return result;
     }
 
-    @Override
-    protected ModelAndView onSubmit(Object comm) throws Exception {
-        MusicFolderSettingsCommand command = (MusicFolderSettingsCommand) comm;
+    @RequestMapping(method = RequestMethod.POST)
+    protected String onSubmit(@ModelAttribute MusicFolderSettingsCommand command, Model model) throws Exception {
 
-        for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
-            if (musicFolderInfo.isDelete()) {
-                settingsService.deleteMusicFolder(musicFolderInfo.getId());
-            } else {
-                MusicFolder musicFolder = musicFolderInfo.toMusicFolder();
-                if (musicFolder != null) {
-                    settingsService.updateMusicFolder(musicFolder);
+        if (command.getMusicFolders() != null) {
+            for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
+                if (musicFolderInfo.isDelete()) {
+                    settingsService.deleteMusicFolder(musicFolderInfo.getId());
+                } else {
+                    MusicFolder musicFolder = musicFolderInfo.toMusicFolder();
+                    if (musicFolder != null) {
+                        settingsService.updateMusicFolder(musicFolder);
+                    }
                 }
             }
         }
@@ -111,26 +133,8 @@ public class MusicFolderSettingsController extends SimpleFormController {
         settingsService.save();
 
         mediaScannerService.schedule();
-        return new ModelAndView(new RedirectView(getSuccessView() + ".view?reload"));
+        model.addAttribute("command",command);
+        return "redirect:musicFolderSettings.view";
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setMediaScannerService(MediaScannerService mediaScannerService) {
-        this.mediaScannerService = mediaScannerService;
-    }
-
-    public void setArtistDao(ArtistDao artistDao) {
-        this.artistDao = artistDao;
-    }
-
-    public void setAlbumDao(AlbumDao albumDao) {
-        this.albumDao = albumDao;
-    }
-
-    public void setMediaFileDao(MediaFileDao mediaFileDao) {
-        this.mediaFileDao = mediaFileDao;
-    }
 }

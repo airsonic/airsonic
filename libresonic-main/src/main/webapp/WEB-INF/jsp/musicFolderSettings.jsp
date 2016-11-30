@@ -38,6 +38,7 @@
 
     <c:forEach items="${command.musicFolders}" var="folder" varStatus="loopStatus">
         <tr>
+            <form:hidden path="musicFolders[${loopStatus.count-1}].id"/>
             <td><form:input path="musicFolders[${loopStatus.count-1}].name" size="20"/></td>
             <td><form:input path="musicFolders[${loopStatus.count-1}].path" size="40"/></td>
             <td align="center" style="padding-left:1em"><form:checkbox path="musicFolders[${loopStatus.count-1}].enabled" cssClass="checkbox"/></td>
