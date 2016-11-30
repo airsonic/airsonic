@@ -24,6 +24,13 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.taskdefs.ManifestTask;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
 import org.libresonic.player.command.NetworkSettingsCommand;
@@ -36,12 +43,17 @@ import org.libresonic.player.service.SettingsService;
  *
  * @author Sindre Mehus
  */
-public class NetworkSettingsController extends SimpleFormController {
+@Controller
+@RequestMapping("/networkSettings")
+public class NetworkSettingsController {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private NetworkService networkService;
 
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    protected String formBackingObject(Model model) throws Exception {
         NetworkSettingsCommand command = new NetworkSettingsCommand();
         command.setPortForwardingEnabled(settingsService.isPortForwardingEnabled());
         command.setUrlRedirectionEnabled(settingsService.isUrlRedirectionEnabled());
@@ -51,18 +63,26 @@ public class NetworkSettingsController extends SimpleFormController {
         command.setPort(settingsService.getPort());
         command.setLicenseInfo(settingsService.getLicenseInfo());
 
-        return command;
+        model.addAttribute("command",command);
+        return "networkSettings";
     }
 
-    protected void doSubmitAction(Object cmd) throws Exception {
-        NetworkSettingsCommand command = (NetworkSettingsCommand) cmd;
+    @RequestMapping(method = RequestMethod.POST)
+    protected String doSubmitAction(@ModelAttribute NetworkSettingsCommand command, Model model) throws Exception {
         command.setToast(true);
 
         settingsService.setPortForwardingEnabled(command.isPortForwardingEnabled());
         settingsService.setUrlRedirectionEnabled(command.isUrlRedirectionEnabled());
-        settingsService.setUrlRedirectType(UrlRedirectType.valueOf(command.getUrlRedirectType()));
-        settingsService.setUrlRedirectFrom(StringUtils.lowerCase(command.getUrlRedirectFrom()));
-        settingsService.setUrlRedirectCustomUrl(StringUtils.trimToEmpty(command.getUrlRedirectCustomUrl()));
+        String urlRedirectType = command.getUrlRedirectType();
+        if (urlRedirectType == null) {
+            command.setUrlRedirectType("NORMAL");
+            command.setUrlRedirectFrom("yourname");
+            command.setUrlRedirectCustomUrl("http://");
+        } else {
+            settingsService.setUrlRedirectType(UrlRedirectType.valueOf(command.getUrlRedirectType()));
+            settingsService.setUrlRedirectFrom(StringUtils.lowerCase(command.getUrlRedirectFrom()));
+            settingsService.setUrlRedirectCustomUrl(StringUtils.trimToEmpty(command.getUrlRedirectCustomUrl()));
+        }
 
         if (settingsService.getServerId() == null) {
             Random rand = new Random(System.currentTimeMillis());
@@ -72,13 +92,8 @@ public class NetworkSettingsController extends SimpleFormController {
         settingsService.save();
         networkService.initPortForwarding(0);
         networkService.initUrlRedirection(true);
+        model.addAttribute("command",command);
+        return "networkSettings";
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setNetworkService(NetworkService networkService) {
-        this.networkService = networkService;
-    }
 }

@@ -208,13 +208,6 @@
         <property name="albumDao" ref="albumDao"/>
         <property name="mediaFileDao" ref="mediaFileDao"/>
     </bean>
-    <bean id="networkSettingsController" class="org.libresonic.player.controller.NetworkSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.NetworkSettingsCommand"/>
-        <property name="successView" value="networkSettings"/>
-        <property name="formView" value="networkSettings"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="networkService" ref="networkService"/>
-    </bean>
     <bean id="transcodingSettingsController" class="org.libresonic.player.controller.TranscodingSettingsController">
         <property name="viewName" value="transcodingSettings"/>
         <property name="transcodingService" ref="transcodingService"/>
@@ -451,7 +444,6 @@
                 <prop key="/sonosSettings.view">sonosSettingsController</prop>
                 <prop key="/shareSettings.view">shareSettingsController</prop>
                 <prop key="/musicFolderSettings.view">musicFolderSettingsController</prop>
-                <prop key="/networkSettings.view">networkSettingsController</prop>
                 <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
                 <prop key="/generalSettings.view">generalSettingsController</prop>
