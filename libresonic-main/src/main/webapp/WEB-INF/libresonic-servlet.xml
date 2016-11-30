@@ -208,12 +208,6 @@
         <property name="viewName" value="internetRadioSettings"/>
         <property name="settingsService" ref="settingsService"/>
     </bean>
-    <bean id="generalSettingsController" class="org.libresonic.player.controller.GeneralSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.GeneralSettingsCommand"/>
-        <property name="successView" value="generalSettings"/>
-        <property name="formView" value="generalSettings"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
     <bean id="personalSettingsController" class="org.libresonic.player.controller.PersonalSettingsController">
         <property name="commandClass" value="org.libresonic.player.command.PersonalSettingsCommand"/>
         <property name="successView" value="personalSettings"/>
@@ -435,7 +429,6 @@
                 <prop key="/shareSettings.view">shareSettingsController</prop>
                 <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
-                <prop key="/generalSettings.view">generalSettingsController</prop>
                 <prop key="/personalSettings.view">personalSettingsController</prop>
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
                 <prop key="/userSettings.view">userSettingsController</prop>
