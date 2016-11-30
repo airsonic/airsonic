@@ -2,7 +2,12 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder />
+
+    <import resource="applicationContext-db.xml" />
 
     <!-- DAO's -->
 
@@ -44,6 +49,7 @@
 
     <bean id="userDao" class="org.libresonic.player.dao.UserDao">
         <property name="daoHelper" ref="daoHelper"/>
+        <property name="userTableQuote" ref="userTableQuote"/>
     </bean>
 
     <bean id="transcodingDao" class="org.libresonic.player.dao.TranscodingDao">
@@ -65,9 +71,6 @@
     <bean id="bookmarkDao" class="org.libresonic.player.dao.BookmarkDao">
         <property name="daoHelper" ref="daoHelper"/>
     </bean>
-
-    <bean id="daoHelper" class="org.libresonic.player.dao.DaoHelperFactory" factory-method="create"/>
-
 
     <!-- Services -->
 

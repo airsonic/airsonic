@@ -14,7 +14,9 @@ public class AdditionalPropertySourceConfigurer implements
         ApacheCommonsConfigurationService configurationService = new ApacheCommonsConfigurationService();
         ImmutableConfiguration snapshot = configurationService.getImmutableSnapshot();
 
-        PropertySource ps = new CommonsConfigurationPropertySource("libresonic-pre-init-configs", snapshot);
+        PropertySource ps = new DatasourceProfileActivatorPropertySource(new CommonsConfigurationPropertySource(
+                "libresonic-pre-init-configs",
+                snapshot));
         ctx.getEnvironment().getPropertySources().addLast(ps);
     }
 }

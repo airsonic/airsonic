@@ -61,6 +61,8 @@ public class UserDao extends AbstractDao {
     private UserRowMapper userRowMapper = new UserRowMapper();
     private UserSettingsRowMapper userSettingsRowMapper = new UserSettingsRowMapper();
 
+    String userTableQuote = "";
+
     /**
      * Returns the user with the given username.
      *
@@ -68,7 +70,7 @@ public class UserDao extends AbstractDao {
      * @return The user, or <code>null</code> if not found.
      */
     public User getUserByName(String username) {
-        String sql = "select " + USER_COLUMNS + " from user where username=?";
+        String sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where username=?";
         return queryOne(sql, userRowMapper, username);
     }
 
@@ -79,7 +81,7 @@ public class UserDao extends AbstractDao {
      * @return The user, or <code>null</code> if not found.
      */
     public User getUserByEmail(String email) {
-        String sql = "select " + USER_COLUMNS + " from user where email=?";
+        String sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where email=?";
         return queryOne(sql, userRowMapper, email);
     }
 
@@ -89,7 +91,7 @@ public class UserDao extends AbstractDao {
      * @return Possibly empty array of all users.
      */
     public List<User> getAllUsers() {
-        String sql = "select " + USER_COLUMNS + " from user";
+        String sql = "select " + USER_COLUMNS + " from " + getUserTable();
         return query(sql, userRowMapper);
     }
 
@@ -99,7 +101,7 @@ public class UserDao extends AbstractDao {
      * @param user The user to create.
      */
     public void createUser(User user) {
-        String sql = "insert into user (" + USER_COLUMNS + ") values (" + questionMarks(USER_COLUMNS) + ')';
+        String sql = "insert into " + getUserTable() + " (" + USER_COLUMNS + ") values (" + questionMarks(USER_COLUMNS) + ')';
         update(sql, user.getUsername(), encrypt(user.getPassword()), user.getEmail(), user.isLdapAuthenticated(),
                 user.getBytesStreamed(), user.getBytesDownloaded(), user.getBytesUploaded());
         writeRoles(user);
@@ -117,7 +119,7 @@ public class UserDao extends AbstractDao {
 
         update("delete from user_role where username=?", username);
         update("delete from player where username=?", username);
-        update("delete from user where username=?", username);
+        update("delete from " + getUserTable() + " where username=?", username);
     }
 
     /**
@@ -126,7 +128,7 @@ public class UserDao extends AbstractDao {
      * @param user The user to update.
      */
     public void updateUser(User user) {
-        String sql = "update user set password=?, email=?, ldap_authenticated=?, bytes_streamed=?, bytes_downloaded=?, bytes_uploaded=? " +
+        String sql = "update " + getUserTable() + " set password=?, email=?, ldap_authenticated=?, bytes_streamed=?, bytes_downloaded=?, bytes_uploaded=? " +
                 "where username=?";
         getJdbcTemplate().update(sql, new Object[]{encrypt(user.getPassword()), user.getEmail(), user.isLdapAuthenticated(),
                 user.getBytesStreamed(), user.getBytesDownloaded(), user.getBytesUploaded(),
@@ -354,5 +356,13 @@ public class UserDao extends AbstractDao {
 
             return settings;
         }
+    }
+
+    private String getUserTable() {
+        return userTableQuote + "user" + userTableQuote;
+    }
+
+    public void setUserTableQuote(String userTableQuote) {
+        this.userTableQuote = userTableQuote;
     }
 }

@@ -1,11 +1,21 @@
 package org.libresonic.player.dao;
 
+import javax.sql.DataSource;
 import junit.framework.TestCase;
+import liquibase.exception.LiquibaseException;
 import org.libresonic.player.TestCaseUtils;
+import org.libresonic.player.service.SettingsService;
+import org.libresonic.player.spring.SpringLiquibase;
 import org.libresonic.player.util.FileUtil;
+import org.libresonic.player.util.Util;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Superclass for all DAO test cases.
@@ -32,7 +42,10 @@ public abstract class DaoTestCaseBase extends TestCase {
     protected PodcastDao podcastDao;
 
     protected DaoTestCaseBase() {
-        daoHelper = new HsqlDaoHelper();
+        DataSource dataSource = createDataSource();
+        daoHelper = new GenericDaoHelper(new JdbcTemplate(dataSource), new NamedParameterJdbcTemplate(dataSource));
+
+        runDatabaseMigration(dataSource);
 
         playerDao = new PlayerDao();
         internetRadioDao = new InternetRadioDao();
@@ -55,6 +68,34 @@ public abstract class DaoTestCaseBase extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         getJdbcTemplate().execute("shutdown");
+    }
+
+    private void runDatabaseMigration(DataSource dataSource) {
+        SpringLiquibase springLiquibase = new SpringLiquibase();
+        springLiquibase.setDataSource(dataSource);
+        springLiquibase.setChangeLog("classpath:liquibase/db-changelog.xml");
+        springLiquibase.setResourceLoader(new DefaultResourceLoader());
+        Map<String,String> parameters = new HashMap<>();
+        parameters.put("defaultMusicFolder", Util.getDefaultMusicFolder());
+        parameters.put("varcharLimit", "512");
+        parameters.put("userTableQuote", "");
+        springLiquibase.setChangeLogParameters(parameters);
+        try {
+            springLiquibase.afterPropertiesSet();
+        } catch (LiquibaseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private DataSource createDataSource() {
+        File libresonicHome = SettingsService.getLibresonicHome();
+        DriverManagerDataSource ds = new DriverManagerDataSource();
+        ds.setDriverClassName("org.hsqldb.jdbcDriver");
+        ds.setUrl("jdbc:hsqldb:file:" + libresonicHome.getPath() + "/db/libresonic");
+        ds.setUsername("sa");
+        ds.setPassword("");
+
+        return ds;
     }
 
     protected JdbcTemplate getJdbcTemplate() {

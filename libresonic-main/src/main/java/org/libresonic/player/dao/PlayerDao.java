@@ -153,7 +153,7 @@ public class PlayerDao extends AbstractDao {
         update(sql, player.getName(), player.getType(), player.getUsername(),
                player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), player.getTranscodeScheme().name(), player.isDynamicIp(),
-               player.getTechnology(), player.getClientId(), player.getId());
+               player.getTechnology().name(), player.getClientId(), player.getId());
     }
 
     private void addPlaylist(Player player) {

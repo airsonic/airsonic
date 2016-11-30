@@ -41,7 +41,13 @@ public class SettingsServiceTestCase extends TestCase {
         String libresonicHome = TestCaseUtils.libresonicHomePathForTest();
         System.setProperty("libresonic.home", libresonicHome);
         new File(libresonicHome, "libresonic.properties").delete();
-        settingsService = new SettingsService();
+        settingsService = newSettingsService();
+    }
+
+    private SettingsService newSettingsService() {
+        SettingsService settingsService = new SettingsService();
+        settingsService.setConfigurationService(new ApacheCommonsConfigurationService());
+        return settingsService;
     }
 
     public void testLibresonicHome() {
@@ -97,7 +103,7 @@ public class SettingsServiceTestCase extends TestCase {
         settingsService.save();
         verifySettings(settingsService);
 
-        verifySettings(new SettingsService());
+        verifySettings(newSettingsService());
     }
 
     private void verifySettings(SettingsService ss) {

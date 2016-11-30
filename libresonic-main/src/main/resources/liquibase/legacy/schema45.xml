@@ -1,0 +1,84 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema45_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 18</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="18" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 18</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema45_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where id = 11</sqlCheck>
+        </preConditions>
+        <insert tableName="role">
+            <column name="id" valueNumeric="11"/>
+            <column name="name" value="share" />
+        </insert>
+        <sql>
+            insert into user_role(username, role_id)
+            select distinct u.username, 11 from ${userTableQuote}user${userTableQuote} u, user_role ur
+            where u.username = ur.username and ur.role_id = 1
+        </sql>
+        <rollback />
+    </changeSet>
+    <changeSet id="schema45_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="share" />
+            </not>
+        </preConditions>
+        <createTable tableName="share">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="description" type="${varchar_type}" />
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="s_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true"/>
+            </column>
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="expires" type="datetime" />
+            <column name="last_visited" type="datetime" />
+            <column name="visit_count" type="int" defaultValueNumeric="0" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex unique="true" tableName="share" indexName="idx_share_name">
+            <column name="name"/>
+        </createIndex>
+        <sql dbms="hsql">
+            set table share type cached
+        </sql>
+        <createTable tableName="share_file">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="share_id" type="int">
+                <constraints nullable="false" foreignKeyName="sf_s_fk" referencedTableName="share" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="path" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <sql dbms="hsql">
+            set table share_file type cached
+        </sql>
+        <rollback>
+            <dropTable tableName="share" />
+            <dropTable tableName="share_file" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

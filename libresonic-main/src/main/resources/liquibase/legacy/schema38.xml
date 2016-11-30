@@ -1,0 +1,40 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema38_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 14</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="14" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 14</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema38_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="player" columnName="client_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="player">
+            <column name="client_id" type="${varchar_type}"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema38_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="show_chat" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="show_chat" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

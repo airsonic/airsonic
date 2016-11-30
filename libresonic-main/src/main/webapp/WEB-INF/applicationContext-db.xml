@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="applicationContext-db-jndi.xml" />
+    <import resource="applicationContext-db-embed.xml" />
+    <import resource="applicationContext-db-legacy.xml" />
+
+    <bean id="daoHelper" class="org.libresonic.player.dao.GenericDaoHelper">
+        <constructor-arg name="jdbcTemplate" ref="jdbcTemplate" />
+        <constructor-arg name="namedParameterJdbcTemplate" ref="namedJdbcTemplate" />
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" >
+        <constructor-arg name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="namedJdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate" >
+        <constructor-arg name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="rollbackFile" class="java.io.File">
+        <constructor-arg name="parent" value="#{T(org.libresonic.player.service.SettingsService).libresonicHome}" />
+        <constructor-arg name="child" value="rollback.sql" />
+    </bean>
+
+    <bean id="userTableQuote" class="java.lang.String">
+        <constructor-arg value="${database.usertable.quote:}" />
+    </bean>
+
+    <bean id="liquibase" class="org.libresonic.player.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSource" />
+        <property name="changeLog" value="classpath:liquibase/db-changelog.xml" />
+        <property name="rollbackFile" ref="rollbackFile" />
+        <property name="changeLogParameters">
+            <map>
+                <entry key="defaultMusicFolder" value="#{T(org.libresonic.player.util.Util).getDefaultMusicFolder()}" />
+                <entry key="varcharLimit" value="${database.varchar.maxlength:512}" />
+                <entry key="userTableQuote" value-ref="userTableQuote" />
+            </map>
+        </property>
+    </bean>
+</beans>

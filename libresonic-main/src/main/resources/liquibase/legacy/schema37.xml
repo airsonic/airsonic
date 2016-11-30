@@ -1,0 +1,81 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <property name="curr_date_expr" value="current_timestamp" />
+    <changeSet id="schema37_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 13</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="13" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 13</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema37_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where id = 9</sqlCheck>
+        </preConditions>
+        <insert tableName="role">
+            <column name="id" valueNumeric="9"/>
+            <column name="name" value="settings" />
+        </insert>
+        <sql>
+            insert into user_role(username, role_id) select distinct u.username, 9 from ${userTableQuote}user${userTableQuote} u
+        </sql>
+        <rollback />
+    </changeSet>
+    <changeSet id="schema37_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where id = 10</sqlCheck>
+        </preConditions>
+        <insert tableName="role">
+            <column name="id" valueNumeric="10"/>
+            <column name="name" value="jukebox" />
+        </insert>
+        <sql>
+            insert into user_role(username, role_id) select distinct u.username, 10 from ${userTableQuote}user${userTableQuote} u
+        </sql>
+        <rollback />
+    </changeSet>
+    <changeSet id="schema37_004" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="music_folder" columnName="changed" />
+            </not>
+        </preConditions>
+        <addColumn tableName="music_folder">
+            <column name="changed" type="datetime" defaultValueComputed="${curr_date_expr}">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema37_005" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="internet_radio" columnName="changed" />
+            </not>
+        </preConditions>
+        <addColumn tableName="internet_radio">
+            <column name="changed" type="datetime" defaultValueComputed="${curr_date_expr}">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema37_006" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="changed" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="changed" type="datetime" defaultValueComputed="${curr_date_expr}">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
