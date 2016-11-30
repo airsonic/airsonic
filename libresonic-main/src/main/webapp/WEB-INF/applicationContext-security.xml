@@ -60,7 +60,7 @@
                              default-target-url="/index.view"
                              authentication-failure-url="/login.view?error=1"
                              always-use-default-target="true"/>
-        <security:remember-me user-service-ref="securityService" />
+        <security:remember-me user-service-ref="securityService" key="libresonic"/>
     </security:http>
 
     <security:authentication-manager>
