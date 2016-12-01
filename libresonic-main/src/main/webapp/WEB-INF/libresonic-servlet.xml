@@ -173,14 +173,6 @@
     <bean id="settingsController" class="org.libresonic.player.controller.SettingsController">
         <property name="securityService" ref="securityService"/>
     </bean>
-    <bean id="playerSettingsController" class="org.libresonic.player.controller.PlayerSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.PlayerSettingsCommand"/>
-        <property name="successView" value="playerSettings"/>
-        <property name="formView" value="playerSettings"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="transcodingService" ref="transcodingService"/>
-    </bean>
     <bean id="dlnaSettingsController" class="org.libresonic.player.controller.DLNASettingsController">
         <property name="viewName" value="dlnaSettings"/>
         <property name="upnpService" ref="upnpService"/>
@@ -423,7 +415,6 @@
                 <prop key="/starred.view">starredController</prop>
                 <prop key="/search.view">searchController</prop>
                 <prop key="/settings.view">settingsController</prop>
-                <prop key="/playerSettings.view">playerSettingsController</prop>
                 <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
                 <prop key="/sonosSettings.view">sonosSettingsController</prop>
                 <prop key="/shareSettings.view">shareSettingsController</prop>
