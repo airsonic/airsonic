@@ -161,15 +161,6 @@
         <property name="mediaFileDao" ref="mediaFileDao"/>
         <property name="mediaFileService" ref="mediaFileService"/>
     </bean>
-    <bean id="searchController" class="org.libresonic.player.controller.SearchController">
-        <property name="commandClass" value="org.libresonic.player.command.SearchCommand"/>
-        <property name="successView" value="search"/>
-        <property name="formView" value="search"/>
-        <property name="searchService" ref="searchService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playerService" ref="playerService"/>
-    </bean>
     <bean id="settingsController" class="org.libresonic.player.controller.SettingsController">
         <property name="securityService" ref="securityService"/>
     </bean>
@@ -413,7 +404,6 @@
                 <prop key="/videoPlayer.view">videoPlayerController</prop>
                 <prop key="/nowPlaying.view">nowPlayingController</prop>
                 <prop key="/starred.view">starredController</prop>
-                <prop key="/search.view">searchController</prop>
                 <prop key="/settings.view">settingsController</prop>
                 <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
                 <prop key="/sonosSettings.view">sonosSettingsController</prop>

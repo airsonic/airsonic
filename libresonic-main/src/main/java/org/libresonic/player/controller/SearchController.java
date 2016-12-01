@@ -25,7 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -45,24 +50,30 @@ import org.libresonic.player.service.SettingsService;
  *
  * @author Sindre Mehus
  */
-public class SearchController extends SimpleFormController {
+@Controller
+@RequestMapping("/search")
+public class SearchController {
 
     private static final int MATCH_COUNT = 25;
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private SearchService searchService;
 
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        return new SearchCommand();
+    @RequestMapping(method = RequestMethod.GET)
+    protected String formBackingObject(HttpServletRequest request, Model model) throws Exception {
+        model.addAttribute("command",new SearchCommand());
+        return "search";
     }
 
-    @Override
-    protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object com, BindException errors)
+    @RequestMapping(method = RequestMethod.POST)
+    protected String onSubmit(HttpServletRequest request, HttpServletResponse response, SearchCommand command, Model model)
             throws Exception {
-        SearchCommand command = (SearchCommand) com;
 
         User user = securityService.getCurrentUser(request);
         UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
@@ -90,22 +101,8 @@ public class SearchController extends SimpleFormController {
             command.setPlayer(playerService.getPlayer(request, response));
         }
 
-        return new ModelAndView(getSuccessView(), errors.getModel());
+        model.addAttribute("command",command);
+        return "search";
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
-    }
 }

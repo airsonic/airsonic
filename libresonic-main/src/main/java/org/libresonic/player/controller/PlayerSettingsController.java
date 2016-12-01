@@ -60,7 +60,7 @@ public class PlayerSettingsController  {
     private TranscodingService transcodingService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected Object formBackingObject(HttpServletRequest request, Model model) throws Exception {
+    protected String formBackingObject(HttpServletRequest request, Model model) throws Exception {
 
         handleRequestParameters(request);
         List<Player> players = getPlayers(request);
