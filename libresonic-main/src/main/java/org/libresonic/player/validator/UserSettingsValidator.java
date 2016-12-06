@@ -24,6 +24,8 @@ import org.libresonic.player.controller.UserSettingsController;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -32,9 +34,12 @@ import org.springframework.validation.Validator;
  *
  * @author Sindre Mehus
  */
+@Component
 public class UserSettingsValidator implements Validator {
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
 
     /**
@@ -82,11 +87,4 @@ public class UserSettingsValidator implements Validator {
 
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 }

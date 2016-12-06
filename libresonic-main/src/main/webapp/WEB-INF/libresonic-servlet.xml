@@ -13,7 +13,7 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <mvc:annotation-driven />
-    <context:component-scan base-package="org.libresonic.player.controller"/>
+    <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
     <bean id="leftController" class="org.libresonic.player.controller.LeftController">
         <property name="viewName" value="left"/>
@@ -203,16 +203,6 @@
         <property name="settingsService" ref="settingsService"/>
         <property name="securityService" ref="securityService"/>
     </bean>
-    <bean id="userSettingsController" class="org.libresonic.player.controller.UserSettingsController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandClass" value="org.libresonic.player.command.UserSettingsCommand"/>
-        <property name="validator" ref="userSettingsValidator"/>
-        <property name="successView" value="userSettings"/>
-        <property name="formView" value="userSettings"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="transcodingService" ref="transcodingService"/>
-    </bean>
     <bean id="passwordSettingsController" class="org.libresonic.player.controller.PasswordSettingsController">
         <property name="sessionForm" value="true"/>
         <property name="commandClass" value="org.libresonic.player.command.PasswordSettingsCommand"/>
@@ -364,10 +354,6 @@
     <bean id="premiumSettingsValidator" class="org.libresonic.player.validator.PremiumSettingsValidator">
         <property name="settingsService" ref="settingsService"/>
     </bean>
-    <bean id="userSettingsValidator" class="org.libresonic.player.validator.UserSettingsValidator">
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
     <bean id="passwordSettingsValidator" class="org.libresonic.player.validator.PasswordSettingsValidator"/>
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -412,7 +398,6 @@
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
                 <prop key="/personalSettings.view">personalSettingsController</prop>
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
-                <prop key="/userSettings.view">userSettingsController</prop>
                 <prop key="/passwordSettings.view">passwordSettingsController</prop>
                 <prop key="/premiumSettings.view">premiumSettingsController</prop>
                 <prop key="/allmusic.view">allmusicController</prop>
