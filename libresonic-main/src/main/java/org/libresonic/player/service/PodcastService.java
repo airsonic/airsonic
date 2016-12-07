@@ -39,24 +39,24 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.PodcastDao;
@@ -302,33 +302,34 @@ public class PodcastService {
     @SuppressWarnings({"unchecked"})
     private void doRefreshChannel(PodcastChannel channel, boolean downloadEpisodes) {
         InputStream in = null;
-        HttpClient client = new DefaultHttpClient();
 
-        try {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             channel.setStatus(PodcastStatus.DOWNLOADING);
             channel.setErrorMessage(null);
             podcastDao.updateChannel(channel);
-
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 2 * 60 * 1000); // 2 minutes
-            HttpConnectionParams.setSoTimeout(client.getParams(), 10 * 60 * 1000); // 10 minutes
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(2 * 60 * 1000) // 2 minutes
+                    .setSocketTimeout(10 * 60 * 1000) // 10 minutes
+                    .build();
             HttpGet method = new HttpGet(channel.getUrl());
+            method.setConfig(requestConfig);
 
-            HttpResponse response = client.execute(method);
-            in = response.getEntity().getContent();
+            try (CloseableHttpResponse response = client.execute(method)) {
+                in = response.getEntity().getContent();
 
-            Document document = new SAXBuilder().build(in);
-            Element channelElement = document.getRootElement().getChild("channel");
+                Document document = new SAXBuilder().build(in);
+                Element channelElement = document.getRootElement().getChild("channel");
 
-            channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
-            channel.setDescription(StringUtil.removeMarkup(channelElement.getChildTextTrim("description")));
-            channel.setImageUrl(getChannelImageUrl(channelElement));
-            channel.setStatus(PodcastStatus.COMPLETED);
-            channel.setErrorMessage(null);
-            podcastDao.updateChannel(channel);
+                channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
+                channel.setDescription(StringUtil.removeMarkup(channelElement.getChildTextTrim("description")));
+                channel.setImageUrl(getChannelImageUrl(channelElement));
+                channel.setStatus(PodcastStatus.COMPLETED);
+                channel.setErrorMessage(null);
+                podcastDao.updateChannel(channel);
 
-            downloadImage(channel);
-            refreshEpisodes(channel, channelElement.getChildren("item"));
-
+                downloadImage(channel);
+                refreshEpisodes(channel, channelElement.getChildren("item"));
+            }
         } catch (Exception x) {
             LOG.warn("Failed to get/parse RSS file for Podcast channel " + channel.getUrl(), x);
             channel.setStatus(PodcastStatus.ERROR);
@@ -336,7 +337,6 @@ public class PodcastService {
             podcastDao.updateChannel(channel);
         } finally {
             IOUtils.closeQuietly(in);
-            client.getConnectionManager().shutdown();
         }
 
         if (downloadEpisodes) {
@@ -349,10 +349,9 @@ public class PodcastService {
     }
 
     private void downloadImage(PodcastChannel channel) {
-        HttpClient client = new DefaultHttpClient();
         InputStream in = null;
         OutputStream out = null;
-        try {
+        try(CloseableHttpClient client = HttpClients.createDefault()) {
             String imageUrl = channel.getImageUrl();
             if (imageUrl == null) {
                 return;
@@ -367,17 +366,17 @@ public class PodcastService {
             }
 
             HttpGet method = new HttpGet(imageUrl);
-            HttpResponse response = client.execute(method);
-            in = response.getEntity().getContent();
-            out = new FileOutputStream(new File(dir, "cover." + getCoverArtSuffix(response)));
-            IOUtils.copy(in, out);
-            mediaFileService.refreshMediaFile(channelMediaFile);
+            try (CloseableHttpResponse response = client.execute(method)) {
+                in = response.getEntity().getContent();
+                out = new FileOutputStream(new File(dir, "cover." + getCoverArtSuffix(response)));
+                IOUtils.copy(in, out);
+                mediaFileService.refreshMediaFile(channelMediaFile);
+            }
         } catch (Exception x) {
             LOG.warn("Failed to download cover art for podcast channel '" + channel.getTitle() + "': " + x, x);
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(out);
-            client.getConnectionManager().shutdown();
         }
     }
 
@@ -534,68 +533,69 @@ public class PodcastService {
 
         LOG.info("Starting to download Podcast from " + episode.getUrl());
 
-        HttpClient client = new DefaultHttpClient();
-        try {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
 
             if (!settingsService.getLicenseInfo().isLicenseOrTrialValid()) {
                 throw new Exception("Sorry, the trial period is expired.");
             }
 
             PodcastChannel channel = getChannel(episode.getChannelId());
-
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 2 * 60 * 1000); // 2 minutes
-            HttpConnectionParams.setSoTimeout(client.getParams(), 10 * 60 * 1000); // 10 minutes
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(2 * 60 * 1000) // 2 minutes
+                    .setSocketTimeout(10 * 60 * 1000) // 10 minutes
+                    .build();
             HttpGet method = new HttpGet(episode.getUrl());
+            method.setConfig(requestConfig);
 
-            HttpResponse response = client.execute(method);
-            in = response.getEntity().getContent();
+            try (CloseableHttpResponse response = client.execute(method)) {
+                in = response.getEntity().getContent();
 
-            File file = getFile(channel, episode);
-            out = new FileOutputStream(file);
+                File file = getFile(channel, episode);
+                out = new FileOutputStream(file);
 
-            episode.setStatus(PodcastStatus.DOWNLOADING);
-            episode.setBytesDownloaded(0L);
-            episode.setErrorMessage(null);
-            episode.setPath(file.getPath());
-            podcastDao.updateEpisode(episode);
+                episode.setStatus(PodcastStatus.DOWNLOADING);
+                episode.setBytesDownloaded(0L);
+                episode.setErrorMessage(null);
+                episode.setPath(file.getPath());
+                podcastDao.updateEpisode(episode);
 
-            byte[] buffer = new byte[4096];
-            long bytesDownloaded = 0;
-            int n;
-            long nextLogCount = 30000L;
+                byte[] buffer = new byte[4096];
+                long bytesDownloaded = 0;
+                int n;
+                long nextLogCount = 30000L;
 
-            while ((n = in.read(buffer)) != -1) {
-                out.write(buffer, 0, n);
-                bytesDownloaded += n;
+                while ((n = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, n);
+                    bytesDownloaded += n;
 
-                if (bytesDownloaded > nextLogCount) {
-                    episode.setBytesDownloaded(bytesDownloaded);
-                    nextLogCount += 30000L;
+                    if (bytesDownloaded > nextLogCount) {
+                        episode.setBytesDownloaded(bytesDownloaded);
+                        nextLogCount += 30000L;
 
-                    // Abort download if episode was deleted by user.
-                    if (isEpisodeDeleted(episode)) {
-                        break;
+                        // Abort download if episode was deleted by user.
+                        if (isEpisodeDeleted(episode)) {
+                            break;
+                        }
+                        podcastDao.updateEpisode(episode);
                     }
+                }
+
+                if (isEpisodeDeleted(episode)) {
+                    LOG.info("Podcast " + episode.getUrl() + " was deleted. Aborting download.");
+                    IOUtils.closeQuietly(out);
+                    file.delete();
+                } else {
+                    addMediaFileIdToEpisodes(Arrays.asList(episode));
+                    episode.setBytesDownloaded(bytesDownloaded);
                     podcastDao.updateEpisode(episode);
+                    LOG.info("Downloaded " + bytesDownloaded + " bytes from Podcast " + episode.getUrl());
+                    IOUtils.closeQuietly(out);
+                    updateTags(file, episode);
+                    episode.setStatus(PodcastStatus.COMPLETED);
+                    podcastDao.updateEpisode(episode);
+                    deleteObsoleteEpisodes(channel);
                 }
             }
-
-            if (isEpisodeDeleted(episode)) {
-                LOG.info("Podcast " + episode.getUrl() + " was deleted. Aborting download.");
-                IOUtils.closeQuietly(out);
-                file.delete();
-            } else {
-                addMediaFileIdToEpisodes(Arrays.asList(episode));
-                episode.setBytesDownloaded(bytesDownloaded);
-                podcastDao.updateEpisode(episode);
-                LOG.info("Downloaded " + bytesDownloaded + " bytes from Podcast " + episode.getUrl());
-                IOUtils.closeQuietly(out);
-                updateTags(file, episode);
-                episode.setStatus(PodcastStatus.COMPLETED);
-                podcastDao.updateEpisode(episode);
-                deleteObsoleteEpisodes(channel);
-            }
-
         } catch (Exception x) {
             LOG.warn("Failed to download Podcast from " + episode.getUrl(), x);
             episode.setStatus(PodcastStatus.ERROR);
@@ -604,7 +604,6 @@ public class PodcastService {
         } finally {
             IOUtils.closeQuietly(in);
             IOUtils.closeQuietly(out);
-            client.getConnectionManager().shutdown();
         }
     }
 
