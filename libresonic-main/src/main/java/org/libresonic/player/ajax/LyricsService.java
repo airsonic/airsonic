@@ -24,12 +24,12 @@ import java.io.StringReader;
 import java.net.SocketException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -92,17 +92,15 @@ public class LyricsService {
     }
 
     private String executeGetRequest(String url) throws IOException {
-        HttpClient client = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 15000);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(15000)
+                .setSocketTimeout(15000)
+                .build();
         HttpGet method = new HttpGet(url);
-        try {
-
+        method.setConfig(requestConfig);
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             return client.execute(method, responseHandler);
-
-        } finally {
-            client.getConnectionManager().shutdown();
         }
     }
 }

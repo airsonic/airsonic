@@ -24,15 +24,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.util.Pair;
@@ -82,24 +82,24 @@ public class SonosServiceRegistration {
         for (Pair<String, String> parameter : parameters) {
             params.add(new BasicNameValuePair(parameter.getFirst(), parameter.getSecond()));
         }
-
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(20 * 1000) // 20 seconds
+                .setSocketTimeout(20 * 1000) // 20 seconds
+                .build();
         HttpPost request = new HttpPost(url);
+        request.setConfig(requestConfig);
         request.setEntity(new UrlEncodedFormEntity(params, StringUtil.ENCODING_UTF8));
 
         return executeRequest(request);
     }
 
     private String executeRequest(HttpUriRequest request) throws IOException {
-        HttpClient client = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 10000);
 
-        try {
+
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             return client.execute(request, responseHandler);
 
-        } finally {
-            client.getConnectionManager().shutdown();
         }
     }
 }

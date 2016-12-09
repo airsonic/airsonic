@@ -25,11 +25,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
@@ -72,69 +72,69 @@ public class CoverArtService {
     private void saveCoverArt(String path, String url) throws Exception {
         InputStream input = null;
         OutputStream output = null;
-        HttpClient client = new DefaultHttpClient();
 
-        try {
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 20 * 1000); // 20 seconds
-            HttpConnectionParams.setSoTimeout(client.getParams(), 20 * 1000); // 20 seconds
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(20 * 1000) // 20 seconds
+                    .setSocketTimeout(20 * 1000) // 20 seconds
+                    .build();
             HttpGet method = new HttpGet(url);
+            method.setConfig(requestConfig);
+            try (CloseableHttpResponse response = client.execute(method)) {
+                input = response.getEntity().getContent();
 
-            HttpResponse response = client.execute(method);
-            input = response.getEntity().getContent();
+                // Attempt to resolve proper suffix.
+                String suffix = "jpg";
+                if (url.toLowerCase().endsWith(".gif")) {
+                    suffix = "gif";
+                } else if (url.toLowerCase().endsWith(".png")) {
+                    suffix = "png";
+                }
 
-            // Attempt to resolve proper suffix.
-            String suffix = "jpg";
-            if (url.toLowerCase().endsWith(".gif")) {
-                suffix = "gif";
-            } else if (url.toLowerCase().endsWith(".png")) {
-                suffix = "png";
-            }
+                // Check permissions.
+                File newCoverFile = new File(path, "cover." + suffix);
+                if (!securityService.isWriteAllowed(newCoverFile)) {
+                    throw new Exception("Permission denied: " + StringUtil.toHtml(newCoverFile.getPath()));
+                }
 
-            // Check permissions.
-            File newCoverFile = new File(path, "cover." + suffix);
-            if (!securityService.isWriteAllowed(newCoverFile)) {
-                throw new Exception("Permission denied: " + StringUtil.toHtml(newCoverFile.getPath()));
-            }
+                // If file exists, create a backup.
+                backup(newCoverFile, new File(path, "cover." + suffix + ".backup"));
 
-            // If file exists, create a backup.
-            backup(newCoverFile, new File(path, "cover." + suffix + ".backup"));
+                // Write file.
+                output = new FileOutputStream(newCoverFile);
+                IOUtils.copy(input, output);
 
-            // Write file.
-            output = new FileOutputStream(newCoverFile);
-            IOUtils.copy(input, output);
+                MediaFile dir = mediaFileService.getMediaFile(path);
 
-            MediaFile dir = mediaFileService.getMediaFile(path);
+                // Refresh database.
+                mediaFileService.refreshMediaFile(dir);
+                dir = mediaFileService.getMediaFile(dir.getId());
 
-            // Refresh database.
-            mediaFileService.refreshMediaFile(dir);
-            dir = mediaFileService.getMediaFile(dir.getId());
+                // Rename existing cover files if new cover file is not the preferred.
+                try {
+                    while (true) {
+                        File coverFile = mediaFileService.getCoverArt(dir);
+                        if (coverFile != null && !isMediaFile(coverFile) && !newCoverFile.equals(coverFile)) {
+                            if (!coverFile.renameTo(new File(coverFile.getCanonicalPath() + ".old"))) {
+                                LOG.warn("Unable to rename old image file " + coverFile);
+                                break;
+                            }
+                            LOG.info("Renamed old image file " + coverFile);
 
-            // Rename existing cover files if new cover file is not the preferred.
-            try {
-                while (true) {
-                    File coverFile = mediaFileService.getCoverArt(dir);
-                    if (coverFile != null && !isMediaFile(coverFile) && !newCoverFile.equals(coverFile)) {
-                        if (!coverFile.renameTo(new File(coverFile.getCanonicalPath() + ".old"))) {
-                            LOG.warn("Unable to rename old image file " + coverFile);
+                            // Must refresh again.
+                            mediaFileService.refreshMediaFile(dir);
+                            dir = mediaFileService.getMediaFile(dir.getId());
+                        } else {
                             break;
                         }
-                        LOG.info("Renamed old image file " + coverFile);
-
-                        // Must refresh again.
-                        mediaFileService.refreshMediaFile(dir);
-                        dir = mediaFileService.getMediaFile(dir.getId());
-                    } else {
-                        break;
                     }
+                } catch (Exception x) {
+                    LOG.warn("Failed to rename existing cover file.", x);
                 }
-            } catch (Exception x) {
-                LOG.warn("Failed to rename existing cover file.", x);
             }
-
         } finally {
             IOUtils.closeQuietly(input);
             IOUtils.closeQuietly(output);
-            client.getConnectionManager().shutdown();
         }
     }
 
