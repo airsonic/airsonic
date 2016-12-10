@@ -369,6 +369,15 @@ public class PlayQueue {
     }
 
     /**
+     * Returns whether the playlist is a shuffle radio
+     *
+     * @return Whether the playlist is a shuffle radio.
+     */
+    public synchronized boolean isRadioEnabled() {
+        return this.randomSearchCriteria != null;
+    }
+
+    /**
      * Revert the last operation.
      */
     public synchronized void undo() {

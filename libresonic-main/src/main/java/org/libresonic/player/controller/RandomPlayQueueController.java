@@ -199,7 +199,7 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         List<MusicFolder> musicFolders = getMusicFolders(request);
 
         // Do we add to the current playlist or do we replace it?
-        boolean shouldAddToPlayList = ServletRequestUtils.getBooleanParameter(request, "addToPlaylist", false);
+        boolean shouldAddToPlayList = request.getParameter("addToPlaylist") != null;
 
         // Search the database using these criteria
         RandomSearchCriteria criteria = new RandomSearchCriteria(

@@ -148,6 +148,18 @@ public class PlayQueueService {
         return convert(request, player, serverSidePlaylist, offset);
     }
 
+    public PlayQueueInfo reloadSearchCriteria() throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        String username = securityService.getCurrentUsername(request);
+        Player player = getCurrentPlayer(request, response);
+        PlayQueue playQueue = player.getPlayQueue();
+        if (playQueue.getRandomSearchCriteria() != null) {
+            playQueue.addFiles(true, mediaFileService.getRandomSongs(playQueue.getRandomSearchCriteria(), username));
+        }
+        return convert(request, player, false);
+    }
+
     public void savePlayQueue(int currentSongIndex, long positionMillis) {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
@@ -581,7 +593,13 @@ public class PlayQueueService {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
         Player player = getCurrentPlayer(request, response);
-        player.getPlayQueue().setRepeatEnabled(!player.getPlayQueue().isRepeatEnabled());
+        PlayQueue playQueue = player.getPlayQueue();
+        if (playQueue.isRadioEnabled()) {
+            playQueue.setRandomSearchCriteria(null);
+            playQueue.setRepeatEnabled(false);
+        } else {
+            playQueue.setRepeatEnabled(!player.getPlayQueue().isRepeatEnabled());
+        }
         return convert(request, player, false);
     }
 
@@ -668,7 +686,7 @@ public class PlayQueueService {
         }
         boolean isStopEnabled = playQueue.getStatus() == PlayQueue.Status.PLAYING && !player.isExternalWithPlaylist();
         float gain = jukeboxService.getGain();
-        return new PlayQueueInfo(entries, isStopEnabled, playQueue.isRepeatEnabled(), serverSidePlaylist, gain);
+        return new PlayQueueInfo(entries, isStopEnabled, playQueue.isRepeatEnabled(), playQueue.isRadioEnabled(), serverSidePlaylist, gain);
     }
 
     private String formatFileSize(Long fileSize, Locale locale) {
