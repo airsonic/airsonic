@@ -73,7 +73,12 @@ public class UserSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    protected String formBackingObject(HttpServletRequest request,Model model) throws Exception {
+    protected String displayForm() throws Exception {
+        return "userSettings";
+    }
+
+    @ModelAttribute
+    protected void formBackingObject(HttpServletRequest request,Model model) throws Exception {
         UserSettingsCommand command = new UserSettingsCommand();
 
         User user = getUser(request);
@@ -99,7 +104,6 @@ public class UserSettingsController {
         command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
 
         model.addAttribute("command",command);
-        return "userSettings";
     }
 
     private User getUser(HttpServletRequest request) throws ServletRequestBindingException {
@@ -126,16 +130,14 @@ public class UserSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command,final BindingResult binding) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command) throws Exception {
 
-        if (!binding.hasErrors()) {
-            if (command.isDeleteUser()) {
-                deleteUser(command);
-            } else if (command.isNewUser()) {
-                createUser(command);
-            } else {
-                updateUser(command);
-            }
+        if (command.isDeleteUser()) {
+            deleteUser(command);
+        } else if (command.isNewUser()) {
+            createUser(command);
+        } else {
+            updateUser(command);
         }
         resetCommand(command);
 
