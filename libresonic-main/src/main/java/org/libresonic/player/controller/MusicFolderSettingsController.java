@@ -64,7 +64,12 @@ public class MusicFolderSettingsController {
     private MediaFileDao mediaFileDao;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected String formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
+    protected String displayForm() throws Exception {
+        return "musicFolderSettings";
+    }
+
+    @ModelAttribute
+    protected void formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
                                        @RequestParam(value = "expunge",required = false) String expunge,
                                        @RequestParam(value = "reload",required = false) String reload,
                                        Model model) throws Exception {
@@ -88,8 +93,8 @@ public class MusicFolderSettingsController {
         command.setReload(reload != null || scanNow != null);
 
         model.addAttribute("command",command);
-        return "musicFolderSettings";
     }
+
 
     private void expunge() {
         artistDao.expunge();
@@ -106,17 +111,15 @@ public class MusicFolderSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String onSubmit(@ModelAttribute MusicFolderSettingsCommand command, Model model) throws Exception {
+    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, Model model) throws Exception {
 
-        if (command.getMusicFolders() != null) {
-            for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
-                if (musicFolderInfo.isDelete()) {
-                    settingsService.deleteMusicFolder(musicFolderInfo.getId());
-                } else {
-                    MusicFolder musicFolder = musicFolderInfo.toMusicFolder();
-                    if (musicFolder != null) {
-                        settingsService.updateMusicFolder(musicFolder);
-                    }
+        for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
+            if (musicFolderInfo.isDelete()) {
+                settingsService.deleteMusicFolder(musicFolderInfo.getId());
+            } else {
+                MusicFolder musicFolder = musicFolderInfo.toMusicFolder();
+                if (musicFolder != null) {
+                    settingsService.updateMusicFolder(musicFolder);
                 }
             }
         }
@@ -133,7 +136,6 @@ public class MusicFolderSettingsController {
         settingsService.save();
 
         mediaScannerService.schedule();
-        model.addAttribute("command",command);
         return "redirect:musicFolderSettings.view";
     }
 
