@@ -37,6 +37,7 @@
     var songs = null;
     var currentStreamUrl = null;
     var repeatEnabled = false;
+    var radioEnabled = false;
     var isVisible = ${model.autoHide ? 'false' : 'true'};
     var CastPlayer = new CastPlayer();
     var ignore = false;
@@ -269,7 +270,13 @@
     }
     function onNext(wrap) {
         var index = parseInt(getCurrentSongIndex()) + 1;
-        if (wrap) {
+        if (radioEnabled && index >= songs.length) {
+            playQueueService.reloadSearchCriteria(function(playQueue) {
+                playQueueCallback(playQueue);
+                onSkip(index);
+            });
+            return;
+        } else if (wrap) {
             index = index % songs.length;
         }
         onSkip(index);
@@ -402,14 +409,20 @@
     function playQueueCallback(playQueue) {
         songs = playQueue.entries;
         repeatEnabled = playQueue.repeatEnabled;
+        radioEnabled = playQueue.radioEnabled;
         if ($("#start")) {
             $("#start").toggle(!playQueue.stopEnabled);
             $("#stop").toggle(playQueue.stopEnabled);
         }
 
         if ($("#toggleRepeat")) {
-            var text = repeatEnabled ? "<fmt:message key="playlist.repeat_on"/>" : "<fmt:message key="playlist.repeat_off"/>";
-            $("#toggleRepeat").html(text);
+            if (radioEnabled) {
+                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_radio"/>");
+            } else if (repeatEnabled) {
+                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_on"/>");
+            } else {
+                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_off"/>");
+            }
         }
 
         if (songs.length == 0) {
