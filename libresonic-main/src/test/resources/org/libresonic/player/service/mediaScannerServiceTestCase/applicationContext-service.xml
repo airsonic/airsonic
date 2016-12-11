@@ -81,8 +81,8 @@
     </bean>
 
     <bean id="rollbackFile" class="java.io.File">
-        <constructor-arg name="parent" value="#{T(org.libresonic.player.service.SettingsService).libresonicHome}" />
-        <constructor-arg name="child" value="rollback.sql" />
+        <constructor-arg type="java.io.File" index="0" value="#{T(org.libresonic.player.service.SettingsService).libresonicHome}" />
+        <constructor-arg type="java.lang.String" index="1" value="rollback.sql" />
     </bean>
 
     <bean id="dataSource"
