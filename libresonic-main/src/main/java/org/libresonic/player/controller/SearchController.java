@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -66,13 +67,17 @@ public class SearchController {
     private SearchService searchService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected String formBackingObject(HttpServletRequest request, Model model) throws Exception {
-        model.addAttribute("command",new SearchCommand());
+    protected String displayForm() throws Exception {
         return "search";
     }
 
+    @ModelAttribute
+    protected void formBackingObject(HttpServletRequest request, Model model) throws Exception {
+        model.addAttribute("command",new SearchCommand());
+    }
+
     @RequestMapping(method = RequestMethod.POST)
-    protected String onSubmit(HttpServletRequest request, HttpServletResponse response, SearchCommand command, Model model)
+    protected String onSubmit(HttpServletRequest request, HttpServletResponse response,@ModelAttribute("command") SearchCommand command, Model model)
             throws Exception {
 
         User user = securityService.getCurrentUser(request);
@@ -101,7 +106,6 @@ public class SearchController {
             command.setPlayer(playerService.getPlayer(request, response));
         }
 
-        model.addAttribute("command",command);
         return "search";
     }
 

@@ -60,7 +60,12 @@ public class PlayerSettingsController  {
     private TranscodingService transcodingService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected String formBackingObject(HttpServletRequest request, Model model) throws Exception {
+    protected String displayForm() throws Exception {
+        return "playerSettings";
+    }
+
+    @ModelAttribute
+    protected void formBackingObject(HttpServletRequest request, Model model) throws Exception {
 
         handleRequestParameters(request);
         List<Player> players = getPlayers(request);
@@ -103,11 +108,10 @@ public class PlayerSettingsController  {
         command.setAdmin(user.isAdminRole());
 
         model.addAttribute("command",command);
-        return "playerSettings";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute PlayerSettingsCommand command, Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, Model model) throws Exception {
         Player player = playerService.getPlayerById(command.getPlayerId());
 
         player.setAutoControlEnabled(command.isAutoControlEnabled());
@@ -121,7 +125,6 @@ public class PlayerSettingsController  {
         transcodingService.setTranscodingsForPlayer(player, command.getActiveTranscodingIds());
 
         command.setReloadNeeded(true);
-        model.addAttribute("command",command);
         return "redirect:playerSettings.view";
     }
 
