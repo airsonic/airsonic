@@ -52,8 +52,8 @@ public class NetworkSettingsController {
     @Autowired
     private NetworkService networkService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected String formBackingObject(Model model) throws Exception {
+    @ModelAttribute
+    protected void formBackingObject(Model model) throws Exception {
         NetworkSettingsCommand command = new NetworkSettingsCommand();
         command.setPortForwardingEnabled(settingsService.isPortForwardingEnabled());
         command.setUrlRedirectionEnabled(settingsService.isUrlRedirectionEnabled());
@@ -62,27 +62,23 @@ public class NetworkSettingsController {
         command.setUrlRedirectCustomUrl(settingsService.getUrlRedirectCustomUrl());
         command.setPort(settingsService.getPort());
         command.setLicenseInfo(settingsService.getLicenseInfo());
-
         model.addAttribute("command",command);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    protected String displayForm() throws Exception {
         return "networkSettings";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute NetworkSettingsCommand command, Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") NetworkSettingsCommand command, Model model) throws Exception {
         command.setToast(true);
 
         settingsService.setPortForwardingEnabled(command.isPortForwardingEnabled());
         settingsService.setUrlRedirectionEnabled(command.isUrlRedirectionEnabled());
-        String urlRedirectType = command.getUrlRedirectType();
-        if (urlRedirectType == null) {
-            command.setUrlRedirectType("NORMAL");
-            command.setUrlRedirectFrom("yourname");
-            command.setUrlRedirectCustomUrl("http://");
-        } else {
-            settingsService.setUrlRedirectType(UrlRedirectType.valueOf(command.getUrlRedirectType()));
-            settingsService.setUrlRedirectFrom(StringUtils.lowerCase(command.getUrlRedirectFrom()));
-            settingsService.setUrlRedirectCustomUrl(StringUtils.trimToEmpty(command.getUrlRedirectCustomUrl()));
-        }
+        settingsService.setUrlRedirectType(UrlRedirectType.valueOf(command.getUrlRedirectType()));
+        settingsService.setUrlRedirectFrom(StringUtils.lowerCase(command.getUrlRedirectFrom()));
+        settingsService.setUrlRedirectCustomUrl(StringUtils.trimToEmpty(command.getUrlRedirectCustomUrl()));
 
         if (settingsService.getServerId() == null) {
             Random rand = new Random(System.currentTimeMillis());
@@ -92,7 +88,6 @@ public class NetworkSettingsController {
         settingsService.save();
         networkService.initPortForwarding(0);
         networkService.initUrlRedirection(true);
-        model.addAttribute("command",command);
         return "networkSettings";
     }
 
