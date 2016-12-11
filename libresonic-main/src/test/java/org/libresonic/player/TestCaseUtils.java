@@ -88,7 +88,7 @@ public class TestCaseUtils {
    * @return
      */
   public static Integer recordsInTable(String tableName, DaoHelper daoHelper) {
-    return daoHelper.getJdbcTemplate().queryForInt("select count(1) from " + tableName);
+    return daoHelper.getJdbcTemplate().queryForObject("select count(1) from " + tableName,Integer.class);
   }
 
 

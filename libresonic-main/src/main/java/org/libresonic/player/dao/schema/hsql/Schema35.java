@@ -58,7 +58,7 @@ public class Schema35 extends Schema {
     @Override
     public void execute(JdbcTemplate template) {
 
-        if (template.queryForInt("select count(*) from version where version = 11") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 11",Integer.class) == 0) {
             LOG.info("Updating database schema to version 11.");
             template.execute("insert into version values (11)");
         }
@@ -75,7 +75,7 @@ public class Schema35 extends Schema {
             LOG.info("Database column 'user_settings.web_player_default' was added successfully.");
         }
 
-        if (template.queryForInt("select count(*) from role where id = 8") == 0) {
+        if (template.queryForObject("select count(*) from role where id = 8",Integer.class) == 0) {
             LOG.info("Role 'stream' not found in database. Creating it.");
             template.execute("insert into role values (8, 'stream')");
             template.execute("insert into user_role select distinct u.username, 8 from user u");
@@ -135,7 +135,7 @@ public class Schema35 extends Schema {
      }
 
     private void createAvatar(JdbcTemplate template, String avatar) {
-        if (template.queryForInt("select count(*) from system_avatar where name = ?", new Object[]{avatar}) == 0) {
+        if (template.queryForObject("select count(*) from system_avatar where name = ?", new Object[]{avatar},Integer.class) == 0) {
 
             InputStream in = null;
             try {

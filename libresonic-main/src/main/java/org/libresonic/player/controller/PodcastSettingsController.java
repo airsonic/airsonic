@@ -19,18 +19,15 @@
  */
 package org.libresonic.player.controller;
 
+import org.libresonic.player.command.PodcastSettingsCommand;
+import org.libresonic.player.service.PodcastService;
+import org.libresonic.player.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.PodcastService;
-import org.libresonic.player.command.PodcastSettingsCommand;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller for the page used to administrate the Podcast receiver.

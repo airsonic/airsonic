@@ -196,14 +196,6 @@
         <property name="settingsService" ref="settingsService"/>
         <property name="securityService" ref="securityService"/>
     </bean>
-    <bean id="passwordSettingsController" class="org.libresonic.player.controller.PasswordSettingsController">
-        <property name="sessionForm" value="true"/>
-        <property name="commandClass" value="org.libresonic.player.command.PasswordSettingsCommand"/>
-        <property name="validator" ref="passwordSettingsValidator"/>
-        <property name="successView" value="passwordSettings"/>
-        <property name="formView" value="passwordSettings"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="homeController" class="org.libresonic.player.controller.HomeController">
         <property name="viewName" value="home"/>
         <property name="ratingService" ref="ratingService"/>
@@ -286,14 +278,6 @@
         <property name="settingsService" ref="settingsService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
     </bean>
-    <bean id="premiumSettingsController" class="org.libresonic.player.controller.PremiumSettingsController">
-        <property name="commandClass" value="org.libresonic.player.command.PremiumSettingsCommand"/>
-        <property name="successView" value="premiumSettings"/>
-        <property name="formView" value="premiumSettings"/>
-        <property name="validator" ref="premiumSettingsValidator"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="multiController" class="org.libresonic.player.controller.MultiController">
         <property name="securityService" ref="securityService"/>
         <property name="settingsService" ref="settingsService"/>
@@ -344,10 +328,6 @@
         <property name="viewName" value="db"/>
         <property name="daoHelper" ref="daoHelper"/>
     </bean>
-    <bean id="premiumSettingsValidator" class="org.libresonic.player.validator.PremiumSettingsValidator">
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="passwordSettingsValidator" class="org.libresonic.player.validator.PasswordSettingsValidator"/>
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
@@ -390,8 +370,6 @@
                 <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
-                <prop key="/passwordSettings.view">passwordSettingsController</prop>
-                <prop key="/premiumSettings.view">premiumSettingsController</prop>
                 <prop key="/allmusic.view">allmusicController</prop>
                 <prop key="/home.view">homeController</prop>
                 <prop key="/editTags.view">editTagsController</prop>

@@ -19,21 +19,17 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
+import org.libresonic.player.command.GeneralSettingsCommand;
+import org.libresonic.player.domain.Theme;
+import org.libresonic.player.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import org.libresonic.player.command.GeneralSettingsCommand;
-import org.libresonic.player.domain.Theme;
-import org.libresonic.player.service.SettingsService;
+import java.util.Locale;
 
 /**
  * Controller for the page used to administrate general settings.

@@ -19,28 +19,21 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.Date;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.command.PersonalSettingsCommand;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import org.libresonic.player.command.PersonalSettingsCommand;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.AvatarScheme;
-import org.libresonic.player.domain.Theme;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Controller for the page used to administrate per-user settings.

@@ -37,7 +37,7 @@ public class Schema50 extends Schema {
     @Override
     public void execute(JdbcTemplate template) {
 
-        if (template.queryForInt("select count(*) from version where version = 22") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 22",Integer.class) == 0) {
             LOG.info("Updating database schema to version 22.");
             template.execute("insert into version values (22)");
 
@@ -57,7 +57,7 @@ public class Schema50 extends Schema {
         }
 
         // Added in 5.0.beta2
-        if (template.queryForInt("select count(*) from version where version = 23") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 23",Integer.class) == 0) {
             LOG.info("Updating database schema to version 23.");
             template.execute("insert into version values (23)");
             template.execute("update transcoding2 set step1='ffmpeg -i %s -map 0:0 -b:a %bk -v 0 -f mp3 -' where name='mp3 audio'");
