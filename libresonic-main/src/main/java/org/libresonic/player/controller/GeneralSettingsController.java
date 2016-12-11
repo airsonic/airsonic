@@ -48,7 +48,12 @@ public class GeneralSettingsController  {
     private SettingsService settingsService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected String formBackingObject(Model model) throws Exception {
+    protected String displayForm() throws Exception {
+        return "generalSettings";
+    }
+
+    @ModelAttribute
+    protected void formBackingObject(Model model) throws Exception {
         GeneralSettingsCommand command = new GeneralSettingsCommand();
         command.setCoverArtFileTypes(settingsService.getCoverArtFileTypes());
         command.setIgnoredArticles(settingsService.getIgnoredArticles());
@@ -87,11 +92,10 @@ public class GeneralSettingsController  {
         command.setLocales(localeStrings);
 
         model.addAttribute("command",command);
-        return "generalSettings";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute GeneralSettingsCommand command, Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") GeneralSettingsCommand command, Model model) throws Exception {
 
         int themeIndex = Integer.parseInt(command.getThemeIndex());
         Theme theme = settingsService.getAvailableThemes()[themeIndex];
