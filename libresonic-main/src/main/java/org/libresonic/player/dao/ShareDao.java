@@ -38,7 +38,8 @@ import org.libresonic.player.domain.Share;
  */
 public class ShareDao extends AbstractDao {
 
-    private static final String COLUMNS = "id, name, description, username, created, expires, last_visited, visit_count";
+    private static final String INSERT_COLUMNS = "name, description, username, created, expires, last_visited, visit_count";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private ShareRowMapper shareRowMapper = new ShareRowMapper();
     private ShareFileRowMapper shareFileRowMapper = new ShareFileRowMapper();
@@ -49,8 +50,8 @@ public class ShareDao extends AbstractDao {
      * @param share The share to create.  The ID of the share will be set by this method.
      */
     public synchronized void createShare(Share share) {
-        String sql = "insert into share (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")";
-        update(sql, null, share.getName(), share.getDescription(), share.getUsername(), share.getCreated(),
+        String sql = "insert into share (" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")";
+        update(sql, share.getName(), share.getDescription(), share.getUsername(), share.getCreated(),
                 share.getExpires(), share.getLastVisited(), share.getVisitCount());
 
         int id = getJdbcTemplate().queryForObject("select max(id) from share", Integer.class);
@@ -63,17 +64,17 @@ public class ShareDao extends AbstractDao {
      * @return Possibly empty list of all shares.
      */
     public List<Share> getAllShares() {
-        String sql = "select " + COLUMNS + " from share";
+        String sql = "select " + QUERY_COLUMNS + " from share";
         return query(sql, shareRowMapper);
     }
 
     public Share getShareByName(String shareName) {
-        String sql = "select " + COLUMNS + " from share where name=?";
+        String sql = "select " + QUERY_COLUMNS + " from share where name=?";
         return queryOne(sql, shareRowMapper, shareName);
     }
 
     public Share getShareById(int id) {
-        String sql = "select " + COLUMNS + " from share where id=?";
+        String sql = "select " + QUERY_COLUMNS + " from share where id=?";
         return queryOne(sql, shareRowMapper, id);
     }
 

@@ -35,8 +35,9 @@ import java.util.*;
 public class PlayerDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(PlayerDao.class);
-    private static final String COLUMNS = "id, name, type, username, ip_address, auto_control_enabled, m3u_bom_enabled, " +
-                                          "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id";
+    private static final String INSERT_COLUMNS = "name, type, username, ip_address, auto_control_enabled, m3u_bom_enabled, " +
+                                                 "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
     private Map<String, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<String, PlayQueue>());
@@ -47,7 +48,7 @@ public class PlayerDao extends AbstractDao {
      * @return Possibly empty list of all users.
      */
     public List<Player> getAllPlayers() {
-        String sql = "select " + COLUMNS + " from player";
+        String sql = "select " + QUERY_COLUMNS + " from player";
         return query(sql, rowMapper);
     }
 
@@ -61,10 +62,10 @@ public class PlayerDao extends AbstractDao {
      */
     public List<Player> getPlayersForUserAndClientId(String username, String clientId) {
         if (clientId != null) {
-            String sql = "select " + COLUMNS + " from player where username=? and client_id=?";
+            String sql = "select " + QUERY_COLUMNS + " from player where username=? and client_id=?";
             return query(sql, rowMapper, username, clientId);
         } else {
-            String sql = "select " + COLUMNS + " from player where username=? and client_id is null";
+            String sql = "select " + QUERY_COLUMNS + " from player where username=? and client_id is null";
             return query(sql, rowMapper, username);
         }
     }
@@ -76,7 +77,7 @@ public class PlayerDao extends AbstractDao {
      * @return The player with the given ID, or <code>null</code> if no such player exists.
      */
     public Player getPlayerById(String id) {
-        String sql = "select " + COLUMNS + " from player where id=?";
+        String sql = "select " + QUERY_COLUMNS + " from player where id=?";
         return queryOne(sql, rowMapper, id);
     }
 
@@ -92,7 +93,7 @@ public class PlayerDao extends AbstractDao {
         }
         int id = existingMax + 1;
         player.setId(String.valueOf(id));
-        String sql = "insert into player (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")";
+        String sql = "insert into player (" + QUERY_COLUMNS + ") values (" + questionMarks(QUERY_COLUMNS) + ")";
         update(sql, player.getId(), player.getName(), player.getType(), player.getUsername(),
                player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), CoverArtScheme.MEDIUM.name(),

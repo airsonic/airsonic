@@ -1,19 +1,23 @@
 package org.libresonic.player.dao;
 
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 public class GenericDaoHelper implements DaoHelper {
 
-    JdbcTemplate jdbcTemplate;
+    final JdbcTemplate jdbcTemplate;
 
-    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    final DataSource dataSource;
 
     public GenericDaoHelper(
-            JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate
+            DataSource dataSource
     ) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     @Override
@@ -24,5 +28,10 @@ public class GenericDaoHelper implements DaoHelper {
     @Override
     public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
         return namedParameterJdbcTemplate;
+    }
+
+    @Override
+    public DataSource getDataSource() {
+        return dataSource;
     }
 }

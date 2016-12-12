@@ -43,7 +43,7 @@ public abstract class DaoTestCaseBase extends TestCase {
 
     protected DaoTestCaseBase() {
         DataSource dataSource = createDataSource();
-        daoHelper = new GenericDaoHelper(new JdbcTemplate(dataSource), new NamedParameterJdbcTemplate(dataSource));
+        daoHelper = new GenericDaoHelper(dataSource);
 
         runDatabaseMigration(dataSource);
 

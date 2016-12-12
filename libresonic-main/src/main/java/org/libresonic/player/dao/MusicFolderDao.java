@@ -36,7 +36,8 @@ import java.util.List;
 public class MusicFolderDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(MusicFolderDao.class);
-    private static final String COLUMNS = "id, path, name, enabled, changed";
+    private static final String INSERT_COLUMNS = "path, name, enabled, changed";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final MusicFolderRowMapper rowMapper = new MusicFolderRowMapper();
 
     /**
@@ -45,7 +46,7 @@ public class MusicFolderDao extends AbstractDao {
      * @return Possibly empty list of all music folders.
      */
     public List<MusicFolder> getAllMusicFolders() {
-        String sql = "select " + COLUMNS + " from music_folder";
+        String sql = "select " + QUERY_COLUMNS + " from music_folder";
         return query(sql, rowMapper);
     }
 
@@ -55,7 +56,7 @@ public class MusicFolderDao extends AbstractDao {
      * @param musicFolder The music folder to create.
      */
     public void createMusicFolder(MusicFolder musicFolder) {
-        String sql = "insert into music_folder (" + COLUMNS + ") values (null, ?, ?, ?, ?)";
+        String sql = "insert into music_folder (" + INSERT_COLUMNS + ") values (?, ?, ?, ?)";
         update(sql, musicFolder.getPath(), musicFolder.getName(), musicFolder.isEnabled(), musicFolder.getChanged());
 
         Integer id = queryForInt("select max(id) from music_folder", 0);
@@ -86,7 +87,7 @@ public class MusicFolderDao extends AbstractDao {
     }
 
     public List<MusicFolder> getMusicFoldersForUser(String username) {
-        String sql = "select " + prefix(COLUMNS, "music_folder") + " from music_folder, music_folder_user " +
+        String sql = "select " + prefix(QUERY_COLUMNS, "music_folder") + " from music_folder, music_folder_user " +
                      "where music_folder.id = music_folder_user.music_folder_id and music_folder_user.username = ?";
         return query(sql, rowMapper, username);
     }

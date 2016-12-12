@@ -41,7 +41,8 @@ import java.util.Map;
 public class ArtistDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(ArtistDao.class);
-    private static final String COLUMNS = "id, name, cover_art_path, album_count, last_scanned, present, folder_id";
+    private static final String INSERT_COLUMNS = "name, cover_art_path, album_count, last_scanned, present, folder_id";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private final RowMapper rowMapper = new ArtistMapper();
 
@@ -52,7 +53,7 @@ public class ArtistDao extends AbstractDao {
      * @return The artist or null.
      */
     public Artist getArtist(String artistName) {
-        return queryOne("select " + COLUMNS + " from artist where name=?", rowMapper, artistName);
+        return queryOne("select " + QUERY_COLUMNS + " from artist where name=?", rowMapper, artistName);
     }
 
     /**
@@ -71,7 +72,7 @@ public class ArtistDao extends AbstractDao {
             put("folders", MusicFolder.toIdList(musicFolders));
         }};
 
-        return namedQueryOne("select " + COLUMNS + " from artist where name = :name and folder_id in (:folders)",
+        return namedQueryOne("select " + QUERY_COLUMNS + " from artist where name = :name and folder_id in (:folders)",
                              rowMapper, args);
     }
 
@@ -82,7 +83,7 @@ public class ArtistDao extends AbstractDao {
      * @return The artist or null.
      */
     public Artist getArtist(int id) {
-        return queryOne("select " + COLUMNS + " from artist where id=?", rowMapper, id);
+        return queryOne("select " + QUERY_COLUMNS + " from artist where id=?", rowMapper, id);
     }
 
     /**
@@ -102,7 +103,7 @@ public class ArtistDao extends AbstractDao {
         int n = update(sql, artist.getCoverArtPath(), artist.getAlbumCount(), artist.getLastScanned(), artist.isPresent(), artist.getFolderId(), artist.getName());
 
         if (n == 0) {
-            update("insert into artist (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")", null,
+            update("insert into artist (" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")",
                    artist.getName(), artist.getCoverArtPath(), artist.getAlbumCount(), artist.getLastScanned(), artist.isPresent(), artist.getFolderId());
         }
 
@@ -128,7 +129,7 @@ public class ArtistDao extends AbstractDao {
             put("offset", offset);
         }};
 
-        return namedQuery("select " + COLUMNS + " from artist where present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS + " from artist where present and folder_id in (:folders) " +
                           "order by name limit :count offset :offset", rowMapper, args);
     }
 
@@ -153,7 +154,7 @@ public class ArtistDao extends AbstractDao {
             put("offset", offset);
         }};
 
-        return namedQuery("select " + prefix(COLUMNS, "artist") + " from starred_artist, artist " +
+        return namedQuery("select " + prefix(QUERY_COLUMNS, "artist") + " from starred_artist, artist " +
                           "where artist.id = starred_artist.artist_id and " +
                           "artist.present and starred_artist.username = :username and " +
                           "artist.folder_id in (:folders) " +
@@ -166,7 +167,7 @@ public class ArtistDao extends AbstractDao {
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select top 1 id from artist where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from artist where last_scanned != ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from artist where last_scanned != ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
@@ -176,7 +177,7 @@ public class ArtistDao extends AbstractDao {
     }
 
     public void expunge() {
-        int minId = queryForInt("select top 1 id from artist where not present", 0);
+        int minId = queryForInt("select min(id) from artist where not present", 0);
         int maxId = queryForInt("select max(id) from artist where not present", 0);
 
         final int batchSize = 1000;

@@ -36,7 +36,8 @@ import org.libresonic.player.domain.InternetRadio;
 public class InternetRadioDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(InternetRadioDao.class);
-    private static final String COLUMNS = "id, name, stream_url, homepage_url, enabled, changed";
+    private static final String INSERT_COLUMNS = "name, stream_url, homepage_url, enabled, changed";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final InternetRadioRowMapper rowMapper = new InternetRadioRowMapper();
 
     /**
@@ -45,7 +46,7 @@ public class InternetRadioDao extends AbstractDao {
      * @return Possibly empty list of all internet radio stations.
      */
     public List<InternetRadio> getAllInternetRadios() {
-        String sql = "select " + COLUMNS + " from internet_radio";
+        String sql = "select " + QUERY_COLUMNS + " from internet_radio";
         return query(sql, rowMapper);
     }
 
@@ -55,7 +56,7 @@ public class InternetRadioDao extends AbstractDao {
      * @param radio The internet radio station to create.
      */
     public void createInternetRadio(InternetRadio radio) {
-        String sql = "insert into internet_radio (" + COLUMNS + ") values (null, ?, ?, ?, ?, ?)";
+        String sql = "insert into internet_radio (" + INSERT_COLUMNS + ") values (?, ?, ?, ?, ?)";
         update(sql, radio.getName(), radio.getStreamUrl(), radio.getHomepageUrl(), radio.isEnabled(), radio.getChanged());
         LOG.info("Created internet radio station " + radio.getName());
     }
