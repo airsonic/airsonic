@@ -39,7 +39,7 @@ public class Schema62 extends Schema {
             template.execute("insert into version values (27)");
         }
 
-        if (!columnExists(template, "player", "m3u_bom_enabled")) {
+        if (!columnExists(template, "m3u_bom_enabled", "player")) {
             LOG.info("Database column 'player.m3u_bom_enabled' not found.  Creating it.");
             template.execute("alter table player add m3u_bom_enabled boolean default false not null");
             LOG.info("Database column 'player.m3u_bom_enabled' was added successfully.");

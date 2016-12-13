@@ -29,16 +29,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
@@ -62,7 +62,10 @@ public class AudioScrobblerService {
     private final LinkedBlockingQueue<RegistrationData> queue = new LinkedBlockingQueue<RegistrationData>();
 
     private SettingsService settingsService;
-
+    private final RequestConfig requestConfig = RequestConfig.custom()
+            .setConnectTimeout(15000)
+            .setSocketTimeout(15000)
+            .build();
 
     /**
      * Registers the given media file at www.last.fm. This method returns immediately, the actual registration is done
@@ -234,7 +237,9 @@ public class AudioScrobblerService {
     }
 
     private String[] executeGetRequest(String url) throws IOException {
-        return executeRequest(new HttpGet(url));
+        HttpGet method = new HttpGet(url);
+        method.setConfig(requestConfig);
+        return executeRequest(method);
     }
 
     private String[] executePostRequest(String url, Map<String, String> parameters) throws IOException {
@@ -245,22 +250,17 @@ public class AudioScrobblerService {
 
         HttpPost request = new HttpPost(url);
         request.setEntity(new UrlEncodedFormEntity(params, StringUtil.ENCODING_UTF8));
-
+        request.setConfig(requestConfig);
         return executeRequest(request);
     }
 
     private String[] executeRequest(HttpUriRequest request) throws IOException {
-        HttpClient client = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 15000);
 
-        try {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             String response = client.execute(request, responseHandler);
             return response.split("\\n");
 
-        } finally {
-            client.getConnectionManager().shutdown();
         }
     }
 

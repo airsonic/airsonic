@@ -25,12 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -45,24 +45,26 @@ public class ProxyController implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String url = ServletRequestUtils.getRequiredStringParameter(request, "url");
 
-        HttpClient client = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 15000);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 15000);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(15000)
+                .setSocketTimeout(15000)
+                .build();
         HttpGet method = new HttpGet(url);
+        method.setConfig(requestConfig);
 
         InputStream in = null;
-        try {
-            HttpResponse resp = client.execute(method);
-            int statusCode = resp.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                response.sendError(statusCode);
-            } else {
-                in = resp.getEntity().getContent();
-                IOUtils.copy(in, response.getOutputStream());
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            try (CloseableHttpResponse resp = client.execute(method)) {
+                int statusCode = resp.getStatusLine().getStatusCode();
+                if (statusCode != HttpStatus.SC_OK) {
+                    response.sendError(statusCode);
+                } else {
+                    in = resp.getEntity().getContent();
+                    IOUtils.copy(in, response.getOutputStream());
+                }
             }
         } finally {
             IOUtils.closeQuietly(in);
-            client.getConnectionManager().shutdown();
         }
         return null;
     }

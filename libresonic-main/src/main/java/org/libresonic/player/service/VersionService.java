@@ -19,16 +19,6 @@
  */
 package org.libresonic.player.service;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.Version;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +29,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.Version;
 
 /**
  * Provides version-related services, including functionality for determining whether a newer
@@ -231,25 +232,22 @@ public class VersionService {
      */
     private void readLatestVersion() throws IOException {
 
-        HttpClient client = new DefaultHttpClient();
-        HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-        HttpConnectionParams.setSoTimeout(client.getParams(), 10000);
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(10000)
+                .setSocketTimeout(10000)
+                .build();
         HttpGet method = new HttpGet(VERSION_URL + "?v=" + getLocalVersion());
+        method.setConfig(requestConfig);
         String content;
-        try {
-
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             content = client.execute(method, responseHandler);
-
-        } finally {
-            client.getConnectionManager().shutdown();
         }
 
-        BufferedReader reader = new BufferedReader(new StringReader(content));
         Pattern finalPattern = Pattern.compile("LIBRESONIC_FULL_VERSION_BEGIN(.*)LIBRESONIC_FULL_VERSION_END");
         Pattern betaPattern = Pattern.compile("LIBRESONIC_BETA_VERSION_BEGIN(.*)LIBRESONIC_BETA_VERSION_END");
 
-        try {
+        try (BufferedReader reader = new BufferedReader(new StringReader(content))) {
             String line = reader.readLine();
             while (line != null) {
                 Matcher finalMatcher = finalPattern.matcher(line);
@@ -265,8 +263,6 @@ public class VersionService {
                 line = reader.readLine();
             }
 
-        } finally {
-            reader.close();
         }
     }
 }

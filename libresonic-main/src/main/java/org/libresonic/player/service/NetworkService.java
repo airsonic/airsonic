@@ -28,19 +28,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.util.EntityUtils;
 
 import org.libresonic.player.Logger;
@@ -250,34 +249,32 @@ public class NetworkService {
                 params.add(new BasicNameValuePair("licenseHolder", settingsService.getLicenseEmail()));
             }
 
-            HttpClient client = new DefaultHttpClient();
 
-            try {
+
+            try (CloseableHttpClient client = HttpClients.createDefault()) {
                 urlRedirectionStatus.setText(enable ? "Registering web address..." : "Unregistering web address...");
                 request.setEntity(new UrlEncodedFormEntity(params, StringUtil.ENCODING_UTF8));
 
-                HttpResponse response = client.execute(request);
-                StatusLine status = response.getStatusLine();
+                try (CloseableHttpResponse response = client.execute(request)) {
+                    StatusLine status = response.getStatusLine();
 
-                switch (status.getStatusCode()) {
-                    case HttpStatus.SC_BAD_REQUEST:
-                        urlRedirectionStatus.setText(EntityUtils.toString(response.getEntity()));
-                        testUrlRedirection = false;
-                        break;
-                    case HttpStatus.SC_OK:
-                        urlRedirectionStatus.setText(enable ? "Successfully registered web address." : "Web address disabled.");
-                        break;
-                    default:
-                        testUrlRedirection = false;
-                        throw new IOException(status.getStatusCode() + " " + status.getReasonPhrase());
+                    switch (status.getStatusCode()) {
+                        case HttpStatus.SC_BAD_REQUEST:
+                            urlRedirectionStatus.setText(EntityUtils.toString(response.getEntity()));
+                            testUrlRedirection = false;
+                            break;
+                        case HttpStatus.SC_OK:
+                            urlRedirectionStatus.setText(enable ? "Successfully registered web address." : "Web address disabled.");
+                            break;
+                        default:
+                            testUrlRedirection = false;
+                            throw new IOException(status.getStatusCode() + " " + status.getReasonPhrase());
+                    }
                 }
-
             } catch (Throwable x) {
                 LOG.warn(enable ? "Failed to register web address." : "Failed to unregister web address.", x);
                 urlRedirectionStatus.setText(enable ? ("Failed to register web address. " + x.getMessage() +
                         " (" + x.getClass().getSimpleName() + ")") : "Web address disabled.");
-            } finally {
-                client.getConnectionManager().shutdown();
             }
 
             // Test redirection, but only once.
@@ -305,20 +302,19 @@ public class NetworkService {
             }
 
             HttpGet request = new HttpGet(url);
-            HttpClient client = new DefaultHttpClient();
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-            HttpConnectionParams.setSoTimeout(client.getParams(), 30000);
 
-            try {
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(15000)
+                    .setSocketTimeout(15000)
+                    .build();
+            request.setConfig(requestConfig);
+            try (CloseableHttpClient client = HttpClients.createDefault()) {
                 urlRedirectionStatus.setText("Testing web address " + urlToTest + ". Please wait...");
                 String response = client.execute(request, new BasicResponseHandler());
                 urlRedirectionStatus.setText(response);
-
             } catch (Throwable x) {
                 LOG.warn("Failed to test web address.", x);
                 urlRedirectionStatus.setText("Failed to test web address. " + x.getMessage() + " (" + x.getClass().getSimpleName() + ")");
-            } finally {
-                client.getConnectionManager().shutdown();
             }
         }
     }

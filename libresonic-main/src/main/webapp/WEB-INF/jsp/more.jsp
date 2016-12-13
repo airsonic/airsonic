@@ -232,24 +232,13 @@
                         <option value="mp3">MP3</option>
                     </select>
                 </td>
-                <td><fmt:message key="more.random.addtoplaylist"/></td>
-                <td>
-                    <input name="addToPlaylist" value="true" type="checkbox"/>
-                </td>
             </tr>
             <tr>
                 <td colspan="2">
-                  <input type="submit" value="<fmt:message key="more.random.ok"/>">
+                  <input type="submit" name="addToPlaylist" value="<fmt:message key="more.random.add"/>">
+                  <input type="submit" name="autoRandom" value="<fmt:message key="more.random.radio"/>">
                 </td>
             </tr>
-            <c:if test="${not model.clientSidePlaylist}">
-                <tr>
-                    <td colspan="9">
-                        <input type="checkbox" name="autoRandom" id="autoRandom" class="checkbox"/>
-                        <label for="autoRandom"><fmt:message key="more.random.auto"/></label>
-                    </td>
-                </tr>
-            </c:if>
         </table>
     </form>
 </c:if>
