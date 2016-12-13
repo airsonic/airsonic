@@ -40,12 +40,12 @@ public class Schema43 extends Schema {
     public void execute(JdbcTemplate template) {
 
         // version 16 was used for 4.3.beta1
-        if (template.queryForInt("select count(*) from version where version = 16") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 16",Integer.class) == 0) {
             LOG.info("Updating database schema to version 16.");
             template.execute("insert into version values (16)");
         }
 
-        if (template.queryForInt("select count(*) from version where version = 17") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 17",Integer.class) == 0) {
             LOG.info("Updating database schema to version 17.");
             template.execute("insert into version values (17)");
 

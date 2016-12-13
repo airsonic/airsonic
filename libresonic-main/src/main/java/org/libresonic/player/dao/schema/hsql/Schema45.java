@@ -37,12 +37,12 @@ public class Schema45 extends Schema {
     @Override
     public void execute(JdbcTemplate template) {
 
-        if (template.queryForInt("select count(*) from version where version = 18") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 18",Integer.class) == 0) {
             LOG.info("Updating database schema to version 18.");
             template.execute("insert into version values (18)");
         }
 
-        if (template.queryForInt("select count(*) from role where id = 11") == 0) {
+        if (template.queryForObject("select count(*) from role where id = 11",Integer.class) == 0) {
             LOG.info("Role 'share' not found in database. Creating it.");
             template.execute("insert into role values (11, 'share')");
             template.execute("insert into user_role " +

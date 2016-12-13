@@ -19,37 +19,46 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-
 import org.libresonic.player.command.PlayerSettingsCommand;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.PlayerTechnology;
-import org.libresonic.player.domain.TranscodeScheme;
-import org.libresonic.player.domain.Transcoding;
-import org.libresonic.player.domain.User;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.TranscodingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller for the player settings page.
  *
  * @author Sindre Mehus
  */
-public class PlayerSettingsController extends SimpleFormController {
+@Controller
+@RequestMapping("/playerSettings")
+public class PlayerSettingsController  {
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private TranscodingService transcodingService;
 
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    protected String displayForm() throws Exception {
+        return "playerSettings";
+    }
+
+    @ModelAttribute
+    protected void formBackingObject(HttpServletRequest request, Model model) throws Exception {
 
         handleRequestParameters(request);
         List<Player> players = getPlayers(request);
@@ -91,12 +100,11 @@ public class PlayerSettingsController extends SimpleFormController {
         command.setPlayers(players.toArray(new Player[players.size()]));
         command.setAdmin(user.isAdminRole());
 
-        return command;
+        model.addAttribute("command",command);
     }
 
-    @Override
-    protected void doSubmitAction(Object comm) throws Exception {
-        PlayerSettingsCommand command = (PlayerSettingsCommand) comm;
+    @RequestMapping(method = RequestMethod.POST)
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, Model model) throws Exception {
         Player player = playerService.getPlayerById(command.getPlayerId());
 
         player.setAutoControlEnabled(command.isAutoControlEnabled());
@@ -110,6 +118,7 @@ public class PlayerSettingsController extends SimpleFormController {
         transcodingService.setTranscodingsForPlayer(player, command.getActiveTranscodingIds());
 
         command.setReloadNeeded(true);
+        return "redirect:playerSettings.view";
     }
 
     private List<Player> getPlayers(HttpServletRequest request) {
@@ -135,15 +144,4 @@ public class PlayerSettingsController extends SimpleFormController {
         }
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setTranscodingService(TranscodingService transcodingService) {
-        this.transcodingService = transcodingService;
-    }
 }

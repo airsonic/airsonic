@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.command.UserSettingsCommand;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.TranscodeScheme;
@@ -28,14 +29,17 @@ import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.util.Util;
-
-import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.validator.UserSettingsValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.mvc.SimpleFormController;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,14 +49,32 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
-public class UserSettingsController extends SimpleFormController {
+@Controller
+@RequestMapping("/userSettings")
+@SessionAttributes(value = "command")
+public class UserSettingsController {
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
+    private UserSettingsValidator userSettingsValidator;
 
-    @Override
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(userSettingsValidator);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    protected String displayForm() throws Exception {
+        return "userSettings";
+    }
+
+    @ModelAttribute
+    protected void formBackingObject(HttpServletRequest request,Model model) throws Exception {
         UserSettingsCommand command = new UserSettingsCommand();
 
         User user = getUser(request);
@@ -77,7 +99,7 @@ public class UserSettingsController extends SimpleFormController {
         command.setAllMusicFolders(settingsService.getAllMusicFolders());
         command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
 
-        return command;
+        model.addAttribute("command",command);
     }
 
     private User getUser(HttpServletRequest request) throws ServletRequestBindingException {
@@ -103,9 +125,8 @@ public class UserSettingsController extends SimpleFormController {
         return result;
     }
 
-    @Override
-    protected void doSubmitAction(Object comm) throws Exception {
-        UserSettingsCommand command = (UserSettingsCommand) comm;
+    @RequestMapping(method = RequestMethod.POST)
+    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command) throws Exception {
 
         if (command.isDeleteUser()) {
             deleteUser(command);
@@ -115,6 +136,8 @@ public class UserSettingsController extends SimpleFormController {
             updateUser(command);
         }
         resetCommand(command);
+
+        return "userSettings";
     }
 
     private void deleteUser(UserSettingsCommand command) {
@@ -176,15 +199,4 @@ public class UserSettingsController extends SimpleFormController {
         command.setReload(true);
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setTranscodingService(TranscodingService transcodingService) {
-        this.transcodingService = transcodingService;
-    }
 }

@@ -35,7 +35,7 @@ public class Schema28 extends Schema {
 
     public void execute(JdbcTemplate template) {
 
-        if (template.queryForInt("select count(*) from version where version = 4") == 0) {
+        if (template.queryForObject("select count(*) from version where version = 4",Integer.class) == 0) {
             LOG.info("Updating database schema to version 4.");
             template.execute("insert into version values (4)");
         }
