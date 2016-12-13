@@ -8,21 +8,21 @@
           http://www.springframework.org/schema/security/spring-security.xsd">
 
     <security:http auto-config='true'>
-        <!-- IS_AUTHENTICATED_ANONYMOUSLY -->
-        <security:intercept-url pattern="/login.*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
-        <security:intercept-url pattern="/recover.view" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/accessDenied.view" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/coverArt.view" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/hls/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/stream/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/ws/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/share/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/style/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/icons/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/flash/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/script/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/sonos/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <security:intercept-url pattern="/crossdomain.xml" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <!-- permitAll -->
+        <security:intercept-url pattern="/login.*" access="permitAll"/>
+        <security:intercept-url pattern="/recover.view" access="permitAll" />
+        <security:intercept-url pattern="/accessDenied.view" access="permitAll" />
+        <security:intercept-url pattern="/coverArt.view" access="permitAll" />
+        <security:intercept-url pattern="/hls/**" access="permitAll" />
+        <security:intercept-url pattern="/stream/**" access="permitAll" />
+        <security:intercept-url pattern="/ws/**" access="permitAll" />
+        <security:intercept-url pattern="/share/**" access="permitAll" />
+        <security:intercept-url pattern="/style/**" access="permitAll" />
+        <security:intercept-url pattern="/icons/**" access="permitAll" />
+        <security:intercept-url pattern="/flash/**" access="permitAll" />
+        <security:intercept-url pattern="/script/**" access="permitAll" />
+        <security:intercept-url pattern="/sonos/**" access="permitAll" />
+        <security:intercept-url pattern="/crossdomain.xml" access="permitAll" />
 
         <!-- ROLE_SETTINGS -->
         <security:intercept-url pattern="/personalSettings.view" access="ROLE_SETTINGS" />
@@ -55,7 +55,7 @@
         <security:intercept-url pattern="/podcastReceiverAdmin.view" access="ROLE_PODCAST" />
 
         <!-- ROLE_USER -->
-        <security:intercept-url pattern="/**" access="ROLE_USER" />
+        <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
         <security:form-login login-page="/login.view" default-target-url="/home.view" authentication-failure-url="/login.view?error=1"/>
     </security:http>
 

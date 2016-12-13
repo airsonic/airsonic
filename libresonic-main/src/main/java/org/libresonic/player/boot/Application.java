@@ -4,8 +4,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
+@Configuration
+@ImportResource(value = {"classpath:/applicationContext-service.xml",
+        "classpath:/applicationContext-cache.xml",
+        "classpath:/applicationContext-sonos.xml",
+        "classpath:/applicationContext-security.xml",
+        "classpath:/libresonic-servlet.xml"})
 public class Application extends SpringBootServletInitializer {
 
     @Override

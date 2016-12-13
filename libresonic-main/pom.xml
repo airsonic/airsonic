@@ -30,22 +30,22 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Metrics -->
+        <!-- Metrics
+             Metrics is a cool framework used here
+             to compute musures and statistics during automated testing
+         -->
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
             <version>${metrics.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- END Metrics -->
 
-
+        <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -69,7 +69,20 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-ldap</artifactId>
         </dependency>
+        <!-- END Spring -->
 
+        <!-- taglibs -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>string</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <!-- END taglibs -->
 
         <dependency>
             <groupId>org.apache.lucene</groupId>
