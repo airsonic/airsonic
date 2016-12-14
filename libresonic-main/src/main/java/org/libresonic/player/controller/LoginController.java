@@ -2,7 +2,6 @@ package org.libresonic.player.controller;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.User;
-import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
