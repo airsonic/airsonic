@@ -19,39 +19,60 @@
  */
 package org.libresonic.player.controller;
 
-import java.text.NumberFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.taglibs.standard.lang.jstl.IntegerDivideOperator;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller for the creating a random play queue.
  *
  * @author Sindre Mehus
  */
-public class RandomPlayQueueController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/randomPlayQueue.view")
+public class RandomPlayQueueController {
 
+    @Autowired
     private PlayerService playerService;
-    private List<ReloadFrame> reloadFrames;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.POST)
+    protected String handleRandomPlayQueue(
+            ModelMap model,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @RequestParam(value = "size") int size,
+            @RequestParam(value = "genre", required = false) String genre,
+            @RequestParam(value = "year", required = false) String year,
+            @RequestParam(value = "songRating", required = false) String songRating,
+            @RequestParam(value = "lastPlayedValue", required = false) String lastPlayedValue,
+            @RequestParam(value = "lastPlayedComp", required = false) String lastPlayedComp,
+            @RequestParam(value = "albumRatingValue", required = false) Integer albumRatingValue,
+            @RequestParam(value = "albumRatingComp", required = false) String albumRatingComp,
+            @RequestParam(value = "playCountValue", required = false) Integer playCountValue,
+            @RequestParam(value = "playCountComp", required = false) String playCountComp,
+            @RequestParam(value = "format", required = false) String format,
+            @RequestParam(value = "autoRandom", required = false) String autoRandom
+    ) throws Exception {
 
-        int size = ServletRequestUtils.getRequiredIntParameter(request, "size");
-
-        String genre;
         Integer fromYear = null;
         Integer toYear = null;
         Integer minAlbumRating = null;
@@ -64,13 +85,11 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         boolean doesShowUnstarredSongs = false;
 
         // Handle the genre filter
-        genre = request.getParameter("genre");
         if (StringUtils.equalsIgnoreCase("any", genre)) {
             genre = null;
         }
 
         // Handle the release year filter
-        String year = request.getParameter("year");
         if (!StringUtils.equalsIgnoreCase("any", year)) {
             String[] tmp = StringUtils.split(year);
             fromYear = Integer.parseInt(tmp[0]);
@@ -78,7 +97,6 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         }
 
         // Handle the song rating filter
-        String songRating = request.getParameter("songRating");
         if (StringUtils.equalsIgnoreCase("any", songRating)) {
             doesShowStarredSongs = true;
             doesShowUnstarredSongs = true;
@@ -91,8 +109,6 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         }
 
         // Handle the last played date filter
-        String lastPlayedValue = request.getParameter("lastPlayedValue");
-        String lastPlayedComp = request.getParameter("lastPlayedComp");
         Calendar lastPlayed = Calendar.getInstance();
         lastPlayed.setTime(new Date());
         switch (lastPlayedValue) {
@@ -132,10 +148,6 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         }
 
         // Handle the album rating filter
-        Integer albumRatingValue = null;
-        try { albumRatingValue = Integer.parseInt(request.getParameter("albumRatingValue")); }
-        catch (NumberFormatException e) { }
-        String albumRatingComp = request.getParameter("albumRatingComp");
         if (albumRatingValue != null) {
             switch (albumRatingComp) {
                 case "lt":
@@ -162,10 +174,6 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         }
 
         // Handle the play count filter
-        Integer playCountValue = null;
-        try { playCountValue = Integer.parseInt(request.getParameter("playCountValue")); }
-        catch (NumberFormatException e) { }
-        String playCountComp = request.getParameter("playCountComp");
         if (playCountValue != null) {
             switch (playCountComp) {
                 case "lt":
@@ -192,7 +200,6 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         }
 
         // Handle the format filter
-        String format = request.getParameter("format");
         if (StringUtils.equalsIgnoreCase(format, "any")) format = null;
 
         // Handle the music folder filter
@@ -223,16 +230,18 @@ public class RandomPlayQueueController extends ParameterizableViewController {
         PlayQueue playQueue = player.getPlayQueue();
         playQueue.addFiles(shouldAddToPlayList, mediaFileService.getRandomSongs(criteria, user.getUsername()));
 
-        if (request.getParameter("autoRandom") != null) {
+        if (autoRandom != null) {
             playQueue.setRandomSearchCriteria(criteria);
         }
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        // Render the 'reload' view to reload the play queue and the main page
+        List<ReloadFrame> reloadFrames = new ArrayList<>();
+        reloadFrames.add(new ReloadFrame("playQueue", "playQueue.view?"));
+        reloadFrames.add(new ReloadFrame("main", "more.view"));
+        Map<String, Object> map = new HashMap<>();
         map.put("reloadFrames", reloadFrames);
-
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        model.addAttribute("model", map);
+        return "reload";
     }
 
     private List<MusicFolder> getMusicFolders(HttpServletRequest request) throws ServletRequestBindingException {
@@ -242,25 +251,5 @@ public class RandomPlayQueueController extends ParameterizableViewController {
             selectedMusicFolderId = null;
         }
         return settingsService.getMusicFoldersForUser(username, selectedMusicFolderId);
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setReloadFrames(List<ReloadFrame> reloadFrames) {
-        this.reloadFrames = reloadFrames;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
     }
 }

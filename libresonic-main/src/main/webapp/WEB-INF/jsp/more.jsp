@@ -67,7 +67,16 @@
             }
             elements = form.getElementsByTagName("select");
             for (var i = 0; i < elements.length; i++) {
-                if (data[elements[i].name]) elements[i].value = data[elements[i].name];
+                var element = elements[i];
+                var value = data[element.name];
+                if (value) {
+                    for (var j = 0; j < element.options.length; j++) {
+                        if (element.options[j].value == value) {
+                            element.value = value;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -168,7 +177,7 @@
                         <option value="gt">&gt;</option>
                     </select>
                     <select name="albumRatingValue">
-                        <option value="any" selected="selected"><fmt:message key="more.random.any"/></option>
+                        <option value="" selected="selected"><fmt:message key="more.random.any"/></option>
                         <option value="0">0 <fmt:message key="more.random.stars"/></option>
                         <option value="1">1 <fmt:message key="more.random.star"/></option>
                         <option value="2">2 <fmt:message key="more.random.stars"/></option>
