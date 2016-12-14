@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.libresonic.player</groupId>
     <artifactId>libresonic</artifactId>
-    <version>6.2.beta1.spring4</version>
+    <version>6.2.beta1.springboot</version>
     <name>Libresonic</name>
     <packaging>pom</packaging>
     <organization>
