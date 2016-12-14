@@ -189,7 +189,7 @@ public class MultiController extends MultiActionController {
     }
 
     public ModelAndView gettingStarted(HttpServletRequest request, HttpServletResponse response) {
-        updatePortAndContextPath(request);
+        ControllerUtils.updatePortAndContextPath(request,settingsService);
 
         if (request.getParameter("hide") != null) {
             settingsService.setGettingStartedEnabled(false);
@@ -202,19 +202,6 @@ public class MultiController extends MultiActionController {
         return new ModelAndView("gettingStarted", "model", map);
     }
 
-    public ModelAndView index(HttpServletRequest request, HttpServletResponse response) {
-        updatePortAndContextPath(request);
-        UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("showRight", userSettings.isShowNowPlayingEnabled() || userSettings.isShowChatEnabled());
-        map.put("autoHidePlayQueue", userSettings.isAutoHidePlayQueue());
-        map.put("listReloadDelay", userSettings.getListReloadDelay());
-        map.put("keyboardShortcutsEnabled", userSettings.isKeyboardShortcutsEnabled());
-        map.put("showSideBar", userSettings.isShowSideBar());
-        map.put("brand", settingsService.getBrand());
-        return new ModelAndView("index", "model", map);
-    }
 
     public ModelAndView exportPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -232,26 +219,6 @@ public class MultiController extends MultiActionController {
         return null;
     }
 
-    private void updatePortAndContextPath(HttpServletRequest request) {
-
-        int port = Integer.parseInt(System.getProperty("libresonic.port", String.valueOf(request.getLocalPort())));
-        int httpsPort = Integer.parseInt(System.getProperty("libresonic.httpsPort", "0"));
-
-        String contextPath = request.getContextPath().replace("/", "");
-
-        if (settingsService.getPort() != port) {
-            settingsService.setPort(port);
-            settingsService.save();
-        }
-        if (settingsService.getHttpsPort() != httpsPort) {
-            settingsService.setHttpsPort(httpsPort);
-            settingsService.save();
-        }
-        if (!ObjectUtils.equals(settingsService.getUrlRedirectContextPath(), contextPath)) {
-            settingsService.setUrlRedirectContextPath(contextPath);
-            settingsService.save();
-        }
-    }
 
     public ModelAndView test(HttpServletRequest request, HttpServletResponse response) {
         return new ModelAndView("test");

@@ -17,7 +17,6 @@
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
         <cxf.version>3.1.8</cxf.version>
-        <spring.security.version>3.2.9.RELEASE</spring.security.version>
     </properties>
 
     <repositories>

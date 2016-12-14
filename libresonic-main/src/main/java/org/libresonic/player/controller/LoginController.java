@@ -43,7 +43,7 @@ public class LoginController {
         if (username != null && password != null) {
             username = StringUtil.urlEncode(username);
             password = StringUtil.urlEncode(password);
-            return new ModelAndView(new RedirectView("/j_spring_security_check?"+
+            return new ModelAndView(new RedirectView("/login?"+
                     UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY+"=" + username +
                     "&"+UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY+"=" + password
             ));

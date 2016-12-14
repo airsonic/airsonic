@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
           http://www.springframework.org/schema/beans/spring-beans.xsd
           http://www.springframework.org/schema/security
-          http://www.springframework.org/schema/security/spring-security.xsd">
+          http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
     <security:http auto-config='true'>
         <!-- permitAll -->
@@ -59,7 +59,9 @@
         <security:form-login login-page="/login.view"
                              default-target-url="/index.view"
                              authentication-failure-url="/login.view?error=1"
-                             always-use-default-target="true"/>
+                             always-use-default-target="true"
+                             username-parameter="j_username"
+                             password-parameter="j_password"/>
         <security:remember-me user-service-ref="securityService" key="libresonic"/>
     </security:http>
 
