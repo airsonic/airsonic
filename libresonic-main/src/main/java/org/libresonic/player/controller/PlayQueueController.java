@@ -19,41 +19,47 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.domain.UserSettings;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller for the playlist frame.
  *
  * @author Sindre Mehus
  */
-public class PlayQueueController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/playQueue")
+public class PlayQueueController {
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);
         UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
         Player player = playerService.getPlayer(request, response);
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("user", user);
         map.put("player", player);
         map.put("players", playerService.getPlayersForUserAndClientId(user.getUsername(), null));
@@ -62,9 +68,7 @@ public class PlayQueueController extends ParameterizableViewController {
         map.put("notify", userSettings.isSongNotificationEnabled());
         map.put("autoHide", userSettings.isAutoHidePlayQueue());
         map.put("licenseInfo", settingsService.getLicenseInfo());
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("playQueue","model",map);
     }
 
     public void setPlayerService(PlayerService playerService) {

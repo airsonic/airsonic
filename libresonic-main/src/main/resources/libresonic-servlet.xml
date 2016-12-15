@@ -15,20 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="leftController" class="org.libresonic.player.controller.LeftController">
-        <property name="viewName" value="left"/>
-        <property name="mediaScannerService" ref="mediaScannerService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="musicIndexService" ref="musicIndexService"/>
-        <property name="playerService" ref="playerService"/>
-    </bean>
-    <bean id="rightController" class="org.libresonic.player.controller.RightController">
-        <property name="viewName" value="right"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="versionService" ref="versionService"/>
-    </bean>
     <bean id="statusController" class="org.libresonic.player.controller.StatusController">
         <property name="viewName" value="status"/>
         <property name="statusService" ref="statusService"/>
@@ -57,11 +43,6 @@
         <property name="viewName" value="importPlaylist"/>
         <property name="securityService" ref="securityService"/>
         <property name="playlistService" ref="playlistService"/>
-    </bean>
-    <bean id="topController" class="org.libresonic.player.controller.TopController">
-        <property name="viewName" value="top"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
     </bean>
     <bean id="helpController" class="org.libresonic.player.controller.HelpController">
         <property name="viewName" value="help"/>
@@ -148,11 +129,6 @@
         <property name="viewName" value="changeCoverArt"/>
         <property name="mediaFileService" ref="mediaFileService"/>
     </bean>
-    <bean id="nowPlayingController" class="org.libresonic.player.controller.NowPlayingController">
-        <property name="playerService" ref="playerService"/>
-        <property name="statusService" ref="statusService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-    </bean>
     <bean id="starredController" class="org.libresonic.player.controller.StarredController">
         <property name="viewName" value="starred"/>
         <property name="playerService" ref="playerService"/>
@@ -196,25 +172,10 @@
         <property name="settingsService" ref="settingsService"/>
         <property name="securityService" ref="securityService"/>
     </bean>
-    <bean id="homeController" class="org.libresonic.player.controller.HomeController">
-        <property name="viewName" value="home"/>
-        <property name="ratingService" ref="ratingService"/>
-        <property name="mediaScannerService" ref="mediaScannerService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="searchService" ref="searchService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="editTagsController" class="org.libresonic.player.controller.EditTagsController">
         <property name="viewName" value="editTags"/>
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
-    </bean>
-    <bean id="playQueueController" class="org.libresonic.player.controller.PlayQueueController">
-        <property name="viewName" value="playQueue"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
     </bean>
     <bean id="coverArtController" class="org.libresonic.player.controller.CoverArtController" init-method="init">
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -338,8 +299,6 @@
                 <prop key="/playlists.view">playlistsController</prop>
                 <prop key="/help.view">helpController</prop>
                 <prop key="/lyrics.view">lyricsController</prop>
-                <prop key="/left.view">leftController</prop>
-                <prop key="/right.view">rightController</prop>
                 <prop key="/status.view">statusController</prop>
                 <prop key="/more.view">moreController</prop>
                 <prop key="/upload.view">uploadController</prop>
@@ -348,20 +307,14 @@
                 <prop key="/setMusicFileInfo.view">setMusicFileInfoController</prop>
                 <prop key="/createShare.view">shareManagementController</prop>
                 <prop key="/setRating.view">setRatingController</prop>
-                <prop key="/top.view">topController</prop>
                 <prop key="/randomPlayQueue.view">randomPlayQueueController</prop>
                 <prop key="/changeCoverArt.view">changeCoverArtController</prop>
-                <!--
-                 login.view has moved to the LoginController
-                <prop key="/login.view">multiController</prop>
-                -->
                 <prop key="/recover.view">multiController</prop>
                 <prop key="/accessDenied.view">multiController</prop>
                 <prop key="/notFound.view">multiController</prop>
                 <prop key="/gettingStarted.view">multiController</prop>
                 <prop key="/index.view">multiController</prop>
                 <prop key="/videoPlayer.view">videoPlayerController</prop>
-                <prop key="/nowPlaying.view">nowPlayingController</prop>
                 <prop key="/starred.view">starredController</prop>
                 <prop key="/settings.view">settingsController</prop>
                 <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
@@ -371,9 +324,7 @@
                 <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
                 <prop key="/allmusic.view">allmusicController</prop>
-                <prop key="/home.view">homeController</prop>
                 <prop key="/editTags.view">editTagsController</prop>
-                <prop key="/playQueue.view">playQueueController</prop>
                 <prop key="/coverArt.view">coverArtController</prop>
                 <prop key="/avatar.view">avatarController</prop>
                 <prop key="/proxy.view">proxyController</prop>

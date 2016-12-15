@@ -19,41 +19,31 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.service.*;
+import org.libresonic.player.util.FileUtil;
+import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
-import org.libresonic.player.domain.InternetRadio;
-import org.libresonic.player.domain.MediaLibraryStatistics;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.MusicFolderContent;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.MediaScannerService;
-import org.libresonic.player.service.MusicIndexService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.util.FileUtil;
-import org.libresonic.player.util.StringUtil;
+import java.io.File;
+import java.util.*;
 
 /**
  * Controller for the left index frame.
  *
  * @author Sindre Mehus
  */
-public class LeftController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/left")
+public class LeftController  {
 
     // Update this time if you want to force a refresh in clients.
     private static final Calendar LAST_COMPATIBILITY_TIME = Calendar.getInstance();
@@ -62,17 +52,22 @@ public class LeftController extends ParameterizableViewController {
         LAST_COMPATIBILITY_TIME.set(Calendar.MILLISECOND, 0);
     }
 
+    @Autowired
     private MediaScannerService mediaScannerService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MusicIndexService musicIndexService;
+    @Autowired
     private PlayerService playerService;
 
     /**
      * Note: This class intentionally does not implement org.springframework.web.servlet.mvc.LastModified
      * as we don't need browser-side caching of left.jsp.  This method is only used by RESTController.
      */
-    public long getLastModified(HttpServletRequest request) {
+    long getLastModified(HttpServletRequest request) {
         saveSelectedMusicFolder(request);
 
         if (mediaScannerService.isScanning()) {
@@ -115,10 +110,10 @@ public class LeftController extends ParameterizableViewController {
         return lastModified;
     }
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean musicFolderChanged = saveSelectedMusicFolder(request);
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         MediaLibraryStatistics statistics = mediaScannerService.getStatistics();
         Locale locale = RequestContextUtils.getLocale(request);
@@ -131,7 +126,7 @@ public class LeftController extends ParameterizableViewController {
         String username = securityService.getCurrentUsername(request);
         List<MusicFolder> allMusicFolders = settingsService.getMusicFoldersForUser(username);
         MusicFolder selectedMusicFolder = settingsService.getSelectedMusicFolder(username);
-        List<MusicFolder> musicFoldersToUse = selectedMusicFolder == null ? allMusicFolders : Arrays.asList(selectedMusicFolder);
+        List<MusicFolder> musicFoldersToUse = selectedMusicFolder == null ? allMusicFolders : Collections.singletonList(selectedMusicFolder);
         UserSettings userSettings = settingsService.getUserSettings(username);
         MusicFolderContent musicFolderContent = musicIndexService.getMusicFolderContent(musicFoldersToUse, refresh);
 
@@ -158,9 +153,7 @@ public class LeftController extends ParameterizableViewController {
         map.put("indexes", musicFolderContent.getIndexedArtists().keySet());
         map.put("user", securityService.getCurrentUser(request));
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("left","model",map);
     }
 
     private boolean saveSelectedMusicFolder(HttpServletRequest request) {
@@ -177,25 +170,4 @@ public class LeftController extends ParameterizableViewController {
 
         return true;
     }
-
-    public void setMediaScannerService(MediaScannerService mediaScannerService) {
-        this.mediaScannerService = mediaScannerService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setMusicIndexService(MusicIndexService musicIndexService) {
-        this.musicIndexService = musicIndexService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
 }

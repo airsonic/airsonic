@@ -8,6 +8,11 @@
           http://www.springframework.org/schema/security/spring-security-4.1.xsd">
 
     <security:http auto-config='true'>
+
+        <security:headers>
+            <security:frame-options policy="SAMEORIGIN"/>
+        </security:headers>
+
         <!-- permitAll -->
         <security:intercept-url pattern="/login.*" access="permitAll"/>
         <security:intercept-url pattern="/recover.view" access="permitAll" />
