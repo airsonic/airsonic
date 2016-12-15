@@ -188,19 +188,6 @@ public class MultiController extends MultiActionController {
         return new ModelAndView("notFound");
     }
 
-    public ModelAndView gettingStarted(HttpServletRequest request, HttpServletResponse response) {
-        ControllerUtils.updatePortAndContextPath(request,settingsService);
-
-        if (request.getParameter("hide") != null) {
-            settingsService.setGettingStartedEnabled(false);
-            settingsService.save();
-            return new ModelAndView(new RedirectView("home.view"));
-        }
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("runningAsRoot", "root".equals(System.getProperty("user.name")));
-        return new ModelAndView("gettingStarted", "model", map);
-    }
 
 
     public ModelAndView exportPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
