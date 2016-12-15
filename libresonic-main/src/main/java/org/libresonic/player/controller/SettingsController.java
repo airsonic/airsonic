@@ -19,35 +19,41 @@
  */
 package org.libresonic.player.controller;
 
-import org.libresonic.player.domain.*;
-import org.libresonic.player.service.*;
-import org.springframework.web.servlet.*;
-import org.springframework.web.servlet.view.*;
-import org.springframework.web.servlet.mvc.*;
+import org.libresonic.player.domain.User;
+import org.libresonic.player.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Controller for the main settings page.
  *
  * @author Sindre Mehus
  */
-public class SettingsController extends AbstractController {
+@Controller
+@RequestMapping("/settings")
+public class SettingsController  {
 
+    @Autowired
     private SecurityService securityService;
 
-
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+@RequestMapping(method = RequestMethod.GET)
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         User user = securityService.getCurrentUser(request);
 
         // Redirect to music folder settings if admin.
-        String view = user.isAdminRole() ? "musicFolderSettings.view" : "personalSettings.view";
+        String view = user.isAdminRole() ? "musicFolderSettings" : "personalSettings";
 
         return new ModelAndView(new RedirectView(view));
      }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }

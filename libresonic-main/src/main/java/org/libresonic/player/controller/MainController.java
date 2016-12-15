@@ -19,54 +19,47 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.view.RedirectView;
-
-import org.libresonic.player.domain.CoverArtScheme;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MediaFileComparator;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.AdService;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.RatingService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Controller for the main page.
  *
  * @author Sindre Mehus
  */
-public class MainController extends AbstractController {
+@Controller
+@RequestMapping("/main")
+public class MainController  {
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private RatingService ratingService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private AdService adService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         Player player = playerService.getPlayer(request, response);
         List<MediaFile> mediaFiles = getMediaFiles(request);
@@ -91,8 +84,8 @@ public class MainController extends AbstractController {
         }
 
         List<MediaFile> children = mediaFiles.size() == 1 ? mediaFileService.getChildrenOf(dir, true, true, true) : getMultiFolderChildren(mediaFiles);
-        List<MediaFile> files = new ArrayList<MediaFile>();
-        List<MediaFile> subDirs = new ArrayList<MediaFile>();
+        List<MediaFile> files = new ArrayList<>();
+        List<MediaFile> subDirs = new ArrayList<>();
         for (MediaFile child : children) {
             if (child.isFile()) {
                 files.add(child);
@@ -159,9 +152,7 @@ public class MainController extends AbstractController {
             view = "artistMain";
         }
 
-        ModelAndView result = new ModelAndView(view);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView(view,"model",map);
     }
 
     private boolean isViewAsList(HttpServletRequest request, UserSettings userSettings) {
@@ -188,7 +179,7 @@ public class MainController extends AbstractController {
     }
 
     private List<MediaFile> getMediaFiles(HttpServletRequest request) {
-        List<MediaFile> mediaFiles = new ArrayList<MediaFile>();
+        List<MediaFile> mediaFiles = new ArrayList<>();
         for (String path : ServletRequestUtils.getStringParameters(request, "path")) {
             MediaFile mediaFile = mediaFileService.getMediaFile(path);
             if (mediaFile != null) {
@@ -223,18 +214,18 @@ public class MainController extends AbstractController {
     }
 
     private List<MediaFile> getMultiFolderChildren(List<MediaFile> mediaFiles) throws IOException {
-        SortedSet<MediaFile> result = new TreeSet<MediaFile>(new MediaFileComparator(settingsService.isSortAlbumsByYear()));
+        SortedSet<MediaFile> result = new TreeSet<>(new MediaFileComparator(settingsService.isSortAlbumsByYear()));
         for (MediaFile mediaFile : mediaFiles) {
             if (mediaFile.isFile()) {
                 mediaFile = mediaFileService.getParentOf(mediaFile);
             }
             result.addAll(mediaFileService.getChildrenOf(mediaFile, true, true, true));
         }
-        return new ArrayList<MediaFile>(result);
+        return new ArrayList<>(result);
     }
 
     private List<MediaFile> getAncestors(MediaFile dir) throws IOException {
-        LinkedList<MediaFile> result = new LinkedList<MediaFile>();
+        LinkedList<MediaFile> result = new LinkedList<>();
 
         try {
             MediaFile parent = mediaFileService.getParentOf(dir);
@@ -249,41 +240,14 @@ public class MainController extends AbstractController {
     }
 
     private List<MediaFile> getSieblingAlbums(MediaFile dir) {
-        List<MediaFile> result = new ArrayList<MediaFile>();
+        List<MediaFile> result = new ArrayList<>();
 
         MediaFile parent = mediaFileService.getParentOf(dir);
         if (!mediaFileService.isRoot(parent)) {
             List<MediaFile> sieblings = mediaFileService.getChildrenOf(parent, false, true, true);
-            for (MediaFile siebling : sieblings) {
-                if (siebling.isAlbum() && !siebling.equals(dir)) {
-                    result.add(siebling);
-                }
-            }
+            result.addAll(sieblings.stream().filter(siebling -> siebling.isAlbum() && !siebling.equals(dir)).collect(Collectors.toList()));
         }
         return result;
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setRatingService(RatingService ratingService) {
-        this.ratingService = ratingService;
-    }
-
-    public void setAdService(AdService adService) {
-        this.adService = adService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 }

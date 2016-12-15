@@ -19,14 +19,6 @@
         <property name="viewName" value="status"/>
         <property name="statusService" ref="statusService"/>
     </bean>
-    <bean id="mainController" class="org.libresonic.player.controller.MainController">
-        <property name="securityService" ref="securityService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="ratingService" ref="ratingService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="adService" ref="adService"/>
-    </bean>
     <bean id="playlistController" class="org.libresonic.player.controller.PlaylistController">
         <property name="viewName" value="playlist"/>
         <property name="securityService" ref="securityService"/>
@@ -137,9 +129,6 @@
         <property name="mediaFileDao" ref="mediaFileDao"/>
         <property name="mediaFileService" ref="mediaFileService"/>
     </bean>
-    <bean id="settingsController" class="org.libresonic.player.controller.SettingsController">
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="dlnaSettingsController" class="org.libresonic.player.controller.DLNASettingsController">
         <property name="viewName" value="dlnaSettings"/>
         <property name="upnpService" ref="upnpService"/>
@@ -176,15 +165,6 @@
         <property name="viewName" value="editTags"/>
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
-    </bean>
-    <bean id="coverArtController" class="org.libresonic.player.controller.CoverArtController" init-method="init">
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="transcodingService" ref="transcodingService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="podcastService" ref="podcastService"/>
-        <property name="artistDao" ref="artistDao"/>
-        <property name="albumDao" ref="albumDao"/>
     </bean>
     <bean id="avatarController" class="org.libresonic.player.controller.AvatarController">
         <property name="settingsService" ref="settingsService"/>
@@ -294,7 +274,6 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/main.view">mainController</prop>
                 <prop key="/playlist.view">playlistController</prop>
                 <prop key="/playlists.view">playlistsController</prop>
                 <prop key="/help.view">helpController</prop>
@@ -315,7 +294,6 @@
                 <prop key="/index.view">multiController</prop>
                 <prop key="/videoPlayer.view">videoPlayerController</prop>
                 <prop key="/starred.view">starredController</prop>
-                <prop key="/settings.view">settingsController</prop>
                 <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
                 <prop key="/sonosSettings.view">sonosSettingsController</prop>
                 <prop key="/shareSettings.view">shareSettingsController</prop>
@@ -324,7 +302,6 @@
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
                 <prop key="/allmusic.view">allmusicController</prop>
                 <prop key="/editTags.view">editTagsController</prop>
-                <prop key="/coverArt.view">coverArtController</prop>
                 <prop key="/avatar.view">avatarController</prop>
                 <prop key="/proxy.view">proxyController</prop>
                 <prop key="/statusChart.view">statusChartController</prop>
