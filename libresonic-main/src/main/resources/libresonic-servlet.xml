@@ -62,12 +62,6 @@
     <bean id="allmusicController" class="org.libresonic.player.controller.AllmusicController">
         <property name="viewName" value="allmusic"/>
     </bean>
-    <bean id="podcastController" class="org.libresonic.player.controller.PodcastController">
-        <property name="viewName" value="podcast"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="podcastChannelsController" class="org.libresonic.player.controller.PodcastChannelsController">
         <property name="viewName" value="podcastChannels"/>
         <property name="podcastService" ref="podcastService"/>
@@ -312,7 +306,6 @@
                 <prop key="/podcastChannels.view">podcastChannelsController</prop>
                 <prop key="/podcastChannel.view">podcastChannelController</prop>
                 <prop key="/podcastReceiverAdmin.view">podcastReceiverAdminController</prop>
-                <prop key="/podcast.view">podcastController</prop>
                 <prop key="/podcast/**">podcastController</prop>
                 <prop key="/wap/download.view">downloadController</prop>
                 <prop key="/wap/**">wapController</prop>
