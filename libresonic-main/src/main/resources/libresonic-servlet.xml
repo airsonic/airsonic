@@ -15,33 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="statusController" class="org.libresonic.player.controller.StatusController">
-        <property name="viewName" value="status"/>
-        <property name="statusService" ref="statusService"/>
-    </bean>
-    <bean id="playlistController" class="org.libresonic.player.controller.PlaylistController">
-        <property name="viewName" value="playlist"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playerService" ref="playerService"/>
-    </bean>
-    <bean id="playlistsController" class="org.libresonic.player.controller.PlaylistsController">
-        <property name="viewName" value="playlists"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="playlistService" ref="playlistService"/>
-    </bean>
-    <bean id="importPlaylistController" class="org.libresonic.player.controller.ImportPlaylistController">
-        <property name="viewName" value="importPlaylist"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="playlistService" ref="playlistService"/>
-    </bean>
-    <bean id="helpController" class="org.libresonic.player.controller.HelpController">
-        <property name="viewName" value="help"/>
-        <property name="versionService" ref="versionService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="moreController" class="org.libresonic.player.controller.MoreController">
         <property name="viewName" value="more"/>
         <property name="settingsService" ref="settingsService"/>
@@ -249,14 +222,9 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/playlist.view">playlistController</prop>
-                <prop key="/playlists.view">playlistsController</prop>
-                <prop key="/help.view">helpController</prop>
                 <prop key="/lyrics.view">lyricsController</prop>
-                <prop key="/status.view">statusController</prop>
                 <prop key="/more.view">moreController</prop>
                 <prop key="/upload.view">uploadController</prop>
-                <prop key="/importPlaylist.view">importPlaylistController</prop>
                 <prop key="/exportPlaylist.view">multiController</prop>
                 <prop key="/setMusicFileInfo.view">setMusicFileInfoController</prop>
                 <prop key="/createShare.view">shareManagementController</prop>

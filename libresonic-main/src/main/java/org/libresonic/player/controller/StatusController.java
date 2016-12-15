@@ -24,37 +24,39 @@ import org.libresonic.player.domain.TransferStatus;
 import org.libresonic.player.service.StatusService;
 import org.libresonic.player.util.FileUtil;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller for the status page.
  *
  * @author Sindre Mehus
  */
-public class StatusController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/status")
+public class StatusController {
 
+    @Autowired
     private StatusService statusService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         List<TransferStatus> streamStatuses = statusService.getAllStreamStatuses();
         List<TransferStatus> downloadStatuses = statusService.getAllDownloadStatuses();
         List<TransferStatus> uploadStatuses = statusService.getAllUploadStatuses();
 
         Locale locale = RequestContextUtils.getLocale(request);
-        List<TransferStatusHolder> transferStatuses = new ArrayList<TransferStatusHolder>();
+        List<TransferStatusHolder> transferStatuses = new ArrayList<>();
 
         for (int i = 0; i < streamStatuses.size(); i++) {
             long minutesAgo = streamStatuses.get(i).getMillisSinceLastUpdate() / 1000L / 60L;
@@ -73,16 +75,11 @@ public class StatusController extends ParameterizableViewController {
         map.put("chartWidth", StatusChartController.IMAGE_WIDTH);
         map.put("chartHeight", StatusChartController.IMAGE_HEIGHT);
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("status","model",map);
     }
 
-    public void setStatusService(StatusService statusService) {
-        this.statusService = statusService;
-    }
 
-    public static class TransferStatusHolder {
+    private static class TransferStatusHolder {
         private TransferStatus transferStatus;
         private boolean isStream;
         private boolean isDownload;
@@ -90,8 +87,8 @@ public class StatusController extends ParameterizableViewController {
         private int index;
         private Locale locale;
 
-        public TransferStatusHolder(TransferStatus transferStatus, boolean isStream, boolean isDownload, boolean isUpload,
-                                    int index, Locale locale) {
+        TransferStatusHolder(TransferStatus transferStatus, boolean isStream, boolean isDownload, boolean isUpload,
+                             int index, Locale locale) {
             this.transferStatus = transferStatus;
             this.isStream = isStream;
             this.isDownload = isDownload;

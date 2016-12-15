@@ -27,7 +27,11 @@ import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -42,16 +46,22 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
-public class PlaylistController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/playlist")
+public class PlaylistController {
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
         User user = securityService.getCurrentUser(request);
@@ -60,7 +70,7 @@ public class PlaylistController extends ParameterizableViewController {
         Player player = playerService.getPlayer(request, response);
         Playlist playlist = playlistService.getPlaylist(id);
         if (playlist == null) {
-            return new ModelAndView(new RedirectView("notFound.view"));
+            return new ModelAndView(new RedirectView("notFound"));
         }
 
         map.put("playlist", playlist);
@@ -69,24 +79,10 @@ public class PlaylistController extends ParameterizableViewController {
         map.put("editAllowed", username.equals(playlist.getUsername()) || securityService.isAdmin(username));
         map.put("partyMode", userSettings.isPartyModeEnabled());
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("playList","model",map);
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
 }
