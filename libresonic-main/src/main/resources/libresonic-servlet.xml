@@ -92,25 +92,6 @@
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="securityService" ref="securityService"/>
     </bean>
-    <bean id="randomPlayQueueController" class="org.libresonic.player.controller.RandomPlayQueueController">
-        <property name="viewName" value="reload"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="reloadFrames">
-            <list>
-                <bean class="org.libresonic.player.controller.ReloadFrame">
-                    <property name="frame" value="playQueue"/>
-                    <property name="view" value="playQueue.view?"/>
-                </bean>
-                <bean class="org.libresonic.player.controller.ReloadFrame">
-                    <property name="frame" value="main"/>
-                    <property name="view" value="more.view"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
     <bean id="changeCoverArtController" class="org.libresonic.player.controller.ChangeCoverArtController">
         <property name="viewName" value="changeCoverArt"/>
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -280,7 +261,6 @@
                 <prop key="/setMusicFileInfo.view">setMusicFileInfoController</prop>
                 <prop key="/createShare.view">shareManagementController</prop>
                 <prop key="/setRating.view">setRatingController</prop>
-                <prop key="/randomPlayQueue.view">randomPlayQueueController</prop>
                 <prop key="/changeCoverArt.view">changeCoverArtController</prop>
                 <prop key="/recover.view">multiController</prop>
                 <prop key="/accessDenied.view">multiController</prop>
