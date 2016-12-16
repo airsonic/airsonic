@@ -91,12 +91,8 @@
      * launch app and request session
      */
     CastPlayer.prototype.launchCastApp = function () {
-        <c:choose>
         this.log("launching app...");
         chrome.cast.requestSession(this.onRequestSessionSuccess.bind(this), this.onLaunchError.bind(this));
-        </c:when>
-        </c:otherwise>
-        </c:choose>
     };
 
     /**
