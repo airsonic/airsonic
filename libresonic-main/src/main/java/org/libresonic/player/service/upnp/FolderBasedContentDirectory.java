@@ -67,11 +67,6 @@ public class FolderBasedContentDirectory extends LibresonicContentDirectory {
     public BrowseResult browse(String objectId, BrowseFlag browseFlag, String filter, long firstResult,
             long maxResults, SortCriterion[] orderby) throws ContentDirectoryException {
 
-        if (!settingsService.getLicenseInfo().isLicenseOrTrialValid()) {
-            LOG.warn("UPnP/DLNA media server not available. Please upgrade to Subsonic Premium.");
-            throw new ContentDirectoryException(ContentDirectoryErrorCode.CANNOT_PROCESS, "Please upgrade to Subsonic Premium");
-        }
-
         LOG.info("UPnP request - objectId: " + objectId + ", browseFlag: " + browseFlag + ", filter: " + filter +
                 ", firstResult: " + firstResult + ", maxResults: " + maxResults);
 

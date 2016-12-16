@@ -55,7 +55,6 @@ public class SonosSettingsController extends ParameterizableViewController {
         ModelAndView result = super.handleRequestInternal(request, response);
         map.put("sonosEnabled", settingsService.isSonosEnabled());
         map.put("sonosServiceName", settingsService.getSonosServiceName());
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         result.addObject("model", map);
         return result;

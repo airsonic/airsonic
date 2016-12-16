@@ -55,7 +55,6 @@ public class DLNASettingsController extends ParameterizableViewController {
         ModelAndView result = super.handleRequestInternal(request, response);
         map.put("dlnaEnabled", settingsService.isDlnaEnabled());
         map.put("dlnaServerName", settingsService.getDlnaServerName());
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         result.addObject("model", map);
         return result;

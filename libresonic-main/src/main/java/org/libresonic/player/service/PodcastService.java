@@ -535,10 +535,6 @@ public class PodcastService {
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
 
-            if (!settingsService.getLicenseInfo().isLicenseOrTrialValid()) {
-                throw new Exception("Sorry, the trial period is expired.");
-            }
-
             PodcastChannel channel = getChannel(episode.getChannelId());
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectTimeout(2 * 60 * 1000) // 2 minutes

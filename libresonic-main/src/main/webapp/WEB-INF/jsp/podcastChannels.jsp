@@ -110,8 +110,5 @@
     </form>
 </c:if>
 
-<c:set var="licenseInfo" value="${model.licenseInfo}"/>
-<%@ include file="licenseNotice.jsp" %>
-
 </body>
 </html>

@@ -52,7 +52,6 @@ import org.libresonic.player.dao.UserDao;
 import org.libresonic.player.domain.AlbumListType;
 import org.libresonic.player.domain.Avatar;
 import org.libresonic.player.domain.InternetRadio;
-import org.libresonic.player.domain.LicenseInfo;
 import org.libresonic.player.domain.MediaLibraryStatistics;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Theme;
@@ -72,9 +71,6 @@ public class SettingsService {
     // Libresonic home directory.
     private static final File LIBRESONIC_HOME_WINDOWS = new File("c:/libresonic");
     private static final File LIBRESONIC_HOME_OTHER = new File("/var/libresonic");
-
-    // Number of free trial days.
-    public static final long TRIAL_DAYS = 30L;
 
     // Global settings.
     private static final String KEY_INDEX_STRING = "IndexString";
@@ -102,9 +98,6 @@ public class SettingsService {
     private static final String KEY_PODCAST_EPISODE_DOWNLOAD_COUNT = "PodcastEpisodeDownloadCount";
     private static final String KEY_DOWNLOAD_BITRATE_LIMIT = "DownloadBitrateLimit";
     private static final String KEY_UPLOAD_BITRATE_LIMIT = "UploadBitrateLimit";
-    private static final String KEY_LICENSE_EMAIL = "LicenseEmail";
-    private static final String KEY_LICENSE_CODE = "LicenseCode";
-    private static final String KEY_LICENSE_DATE = "LicenseDate";
     private static final String KEY_DOWNSAMPLING_COMMAND = "DownsamplingCommand4";
     private static final String KEY_HLS_COMMAND = "HlsCommand3";
     private static final String KEY_JUKEBOX_COMMAND = "JukeboxCommand2";
@@ -131,7 +124,6 @@ public class SettingsService {
     private static final String KEY_ORGANIZE_BY_FOLDER_STRUCTURE = "OrganizeByFolderStructure";
     private static final String KEY_SORT_ALBUMS_BY_YEAR = "SortAlbumsByYear";
     private static final String KEY_MEDIA_LIBRARY_STATISTICS = "MediaLibraryStatistics";
-    private static final String KEY_TRIAL_EXPIRES = "TrialExpires";
     private static final String KEY_DLNA_ENABLED = "DlnaEnabled";
     private static final String KEY_DLNA_SERVER_NAME = "DlnaServerName";
     private static final String KEY_SONOS_ENABLED = "SonosEnabled";
@@ -178,9 +170,6 @@ public class SettingsService {
     private static final int DEFAULT_PODCAST_EPISODE_DOWNLOAD_COUNT = 1;
     private static final long DEFAULT_DOWNLOAD_BITRATE_LIMIT = 0;
     private static final long DEFAULT_UPLOAD_BITRATE_LIMIT = 0;
-    private static final String DEFAULT_LICENSE_EMAIL = null;
-    private static final String DEFAULT_LICENSE_CODE = null;
-    private static final String DEFAULT_LICENSE_DATE = null;
     private static final String DEFAULT_DOWNSAMPLING_COMMAND = "ffmpeg -i %s -map 0:0 -b:a %bk -v 0 -f mp3 -";
     private static final String DEFAULT_HLS_COMMAND = "ffmpeg -ss %o -t %d -i %s -async 1 -b:v %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mpegts -c:v libx264 -preset superfast -c:a libmp3lame -threads 0 -";
     private static final String DEFAULT_JUKEBOX_COMMAND = "ffmpeg -ss %o -i %s -map 0:0 -v 0 -ar 44100 -ac 2 -f s16be -";
@@ -206,7 +195,6 @@ public class SettingsService {
     private static final boolean DEFAULT_ORGANIZE_BY_FOLDER_STRUCTURE = true;
     private static final boolean DEFAULT_SORT_ALBUMS_BY_YEAR = true;
     private static final String DEFAULT_MEDIA_LIBRARY_STATISTICS = "0 0 0 0 0";
-    private static final String DEFAULT_TRIAL_EXPIRES = null;
     private static final boolean DEFAULT_DLNA_ENABLED = false;
     private static final String DEFAULT_DLNA_SERVER_NAME = "Libresonic";
     private static final boolean DEFAULT_SONOS_ENABLED = false;
@@ -223,7 +211,7 @@ public class SettingsService {
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
-            "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", "UrlRedirectTrialExpires", "VideoTrialExpires",
+            "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", 
             "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort");
 
     private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
@@ -248,13 +236,6 @@ public class SettingsService {
 
     private static File libresonicHome;
 
-    private boolean licenseValidated = true;
-    private Date licenseExpires;
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    private ScheduledFuture<?> licenseValidationFuture;
-
-    private static final long LICENSE_VALIDATION_DELAY_HOURS = 12;
-    private static final long LOCAL_IP_LOOKUP_DELAY_SECONDS = 60;
     private String localIpAddress;
 
     public SettingsService() {
@@ -281,14 +262,6 @@ public class SettingsService {
             }
         }
 
-        // Start trial.
-        if (getTrialExpires() == null) {
-            Date expiryDate = new Date(System.currentTimeMillis() + TRIAL_DAYS * 24L * 3600L * 1000L);
-            setTrialExpires(expiryDate);
-        }
-
-        save(false);
-    }
 
     /**
      * Register in service locator so that non-Spring objects can access me.
@@ -298,7 +271,6 @@ public class SettingsService {
         logServerInfo();
         ServiceLocator.setSettingsService(this);
         scheduleLocalIpAddressLookup();
-        scheduleLicenseValidation();
     }
 
     private void logServerInfo() {
@@ -650,49 +622,6 @@ public class SettingsService {
         setLong(KEY_UPLOAD_BITRATE_LIMIT, limit);
     }
 
-    public String getLicenseEmail() {
-        return properties.getProperty(KEY_LICENSE_EMAIL, DEFAULT_LICENSE_EMAIL);
-    }
-
-    public void setLicenseEmail(String email) {
-        setProperty(KEY_LICENSE_EMAIL, email);
-    }
-
-    public String getLicenseCode() {
-        return properties.getProperty(KEY_LICENSE_CODE, DEFAULT_LICENSE_CODE);
-    }
-
-    public void setLicenseCode(String code) {
-        setProperty(KEY_LICENSE_CODE, code);
-    }
-
-    public Date getLicenseDate() {
-        String value = properties.getProperty(KEY_LICENSE_DATE, DEFAULT_LICENSE_DATE);
-        return value == null ? null : new Date(Long.parseLong(value));
-    }
-
-    public void setLicenseDate(Date date) {
-        String value = (date == null ? null : String.valueOf(date.getTime()));
-        setProperty(KEY_LICENSE_DATE, value);
-    }
-
-    public boolean isLicenseValid() {
-        return true;
-    }
-
-    public boolean isLicenseValid(String email, String license) {
-        return true;
-    }
-
-    public LicenseInfo getLicenseInfo() {
-        Date trialExpires = getTrialExpires();
-        Date now = new Date();
-        boolean trialValid = trialExpires.after(now);
-        long trialDaysLeft = trialValid ? (trialExpires.getTime() - now.getTime()) / (24L * 3600L * 1000L) : 0L;
-
-        return new LicenseInfo(getLicenseEmail(), isLicenseValid(), trialExpires, trialDaysLeft, licenseExpires);
-    }
-
     public String getDownsamplingCommand() {
         return properties.getProperty(KEY_DOWNSAMPLING_COMMAND, DEFAULT_DOWNSAMPLING_COMMAND);
     }
@@ -844,16 +773,6 @@ public class SettingsService {
 
     public void setUrlRedirectType(UrlRedirectType urlRedirectType) {
         properties.setProperty(KEY_URL_REDIRECT_TYPE, urlRedirectType.name());
-    }
-
-    public Date getTrialExpires() {
-        String value = properties.getProperty(KEY_TRIAL_EXPIRES, DEFAULT_TRIAL_EXPIRES);
-        return value == null ? null : new Date(Long.parseLong(value));
-    }
-
-    private void setTrialExpires(Date date) {
-        String value = (date == null ? null : String.valueOf(date.getTime()));
-        setProperty(KEY_TRIAL_EXPIRES, value);
     }
 
     public String getUrlRedirectContextPath() {
@@ -1404,28 +1323,6 @@ public class SettingsService {
         }
 
         return result.toArray(new String[result.size()]);
-    }
-
-    private void validateLicense() {
-        String email = getLicenseEmail();
-        Date date = getLicenseDate();
-        licenseValidated = true;
-        return;
-    }
-
-    public synchronized void scheduleLicenseValidation() {
-        if (licenseValidationFuture != null) {
-            licenseValidationFuture.cancel(true);
-        }
-        Runnable task = new Runnable() {
-            public void run() {
-                validateLicense();
-            }
-        };
-        licenseValidated = true;
-        licenseExpires = null;
-
-        licenseValidationFuture = executor.scheduleWithFixedDelay(task, 0L, LICENSE_VALIDATION_DELAY_HOURS, TimeUnit.HOURS);
     }
 
     private void scheduleLocalIpAddressLookup() {

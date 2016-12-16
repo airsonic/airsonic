@@ -69,7 +69,6 @@ public class ShareSettingsController extends ParameterizableViewController {
         map.put("shareBaseUrl", shareService.getShareBaseUrl());
         map.put("shareInfos", getShareInfos(request));
         map.put("user", securityService.getCurrentUser(request));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         result.addObject("model", map);
         return result;

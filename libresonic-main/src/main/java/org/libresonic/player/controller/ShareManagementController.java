@@ -80,7 +80,6 @@ public class ShareManagementController extends MultiActionController {
         }
 
         map.put("playUrl", shareService.getShareUrl(share));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         return new ModelAndView("createShare", "model", map);
     }

@@ -347,10 +347,6 @@ public class SonosService implements SonosSoap {
             throw new SonosSoapFault.LoginInvalid();
         }
 
-        if (!settingsService.getLicenseInfo().isLicenseOrTrialValid()) {
-            throw new SonosSoapFault.LoginUnauthorized();
-        }
-
         // Use username as session ID for easy access to it later.
         GetSessionIdResponse result = new GetSessionIdResponse();
         result.setGetSessionIdResult(user.getUsername());
