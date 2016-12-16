@@ -240,7 +240,6 @@ public class NetworkService {
             params.add(new BasicNameValuePair("localIp", settingsService.getLocalIpAddress()));
             params.add(new BasicNameValuePair("localPort", String.valueOf(port)));
             params.add(new BasicNameValuePair("contextPath", settingsService.getUrlRedirectContextPath()));
-            }
 
 
 

@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.controller.JAXBWriter;
 import org.libresonic.player.controller.RESTController;
-import org.libresonic.player.domain.LicenseInfo;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.SecurityService;

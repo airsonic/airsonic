@@ -56,7 +56,6 @@ public class NetworkSettingsController {
         command.setUrlRedirectFrom(settingsService.getUrlRedirectFrom());
         command.setUrlRedirectCustomUrl(settingsService.getUrlRedirectCustomUrl());
         command.setPort(settingsService.getPort());
-        command.setLicenseInfo(settingsService.getLicenseInfo());
         model.addAttribute("command",command);
     }
 

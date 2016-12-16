@@ -236,6 +236,7 @@ public class SettingsService {
 
     private static File libresonicHome;
 
+    private static final long LOCAL_IP_LOOKUP_DELAY_SECONDS = 60;
     private String localIpAddress;
 
     public SettingsService() {
@@ -261,6 +262,7 @@ public class SettingsService {
                 }
             }
         }
+    }
 
 
     /**
@@ -1331,7 +1333,6 @@ public class SettingsService {
                 localIpAddress = Util.getLocalIpAddress();
             }
         };
-        executor.scheduleWithFixedDelay(task, 0L, LOCAL_IP_LOOKUP_DELAY_SECONDS, TimeUnit.SECONDS);
     }
 
     public void setInternetRadioDao(InternetRadioDao internetRadioDao) {
