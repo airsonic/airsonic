@@ -15,14 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="shareManagementController" class="org.libresonic.player.controller.ShareManagementController">
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="shareService" ref="shareService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="setRatingController" class="org.libresonic.player.controller.SetRatingController">
         <property name="ratingService" ref="ratingService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -186,7 +178,6 @@
         <property name="mappings">
             <props>
                 <prop key="/exportPlaylist.view">multiController</prop>
-                <prop key="/createShare.view">shareManagementController</prop>
                 <prop key="/setRating.view">setRatingController</prop>
                 <prop key="/changeCoverArt.view">changeCoverArtController</prop>
                 <prop key="/recover.view">multiController</prop>
