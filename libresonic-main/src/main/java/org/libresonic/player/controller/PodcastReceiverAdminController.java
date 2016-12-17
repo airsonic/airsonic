@@ -19,32 +19,35 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.domain.PodcastEpisode;
 import org.libresonic.player.domain.PodcastStatus;
 import org.libresonic.player.service.PodcastService;
 import org.libresonic.player.util.StringUtil;
-import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Controller for the "Podcast receiver" page.
  *
  * @author Sindre Mehus
  */
-public class PodcastReceiverAdminController extends AbstractController {
+@Controller
+@RequestMapping("/podcastReceiverAdmin")
+public class PodcastReceiverAdminController {
 
+    @Autowired
     private PodcastService podcastService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Integer channelId = ServletRequestUtils.getIntParameter(request, "channelId");
 
@@ -93,7 +96,4 @@ public class PodcastReceiverAdminController extends AbstractController {
         }
     }
 
-    public void setPodcastService(PodcastService podcastService) {
-        this.podcastService = podcastService;
-    }
 }
