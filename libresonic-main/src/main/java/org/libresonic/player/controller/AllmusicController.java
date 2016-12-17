@@ -19,8 +19,11 @@
  */
 package org.libresonic.player.controller;
 
-import org.springframework.web.servlet.*;
-import org.springframework.web.servlet.mvc.*;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.*;
 
@@ -29,10 +32,13 @@ import javax.servlet.http.*;
  *
  * @author Sindre Mehus
  */
-public class AllmusicController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/allmusic")
+public class AllmusicController {
 
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        ModelAndView result = super.handleRequestInternal(request, response);
+        ModelAndView result = new ModelAndView();
         result.addObject("album", request.getParameter("album"));
         return result;
     }
