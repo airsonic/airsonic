@@ -15,12 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="podcastChannelsController" class="org.libresonic.player.controller.PodcastChannelsController">
-        <property name="viewName" value="podcastChannels"/>
-        <property name="podcastService" ref="podcastService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
     <bean id="podcastChannelController" class="org.libresonic.player.controller.PodcastChannelController">
         <property name="viewName" value="podcastChannel"/>
         <property name="podcastService" ref="podcastService"/>
@@ -227,7 +221,6 @@
                 <prop key="/download.view">downloadController</prop>
                 <prop key="/db.view">dbController</prop>
                 <prop key="/test.view">multiController</prop>
-                <prop key="/podcastChannels.view">podcastChannelsController</prop>
                 <prop key="/podcastChannel.view">podcastChannelController</prop>
                 <prop key="/podcastReceiverAdmin.view">podcastReceiverAdminController</prop>
                 <prop key="/podcast/**">podcastController</prop>
