@@ -19,18 +19,6 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.User;
@@ -39,21 +27,41 @@ import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for the "more" page.
  *
  * @author Sindre Mehus
  */
-public class MoreController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/more")
+public class MoreController  {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private MediaFileService mediaFileService;
 
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         User user = securityService.getCurrentUser(request);
 
@@ -72,7 +80,7 @@ public class MoreController extends ParameterizableViewController {
         }
 
         Player player = playerService.getPlayer(request, response);
-        ModelAndView result = super.handleRequestInternal(request, response);
+        ModelAndView result = new ModelAndView();
         result.addObject("model", map);
         map.put("user", user);
         map.put("uploadDirectory", uploadDirectory);
@@ -83,21 +91,5 @@ public class MoreController extends ParameterizableViewController {
         map.put("brand", settingsService.getBrand());
         map.put("jamstashUrl", jamstashUrl);
         return result;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
     }
 }

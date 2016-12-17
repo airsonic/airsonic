@@ -15,23 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="moreController" class="org.libresonic.player.controller.MoreController">
-        <property name="viewName" value="more"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="playerService" ref="playerService"/>
-    </bean>
-    <bean id="uploadController" class="org.libresonic.player.controller.UploadController">
-        <property name="viewName" value="upload"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="statusService" ref="statusService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="lyricsController" class="org.libresonic.player.controller.LyricsController">
-        <property name="viewName" value="lyrics"/>
-    </bean>
     <bean id="allmusicController" class="org.libresonic.player.controller.AllmusicController">
         <property name="viewName" value="allmusic"/>
     </bean>
@@ -222,9 +205,6 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/lyrics.view">lyricsController</prop>
-                <prop key="/more.view">moreController</prop>
-                <prop key="/upload.view">uploadController</prop>
                 <prop key="/exportPlaylist.view">multiController</prop>
                 <prop key="/setMusicFileInfo.view">setMusicFileInfoController</prop>
                 <prop key="/createShare.view">shareManagementController</prop>

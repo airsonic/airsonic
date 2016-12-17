@@ -19,20 +19,33 @@
  */
 package org.libresonic.player.controller;
 
-import org.libresonic.player.*;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.upload.*;
-import org.libresonic.player.service.*;
-import org.libresonic.player.util.*;
-import org.apache.commons.fileupload.*;
-import org.apache.commons.fileupload.servlet.*;
-import org.apache.commons.io.*;
-import org.apache.tools.zip.*;
-import org.springframework.web.servlet.*;
-import org.springframework.web.servlet.mvc.*;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipFile;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.TransferStatus;
+import org.libresonic.player.domain.User;
+import org.libresonic.player.service.PlayerService;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
+import org.libresonic.player.service.StatusService;
+import org.libresonic.player.upload.MonitoredDiskFileItemFactory;
+import org.libresonic.player.upload.UploadListener;
+import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.*;
-import java.io.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 
 /**
@@ -40,22 +53,28 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
-public class UploadController extends ParameterizableViewController {
+@org.springframework.stereotype.Controller
+@RequestMapping("/upload")
+public class UploadController {
 
     private static final Logger LOG = Logger.getLogger(UploadController.class);
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private SettingsService settingsService;
     public static final String UPLOAD_STATUS = "uploadStatus";
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        List<File> uploadedFiles = new ArrayList<File>();
-        List<File> unzippedFiles = new ArrayList<File>();
+        Map<String, Object> map = new HashMap<>();
+        List<File> uploadedFiles = new ArrayList<>();
+        List<File> unzippedFiles = new ArrayList<>();
         TransferStatus status = null;
 
         try {
@@ -139,9 +158,7 @@ public class UploadController extends ParameterizableViewController {
         map.put("uploadedFiles", uploadedFiles);
         map.put("unzippedFiles", unzippedFiles);
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("upload","model",map);
     }
 
     private void unzip(File file, List<File> unzippedFiles) throws Exception {
@@ -196,21 +213,9 @@ public class UploadController extends ParameterizableViewController {
         }
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
 
-    public void setStatusService(StatusService statusService) {
-        this.statusService = statusService;
-    }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 
     /**
      * Receives callbacks as the file upload progresses.

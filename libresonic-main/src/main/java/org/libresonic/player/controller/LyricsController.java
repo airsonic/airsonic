@@ -19,6 +19,9 @@
  */
 package org.libresonic.player.controller;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -32,16 +35,17 @@ import java.util.HashMap;
  *
  * @author Sindre Mehus
  */
-public class LyricsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/lyrics")
+public class LyricsController {
 
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put("artist", request.getParameter("artist"));
         map.put("song", request.getParameter("song"));
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("lyrics","model",map);
     }
 }
