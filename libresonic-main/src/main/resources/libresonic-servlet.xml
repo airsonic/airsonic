@@ -15,9 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="setMusicFileInfoController" class="org.libresonic.player.controller.SetMusicFileInfoController">
-        <property name="mediaFileService" ref="mediaFileService"/>
-    </bean>
     <bean id="shareManagementController" class="org.libresonic.player.controller.ShareManagementController">
         <property name="settingsService" ref="settingsService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -189,7 +186,6 @@
         <property name="mappings">
             <props>
                 <prop key="/exportPlaylist.view">multiController</prop>
-                <prop key="/setMusicFileInfo.view">setMusicFileInfoController</prop>
                 <prop key="/createShare.view">shareManagementController</prop>
                 <prop key="/setRating.view">setRatingController</prop>
                 <prop key="/changeCoverArt.view">changeCoverArtController</prop>

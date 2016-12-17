@@ -19,28 +19,33 @@
  */
 package org.libresonic.player.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.view.RedirectView;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller for updating music file metadata.
  *
  * @author Sindre Mehus
  */
-public class SetMusicFileInfoController extends AbstractController {
+@Controller
+@RequestMapping("/setMusicFileInfo")
+public class SetMusicFileInfoController {
 
+    @Autowired
     private MediaFileService mediaFileService;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
         String action = request.getParameter("action");
 
@@ -55,7 +60,4 @@ public class SetMusicFileInfoController extends AbstractController {
         return new ModelAndView(new RedirectView(url));
     }
 
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 }
