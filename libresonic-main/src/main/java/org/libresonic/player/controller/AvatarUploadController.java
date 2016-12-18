@@ -30,6 +30,10 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
@@ -50,15 +54,19 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
-public class AvatarUploadController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/avatarUpload")
+public class AvatarUploadController  {
 
     private static final Logger LOG = Logger.getLogger(AvatarUploadController.class);
     private static final int MAX_AVATAR_SIZE = 64;
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String username = securityService.getCurrentUsername(request);
@@ -93,9 +101,7 @@ public class AvatarUploadController extends ParameterizableViewController {
 
         map.put("username", username);
         map.put("avatar", settingsService.getCustomAvatar(username));
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("avatarUploadResult","model",map);
     }
 
     private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) throws IOException {
@@ -132,11 +138,5 @@ public class AvatarUploadController extends ParameterizableViewController {
         }
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }

@@ -23,6 +23,10 @@ import org.libresonic.player.domain.Transcoding;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
@@ -36,12 +40,16 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
-public class TranscodingSettingsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/transcodingSettings")
+public class TranscodingSettingsController {
 
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     private SettingsService settingsService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -51,15 +59,13 @@ public class TranscodingSettingsController extends ParameterizableViewController
             map.put("toast", true);
         }
 
-        ModelAndView result = super.handleRequestInternal(request, response);
         map.put("transcodings", transcodingService.getAllTranscodings());
         map.put("transcodeDirectory", transcodingService.getTranscodeDirectory());
         map.put("downsampleCommand", settingsService.getDownsamplingCommand());
         map.put("hlsCommand", settingsService.getHlsCommand());
         map.put("brand", settingsService.getBrand());
 
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("transcodingSettings","model",map);
     }
 
     /**
@@ -136,11 +142,4 @@ public class TranscodingSettingsController extends ParameterizableViewController
         return StringUtils.trimToNull(request.getParameter(name + "[" + id + "]"));
     }
 
-    public void setTranscodingService(TranscodingService transcodingService) {
-        this.transcodingService = transcodingService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 }

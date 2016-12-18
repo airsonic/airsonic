@@ -30,7 +30,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
@@ -48,14 +52,20 @@ import org.libresonic.player.service.ShareService;
  *
  * @author Sindre Mehus
  */
-public class ShareSettingsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/shareSettings")
+public class ShareSettingsController {
 
+    @Autowired
     private ShareService shareService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SettingsService settingsService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -65,14 +75,12 @@ public class ShareSettingsController extends ParameterizableViewController {
             map.put("toast", true);
         }
 
-        ModelAndView result = super.handleRequestInternal(request, response);
         map.put("shareBaseUrl", shareService.getShareBaseUrl());
         map.put("shareInfos", getShareInfos(request));
         map.put("user", securityService.getCurrentUser(request));
         map.put("licenseInfo", settingsService.getLicenseInfo());
 
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("shareSettings","model",map);
     }
 
     /**
@@ -148,21 +156,6 @@ public class ShareSettingsController extends ParameterizableViewController {
         return calendar.getTime();
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setShareService(ShareService shareService) {
-        this.shareService = shareService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 
     public static class ShareInfo {
         private final Share share;

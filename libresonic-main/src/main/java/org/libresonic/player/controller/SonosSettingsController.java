@@ -25,7 +25,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
@@ -37,12 +41,16 @@ import org.libresonic.player.service.SonosService;
  *
  * @author Sindre Mehus
  */
-public class SonosSettingsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/sonosSettings")
+public class SonosSettingsController  {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SonosService sonosService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -52,13 +60,11 @@ public class SonosSettingsController extends ParameterizableViewController {
             map.put("toast", true);
         }
 
-        ModelAndView result = super.handleRequestInternal(request, response);
         map.put("sonosEnabled", settingsService.isSonosEnabled());
         map.put("sonosServiceName", settingsService.getSonosServiceName());
         map.put("licenseInfo", settingsService.getLicenseInfo());
 
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("sonosSettings","model",map);
     }
 
     /**
@@ -86,11 +92,4 @@ public class SonosSettingsController extends ParameterizableViewController {
         sonosService.setMusicServiceEnabled(sonosEnabled);
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setSonosService(SonosService sonosService) {
-        this.sonosService = sonosService;
-    }
 }
