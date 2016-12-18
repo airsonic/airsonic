@@ -15,15 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="setRatingController" class="org.libresonic.player.controller.SetRatingController">
-        <property name="ratingService" ref="ratingService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
-    <bean id="changeCoverArtController" class="org.libresonic.player.controller.ChangeCoverArtController">
-        <property name="viewName" value="changeCoverArt"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-    </bean>
     <bean id="starredController" class="org.libresonic.player.controller.StarredController">
         <property name="viewName" value="starred"/>
         <property name="playerService" ref="playerService"/>
@@ -178,8 +169,6 @@
         <property name="mappings">
             <props>
                 <prop key="/exportPlaylist.view">multiController</prop>
-                <prop key="/setRating.view">setRatingController</prop>
-                <prop key="/changeCoverArt.view">changeCoverArtController</prop>
                 <prop key="/recover.view">multiController</prop>
                 <prop key="/accessDenied.view">multiController</prop>
                 <prop key="/notFound.view">multiController</prop>
