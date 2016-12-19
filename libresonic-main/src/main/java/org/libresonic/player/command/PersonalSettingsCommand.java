@@ -61,7 +61,6 @@ public class PersonalSettingsCommand {
     private int listReloadDelay;
     private String lastFmUsername;
     private String lastFmPassword;
-    private boolean isReloadNeeded;
 
     public User getUser() {
         return user;
@@ -269,14 +268,6 @@ public class PersonalSettingsCommand {
 
     public void setLastFmPassword(String lastFmPassword) {
         this.lastFmPassword = lastFmPassword;
-    }
-
-    public boolean isReloadNeeded() {
-        return isReloadNeeded;
-    }
-
-    public void setReloadNeeded(boolean reloadNeeded) {
-        isReloadNeeded = reloadNeeded;
     }
 
     public boolean isQueueFollowingSongs() {

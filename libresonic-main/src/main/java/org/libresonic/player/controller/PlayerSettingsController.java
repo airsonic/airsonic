@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,7 +106,7 @@ public class PlayerSettingsController  {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
         Player player = playerService.getPlayerById(command.getPlayerId());
 
         player.setAutoControlEnabled(command.isAutoControlEnabled());
@@ -117,7 +119,8 @@ public class PlayerSettingsController  {
         playerService.updatePlayer(player);
         transcodingService.setTranscodingsForPlayer(player, command.getActiveTranscodingIds());
 
-        command.setReloadNeeded(true);
+        redirectAttributes.addFlashAttribute("settings_reload", true);
+        redirectAttributes.addFlashAttribute("settings_toast", true);
         return "redirect:playerSettings.view";
     }
 

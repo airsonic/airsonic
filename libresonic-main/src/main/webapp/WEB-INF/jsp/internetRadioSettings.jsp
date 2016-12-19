@@ -8,7 +8,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="internetRadio"/>
-    <c:param name="toast" value="${model.reload}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form method="post" action="internetRadioSettings.view">
@@ -55,11 +55,11 @@
 </form>
 
 
-<c:if test="${not empty model.error}">
-    <p class="warning"><fmt:message key="${model.error}"/></p>
+<c:if test="${not empty error}">
+    <p class="warning"><fmt:message key="${error}"/></p>
 </c:if>
 
-<c:if test="${model.reload}">
+<c:if test="${settings_reload}">
     <script language="javascript" type="text/javascript">parent.frames.left.location.href="left.view?"</script>
 </c:if>
 

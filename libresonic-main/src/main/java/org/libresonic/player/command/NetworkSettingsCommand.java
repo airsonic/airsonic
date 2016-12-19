@@ -33,7 +33,6 @@ public class NetworkSettingsCommand {
     private String urlRedirectCustomUrl;
     private String urlRedirectType;
     private int port;
-    private boolean toast;
     private LicenseInfo licenseInfo;
 
     public void setPortForwardingEnabled(boolean portForwardingEnabled) {
@@ -73,14 +72,6 @@ public class NetworkSettingsCommand {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public boolean isToast() {
-        return toast;
-    }
-
-    public void setToast(boolean toast) {
-        this.toast = toast;
     }
 
     public void setLicenseInfo(LicenseInfo licenseInfo) {

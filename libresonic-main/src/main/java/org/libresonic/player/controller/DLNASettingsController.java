@@ -22,53 +22,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.UPnPService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller for the page used to administrate the UPnP/DLNA server settings.
  *
  * @author Sindre Mehus
  */
-public class DLNASettingsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/dlnaSettings")
+public class DLNASettingsController {
 
+    @Autowired
     private UPnPService upnpService;
+
+    @Autowired
     private SettingsService settingsService;
 
-    @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    public String handleGet(Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
-        if (isFormSubmission(request)) {
-            handleParameters(request);
-            map.put("toast", true);
-        }
-
-        ModelAndView result = super.handleRequestInternal(request, response);
         map.put("dlnaEnabled", settingsService.isDlnaEnabled());
         map.put("dlnaServerName", settingsService.getDlnaServerName());
         map.put("licenseInfo", settingsService.getLicenseInfo());
 
-        result.addObject("model", map);
-        return result;
+        model.addAttribute("model", map);
+        return "dlnaSettings";
     }
 
-    /**
-     * Determine if the given request represents a form submission.
-     *
-     * @param request current HTTP request
-     * @return if the request represents a form submission
-     */
-    private boolean isFormSubmission(HttpServletRequest request) {
-        return "POST".equals(request.getMethod());
+    @RequestMapping(method = RequestMethod.POST)
+    public String handlePost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+        handleParameters(request);
+        redirectAttributes.addFlashAttribute("settings_toast", true);
+        return "redirect:dlnaSettings.view";
     }
 
     private void handleParameters(HttpServletRequest request) {
@@ -83,13 +82,5 @@ public class DLNASettingsController extends ParameterizableViewController {
         settingsService.setDlnaServerName(dlnaServerName);
         settingsService.save();
         upnpService.setMediaServerEnabled(dlnaEnabled);
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setUpnpService(UPnPService upnpService) {
-        this.upnpService = upnpService;
     }
 }

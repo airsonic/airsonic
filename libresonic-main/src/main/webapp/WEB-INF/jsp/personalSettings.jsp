@@ -20,7 +20,7 @@
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="personal"/>
     <c:param name="restricted" value="${not command.user.adminRole}"/>
-    <c:param name="toast" value="${command.reloadNeeded}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <fmt:message key="personalsettings.title" var="title"><fmt:param>${command.user.username}</fmt:param></fmt:message>
@@ -254,7 +254,7 @@
     <fmt:message key="personalsettings.avatar.courtesy"/>
 </p>
 
-<c:if test="${command.reloadNeeded}">
+<c:if test="${settings_reload}">
     <script language="javascript" type="text/javascript">
         parent.location.href="index.view?";
     </script>

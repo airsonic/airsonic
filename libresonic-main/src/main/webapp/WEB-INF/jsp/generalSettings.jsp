@@ -13,7 +13,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="general"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form:form method="post" action="generalSettings.view" commandName="command">
@@ -165,7 +165,7 @@
     </table>
 </form:form>
 
-<c:if test="${command.reloadNeeded}">
+<c:if test="${settings_reload}">
     <script language="javascript" type="text/javascript">
         parent.frames.left.location.href="left.view?";
         parent.frames.playQueue.location.href="playQueue.view?";

@@ -9,7 +9,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="podcast"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form:form commandName="command" action="podcastSettings.view" method="post">

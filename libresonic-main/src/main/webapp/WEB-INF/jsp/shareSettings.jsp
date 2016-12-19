@@ -9,7 +9,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="share"/>
-    <c:param name="toast" value="${model.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
     <c:param name="restricted" value="${not model.user.adminRole}"/>
 </c:import>
 
