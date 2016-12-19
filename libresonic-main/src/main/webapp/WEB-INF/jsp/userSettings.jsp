@@ -8,7 +8,7 @@
     <script type="text/javascript">
         function init() {
             enablePasswordChangeFields();
-            <c:if test="${command.reload}">
+            <c:if test="${settings_reload}">
             parent.frames.left.location.href="left.view?";
             </c:if>
         }
@@ -41,7 +41,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="user"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <table class="indent">
@@ -61,9 +61,8 @@
 
 <p/>
 
-<form:form method="post" action="userSettings.view" commandName="command">
-    <c:if test="${not command.admin}">
-        <table>
+<form:form method="post" action="userSettings.view" modelAttribute="command">
+        <table style="${command.admin ? 'display:none' : ''}">
             <tr>
                 <td><form:checkbox path="adminRole" id="admin" cssClass="checkbox"/></td>
                 <td><label for="admin"><fmt:message key="usersettings.admin"/></label></td>
@@ -105,7 +104,6 @@
                 <td><label for="podcast"><fmt:message key="usersettings.podcast"/></label></td>
             </tr>
         </table>
-    </c:if>
 
     <c:if test="${not empty command.allMusicFolders}">
         <h2><fmt:message key="usersettings.folderaccess"/></h2>
@@ -158,7 +156,7 @@
 
     <c:choose>
         <c:when test="${command.newUser}">
-
+            <div style="display:none"><form:input path="newUser" /></div>
             <table class="indent">
                 <tr>
                     <td><fmt:message key="usersettings.username"/></td>
@@ -184,6 +182,7 @@
         </c:when>
 
         <c:otherwise>
+            <div style="display:none"><form:input path="username"/></div>
             <table id="passwordChangeCheckboxTable">
                 <tr>
                     <td><form:checkbox path="passwordChange" id="passwordChange" onclick="enablePasswordChangeFields();" cssClass="checkbox"/></td>

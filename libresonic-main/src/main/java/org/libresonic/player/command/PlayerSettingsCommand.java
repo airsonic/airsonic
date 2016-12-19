@@ -52,7 +52,6 @@ public class PlayerSettingsCommand {
     private EnumHolder[] transcodeSchemeHolders;
     private Player[] players;
     private boolean isAdmin;
-    private boolean isReloadNeeded;
 
     public String getPlayerId() {
         return playerId;
@@ -206,12 +205,8 @@ public class PlayerSettingsCommand {
         isAdmin = admin;
     }
 
-    public boolean isReloadNeeded() {
-        return isReloadNeeded;
-    }
 
     public void setReloadNeeded(boolean reloadNeeded) {
-        isReloadNeeded = reloadNeeded;
     }
 
     /**

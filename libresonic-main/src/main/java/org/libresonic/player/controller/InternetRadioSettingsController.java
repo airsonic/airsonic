@@ -22,11 +22,18 @@ package org.libresonic.player.controller;
 import org.libresonic.player.domain.InternetRadio;
 import org.libresonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,38 +44,35 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
-public class InternetRadioSettingsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/internetRadioSettings")
+public class InternetRadioSettingsController {
 
+    @Autowired
     private SettingsService settingsService;
 
-    @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    public String doGet(Model model) throws Exception {
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
-        if (isFormSubmission(request)) {
-            String error = handleParameters(request);
-            map.put("error", error);
-            if (error == null) {
-                map.put("reload", true);
-            }
-        }
-
-        ModelAndView result = super.handleRequestInternal(request, response);
         map.put("internetRadios", settingsService.getAllInternetRadios(true));
 
-        result.addObject("model", map);
-        return result;
+        model.addAttribute("model", map);
+        return "internetRadioSettings";
     }
 
-    /**
-     * Determine if the given request represents a form submission.
-     *
-     * @param request current HTTP request
-     * @return if the request represents a form submission
-     */
-    private boolean isFormSubmission(HttpServletRequest request) {
-        return "POST".equals(request.getMethod());
+    @RequestMapping(method = RequestMethod.POST)
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+
+        String error = handleParameters(request);
+        Map<String, Object> map = new HashMap<>();
+        if(error == null) {
+            redirectAttributes.addFlashAttribute("settings_toast", true);
+            redirectAttributes.addFlashAttribute("settings_reload", true);
+        }
+        redirectAttributes.addFlashAttribute("error", error);
+        return "redirect:internetRadioSettings.view";
     }
 
     private String handleParameters(HttpServletRequest request) {
@@ -114,10 +118,6 @@ public class InternetRadioSettingsController extends ParameterizableViewControll
 
     private String getParameter(HttpServletRequest request, String name, Integer id) {
         return StringUtils.trimToNull(request.getParameter(name + "[" + id + "]"));
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
     }
 
 }

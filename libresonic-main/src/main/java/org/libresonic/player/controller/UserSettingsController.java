@@ -40,6 +40,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,7 +53,6 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/userSettings")
-@SessionAttributes(value = "command")
 public class UserSettingsController {
 
     @Autowired
@@ -69,27 +70,8 @@ public class UserSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    protected String displayForm() throws Exception {
-        return "userSettings";
-    }
-
-    @ModelAttribute
-    protected void formBackingObject(HttpServletRequest request,Model model) throws Exception {
+    protected String displayForm(HttpServletRequest request, Model model) throws Exception {
         UserSettingsCommand command = new UserSettingsCommand();
-
-        User user = getUser(request);
-        if (user != null) {
-            command.setUser(user);
-            command.setEmail(user.getEmail());
-            command.setAdmin(User.USERNAME_ADMIN.equals(user.getUsername()));
-            UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
-            command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
-
-        } else {
-            command.setNewUser(true);
-            command.setStreamRole(true);
-            command.setSettingsRole(true);
-        }
 
         command.setUsers(securityService.getAllUsers());
         command.setTranscodingSupported(transcodingService.isDownsamplingSupported(null));
@@ -97,9 +79,22 @@ public class UserSettingsController {
         command.setTranscodeSchemes(TranscodeScheme.values());
         command.setLdapEnabled(settingsService.isLdapEnabled());
         command.setAllMusicFolders(settingsService.getAllMusicFolders());
-        command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
+        User user = getUser(request);
+        if (user != null) {
+            command.setUser(user);
+            command.setEmail(user.getEmail());
+            command.setAdmin(User.USERNAME_ADMIN.equals(user.getUsername()));
+            UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
+            command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
+            command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
+        } else {
+            command.setNewUser(true);
+            command.setStreamRole(true);
+            command.setSettingsRole(true);
+        }
 
         model.addAttribute("command",command);
+        return "userSettings";
     }
 
     private User getUser(HttpServletRequest request) throws ServletRequestBindingException {
@@ -126,7 +121,7 @@ public class UserSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         if (command.isDeleteUser()) {
             deleteUser(command);
@@ -135,9 +130,10 @@ public class UserSettingsController {
         } else {
             updateUser(command);
         }
-        resetCommand(command);
+        redirectAttributes.addFlashAttribute("settings_reload", true);
+        redirectAttributes.addFlashAttribute("settings_toast", true);
 
-        return "userSettings";
+        return "redirect:userSettings.view";
     }
 
     private void deleteUser(UserSettingsCommand command) {
@@ -179,24 +175,6 @@ public class UserSettingsController {
 
         List<Integer> allowedMusicFolderIds = Util.toIntegerList(command.getAllowedMusicFolderIds());
         settingsService.setMusicFoldersForUser(command.getUsername(), allowedMusicFolderIds);
-    }
-
-    private void resetCommand(UserSettingsCommand command) {
-        command.setUser(null);
-        command.setUsers(securityService.getAllUsers());
-        command.setDeleteUser(false);
-        command.setPasswordChange(false);
-        command.setNewUser(true);
-        command.setStreamRole(true);
-        command.setSettingsRole(true);
-        command.setPassword(null);
-        command.setConfirmPassword(null);
-        command.setEmail(null);
-        command.setTranscodeSchemeName(null);
-        command.setAllMusicFolders(settingsService.getAllMusicFolders());
-        command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(null)));
-        command.setToast(true);
-        command.setReload(true);
     }
 
 }
