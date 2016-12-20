@@ -82,7 +82,6 @@ public class SonosSettingsController {
         sonosService.setMusicServiceEnabled(false);
         sonosService.setMusicServiceEnabled(sonosEnabled);
     }
-<<<<<<< HEAD
 
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
@@ -92,4 +91,3 @@ public class SonosSettingsController {
         this.sonosService = sonosService;
     }
 }
-=======

@@ -82,7 +82,6 @@ public class DLNASettingsController {
         settingsService.save();
         upnpService.setMediaServerEnabled(dlnaEnabled);
     }
-<<<<<<< HEAD
 
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
@@ -92,4 +91,3 @@ public class DLNASettingsController {
         this.upnpService = upnpService;
     }
 }
-=======
