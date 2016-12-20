@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
@@ -49,10 +50,10 @@ public class ChangeCoverArtController extends ParameterizableViewController {
         String album = request.getParameter("album");
         MediaFile dir = mediaFileService.getMediaFile(id);
 
-        if (artist == null) {
+        if (StringUtils.isBlank(artist)) {
             artist = dir.getArtist();
         }
-        if (album == null) {
+        if (StringUtils.isBlank(album)) {
             album = dir.getAlbumName();
         }
 
