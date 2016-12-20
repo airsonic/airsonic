@@ -61,8 +61,6 @@ public class UserSettingsCommand {
     private EnumHolder[] transcodeSchemeHolders;
     private boolean transcodingSupported;
     private String transcodeDirectory;
-    private boolean toast;
-    private boolean reload;
 
     public String getUsername() {
         return username;
@@ -297,21 +295,7 @@ public class UserSettingsCommand {
         isSettingsRole = user != null && user.isSettingsRole();
         isShareRole = user != null && user.isShareRole();
         isLdapAuthenticated = user != null && user.isLdapAuthenticated();
+        setNewUser(false);
     }
 
-    public void setToast(boolean toast) {
-        this.toast = toast;
-    }
-
-    public boolean isToast() {
-        return toast;
-    }
-
-    public boolean isReload() {
-        return reload;
-    }
-
-    public void setReload(boolean reload) {
-        this.reload = reload;
-    }
 }

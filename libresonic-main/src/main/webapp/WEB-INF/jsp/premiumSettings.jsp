@@ -10,7 +10,7 @@
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="premium"/>
     <c:param name="restricted" value="${not command.user.adminRole}"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <c:if test="${not empty command.path}">

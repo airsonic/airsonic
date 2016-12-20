@@ -32,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.Date;
 import java.util.Locale;
 
@@ -112,7 +114,7 @@ public class PersonalSettingsController  {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command,Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         int localeIndex = Integer.parseInt(command.getLocaleIndex());
         Locale locale = null;
@@ -158,10 +160,10 @@ public class PersonalSettingsController  {
         settings.setChanged(new Date());
         settingsService.updateUserSettings(settings);
 
-        command.setReloadNeeded(true);
+        redirectAttributes.addFlashAttribute("settings_reload", true);
+        redirectAttributes.addFlashAttribute("settings_toast", true);
 
-        model.addAttribute("command",command);
-        return "personalSettings";
+        return "redirect:personalSettings.view";
     }
 
     private int getAvatarId(UserSettings userSettings) {

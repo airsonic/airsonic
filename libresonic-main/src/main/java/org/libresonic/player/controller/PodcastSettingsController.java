@@ -28,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller for the page used to administrate the Podcast receiver.
@@ -57,9 +58,7 @@ public class PodcastSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute PodcastSettingsCommand command, Model model) throws Exception {
-        command.setToast(true);
-
+    protected String doSubmitAction(@ModelAttribute PodcastSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
         settingsService.setPodcastUpdateInterval(Integer.parseInt(command.getInterval()));
         settingsService.setPodcastEpisodeRetentionCount(Integer.parseInt(command.getEpisodeRetentionCount()));
         settingsService.setPodcastEpisodeDownloadCount(Integer.parseInt(command.getEpisodeDownloadCount()));
@@ -67,8 +66,8 @@ public class PodcastSettingsController {
         settingsService.save();
 
         podcastService.schedule();
-        model.addAttribute("command",command);
-        return "podcastSettings";
+        redirectAttributes.addFlashAttribute("settings_toast", true);
+        return "redirect:podcastSettings.view";
     }
 
 }

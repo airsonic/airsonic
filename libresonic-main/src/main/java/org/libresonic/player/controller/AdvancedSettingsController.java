@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller for the page used to administrate advanced settings.
@@ -67,10 +68,10 @@ public class AdvancedSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute AdvancedSettingsCommand command,Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute AdvancedSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
-        command.setToast(true);
-        command.setReloadNeeded(false);
+        redirectAttributes.addFlashAttribute("settings_reload", false);
+        redirectAttributes.addFlashAttribute("settings_toast", true);
 
         try {
             settingsService.setDownloadBitrateLimit(Long.parseLong(command.getDownloadLimit()));
@@ -99,8 +100,7 @@ public class AdvancedSettingsController {
             settingsService.setSmtpPassword(command.getSmtpPassword());
         }
 
-        model.addAttribute("command", command);
-        return "advancedSettings";
+        return "redirect:advancedSettings.view";
     }
 
 }

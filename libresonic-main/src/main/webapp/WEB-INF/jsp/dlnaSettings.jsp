@@ -30,7 +30,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="dlna"/>
-    <c:param name="toast" value="${model.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form method="post" action="dlnaSettings.view">

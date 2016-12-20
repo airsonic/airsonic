@@ -10,7 +10,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="transcoding"/>
-    <c:param name="toast" value="${model.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form method="post" action="transcodingSettings.view">
@@ -40,11 +40,11 @@
     </tr>
 
     <tr>
-        <td><input style="font-family:monospace" type="text" name="name" size="10" placeholder="<fmt:message key="transcodingsettings.name"/>" value="${model.newTranscoding.name}"/></td>
-        <td><input style="font-family:monospace" type="text" name="sourceFormats" size="36" placeholder="<fmt:message key="transcodingsettings.sourceformat"/>" value="${model.newTranscoding.sourceFormats}"/></td>
-        <td><input style="font-family:monospace" type="text" name="targetFormat" size="10" placeholder="<fmt:message key="transcodingsettings.targetformat"/>" value="${model.newTranscoding.targetFormat}"/></td>
-        <td><input style="font-family:monospace" type="text" name="step1" size="60" placeholder="<fmt:message key="transcodingsettings.step1"/>" value="${model.newTranscoding.step1}"/></td>
-        <td><input style="font-family:monospace" type="text" name="step2" size="22" placeholder="<fmt:message key="transcodingsettings.step2"/>" value="${model.newTranscoding.step2}"/></td>
+        <td><input style="font-family:monospace" type="text" name="name" size="10" placeholder="<fmt:message key="transcodingsettings.name"/>" value="${newTranscoding.name}"/></td>
+        <td><input style="font-family:monospace" type="text" name="sourceFormats" size="36" placeholder="<fmt:message key="transcodingsettings.sourceformat"/>" value="${newTranscoding.sourceFormats}"/></td>
+        <td><input style="font-family:monospace" type="text" name="targetFormat" size="10" placeholder="<fmt:message key="transcodingsettings.targetformat"/>" value="${newTranscoding.targetFormat}"/></td>
+        <td><input style="font-family:monospace" type="text" name="step1" size="60" placeholder="<fmt:message key="transcodingsettings.step1"/>" value="${newTranscoding.step1}"/></td>
+        <td><input style="font-family:monospace" type="text" name="step2" size="22" placeholder="<fmt:message key="transcodingsettings.step2"/>" value="${newTranscoding.step2}"/></td>
         <td/>
     </tr>
 
@@ -87,8 +87,8 @@
 
 </form>
 
-<c:if test="${not empty model.error}">
-    <p class="warning"><fmt:message key="${model.error}"/></p>
+<c:if test="${not empty error}">
+    <p class="warning"><fmt:message key="${error}"/></p>
 </c:if>
 
 <div style="width:60%">

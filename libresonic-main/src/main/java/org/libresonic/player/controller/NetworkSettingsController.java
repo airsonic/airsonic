@@ -30,6 +30,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Random;
 
@@ -65,8 +66,7 @@ public class NetworkSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") NetworkSettingsCommand command, Model model) throws Exception {
-        command.setToast(true);
+    protected String doSubmitAction(@ModelAttribute("command") NetworkSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         settingsService.setPortForwardingEnabled(command.isPortForwardingEnabled());
         settingsService.setUrlRedirectionEnabled(command.isUrlRedirectionEnabled());
@@ -82,7 +82,10 @@ public class NetworkSettingsController {
         settingsService.save();
         networkService.initPortForwarding(0);
         networkService.initUrlRedirection(true);
-        return "networkSettings";
+
+        redirectAttributes.addFlashAttribute("settings_toast", true);
+
+        return "redirect:networkSettings.view";
     }
 
 }

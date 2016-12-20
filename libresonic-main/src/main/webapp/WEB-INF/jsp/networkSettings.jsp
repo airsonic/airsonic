@@ -43,7 +43,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="network"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <p style="padding-top:1em"><fmt:message key="networksettings.text"/></p>
