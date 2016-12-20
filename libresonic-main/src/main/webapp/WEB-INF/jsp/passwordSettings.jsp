@@ -9,7 +9,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="password"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
     <c:param name="restricted" value="true"/>
 </c:import>
 

@@ -12,7 +12,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="player"/>
-    <c:param name="toast" value="${command.reloadNeeded}"/>
+    <c:param name="toast" value="${settings_toast}"/>
     <c:param name="restricted" value="${not command.admin}"/>
 </c:import>
 
@@ -163,7 +163,7 @@
 </c:otherwise>
 </c:choose>
 
-<c:if test="${command.reloadNeeded}">
+<c:if test="${settings_reload}">
     <script language="javascript" type="text/javascript">parent.frames.playQueue.location.href="playQueue.view?"</script>
 </c:if>
 

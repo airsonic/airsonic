@@ -30,7 +30,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="sonos"/>
-    <c:param name="toast" value="${model.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form method="post" action="sonosSettings.view">

@@ -145,33 +145,6 @@
     <bean id="settingsController" class="org.libresonic.player.controller.SettingsController">
         <property name="securityService" ref="securityService"/>
     </bean>
-    <bean id="dlnaSettingsController" class="org.libresonic.player.controller.DLNASettingsController">
-        <property name="viewName" value="dlnaSettings"/>
-        <property name="upnpService" ref="upnpService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="sonosSettingsController" class="org.libresonic.player.controller.SonosSettingsController">
-        <property name="viewName" value="sonosSettings"/>
-        <property name="sonosService" ref="sonosService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="shareSettingsController" class="org.libresonic.player.controller.ShareSettingsController">
-        <property name="viewName" value="shareSettings"/>
-        <property name="shareService" ref="shareService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="transcodingSettingsController" class="org.libresonic.player.controller.TranscodingSettingsController">
-        <property name="viewName" value="transcodingSettings"/>
-        <property name="transcodingService" ref="transcodingService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-    <bean id="internetRadioSettingsController"
-          class="org.libresonic.player.controller.InternetRadioSettingsController">
-        <property name="viewName" value="internetRadioSettings"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
     <bean id="avatarUploadController" class="org.libresonic.player.controller.AvatarUploadController">
         <property name="viewName" value="avatarUploadResult"/>
         <property name="settingsService" ref="settingsService"/>
@@ -344,11 +317,6 @@
                 <prop key="/nowPlaying.view">nowPlayingController</prop>
                 <prop key="/starred.view">starredController</prop>
                 <prop key="/settings.view">settingsController</prop>
-                <prop key="/dlnaSettings.view">dlnaSettingsController</prop>
-                <prop key="/sonosSettings.view">sonosSettingsController</prop>
-                <prop key="/shareSettings.view">shareSettingsController</prop>
-                <prop key="/transcodingSettings.view">transcodingSettingsController</prop>
-                <prop key="/internetRadioSettings.view">internetRadioSettingsController</prop>
                 <prop key="/avatarUpload.view">avatarUploadController</prop>
                 <prop key="/allmusic.view">allmusicController</prop>
                 <prop key="/home.view">homeController</prop>
@@ -398,4 +366,5 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <bean class="org.libresonic.player.spring.LoggingExceptionResolver" />
 </beans>

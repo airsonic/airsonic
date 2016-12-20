@@ -37,8 +37,6 @@ public class AdvancedSettingsCommand {
     private String ldapManagerPassword;
     private boolean ldapAutoShadowing;
     private String brand;
-    private boolean isReloadNeeded;
-    private boolean toast;
 
     private String smtpServer;
     private String smtpEncryption;
@@ -120,19 +118,6 @@ public class AdvancedSettingsCommand {
     }
 
     public void setReloadNeeded(boolean reloadNeeded) {
-        isReloadNeeded = reloadNeeded;
-    }
-
-    public boolean isReloadNeeded() {
-        return isReloadNeeded;
-    }
-
-    public boolean isToast() {
-        return toast;
-    }
-
-    public void setToast(boolean toast) {
-        this.toast = toast;
     }
 
     public String getSmtpServer() {

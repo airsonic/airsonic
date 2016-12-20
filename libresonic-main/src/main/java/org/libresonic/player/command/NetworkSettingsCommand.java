@@ -32,6 +32,7 @@ public class NetworkSettingsCommand {
     private String urlRedirectCustomUrl;
     private String urlRedirectType;
     private int port;
+<<<<<<< HEAD
     private boolean toast;
 
     public void setPortForwardingEnabled(boolean portForwardingEnabled) {
@@ -73,6 +74,7 @@ public class NetworkSettingsCommand {
         this.port = port;
     }
 
+<<<<<<< HEAD
     public boolean isToast() {
         return toast;
     }
@@ -81,6 +83,7 @@ public class NetworkSettingsCommand {
         this.toast = toast;
     }
 
+=======
 
     public String getUrlRedirectType() {
         return urlRedirectType;
