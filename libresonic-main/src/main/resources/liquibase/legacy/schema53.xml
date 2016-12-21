@@ -15,16 +15,6 @@
             </delete>
         </rollback>
     </changeSet>
-    <changeSet id="schema53_002" author="muff1nman">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <indexExists indexName="idx_podcast_episode_url" />
-            </not>
-        </preConditions>
-        <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
-            <column name="url"/>
-        </createIndex>
-    </changeSet>
     <changeSet id="schema53_003" author="muff1nman">
         <preConditions onFail="MARK_RAN">
             <not>
