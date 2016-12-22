@@ -91,15 +91,8 @@
      * launch app and request session
      */
     CastPlayer.prototype.launchCastApp = function () {
-        <c:choose>
-        <c:when test="${model.licenseInfo.licenseOrTrialValid}">
         this.log("launching app...");
         chrome.cast.requestSession(this.onRequestSessionSuccess.bind(this), this.onLaunchError.bind(this));
-        </c:when>
-        <c:otherwise>
-        $().toastmessage('showNoticeToast', "<fmt:message key="videoPlayer.getpremium"/>");
-        </c:otherwise>
-        </c:choose>
     };
 
     /**

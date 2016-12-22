@@ -70,7 +70,6 @@ public class ShareSettingsController {
         map.put("shareBaseUrl", shareService.getShareBaseUrl());
         map.put("shareInfos", getShareInfos(request));
         map.put("user", securityService.getCurrentUser(request));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         model.addAttribute("model", map);
         return "shareSettings";

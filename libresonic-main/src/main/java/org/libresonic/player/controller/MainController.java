@@ -119,7 +119,6 @@ public class MainController extends AbstractController {
         map.put("showArtistInfo", userSettings.isShowArtistInfoEnabled());
         map.put("partyMode", userSettings.isPartyModeEnabled());
         map.put("brand", settingsService.getBrand());
-        map.put("showAd", !settingsService.isLicenseValid() && adService.showAd());
         map.put("viewAsList", isViewAsList(request, userSettings));
         if (dir.isAlbum()) {
             map.put("sieblingAlbums", getSieblingAlbums(dir));

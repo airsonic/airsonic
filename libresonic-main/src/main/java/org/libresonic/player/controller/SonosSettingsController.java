@@ -54,7 +54,6 @@ public class SonosSettingsController {
 
         map.put("sonosEnabled", settingsService.isSonosEnabled());
         map.put("sonosServiceName", settingsService.getSonosServiceName());
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         model.addAttribute("model", map);
         return "sonosSettings";
@@ -82,5 +81,13 @@ public class SonosSettingsController {
 
         sonosService.setMusicServiceEnabled(false);
         sonosService.setMusicServiceEnabled(sonosEnabled);
+    }
+
+    public void setSettingsService(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
+
+    public void setSonosService(SonosService sonosService) {
+        this.sonosService = sonosService;
     }
 }

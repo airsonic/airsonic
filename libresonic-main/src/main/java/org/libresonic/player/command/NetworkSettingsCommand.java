@@ -19,7 +19,6 @@
  */
 package org.libresonic.player.command;
 
-import org.libresonic.player.domain.LicenseInfo;
 
 /**
  * @author Sindre Mehus
@@ -33,7 +32,7 @@ public class NetworkSettingsCommand {
     private String urlRedirectCustomUrl;
     private String urlRedirectType;
     private int port;
-    private LicenseInfo licenseInfo;
+    private boolean toast;
 
     public void setPortForwardingEnabled(boolean portForwardingEnabled) {
         this.portForwardingEnabled = portForwardingEnabled;
@@ -74,12 +73,12 @@ public class NetworkSettingsCommand {
         this.port = port;
     }
 
-    public void setLicenseInfo(LicenseInfo licenseInfo) {
-        this.licenseInfo = licenseInfo;
+    public boolean isToast() {
+        return toast;
     }
 
-    public LicenseInfo getLicenseInfo() {
-        return licenseInfo;
+    public void setToast(boolean toast) {
+        this.toast = toast;
     }
 
     public String getUrlRedirectType() {

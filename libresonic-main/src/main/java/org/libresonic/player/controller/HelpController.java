@@ -63,7 +63,6 @@ public class HelpController extends ParameterizableViewController {
                             ", java " + System.getProperty("java.version") +
                             ", " + System.getProperty("os.name");
 
-        map.put("licenseInfo", settingsService.getLicenseInfo());
         map.put("user", securityService.getCurrentUser(request));
         map.put("brand", settingsService.getBrand());
         map.put("localVersion", versionService.getLocalVersion());

@@ -57,7 +57,6 @@ public class DLNASettingsController {
 
         map.put("dlnaEnabled", settingsService.isDlnaEnabled());
         map.put("dlnaServerName", settingsService.getDlnaServerName());
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         model.addAttribute("model", map);
         return "dlnaSettings";
@@ -82,5 +81,13 @@ public class DLNASettingsController {
         settingsService.setDlnaServerName(dlnaServerName);
         settingsService.save();
         upnpService.setMediaServerEnabled(dlnaEnabled);
+    }
+
+    public void setSettingsService(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
+
+    public void setUpnpService(UPnPService upnpService) {
+        this.upnpService = upnpService;
     }
 }

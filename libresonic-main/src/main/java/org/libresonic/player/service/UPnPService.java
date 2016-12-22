@@ -125,11 +125,9 @@ public class UPnPService {
         // TODO: DLNACaps
         Version version = versionService.getLocalVersion();
         String versionString = version == null ? null : version.toString();
-        String licenseEmail = settingsService.getLicenseEmail();
-        String licenseString = licenseEmail == null ? "Unlicensed" : ("Licensed to " + licenseEmail);
 
         DeviceDetails details = new DeviceDetails(serverName, new ManufacturerDetails(serverName),
-                new ModelDetails(serverName, licenseString, versionString),
+                new ModelDetails(serverName),
                 new DLNADoc[]{new DLNADoc("DMS", DLNADoc.Version.V1_5)}, null);
 
         Icon icon = new Icon("image/png", 512, 512, 32, getClass().getResource("logo-512.png"));
