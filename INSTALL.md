@@ -23,7 +23,7 @@ Daily WAR files are built by Jenkins and available [here](https://jenkins.zifnab
 
 1.  Download the latest war file:
 
-		wget https://jenkins.zifnab.net/job/libresonic/lastSuccessfulBuild/artifact/.repository/org/libresonic/player/libresonic-main/6.1.beta2/libresonic-main-6.1.beta2.war -O /var/lib/tomcat8/webapps/libresonic.war
+		wget https://jenkins.zifnab.net/job/libresonic/lastSuccessfulBuild/artifact/libresonic-main/target/libresonic.war -O /var/lib/tomcat8/webapps/libresonic.war
 
 	Note that this command copies the war file directly to the Tomcat webapps directory, and renames it to `libresonic.war`.
 
@@ -36,7 +36,7 @@ Daily WAR files are built by Jenkins and available [here](https://jenkins.zifnab
 
 		systemctl restart tomcat8.service
 
-	Note that it may take ~30 seconds after the service restarts for Tomcat to fully deploy the app. You can monitor /var/log/tomcat8/catalina.out for the following message:
+	Note that it may take ~30 seconds after the service restarts for Tomcat to fully deploy the app. You can monitor `/var/log/tomcat8/catalina.out` for the following message:
 
 		INFO: Deployment of web application archive /var/lib/tomcat8/webapps/libresonic.war has finished in 46,192 ms
 
@@ -54,7 +54,7 @@ In order to build, install, and run Libresonic, you will need:
 
 On a Debian-based system, you can install all these prerequisites at once with:
 
-	apt-get update; apt-get install tomcat8 openjdk-7-jdk maven
+	apt-get update; apt-get install tomcat8 openjdk-8-jdk maven
 
 ### Test Your System
 
@@ -86,7 +86,7 @@ On a Debian-based system, you can install all these prerequisites at once with:
 
 		mvn package
 
-4.  You should know have a war file:
+4.  You should now have a war file:
 
 		ls libresonic-main/target/libresonic.war 
 		libresonic-main/target/libresonic.war
