@@ -274,6 +274,7 @@
     <bean id="ajaxCoverArtService" class="org.libresonic.player.ajax.CoverArtService">
         <property name="securityService" ref="securityService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="lastFmService" ref="lastFmService"/>
     </bean>
 
     <bean id="ajaxStarService" class="org.libresonic.player.ajax.StarService">

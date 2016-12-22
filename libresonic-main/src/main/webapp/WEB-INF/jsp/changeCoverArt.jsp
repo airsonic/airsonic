@@ -6,13 +6,14 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/prototype.js"/>"></script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript" language="javascript">
 
-        dwr.engine.setErrorHandler(null);
-        google.load('search', '1');
-        var imageSearch;
+        dwr.engine.setErrorHandler(function() {
+            $("wait").hide();
+            dwr.util.setValue("errorDetails", "Sorry, an error occurred while searching for cover art.");
+            $("errorDetails").show();
+        });
 
         function setImage(imageUrl) {
             $("wait").show();
@@ -21,14 +22,13 @@
             $("error").hide();
             $("errorDetails").hide();
             $("noImagesFound").hide();
-            var id = dwr.util.getValue("id");
-            coverArtService.setCoverArtImage(id, imageUrl, setImageComplete);
+            coverArtService.setCoverArtImage(${model.id}, imageUrl, setImageComplete);
         }
 
         function setImageComplete(errorDetails) {
             $("wait").hide();
             if (errorDetails != null) {
-                dwr.util.setValue("errorDetails", "<br/>" + errorDetails, { escapeHtml:false });
+                dwr.util.setValue("errorDetails", errorDetails, { escapeHtml:false });
                 $("error").show();
                 $("errorDetails").show();
             } else {
@@ -36,37 +36,29 @@
             }
         }
 
-        function searchComplete() {
-
+        function searchComplete(searchResults) {
             $("wait").hide();
 
-            if (imageSearch.results && imageSearch.results.length > 0) {
+            if (searchResults.length > 0) {
 
                 var images = $("images");
                 images.innerHTML = "";
 
-                var results = imageSearch.results;
-                for (var i = 0; i < results.length; i++) {
-                    var result = results[i];
+                for (var i = 0; i < searchResults.length; i++) {
+                    var result = searchResults[i];
                     var node = $("template").cloneNode(true);
 
-                    // Rename results to https to avoid mixed contents.
-                    result.tbUrl = result.tbUrl.replace('http://', 'https://');
-
                     var link = node.getElementsByClassName("search-result-link")[0];
-                    link.href = "javascript:setImage('" + result.url + "');";
+                    link.href = "javascript:setImage('" + result.imageUrl + "');";
 
-                    var thumbnail = node.getElementsByClassName("search-result-thumbnail")[0];
-                    thumbnail.src = result.tbUrl;
+                    var thumbnail = node.getElementsByClassName("search-result-image")[0];
+                    thumbnail.src = result.imageUrl;
 
-                    var title = node.getElementsByClassName("search-result-title")[0];
-                    title.innerHTML = result.contentNoFormatting.truncate(30);
+                    var title = node.getElementsByClassName("search-result-artist")[0];
+                    title.innerHTML = result.artist;
 
-                    var dimension = node.getElementsByClassName("search-result-dimension")[0];
-                    dimension.innerHTML = result.width + " × " + result.height;
-
-                    var url = node.getElementsByClassName("search-result-url")[0];
-                    url.innerHTML = result.visibleUrl;
+                    var dimension = node.getElementsByClassName("search-result-album")[0];
+                    dimension.innerHTML = result.album;
 
                     node.show();
                     images.appendChild(node);
@@ -74,48 +66,10 @@
 
                 $("result").show();
 
-                addPaginationLinks(imageSearch);
 
             } else {
                 $("noImagesFound").show();
             }
-        }
-
-        function addPaginationLinks() {
-
-            // To paginate search results, use the cursor function.
-            var cursor = imageSearch.cursor;
-            var curPage = cursor.currentPageIndex; // check what page the app is on
-            var pagesDiv = document.createElement("div");
-            for (var i = 0; i < cursor.pages.length; i++) {
-                var page = cursor.pages[i];
-                var label;
-                if (curPage == i) {
-                    // If we are on the current page, then don"t make a link.
-                    label = document.createElement("b");
-                } else {
-
-                    // Create links to other pages using gotoPage() on the searcher.
-                    label = document.createElement("a");
-                    label.href = "javascript:imageSearch.gotoPage(" + i + ");";
-                }
-                label.innerHTML = page.label;
-                label.style.marginRight = "1em";
-                pagesDiv.appendChild(label);
-            }
-
-            // Create link to next page.
-            if (curPage < cursor.pages.length - 1) {
-                var next = document.createElement("a");
-                next.href = "javascript:imageSearch.gotoPage(" + (curPage + 1) + ");";
-                next.innerHTML = "<fmt:message key="common.next"/>";
-                next.style.marginLeft = "1em";
-                pagesDiv.appendChild(next);
-            }
-
-            var pages = $("pages");
-            pages.innerHTML = "";
-            pages.appendChild(pagesDiv);
         }
 
         function search() {
@@ -127,40 +81,25 @@
             $("errorDetails").hide();
             $("noImagesFound").hide();
 
-            var query = dwr.util.getValue("query");
-            imageSearch.execute(query);
+            var artist = dwr.util.getValue("artist");
+            var album = dwr.util.getValue("album");
+            coverArtService.searchCoverArt(artist, album, searchComplete);
         }
-
-        function onLoad() {
-
-            imageSearch = new google.search.ImageSearch();
-            imageSearch.setSearchCompleteCallback(this, searchComplete, null);
-            imageSearch.setNoHtmlGeneration();
-            imageSearch.setResultSetSize(8);
-
-            google.search.Search.getBranding("branding");
-
-            $("template").hide();
-
-            search();
-        }
-        google.setOnLoadCallback(onLoad);
-
 
     </script>
 </head>
-<body class="mainframe bgcolor1">
+<body class="mainframe bgcolor1" onload="search()">
 <h1><fmt:message key="changecoverart.title"/></h1>
 <form action="javascript:search()">
     <table class="indent"><tr>
-        <td><input id="query" name="query" size="70" type="text" value="${model.artist} ${model.album}" onclick="select()"/></td>
+        <td><input id="artist" name="artist" placeholder="<fmt:message key="changecoverart.artist"/>" size="35" type="text" value="${model.artist}" onclick="select()"/></td>
+        <td><input id="album" name="album" placeholder="<fmt:message key="changecoverart.album"/>" size="35" type="text" value="${model.album}" onclick="select()"/></td>
         <td style="padding-left:0.5em"><input type="submit" value="<fmt:message key="changecoverart.search"/>"/></td>
     </tr></table>
 </form>
 
 <form action="javascript:setImage(dwr.util.getValue('url'))">
     <table><tr>
-        <input id="id" type="hidden" name="id" value="${model.id}"/>
         <td><label for="url"><fmt:message key="changecoverart.address"/></label></td>
         <td style="padding-left:0.5em"><input type="text" name="url" size="50" id="url" value="http://" onclick="select()"/></td>
         <td style="padding-left:0.5em"><input type="submit" value="<fmt:message key="common.ok"/>"></td>
@@ -178,32 +117,21 @@
 <div id="errorDetails" class="warning" style="display:none">
 </div>
 
-<div id="result">
-
-    <div id="pages" style="float:left;padding-left:0.5em;padding-top:0.5em">
-    </div>
-
-    <div id="branding" style="float:right;padding-right:1em;padding-top:0.5em">
-    </div>
-
-    <div style="clear:both;">
-    </div>
-
-    <div id="images" style="width:100%;padding-bottom:2em">
-    </div>
-
-    <div style="clear:both;">
-    </div>
-
+<div id="result" style="padding-top:2em">
+    <div style="clear:both;"></div>
+    <div id="images"></div>
+    <div style="clear:both;"></div>
+    <a href="http://last.fm/" target="_blank"><img src="<c:url value="/icons/lastfm.gif"/>"></a>
+    <span class="detail" style="padding-left:1em"><fmt:message key="changecoverart.courtesy"/></span>
 </div>
 
-<div id="template" style="float:left; height:190px; width:220px;padding:0.5em;position:relative">
-    <div style="position:absolute;bottom:0">
-        <a class="search-result-link"><img class="search-result-thumbnail" style="padding:1px; border:1px solid #021a40; background-color:white;"></a>
-        <div class="search-result-title"></div>
-        <div class="search-result-dimension detail"></div>
-        <div class="search-result-url detail"></div>
+<div id="template" class="coverart dropshadow" style="float:left;margin-right:2.0em;margin-bottom:2.0em;width:250px;display:none">
+    <div>
+        <a class="search-result-link"><img class="search-result-image" style="width:250px;height:250px"></a>
+        <div class="search-result-artist caption1"></div>
+        <div class="search-result-album caption2"></div>
     </div>
 </div>
 
 </body></html>
+
