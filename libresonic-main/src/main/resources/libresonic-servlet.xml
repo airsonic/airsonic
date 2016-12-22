@@ -15,7 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="proxyController" class="org.libresonic.player.controller.ProxyController"/>
     <bean id="statusChartController" class="org.libresonic.player.controller.StatusChartController">
         <property name="statusService" ref="statusService"/>
     </bean>
@@ -126,7 +125,6 @@
                 <prop key="/notFound.view">multiController</prop>
                 <prop key="/index.view">multiController</prop>
                 <prop key="/videoPlayer.view">videoPlayerController</prop>
-                <prop key="/proxy.view">proxyController</prop>
                 <prop key="/statusChart.view">statusChartController</prop>
                 <prop key="/userChart.view">userChartController</prop>
                 <prop key="/download.view">downloadController</prop>

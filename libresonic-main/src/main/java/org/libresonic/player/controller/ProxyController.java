@@ -19,11 +19,6 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.InputStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -31,17 +26,26 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
 
 /**
  * A proxy for external HTTP requests.
  *
  * @author Sindre Mehus
  */
-public class ProxyController implements Controller {
+@Controller
+@RequestMapping("/proxy")
+public class ProxyController  {
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String url = ServletRequestUtils.getRequiredStringParameter(request, "url");
 
