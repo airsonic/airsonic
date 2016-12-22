@@ -39,6 +39,10 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.libresonic.player.domain.User;
@@ -49,14 +53,18 @@ import org.libresonic.player.service.SecurityService;
  *
  * @author Sindre Mehus
  */
+@Controller
+@RequestMapping("/userChart")
 public class UserChartController extends AbstractChartController {
 
+    @Autowired
     private SecurityService securityService;
 
     public static final int IMAGE_WIDTH = 400;
     public static final int IMAGE_MIN_HEIGHT = 200;
     private static final long BYTES_PER_MB = 1024L * 1024L;
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String type = request.getParameter("type");
         CategoryDataset dataset = createDataset(type);
@@ -140,7 +148,4 @@ public class UserChartController extends AbstractChartController {
         return chart;
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }

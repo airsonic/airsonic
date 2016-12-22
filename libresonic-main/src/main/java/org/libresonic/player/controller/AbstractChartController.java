@@ -32,7 +32,7 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
-public abstract class AbstractChartController implements Controller {
+public abstract class AbstractChartController {
 
     /**
      * Returns the chart background color for the current theme.
