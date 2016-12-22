@@ -1,23 +1,19 @@
-/*
- This file is part of Libresonic.
-
- Libresonic is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
-
- Libresonic is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
-
- Copyright 2016 (C) Libresonic Authors
- Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
- */
 package org.libresonic.player.controller;
+
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.User;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.mail.Message;
 import javax.mail.Session;
@@ -26,44 +22,27 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.tanesha.recaptcha.ReCaptcha;
-import net.tanesha.recaptcha.ReCaptchaFactory;
-import net.tanesha.recaptcha.ReCaptchaResponse;
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.util.StringUtil;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-import org.springframework.web.servlet.view.RedirectView;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 /**
- * Multi-controller used for simple pages.
- *
- * @author Sindre Mehus
+ * Spring MVC Controller that serves the login page.
  */
-public class MultiController extends MultiActionController {
+@Controller
+@RequestMapping("/recover")
+public class RecoverController {
 
-    private static final Logger LOG = Logger.getLogger(MultiController.class);
 
-    private SecurityService securityService;
+    private static final Logger LOG = Logger.getLogger(RecoverController.class);
+
+    @Autowired
     private SettingsService settingsService;
-    private PlaylistService playlistService;
+    @Autowired
+    private SecurityService securityService;
 
+    @RequestMapping(method = {RequestMethod.GET})
     public ModelAndView recover(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -107,9 +86,20 @@ public class MultiController extends MultiActionController {
         return new ModelAndView("recover", "model", map);
     }
 
+    private User getUserByUsernameOrEmail(String usernameOrEmail) {
+        if (usernameOrEmail != null) {
+            User user = securityService.getUserByName(usernameOrEmail);
+            if (user != null) {
+                return user;
+            }
+            return securityService.getUserByEmail(usernameOrEmail);
+        }
+        return null;
+    }
+
     /*
-     * e-mail user new password via configured Smtp server
-     */
+    * e-mail user new password via configured Smtp server
+    */
     private boolean emailPassword(String password, String username, String email) {
         /* Default to protocol smtp when SmtpEncryption is set to "None" */
         String prot = "smtp";
@@ -169,57 +159,4 @@ public class MultiController extends MultiActionController {
         }
     }
 
-    private User getUserByUsernameOrEmail(String usernameOrEmail) {
-        if (usernameOrEmail != null) {
-            User user = securityService.getUserByName(usernameOrEmail);
-            if (user != null) {
-                return user;
-            }
-            return securityService.getUserByEmail(usernameOrEmail);
-        }
-        return null;
-    }
-
-    public ModelAndView accessDenied(HttpServletRequest request, HttpServletResponse response) {
-        return new ModelAndView("accessDenied");
-    }
-
-    public ModelAndView notFound(HttpServletRequest request, HttpServletResponse response) {
-        return new ModelAndView("notFound");
-    }
-
-
-
-    public ModelAndView exportPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
-        Playlist playlist = playlistService.getPlaylist(id);
-        if (!playlistService.isReadAllowed(playlist, securityService.getCurrentUsername(request))) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return null;
-
-        }
-        response.setContentType("application/x-download");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + StringUtil.fileSystemSafe(playlist.getName()) + ".m3u8\"");
-
-        playlistService.exportPlaylist(id, response.getOutputStream());
-        return null;
-    }
-
-
-    public ModelAndView test(HttpServletRequest request, HttpServletResponse response) {
-        return new ModelAndView("test");
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
 }

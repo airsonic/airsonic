@@ -53,11 +53,6 @@
         <property name="settingsService" ref="settingsService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
     </bean>
-    <bean id="multiController" class="org.libresonic.player.controller.MultiController">
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playlistService" ref="playlistService"/>
-    </bean>
     <bean id="wapController" class="org.libresonic.player.controller.WapController">
         <property name="settingsService" ref="settingsService"/>
         <property name="playerService" ref="playerService"/>
@@ -108,15 +103,9 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/exportPlaylist.view">multiController</prop>
-                <prop key="/recover.view">multiController</prop>
-                <prop key="/accessDenied.view">multiController</prop>
-                <prop key="/notFound.view">multiController</prop>
-                <prop key="/index.view">multiController</prop>
                 <prop key="/videoPlayer.view">videoPlayerController</prop>
                 <prop key="/download.view">downloadController</prop>
                 <prop key="/db.view">dbController</prop>
-                <prop key="/test.view">multiController</prop>
                 <prop key="/podcast/**">podcastController</prop>
                 <prop key="/wap/download.view">downloadController</prop>
                 <prop key="/wap/**">wapController</prop>
