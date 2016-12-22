@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.MediaFileService;
 import org.springframework.beans.factory.annotation.Autowired;
