@@ -19,16 +19,6 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PlayQueue;
 import org.libresonic.player.domain.Player;
@@ -36,18 +26,35 @@ import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * Controller which produces the M3U playlist.
  *
  * @author Sindre Mehus
  */
-public class M3UController implements Controller {
+@Controller
+@RequestMapping("/play.m3u")
+public class M3UController  {
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private TranscodingService transcodingService;
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType("audio/x-mpegurl");
         response.setCharacterEncoding(StringUtil.ENCODING_UTF8);
@@ -115,15 +122,4 @@ public class M3UController implements Controller {
         return playQueue.isEmpty() ? null : transcodingService.getSuffix(player, playQueue.getFile(0), null);
     }
 
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setTranscodingService(TranscodingService transcodingService) {
-        this.transcodingService = transcodingService;
-    }
 }

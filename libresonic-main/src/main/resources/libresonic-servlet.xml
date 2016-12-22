@@ -15,11 +15,6 @@
     <mvc:annotation-driven />
     <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
 
-    <bean id="m3uController" class="org.libresonic.player.controller.M3UController">
-        <property name="playerService" ref="playerService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="transcodingService" ref="transcodingService"/>
-    </bean>
     <bean id="streamController" class="org.libresonic.player.controller.StreamController">
         <property name="playerService" ref="playerService"/>
         <property name="playlistService" ref="playlistService"/>
@@ -126,7 +121,6 @@
                 <prop key="/wap/download.view">downloadController</prop>
                 <prop key="/wap/**">wapController</prop>
                 <prop key="/rest/**">restController</prop>
-                <prop key="/play.m3u">m3uController</prop>
                 <prop key="/stream/**">streamController</prop>
                 <prop key="/hls/**">hlsController</prop>
                 <prop key="/share/**">externalPlayerController</prop>
