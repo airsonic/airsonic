@@ -153,6 +153,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_004" author="muff1nman">
+        <validCheckSum>7:c69a9ccadcb83d57684bb3b7aa34fb22</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="album" />

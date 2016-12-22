@@ -64,6 +64,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema32_005" author="muff1nman">
+        <validCheckSum>7:d968449010bf1de51dac5f300359b2c5 </validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="podcast_episode"/>
