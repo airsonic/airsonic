@@ -28,6 +28,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Locale;
 
@@ -91,7 +92,7 @@ public class GeneralSettingsController  {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") GeneralSettingsCommand command, Model model) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") GeneralSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         int themeIndex = Integer.parseInt(command.getThemeIndex());
         Theme theme = settingsService.getAvailableThemes()[themeIndex];
@@ -99,12 +100,14 @@ public class GeneralSettingsController  {
         int localeIndex = Integer.parseInt(command.getLocaleIndex());
         Locale locale = settingsService.getAvailableLocales()[localeIndex];
 
-        command.setToast(true);
-        command.setReloadNeeded(!settingsService.getIndexString().equals(command.getIndex()) ||
-                                !settingsService.getIgnoredArticles().equals(command.getIgnoredArticles()) ||
-                                !settingsService.getShortcuts().equals(command.getShortcuts()) ||
-                                !settingsService.getThemeId().equals(theme.getId()) ||
-                                !settingsService.getLocale().equals(locale));
+        redirectAttributes.addFlashAttribute("settings_toast", true);
+        redirectAttributes.addFlashAttribute(
+                "settings_reload",
+                   !settingsService.getIndexString().equals(command.getIndex())
+                || !settingsService.getIgnoredArticles().equals(command.getIgnoredArticles())
+                || !settingsService.getShortcuts().equals(command.getShortcuts())
+                || !settingsService.getThemeId().equals(theme.getId())
+                || !settingsService.getLocale().equals(locale));
 
         settingsService.setIndexString(command.getIndex());
         settingsService.setIgnoredArticles(command.getIgnoredArticles());

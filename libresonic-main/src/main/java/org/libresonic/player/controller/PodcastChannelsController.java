@@ -70,7 +70,6 @@ public class PodcastChannelsController {
         map.put("channels", channels);
         map.put("channelMap", channelMap);
         map.put("newestEpisodes", podcastService.getNewestEpisodes(10));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
         return result;
     }
 

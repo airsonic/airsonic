@@ -9,7 +9,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="share"/>
-    <c:param name="toast" value="${model.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
     <c:param name="restricted" value="${not model.user.adminRole}"/>
 </c:import>
 
@@ -54,9 +54,6 @@
         </c:forEach>
 
     </table>
-
-    <c:set var="licenseInfo" value="${model.licenseInfo}"/>
-    <%@ include file="licenseNotice.jsp" %>
 
     <p style="padding-top:1em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">

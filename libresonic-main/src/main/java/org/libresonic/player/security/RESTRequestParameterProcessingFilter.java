@@ -24,7 +24,6 @@ import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.controller.JAXBWriter;
 import org.libresonic.player.controller.RESTController;
-import org.libresonic.player.domain.LicenseInfo;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.SecurityService;
@@ -100,10 +99,6 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
 
         if (errorCode == null) {
-            errorCode = checkLicense(client);
-        }
-
-        if (errorCode == null) {
             chain.doFilter(request, response);
         } else {
             if (errorCode == RESTController.ErrorCode.NOT_AUTHENTICATED) {
@@ -160,15 +155,6 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
 
         return RESTController.ErrorCode.MISSING_PARAMETER;
-    }
-
-    private RESTController.ErrorCode checkLicense(String client) {
-        LicenseInfo licenseInfo = settingsService.getLicenseInfo();
-        if (licenseInfo.isLicenseOrTrialValid()) {
-            return null;
-        }
-        LOG.info("REST access for client '" + client + "' has expired.");
-        return RESTController.ErrorCode.NOT_LICENSED;
     }
 
     public static String decrypt(String s) {

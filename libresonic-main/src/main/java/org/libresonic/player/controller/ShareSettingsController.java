@@ -19,25 +19,8 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Share;
@@ -46,6 +29,20 @@ import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.ShareService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for the page used to administrate the set of shared media.
@@ -65,32 +62,26 @@ public class ShareSettingsController {
     @Autowired
     private SettingsService settingsService;
 
+
     @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String doGet(HttpServletRequest request, Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
-
-        if (isFormSubmission(request)) {
-            handleParameters(request);
-            map.put("toast", true);
-        }
-
         map.put("shareBaseUrl", shareService.getShareBaseUrl());
         map.put("shareInfos", getShareInfos(request));
         map.put("user", securityService.getCurrentUser(request));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
-        return new ModelAndView("shareSettings","model",map);
+        model.addAttribute("model", map);
+        return "shareSettings";
     }
 
-    /**
-     * Determine if the given request represents a form submission.
-     *
-     * @param request current HTTP request
-     * @return if the request represents a form submission
-     */
-    private boolean isFormSubmission(HttpServletRequest request) {
-        return "POST".equals(request.getMethod());
+    @RequestMapping(method = RequestMethod.POST)
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+        handleParameters(request);
+
+        redirectAttributes.addFlashAttribute("settings_toast", true);
+
+        return "redirect:shareSettings.view";
     }
 
     private void handleParameters(HttpServletRequest request) {
@@ -155,7 +146,6 @@ public class ShareSettingsController {
         calendar.add(Calendar.DAY_OF_YEAR, days);
         return calendar.getTime();
     }
-
 
     public static class ShareInfo {
         private final Share share;

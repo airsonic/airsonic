@@ -53,10 +53,10 @@ public class ChangeCoverArtController  {
         String album = request.getParameter("album");
         MediaFile dir = mediaFileService.getMediaFile(id);
 
-        if (artist == null) {
+        if (StringUtils.isBlank(artist)) {
             artist = dir.getArtist();
         }
-        if (album == null) {
+        if (StringUtils.isBlank(album)) {
             album = dir.getAlbumName();
         }
 

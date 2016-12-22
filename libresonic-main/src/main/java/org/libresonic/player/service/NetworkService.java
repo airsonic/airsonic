@@ -232,8 +232,6 @@ public class NetworkService {
             HttpPost request = new HttpPost(enable ? URL_REDIRECTION_REGISTER_URL : URL_REDIRECTION_UNREGISTER_URL);
 
             int port = settingsService.getPort();
-            boolean trial = !settingsService.isLicenseValid();
-            Date trialExpires = settingsService.getTrialExpires();
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("serverId", settingsService.getServerId()));
@@ -242,12 +240,6 @@ public class NetworkService {
             params.add(new BasicNameValuePair("localIp", settingsService.getLocalIpAddress()));
             params.add(new BasicNameValuePair("localPort", String.valueOf(port)));
             params.add(new BasicNameValuePair("contextPath", settingsService.getUrlRedirectContextPath()));
-            params.add(new BasicNameValuePair("trial", String.valueOf(trial)));
-            if (trial && trialExpires != null) {
-                params.add(new BasicNameValuePair("trialExpires", String.valueOf(trialExpires.getTime())));
-            } else {
-                params.add(new BasicNameValuePair("licenseHolder", settingsService.getLicenseEmail()));
-            }
 
 
 

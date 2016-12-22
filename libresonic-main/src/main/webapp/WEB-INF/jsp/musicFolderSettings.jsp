@@ -10,7 +10,7 @@
             $("#newMusicFolderName").attr("placeholder", "<fmt:message key="musicfoldersettings.name"/>");
             $("#newMusicFolderPath").attr("placeholder", "<fmt:message key="musicfoldersettings.path"/>");
 
-            <c:if test="${command.reload}">
+            <c:if test="${settings_reload}">
             parent.frames.upper.location.href="top.view?";
             parent.frames.left.location.href="left.view?";
             parent.frames.right.location.href="right.view?";
@@ -22,7 +22,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="musicFolder"/>
-    <c:param name="toast" value="${command.reload}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form:form commandName="command" action="musicFolderSettings.view" method="post">

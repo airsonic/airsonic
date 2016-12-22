@@ -25,13 +25,15 @@ import org.libresonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,14 +52,9 @@ public class TranscodingSettingsController {
     private SettingsService settingsService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String doGet(Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
-
-        if (isFormSubmission(request)) {
-            handleParameters(request, map);
-            map.put("toast", true);
-        }
 
         map.put("transcodings", transcodingService.getAllTranscodings());
         map.put("transcodeDirectory", transcodingService.getTranscodeDirectory());
@@ -65,20 +62,21 @@ public class TranscodingSettingsController {
         map.put("hlsCommand", settingsService.getHlsCommand());
         map.put("brand", settingsService.getBrand());
 
-        return new ModelAndView("transcodingSettings","model",map);
+        model.addAttribute("model", map);
+        return "transcodingSettings";
     }
 
-    /**
-     * Determine if the given request represents a form submission.
-     *
-     * @param request current HTTP request
-     * @return if the request represents a form submission
-     */
-    private boolean isFormSubmission(HttpServletRequest request) {
-        return "POST".equals(request.getMethod());
+    @RequestMapping(method = RequestMethod.POST)
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+        String error = handleParameters(request, redirectAttributes);
+        if(error != null) {
+            redirectAttributes.addFlashAttribute("settings_toast", true);
+        }
+        redirectAttributes.addFlashAttribute("error", error);
+        return "redirect:transcodingSettings.view";
     }
 
-    private void handleParameters(HttpServletRequest request, Map<String, Object> map) {
+    private String handleParameters(HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         for (Transcoding transcoding : transcodingService.getAllTranscodings()) {
             Integer id = transcoding.getId();
@@ -92,13 +90,13 @@ public class TranscodingSettingsController {
             if (delete) {
                 transcodingService.deleteTranscoding(id);
             } else if (name == null) {
-                map.put("error", "transcodingsettings.noname");
+                return "transcodingsettings.noname";
             } else if (sourceFormats == null) {
-                map.put("error", "transcodingsettings.nosourceformat");
+                return "transcodingsettings.nosourceformat";
             } else if (targetFormat == null) {
-                map.put("error", "transcodingsettings.notargetformat");
+                return "transcodingsettings.notargetformat";
             } else if (step1 == null) {
-                map.put("error", "transcodingsettings.nostep1");
+                return "transcodingsettings.nostep1";
             } else {
                 transcoding.setName(name);
                 transcoding.setSourceFormats(sourceFormats);
@@ -118,28 +116,30 @@ public class TranscodingSettingsController {
 
         if (name != null || sourceFormats != null || targetFormat != null || step1 != null || step2 != null) {
             Transcoding transcoding = new Transcoding(null, name, sourceFormats, targetFormat, step1, step2, null, defaultActive);
+            String error = null;
             if (name == null) {
-                map.put("error", "transcodingsettings.noname");
+                error = "transcodingsettings.noname";
             } else if (sourceFormats == null) {
-                map.put("error", "transcodingsettings.nosourceformat");
+                error = "transcodingsettings.nosourceformat";
             } else if (targetFormat == null) {
-                map.put("error", "transcodingsettings.notargetformat");
+                error = "transcodingsettings.notargetformat";
             } else if (step1 == null) {
-                map.put("error", "transcodingsettings.nostep1");
+                error = "transcodingsettings.nostep1";
             } else {
                 transcodingService.createTranscoding(transcoding);
             }
-            if (map.containsKey("error")) {
-                map.put("newTranscoding", transcoding);
+            if(error != null) {
+                redirectAttributes.addAttribute("newTranscoding", transcoding);
+                return error;
             }
         }
         settingsService.setDownsamplingCommand(StringUtils.trim(request.getParameter("downsampleCommand")));
         settingsService.setHlsCommand(StringUtils.trim(request.getParameter("hlsCommand")));
         settingsService.save();
+        return null;
     }
 
     private String getParameter(HttpServletRequest request, String name, Integer id) {
         return StringUtils.trimToNull(request.getParameter(name + "[" + id + "]"));
     }
-
 }

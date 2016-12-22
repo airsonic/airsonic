@@ -85,7 +85,6 @@ public class VideoPlayerController extends ParameterizableViewController {
         map.put("duration", duration);
         map.put("bitRates", BIT_RATES);
         map.put("defaultBitRate", DEFAULT_BIT_RATE);
-        map.put("licenseInfo", settingsService.getLicenseInfo());
         map.put("user", user);
 
         ModelAndView result = super.handleRequestInternal(request, response);

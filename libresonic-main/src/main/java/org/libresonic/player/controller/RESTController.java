@@ -60,7 +60,6 @@ import org.libresonic.restapi.InternetRadioStation;
 import org.libresonic.restapi.InternetRadioStations;
 import org.libresonic.restapi.JukeboxPlaylist;
 import org.libresonic.restapi.JukeboxStatus;
-import org.libresonic.restapi.License;
 import org.libresonic.restapi.Lyrics;
 import org.libresonic.restapi.MediaType;
 import org.libresonic.restapi.MusicFolders;
@@ -101,7 +100,6 @@ import org.libresonic.player.domain.ArtistBio;
 import org.libresonic.player.domain.Bookmark;
 import org.libresonic.player.domain.Genre;
 import org.libresonic.player.domain.InternetRadio;
-import org.libresonic.player.domain.LicenseInfo;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.MusicFolderContent;
@@ -204,23 +202,6 @@ public class RESTController extends MultiActionController {
     @SuppressWarnings("UnusedDeclaration")
     public void ping(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Response res = createResponse();
-        jaxbWriter.writeResponse(request, response, res);
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void getLicense(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request = wrapRequest(request);
-        License license = new License();
-
-        LicenseInfo licenseInfo = settingsService.getLicenseInfo();
-
-        license.setEmail(licenseInfo.getLicenseEmail());
-        license.setValid(licenseInfo.isLicenseValid());
-        license.setLicenseExpires(jaxbWriter.convertDate(licenseInfo.getLicenseExpires()));
-        license.setTrialExpires(jaxbWriter.convertDate(licenseInfo.getTrialExpires()));
-
-        Response res = createResponse();
-        res.setLicense(license);
         jaxbWriter.writeResponse(request, response, res);
     }
 
@@ -2489,7 +2470,6 @@ public class RESTController extends MultiActionController {
         PROTOCOL_MISMATCH_SERVER_TOO_OLD(30, "Incompatible Libresonic REST protocol version. Server must upgrade."),
         NOT_AUTHENTICATED(40, "Wrong username or password."),
         NOT_AUTHORIZED(50, "User is not authorized for the given operation."),
-        NOT_LICENSED(60, "The trial period for the Libresonic server is over. Please upgrade to Subsonic Premium. Visit libresonic.org for details."),
         NOT_FOUND(70, "Requested data was not found.");
 
         private final int code;

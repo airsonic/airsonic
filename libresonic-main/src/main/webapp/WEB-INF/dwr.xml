@@ -53,6 +53,8 @@
         <convert converter="bean" match="org.libresonic.player.ajax.PlaylistInfo$Entry"/>
         <convert converter="bean" match="org.libresonic.player.domain.Playlist"/>
         <convert converter="bean" match="org.libresonic.player.domain.ArtistBio"/>
+        <convert converter="bean" match="org.libresonic.player.domain.LastFmCoverArt"/>
+
         <convert converter="bean" match="org.libresonic.player.ajax.UploadInfo"/>
         <convert converter="bean" match="org.libresonic.player.ajax.LyricsInfo"/>
         <convert converter="bean" match="org.libresonic.player.ajax.CoverArtInfo"/>

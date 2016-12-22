@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,6 @@ public class MusicFolderSettingsController {
     @ModelAttribute
     protected void formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
                                        @RequestParam(value = "expunge",required = false) String expunge,
-                                       @RequestParam(value = "reload",required = false) String reload,
                                        Model model) throws Exception {
         MusicFolderSettingsCommand command = new MusicFolderSettingsCommand();
 
@@ -85,7 +85,6 @@ public class MusicFolderSettingsController {
         command.setScanning(mediaScannerService.isScanning());
         command.setMusicFolders(wrap(settingsService.getAllMusicFolders(true, true)));
         command.setNewMusicFolder(new MusicFolderSettingsCommand.MusicFolderInfo());
-        command.setReload(reload != null || scanNow != null);
 
         model.addAttribute("command",command);
     }
@@ -102,7 +101,7 @@ public class MusicFolderSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, Model model) throws Exception {
+    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
             if (musicFolderInfo.isDelete()) {
@@ -125,6 +124,10 @@ public class MusicFolderSettingsController {
         settingsService.setFastCacheEnabled(command.isFastCache());
         settingsService.setOrganizeByFolderStructure(command.isOrganizeByFolderStructure());
         settingsService.save();
+
+
+        redirectAttributes.addFlashAttribute("settings_toast", true);
+        redirectAttributes.addFlashAttribute("settings_reload", true);
 
         mediaScannerService.schedule();
         return "redirect:musicFolderSettings.view";

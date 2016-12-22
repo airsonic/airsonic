@@ -67,7 +67,6 @@ public class PlayQueueController {
         map.put("partyMode", userSettings.isPartyModeEnabled());
         map.put("notify", userSettings.isSongNotificationEnabled());
         map.put("autoHide", userSettings.isAutoHidePlayQueue());
-        map.put("licenseInfo", settingsService.getLicenseInfo());
         return new ModelAndView("playQueue","model",map);
     }
 

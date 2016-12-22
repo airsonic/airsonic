@@ -68,7 +68,6 @@ public class RightController  {
         map.put("showNowPlaying", userSettings.isShowNowPlayingEnabled());
         map.put("showChat", userSettings.isShowChatEnabled());
         map.put("user", securityService.getCurrentUser(request));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         result.addObject("model", map);
         return result;

@@ -409,7 +409,6 @@
                     <p>Your personal server address: <em>you</em>.libresonic.org</p>
                     <p>Podcast receiver.</p>
                 </div>
-                <p class="forward" style="white-space: nowrap"><a href="http://libresonic.org/pages/premium.jsp" target="_blank">Get Subsonic Premium</a></p>
             </td>
         </c:if>
     </tr>

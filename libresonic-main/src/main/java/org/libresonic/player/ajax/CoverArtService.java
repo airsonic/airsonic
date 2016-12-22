@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
@@ -32,7 +33,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import org.libresonic.player.Logger;
+import org.libresonic.player.domain.LastFmCoverArt;
 import org.libresonic.player.domain.MediaFile;
+import org.libresonic.player.service.LastFmService;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.util.StringUtil;
@@ -50,6 +53,11 @@ public class CoverArtService {
 
     private SecurityService securityService;
     private MediaFileService mediaFileService;
+    private LastFmService lastFmService;
+
+    public List<LastFmCoverArt> searchCoverArt(String artist, String album) {
+        return lastFmService.searchCoverArt(artist, album);
+    }
 
     /**
      * Downloads and saves the cover art at the given URL.
@@ -161,5 +169,9 @@ public class CoverArtService {
 
     public void setMediaFileService(MediaFileService mediaFileService) {
         this.mediaFileService = mediaFileService;
+    }
+
+    public void setLastFmService(LastFmService lastFmService) {
+        this.lastFmService = lastFmService;
     }
 }

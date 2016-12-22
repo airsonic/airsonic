@@ -83,7 +83,6 @@ public class ShareManagementController  {
         }
 
         map.put("playUrl", shareService.getShareUrl(share));
-        map.put("licenseInfo", settingsService.getLicenseInfo());
 
         return new ModelAndView("createShare", "model", map);
     }

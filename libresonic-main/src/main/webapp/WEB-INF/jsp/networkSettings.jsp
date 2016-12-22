@@ -43,7 +43,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="network"/>
-    <c:param name="toast" value="${command.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <p style="padding-top:1em"><fmt:message key="networksettings.text"/></p>
@@ -89,9 +89,6 @@
             <span id="urlRedirectionTestStatus" style="margin-left:0.25em"></span>
         </p>
     </div>
-
-    <c:set var="licenseInfo" value="${command.licenseInfo}"/>
-    <%@ include file="licenseNotice.jsp" %>
 
     <p style="padding-top:1em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">

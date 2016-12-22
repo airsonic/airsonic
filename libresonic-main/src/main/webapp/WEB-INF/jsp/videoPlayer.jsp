@@ -27,10 +27,6 @@
 
 <body class="mainframe bgcolor1" style="padding-bottom:0.5em">
 
-<c:set var="licenseInfo" value="${model.licenseInfo}"/>
-<%@ include file="licenseNotice.jsp" %>
-
-<c:if test="${licenseInfo.licenseOrTrialValid}">
     <div>
         <div id="overlay">
             <div id="overlay_text">Playing on Chromecast</div>

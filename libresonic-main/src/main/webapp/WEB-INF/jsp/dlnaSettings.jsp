@@ -30,7 +30,7 @@
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="dlna"/>
-    <c:param name="toast" value="${model.toast}"/>
+    <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
 <form method="post" action="dlnaSettings.view">
@@ -52,9 +52,6 @@
     <p class="detail" style="width:60%;white-space:normal;padding-top:0">
         <fmt:message key="dlnasettings.servername.description"/>
     </p>
-
-    <c:set var="licenseInfo" value="${model.licenseInfo}"/>
-    <%@ include file="licenseNotice.jsp" %>
 
     <p>
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">

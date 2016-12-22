@@ -46,8 +46,6 @@ public class GeneralSettingsCommand {
     private String[] locales;
     private String themeIndex;
     private Theme[] themes;
-    private boolean isReloadNeeded;
-    private boolean toast;
 
     public String getPlaylistFolder() {
         return playlistFolder;
@@ -169,12 +167,7 @@ public class GeneralSettingsCommand {
         this.themes = themes;
     }
 
-    public boolean isReloadNeeded() {
-        return isReloadNeeded;
-    }
-
     public void setReloadNeeded(boolean reloadNeeded) {
-        isReloadNeeded = reloadNeeded;
     }
 
     public boolean isSortAlbumsByYear() {
@@ -193,11 +186,4 @@ public class GeneralSettingsCommand {
         this.gettingStartedEnabled = gettingStartedEnabled;
     }
 
-    public boolean isToast() {
-        return toast;
-    }
-
-    public void setToast(boolean toast) {
-        this.toast = toast;
-    }
 }

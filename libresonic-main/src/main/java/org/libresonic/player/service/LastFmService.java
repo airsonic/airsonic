@@ -22,6 +22,7 @@ package org.libresonic.player.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -30,13 +31,23 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
+
+import de.umass.lastfm.Album;
 import de.umass.lastfm.Artist;
 import de.umass.lastfm.Caller;
 import de.umass.lastfm.ImageSize;
 import de.umass.lastfm.Track;
+import de.umass.lastfm.cache.Cache;
+
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.ArtistDao;
 import org.libresonic.player.dao.MediaFileDao;
+import org.libresonic.player.domain.LastFmCoverArt;
+import org.libresonic.player.domain.AlbumNotes;
 import org.libresonic.player.domain.ArtistBio;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
@@ -272,6 +283,96 @@ public class LastFmService {
             return Collections.emptyList();
         }
     }
+
+    /**
+     * Returns album notes and images.
+     *
+     * @param mediaFile The media file (song or album).
+    * @return Album notes.
+    */
+    public AlbumNotes getAlbumNotes(MediaFile mediaFile) {
+        return getAlbumNotes(getCanonicalArtistName(getArtistName(mediaFile)), mediaFile.getAlbumName());
+    }
+
+    /**
+     * Returns album notes and images.
+     *
+     * @param album The album.
+     * @return Album notes.
+     */
+    public AlbumNotes getAlbumNotes(org.libresonic.player.domain.Album album) {
+        return getAlbumNotes(getCanonicalArtistName(album.getArtist()), album.getName());
+    }
+
+    /**
+     * Returns album notes and images.
+     *
+     * @param artist The artist name.
+     * @param album The album name.
+     * @return Album notes.
+     */
+    private AlbumNotes getAlbumNotes(String artist, String album) {
+        if (artist == null || album == null) {
+            return null;
+        }
+        try {
+            Album info = Album.getInfo(artist, album, LAST_FM_KEY);
+            if (info == null) {
+                return null;
+            }
+            return new AlbumNotes(processWikiText(info.getWikiSummary()),
+                                 info.getMbid(),
+                                 info.getUrl(),
+                                 info.getImageURL(ImageSize.MEDIUM),
+                                 info.getImageURL(ImageSize.LARGE),
+                                 info.getImageURL(ImageSize.MEGA));
+        } catch (Throwable x) {
+            LOG.warn("Failed to find album notes for " + artist + " - " + album, x);
+            return null;
+        }
+    }
+
+    public List<LastFmCoverArt> searchCoverArt(String artist, String album) {
+        if (artist == null && album == null) {
+            return Collections.emptyList();
+        }
+        try {
+            StringBuilder query = new StringBuilder();
+            if (artist != null) {
+                query.append(artist).append(" ");
+            }
+            if (album != null) {
+                query.append(album);
+            }
+
+            Collection<Album> matches = Album.search(query.toString(), LAST_FM_KEY);
+            return FluentIterable.from(matches)
+                                 .transform(new Function<Album, LastFmCoverArt>() {
+                                     @Override
+                                     public LastFmCoverArt apply(Album album) {
+                                         return convert(album);
+                                     }
+                                 })
+                                 .filter(Predicates.notNull())
+                                 .toList();
+        } catch (Throwable x) {
+            LOG.warn("Failed to search for cover art for " + artist + " - " + album, x);
+            return Collections.emptyList();
+        }
+    }
+
+    private LastFmCoverArt convert(Album album) {
+        String imageUrl = null;
+        for (ImageSize imageSize : Lists.reverse(Arrays.asList(ImageSize.values()))) {
+            imageUrl = StringUtils.trimToNull(album.getImageURL(imageSize));
+            if (imageUrl != null) {
+                break;
+            }
+        }
+
+        return imageUrl == null ? null : new LastFmCoverArt(imageUrl, album.getArtist(), album.getName());
+    }
+
 
     private ArtistBio getArtistBio(String artistName) {
         try {
