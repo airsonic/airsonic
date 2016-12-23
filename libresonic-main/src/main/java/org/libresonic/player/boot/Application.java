@@ -1,9 +1,12 @@
 package org.libresonic.player.boot;
 
+import org.directwebremoting.servlet.DwrServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
@@ -15,6 +18,14 @@ import org.springframework.context.annotation.ImportResource;
         "classpath:/applicationContext-security.xml",
         "classpath:/libresonic-servlet.xml"})
 public class Application extends SpringBootServletInitializer {
+
+    @Bean
+    public ServletRegistrationBean dwrServletRegistrationBean() {
+        ServletRegistrationBean servlet = new ServletRegistrationBean(new DwrServlet(), "/dwr/*");
+        servlet.addInitParameter("crossDomainSessionSecurity","false");
+        return servlet;
+    }
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
