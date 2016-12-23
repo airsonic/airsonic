@@ -61,10 +61,6 @@ Finally, copy the jdbc driver from the database vendor website to the `lib` dire
 
 ## Database Vendor Specific Notes
 
-### MySQL
-
-`sessionVariables=sql_mode=ANSI_QUOTES` on your jdbc url string may be necessary. TODO: double check this
-
 ### PostgreSQL
 
 `stringtype=unspecified` on your jdbc url string is necessary.
