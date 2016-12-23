@@ -153,7 +153,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_004" author="muff1nman">
-        <validCheckSum>7:c69a9ccadcb83d57684bb3b7aa34fb22</validCheckSum>
+        <validCheckSum>7:a3a788d87fd58508ecb4acac39e255c6</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="album" />
@@ -217,8 +217,29 @@
     <changeSet id="schema47_005" author="muff1nman">
         <preConditions onFail="MARK_RAN">
             <not>
+                <dbms type="hsqldb" />
+                <customPrecondition className="org.libresonic.player.spring.DbmsVersionPrecondition" >
+                    <param name="major" value="1" />
+                </customPrecondition>
+            </not>
+            <not>
                 <indexExists indexName="idx_album_name" />
             </not>
+        </preConditions>
+        <createIndex tableName="album" indexName="idx_album_name">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="schema47_005_2" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="hsqldb" />
+            <customPrecondition className="org.libresonic.player.spring.DbmsVersionPrecondition" >
+                <param name="major" value="1" />
+            </customPrecondition>
+            <sqlCheck expectedResult="0">
+                select count(*) from INFORMATION_SCHEMA.SYSTEM_INDEXINFO where
+                TABLE_NAME = 'album' and INDEX_NAME = 'idx_album_name';
+            </sqlCheck>
         </preConditions>
         <createIndex tableName="album" indexName="idx_album_name">
             <column name="name"/>

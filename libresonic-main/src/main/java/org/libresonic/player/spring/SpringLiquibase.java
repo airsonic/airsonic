@@ -51,6 +51,7 @@ public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibas
         if (StringUtils.trimToNull(this.defaultSchema) != null) {
             database.setDefaultSchemaName(this.defaultSchema);
         }
+        liquibase.precondition.PreconditionFactory.getInstance().register(DbmsVersionPrecondition.class);
         return database;
     }
 

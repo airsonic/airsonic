@@ -18,8 +18,29 @@
     <changeSet id="schema53_002" author="muff1nman">
         <preConditions onFail="MARK_RAN">
             <not>
+                <dbms type="hsqldb" />
+                <customPrecondition className="org.libresonic.player.spring.DbmsVersionPrecondition" >
+                    <param name="major" value="1" />
+                </customPrecondition>
+            </not>
+            <not>
                 <indexExists indexName="idx_podcast_episode_url" />
             </not>
+        </preConditions>
+        <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
+            <column name="url"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="schema53_002_1" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="hsqldb" />
+            <customPrecondition className="org.libresonic.player.spring.DbmsVersionPrecondition" >
+                <param name="major" value="1" />
+            </customPrecondition>
+            <sqlCheck expectedResult="0">
+                select count(*) from INFORMATION_SCHEMA.SYSTEM_INDEXINFO where
+                TABLE_NAME = 'podcast_episode' and INDEX_NAME = 'idx_podcast_episode_url';
+            </sqlCheck>
         </preConditions>
         <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
             <column name="url"/>
