@@ -68,6 +68,8 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in formatBytes().", "1024 KB", StringUtil.formatBytes(1048575, locale));
         assertEquals("Error in formatBytes().", "1.2 MB", StringUtil.formatBytes(1238476, locale));
         assertEquals("Error in formatBytes().", "3.50 GB", StringUtil.formatBytes(3758096384L, locale));
+        assertEquals("Error in formatBytes().", "410.00 TB", StringUtil.formatBytes(450799767388160L, locale));
+        assertEquals("Error in formatBytes().", "4413.43 TB", StringUtil.formatBytes(4852617603375432L, locale));
 
         locale = new Locale("no", "", "");
         assertEquals("Error in formatBytes().", "918 B", StringUtil.formatBytes(918, locale));
@@ -77,6 +79,8 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in formatBytes().", "1024 KB", StringUtil.formatBytes(1048575, locale));
         assertEquals("Error in formatBytes().", "1,2 MB", StringUtil.formatBytes(1238476, locale));
         assertEquals("Error in formatBytes().", "3,50 GB", StringUtil.formatBytes(3758096384L, locale));
+        assertEquals("Error in formatBytes().", "410,00 TB", StringUtil.formatBytes(450799767388160L, locale));
+        assertEquals("Error in formatBytes().", "4413,43 TB", StringUtil.formatBytes(4852617603375432L, locale));
     }
 
     public void testFormatDuration() {

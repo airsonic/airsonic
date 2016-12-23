@@ -213,27 +213,27 @@ public final class StringUtil {
     public static synchronized String formatBytes(long byteCount, Locale locale) {
 
         // More than 1 TB?
-        if (byteCount >= 1024 * 1024 * 1024 * 1024) {
+        if (byteCount >= 1024L * 1024 * 1024 * 1024) {
             NumberFormat teraByteFormat = new DecimalFormat("0.00 TB", new DecimalFormatSymbols(locale));
-            return teraByteFormat.format((double) byteCount / (1024 * 1024 * 1024 * 1024));
+            return teraByteFormat.format( ((double) byteCount ) / ((double) 1024 * 1024 * 1024 * 1024));
         }
      
         // More than 1 GB?
-        if (byteCount >= 1024 * 1024 * 1024) {
+        if (byteCount >= 1024L * 1024 * 1024) {
             NumberFormat gigaByteFormat = new DecimalFormat("0.00 GB", new DecimalFormatSymbols(locale));
-            return gigaByteFormat.format((double) byteCount / (1024 * 1024 * 1024));
+            return gigaByteFormat.format((double) byteCount / ((double) 1024 * 1024 * 1024));
         }
 
         // More than 1 MB?
-        if (byteCount >= 1024 * 1024) {
+        if (byteCount >= 1024L * 1024) {
             NumberFormat megaByteFormat = new DecimalFormat("0.0 MB", new DecimalFormatSymbols(locale));
-            return megaByteFormat.format((double) byteCount / (1024 * 1024));
+            return megaByteFormat.format((double) byteCount / ((double) 1024 * 1024));
         }
 
         // More than 1 KB?
-        if (byteCount >= 1024) {
+        if (byteCount >= 1024L) {
             NumberFormat kiloByteFormat = new DecimalFormat("0 KB", new DecimalFormatSymbols(locale));
-            return kiloByteFormat.format((double) byteCount / 1024);
+            return kiloByteFormat.format((double) byteCount / ((double) 1024));
         }
 
         return byteCount + " B";
