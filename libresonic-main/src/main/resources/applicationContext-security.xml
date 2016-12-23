@@ -9,6 +9,9 @@
 
     <security:http auto-config='true'>
 
+        <security:csrf request-matcher-ref="csrfSecurityRequestMatcher"/>
+
+
         <security:headers>
             <security:frame-options policy="SAMEORIGIN"/>
         </security:headers>

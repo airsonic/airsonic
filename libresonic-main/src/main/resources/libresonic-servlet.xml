@@ -13,7 +13,9 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <mvc:annotation-driven />
-    <context:component-scan base-package="org.libresonic.player.controller, org.libresonic.player.validator"/>
+    <context:component-scan base-package="org.libresonic.player.controller,
+        org.libresonic.player.validator,
+        org.libresonic.player.security"/>
 
     <bean id="streamController" class="org.libresonic.player.controller.StreamController">
         <property name="playerService" ref="playerService"/>
