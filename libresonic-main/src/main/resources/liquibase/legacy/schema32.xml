@@ -92,9 +92,6 @@
             </column>
             <column name="error_message" type="${varchar_type}" />
         </createTable>
-        <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
-            <column name="url"/>
-        </createIndex>
         <rollback>
             <dropTable tableName="podcast_episode" />
         </rollback>

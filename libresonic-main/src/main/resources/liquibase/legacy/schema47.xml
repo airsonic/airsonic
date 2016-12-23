@@ -207,15 +207,22 @@
         <createIndex tableName="album" indexName="idx_album_present" >
             <column name="present"/>
         </createIndex>
-        <createIndex tableName="album" indexName="idx_album_name">
-            <column name="name"/>
-        </createIndex>
         <sql dbms="hsql">
             set table album type cached
         </sql>
         <rollback>
             <dropTable tableName="album" />
         </rollback>
+    </changeSet>
+    <changeSet id="schema47_005" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_album_name" />
+            </not>
+        </preConditions>
+        <createIndex tableName="album" indexName="idx_album_name">
+            <column name="name"/>
+        </createIndex>
     </changeSet>
     <changeSet id="schema47_006" author="muff1nman">
         <preConditions onFail="MARK_RAN">
