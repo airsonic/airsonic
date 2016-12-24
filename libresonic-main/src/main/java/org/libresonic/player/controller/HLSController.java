@@ -30,9 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.Player;
@@ -47,15 +50,21 @@ import org.libresonic.player.util.StringUtil;
  *
  * @author Sindre Mehus
  */
-public class HLSController implements Controller {
+@Controller
+@RequestMapping("/hls/**")
+public class HLSController {
 
     private static final int SEGMENT_DURATION = 10;
     private static final Pattern BITRATE_PATTERN = Pattern.compile("(\\d+)(@(\\d+)x(\\d+))?");
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SecurityService securityService;
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         response.setHeader("Access-Control-Allow-Origin", "*");
@@ -72,7 +81,7 @@ public class HLSController implements Controller {
 
         if (username != null && !securityService.isFolderAccessAllowed(mediaFile, username)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                               "Access to file " + mediaFile.getId() + " is forbidden for user " + username);
+                    "Access to file " + mediaFile.getId() + " is forbidden for user " + username);
             return null;
         }
 
@@ -188,15 +197,4 @@ public class HLSController implements Controller {
         return contextPath;
     }
 
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }

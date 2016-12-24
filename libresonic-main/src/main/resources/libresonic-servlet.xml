@@ -17,11 +17,6 @@
         org.libresonic.player.validator,
         org.libresonic.player.security"/>
 
-    <bean id="hlsController" class="org.libresonic.player.controller.HLSController">
-        <property name="playerService" ref="playerService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="videoPlayerController" class="org.libresonic.player.controller.VideoPlayerController">
         <property name="viewName" value="videoPlayer"/>
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -101,7 +96,6 @@
                 <prop key="/wap/download.view">downloadController</prop>
                 <prop key="/wap/**">wapController</prop>
                 <prop key="/rest/**">restController</prop>
-                <prop key="/hls/**">hlsController</prop>
                 <prop key="/share/**">externalPlayerController</prop>
             </props>
         </property>
