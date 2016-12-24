@@ -17,13 +17,6 @@
         org.libresonic.player.validator,
         org.libresonic.player.security"/>
 
-    <bean id="videoPlayerController" class="org.libresonic.player.controller.VideoPlayerController">
-        <property name="viewName" value="videoPlayer"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="securityService" ref="securityService"/>
-    </bean>
     <bean id="externalPlayerController" class="org.libresonic.player.controller.ExternalPlayerController">
         <property name="viewName" value="externalPlayer"/>
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -81,7 +74,6 @@
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/videoPlayer.view">videoPlayerController</prop>
                 <prop key="/db.view">dbController</prop>
                 <prop key="/podcast/**">podcastController</prop>
                 <prop key="/wap/download.view">downloadController</prop>

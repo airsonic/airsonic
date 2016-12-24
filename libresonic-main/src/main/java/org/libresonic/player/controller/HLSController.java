@@ -50,7 +50,7 @@ import org.libresonic.player.util.StringUtil;
  *
  * @author Sindre Mehus
  */
-@Controller
+@Controller(value = "hlsController")
 @RequestMapping("/hls/**")
 public class HLSController {
 
