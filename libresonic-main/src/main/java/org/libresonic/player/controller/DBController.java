@@ -19,12 +19,15 @@
  */
 package org.libresonic.player.controller;
 
-import org.libresonic.player.dao.DaoHelper;
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.libresonic.player.dao.DaoHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,10 +40,14 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
-public class DBController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/db")
+public class DBController {
 
+    @Autowired
     private DaoHelper daoHelper;
 
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -56,12 +63,7 @@ public class DBController extends ParameterizableViewController {
             }
         }
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("db","model",map);
     }
 
-    public void setDaoHelper(DaoHelper daoHelper) {
-        this.daoHelper = daoHelper;
-    }
 }

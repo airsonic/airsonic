@@ -19,19 +19,6 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Player;
@@ -40,20 +27,36 @@ import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.ShareService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller for the page used to play shared music (Twitter, Facebook etc).
  *
  * @author Sindre Mehus
  */
-public class ExternalPlayerController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/share/**")
+public class ExternalPlayerController {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private ShareService shareService;
+    @Autowired
     private MediaFileService mediaFileService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -84,9 +87,7 @@ public class ExternalPlayerController extends ParameterizableViewController {
         map.put("redirectUrl", settingsService.getUrlRedirectUrl());
         map.put("player", player.getId());
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("externalPlayer", "model", map);
     }
 
     private List<MediaFile> getSongs(Share share, String username) throws IOException {
@@ -108,19 +109,4 @@ public class ExternalPlayerController extends ParameterizableViewController {
         return result;
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setShareService(ShareService shareService) {
-        this.shareService = shareService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 }

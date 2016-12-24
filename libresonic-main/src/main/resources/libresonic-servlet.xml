@@ -17,13 +17,6 @@
         org.libresonic.player.validator,
         org.libresonic.player.security"/>
 
-    <bean id="externalPlayerController" class="org.libresonic.player.controller.ExternalPlayerController">
-        <property name="viewName" value="externalPlayer"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="shareService" ref="shareService"/>
-    </bean>
     <bean id="wapController" class="org.libresonic.player.controller.WapController">
         <property name="settingsService" ref="settingsService"/>
         <property name="playerService" ref="playerService"/>
@@ -65,21 +58,15 @@
         <property name="userSettingsController" ref="userSettingsController"/>
         <property name="leftController" ref="leftController"/>
     </bean>
-    <bean id="dbController" class="org.libresonic.player.controller.DBController">
-        <property name="viewName" value="db"/>
-        <property name="daoHelper" ref="daoHelper"/>
-    </bean>
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
-                <prop key="/db.view">dbController</prop>
                 <prop key="/podcast/**">podcastController</prop>
                 <prop key="/wap/download.view">downloadController</prop>
                 <prop key="/wap/**">wapController</prop>
                 <prop key="/rest/**">restController</prop>
-                <prop key="/share/**">externalPlayerController</prop>
             </props>
         </property>
     </bean>
