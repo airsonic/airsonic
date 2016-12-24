@@ -38,10 +38,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import org.libresonic.player.Logger;
@@ -69,15 +72,23 @@ import org.libresonic.player.util.Util;
  *
  * @author Sindre Mehus
  */
-public class DownloadController implements Controller, LastModified {
+@Controller
+@RequestMapping("/download")
+public class DownloadController implements LastModified {
 
     private static final Logger LOG = Logger.getLogger(DownloadController.class);
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaFileService mediaFileService;
 
     public long getLastModified(HttpServletRequest request) {
@@ -92,6 +103,7 @@ public class DownloadController implements Controller, LastModified {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);
@@ -120,7 +132,7 @@ public class DownloadController implements Controller, LastModified {
             if (mediaFile != null) {
                 if (!securityService.isFolderAccessAllowed(mediaFile, user.getUsername())) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                                       "Access to file " + mediaFile.getId() + " is forbidden for user " + user.getUsername());
+                            "Access to file " + mediaFile.getId() + " is forbidden for user " + user.getUsername());
                     return null;
                 }
 
@@ -163,7 +175,6 @@ public class DownloadController implements Controller, LastModified {
     /**
      * Downloads a single file.
      *
-     *
      * @param response The HTTP response.
      * @param status   The download status.
      * @param file     The file to download.
@@ -205,14 +216,13 @@ public class DownloadController implements Controller, LastModified {
      * Downloads the given files.  The files are packed together in an
      * uncompressed zip-file.
      *
-     *
-     * @param response    The HTTP response.
-     * @param status      The download status.
-     * @param files       The files to download.
-     * @param indexes     Only download songs at these indexes. May be <code>null</code>.
+     * @param response     The HTTP response.
+     * @param status       The download status.
+     * @param files        The files to download.
+     * @param indexes      Only download songs at these indexes. May be <code>null</code>.
      * @param coverArtFile The cover art file to include, may be {@code null}.
-     *@param range       The byte range, may be <code>null</code>.
-     * @param zipFileName The name of the resulting zip file.   @throws IOException If an I/O error occurs.
+     * @param range        The byte range, may be <code>null</code>.
+     * @param zipFileName  The name of the resulting zip file.   @throws IOException If an I/O error occurs.
      */
     private void downloadFiles(HttpServletResponse response, TransferStatus status, List<MediaFile> files, int[] indexes, File coverArtFile, HttpRange range, String zipFileName) throws IOException {
         if (indexes != null && indexes.length == 1) {
@@ -252,7 +262,6 @@ public class DownloadController implements Controller, LastModified {
 
     /**
      * Utility method for writing the content of a given file to a given output stream.
-     *
      *
      * @param file   The file to copy.
      * @param out    The output stream to write to.
@@ -316,7 +325,6 @@ public class DownloadController implements Controller, LastModified {
     /**
      * Writes a file or a directory structure to a zip output stream. File entries in the zip file are relative
      * to the given root.
-     *
      *
      * @param out    The zip output stream.
      * @param root   The root of the directory structure.  Used to create path information in the zip file.
@@ -389,27 +397,4 @@ public class DownloadController implements Controller, LastModified {
         return crc.getValue();
     }
 
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setStatusService(StatusService statusService) {
-        this.statusService = statusService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 }

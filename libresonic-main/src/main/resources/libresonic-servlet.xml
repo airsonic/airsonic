@@ -31,14 +31,6 @@
         <property name="playerService" ref="playerService"/>
         <property name="shareService" ref="shareService"/>
     </bean>
-    <bean id="downloadController" class="org.libresonic.player.controller.DownloadController">
-        <property name="playerService" ref="playerService"/>
-        <property name="statusService" ref="statusService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-    </bean>
     <bean id="wapController" class="org.libresonic.player.controller.WapController">
         <property name="settingsService" ref="settingsService"/>
         <property name="playerService" ref="playerService"/>
@@ -90,7 +82,6 @@
         <property name="mappings">
             <props>
                 <prop key="/videoPlayer.view">videoPlayerController</prop>
-                <prop key="/download.view">downloadController</prop>
                 <prop key="/db.view">dbController</prop>
                 <prop key="/podcast/**">podcastController</prop>
                 <prop key="/wap/download.view">downloadController</prop>
