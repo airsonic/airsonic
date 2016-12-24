@@ -26,38 +26,6 @@
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="musicIndexService" ref="musicIndexService"/>
     </bean>
-    <bean id="restController" class="org.libresonic.player.controller.RESTController" init-method="init">
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="lastFmService" ref="lastFmService"/>
-        <property name="musicIndexService" ref="musicIndexService"/>
-        <property name="transcodingService" ref="transcodingService"/>
-        <property name="statusService" ref="statusService"/>
-        <property name="searchService" ref="searchService"/>
-        <property name="jukeboxService" ref="jukeboxService"/>
-        <property name="audioScrobblerService" ref="audioScrobblerService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="playQueueService" ref="ajaxPlayQueueService"/>
-        <property name="ratingService" ref="ratingService"/>
-        <property name="chatService" ref="ajaxChatService"/>
-        <property name="lyricsService" ref="ajaxLyricsService"/>
-        <property name="podcastService" ref="podcastService"/>
-        <property name="shareService" ref="shareService"/>
-        <property name="mediaFileDao" ref="mediaFileDao"/>
-        <property name="artistDao" ref="artistDao"/>
-        <property name="albumDao" ref="albumDao"/>
-        <property name="bookmarkDao" ref="bookmarkDao"/>
-        <property name="playQueueDao" ref="playQueueDao"/>
-        <property name="downloadController" ref="downloadController"/>
-        <property name="streamController" ref="streamController"/>
-        <property name="hlsController" ref="hlsController"/>
-        <property name="coverArtController" ref="coverArtController"/>
-        <property name="avatarController" ref="avatarController"/>
-        <property name="userSettingsController" ref="userSettingsController"/>
-        <property name="leftController" ref="leftController"/>
-    </bean>
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
@@ -66,7 +34,6 @@
                 <prop key="/podcast/**">podcastController</prop>
                 <prop key="/wap/download.view">downloadController</prop>
                 <prop key="/wap/**">wapController</prop>
-                <prop key="/rest/**">restController</prop>
             </props>
         </property>
     </bean>

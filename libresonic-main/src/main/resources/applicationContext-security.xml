@@ -24,6 +24,7 @@
         <security:intercept-url pattern="/hls/**" access="permitAll" />
         <security:intercept-url pattern="/stream/**" access="permitAll" />
         <security:intercept-url pattern="/ws/**" access="permitAll" />
+        <security:intercept-url pattern="/rest/**" access="permitAll" />
         <security:intercept-url pattern="/share/**" access="permitAll" />
         <security:intercept-url pattern="/style/**" access="permitAll" />
         <security:intercept-url pattern="/icons/**" access="permitAll" />
