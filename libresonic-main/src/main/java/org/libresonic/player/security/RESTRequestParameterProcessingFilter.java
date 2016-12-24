@@ -29,11 +29,13 @@ import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -51,14 +53,19 @@ import java.io.IOException;
  *
  * @author Sindre Mehus
  */
+@Component(value = "restRequestParameterProcessingFilter")
 public class RESTRequestParameterProcessingFilter implements Filter {
 
     private static final Logger LOG = Logger.getLogger(RESTRequestParameterProcessingFilter.class);
 
     private final JAXBWriter jaxbWriter = new JAXBWriter();
+    @Autowired
     private ProviderManager authenticationManager;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private LoginFailureLogger loginFailureLogger;
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -185,19 +192,4 @@ public class RESTRequestParameterProcessingFilter implements Filter {
     public void destroy() {
     }
 
-    public void setAuthenticationManager(ProviderManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setLoginFailureLogger(LoginFailureLogger loginFailureLogger) {
-        this.loginFailureLogger = loginFailureLogger;
-    }
 }
