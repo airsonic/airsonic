@@ -59,7 +59,7 @@ public class MusicFolderDao extends AbstractDao {
      */
     public void createMusicFolder(MusicFolder musicFolder) {
         String sql = "insert into music_folder (" + INSERT_COLUMNS + ") values (?, ?, ?, ?)";
-        update(sql, musicFolder.getPath(), musicFolder.getName(), musicFolder.isEnabled(), musicFolder.getChanged());
+        update(sql, musicFolder.getPath().getPath(), musicFolder.getName(), musicFolder.isEnabled(), musicFolder.getChanged());
 
         Integer id = queryForInt("select max(id) from music_folder", 0);
         update("insert into music_folder_user (music_folder_id, username) select ?, username from " + userDao.getUserTable(), id);
