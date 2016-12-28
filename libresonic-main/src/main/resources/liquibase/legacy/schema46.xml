@@ -1,0 +1,94 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema46_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 19</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="19" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 19</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema46_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="transcoding2" />
+            </not>
+        </preConditions>
+        <createTable tableName="transcoding2">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="source_formats" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="target_format" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="step1" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="step2" type="${varchar_type}" />
+            <column name="step3" type="${varchar_type}" />
+        </createTable>
+        <insert tableName="transcoding2">
+            <column name="name" value="mp3 audio" />
+            <column name="source_formats" value="ogg oga aac m4a flac wav wma aif aiff ape mpc shn" />
+            <column name="target_format" value="mp3" />
+            <column name="step1" value="ffmpeg -i %s -ab %bk -v 0 -f mp3 -"/>
+        </insert>
+        <insert tableName="transcoding2">
+            <column name="name" value="flv/h264 video" />
+            <column name="source_formats" value="avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts" />
+            <column name="target_format" value="flv" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -vcodec libx264 -preset superfast -threads 0 -"/>
+        </insert>
+        <rollback>
+            <dropTable tableName="transcoding2" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema46_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="player_transcoding2" />
+            </not>
+        </preConditions>
+        <createTable tableName="player_transcoding2">
+            <column name="player_id" type="int">
+                <constraints nullable="false" foreignKeyName="pt2_p_fk" referencedTableName="player" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="transcoding_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pt2_t_fk" referencedTableName="transcoding2" referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="player_transcoding2" columnNames="player_id,transcoding_id" />
+        <sql>
+            insert into player_transcoding2(player_id, transcoding_id)
+            select distinct p.id, t.id from player p, transcoding2 t
+        </sql>
+        <rollback>
+            <dropTable tableName="player_transcoding2" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema46_004" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="transcoding2" columnName="default_active" />
+            </not>
+        </preConditions>
+        <addColumn tableName="transcoding2">
+            <column name="default_active" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

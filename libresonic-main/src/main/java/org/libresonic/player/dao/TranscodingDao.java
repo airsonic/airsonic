@@ -36,7 +36,8 @@ import org.libresonic.player.domain.Transcoding;
 public class TranscodingDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(TranscodingDao.class);
-    private static final String COLUMNS = "id, name, source_formats, target_format, step1, step2, step3, default_active";
+    private static final String INSERT_COLUMNS = "name, source_formats, target_format, step1, step2, step3, default_active";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private TranscodingRowMapper rowMapper = new TranscodingRowMapper();
 
     /**
@@ -45,7 +46,7 @@ public class TranscodingDao extends AbstractDao {
      * @return Possibly empty list of all transcodings.
      */
     public List<Transcoding> getAllTranscodings() {
-        String sql = "select " + COLUMNS + " from transcoding2";
+        String sql = "select " + QUERY_COLUMNS + " from transcoding2";
         return query(sql, rowMapper);
     }
 
@@ -56,9 +57,9 @@ public class TranscodingDao extends AbstractDao {
      * @return All active transcodings for the player.
      */
     public List<Transcoding> getTranscodingsForPlayer(String playerId) {
-        String sql = "select " + COLUMNS + " from transcoding2, player_transcoding2 " +
-                "where player_transcoding2.player_id = ? " +
-                "and   player_transcoding2.transcoding_id = transcoding2.id";
+        String sql = "select " + QUERY_COLUMNS + " from transcoding2, player_transcoding2 " +
+                     "where player_transcoding2.player_id = ? " +
+                     "and   player_transcoding2.transcoding_id = transcoding2.id";
         return query(sql, rowMapper, playerId);
     }
 
@@ -87,7 +88,7 @@ public class TranscodingDao extends AbstractDao {
             existingMax = 0;
         }
         transcoding.setId(existingMax + 1);
-        String sql = "insert into transcoding2 (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")";
+        String sql = "insert into transcoding2 (" + QUERY_COLUMNS + ") values (" + questionMarks(QUERY_COLUMNS) + ")";
         update(sql, transcoding.getId(), transcoding.getName(), transcoding.getSourceFormats(),
                 transcoding.getTargetFormat(), transcoding.getStep1(),
                 transcoding.getStep2(), transcoding.getStep3(), transcoding.isDefaultActive());

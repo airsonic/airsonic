@@ -36,9 +36,11 @@ import org.libresonic.player.domain.PodcastStatus;
  */
 public class PodcastDao extends AbstractDao {
 
-    private static final String CHANNEL_COLUMNS = "id, url, title, description, image_url, status, error_message";
-    private static final String EPISODE_COLUMNS = "id, channel_id, url, path, title, description, publish_date, " +
-            "duration, bytes_total, bytes_downloaded, status, error_message";
+    private static final String CHANNEL_INSERT_COLUMNS = "url, title, description, image_url, status, error_message";
+    private static final String CHANNEL_QUERY_COLUMNS = "id, " + CHANNEL_INSERT_COLUMNS;
+    private static final String EPISODE_INSERT_COLUMNS = "channel_id, url, path, title, description, publish_date, " +
+                                                        "duration, bytes_total, bytes_downloaded, status, error_message";
+    private static final String EPISODE_QUERY_COLUMNS = "id, " + EPISODE_INSERT_COLUMNS;
 
     private PodcastChannelRowMapper channelRowMapper = new PodcastChannelRowMapper();
     private PodcastEpisodeRowMapper episodeRowMapper = new PodcastEpisodeRowMapper();
@@ -50,8 +52,9 @@ public class PodcastDao extends AbstractDao {
      * @return The ID of the newly created channel.
      */
     public synchronized int createChannel(PodcastChannel channel) {
-        String sql = "insert into podcast_channel (" + CHANNEL_COLUMNS + ") values (" + questionMarks(CHANNEL_COLUMNS) + ")";
-        update(sql, null, channel.getUrl(), channel.getTitle(), channel.getDescription(), channel.getImageUrl(),
+        String sql = "insert into podcast_channel (" + CHANNEL_INSERT_COLUMNS + ") values (" + questionMarks(
+                CHANNEL_INSERT_COLUMNS) + ")";
+        update(sql, channel.getUrl(), channel.getTitle(), channel.getDescription(), channel.getImageUrl(),
                 channel.getStatus().name(), channel.getErrorMessage());
 
         return getJdbcTemplate().queryForObject("select max(id) from podcast_channel", Integer.class);
@@ -63,7 +66,7 @@ public class PodcastDao extends AbstractDao {
      * @return Possibly empty list of all Podcast channels.
      */
     public List<PodcastChannel> getAllChannels() {
-        String sql = "select " + CHANNEL_COLUMNS + " from podcast_channel";
+        String sql = "select " + CHANNEL_QUERY_COLUMNS + " from podcast_channel";
         return query(sql, channelRowMapper);
     }
 
@@ -71,7 +74,7 @@ public class PodcastDao extends AbstractDao {
      * Returns a single Podcast channel.
      */
     public PodcastChannel getChannel(int channelId) {
-        String sql = "select " + CHANNEL_COLUMNS + " from podcast_channel where id=?";
+        String sql = "select " + CHANNEL_QUERY_COLUMNS + " from podcast_channel where id=?";
         return queryOne(sql, channelRowMapper, channelId);
     }
 
@@ -102,8 +105,9 @@ public class PodcastDao extends AbstractDao {
      * @param episode The Podcast episode to create.
      */
     public void createEpisode(PodcastEpisode episode) {
-        String sql = "insert into podcast_episode (" + EPISODE_COLUMNS + ") values (" + questionMarks(EPISODE_COLUMNS) + ")";
-        update(sql, null, episode.getChannelId(), episode.getUrl(), episode.getPath(),
+        String sql = "insert into podcast_episode (" + EPISODE_INSERT_COLUMNS + ") values (" + questionMarks(
+                EPISODE_INSERT_COLUMNS) + ")";
+        update(sql, episode.getChannelId(), episode.getUrl(), episode.getPath(),
                 episode.getTitle(), episode.getDescription(), episode.getPublishDate(),
                 episode.getDuration(), episode.getBytesTotal(), episode.getBytesDownloaded(),
                 episode.getStatus().name(), episode.getErrorMessage());
@@ -116,7 +120,7 @@ public class PodcastDao extends AbstractDao {
      *         reverse chronological order (newest episode first).
      */
     public List<PodcastEpisode> getEpisodes(int channelId) {
-        String sql = "select " + EPISODE_COLUMNS + " from podcast_episode where channel_id = ? " +
+        String sql = "select " + EPISODE_QUERY_COLUMNS + " from podcast_episode where channel_id = ? " +
                      "and status != ? order by publish_date desc";
         return query(sql, episodeRowMapper, channelId, PodcastStatus.DELETED);
     }
@@ -128,7 +132,8 @@ public class PodcastDao extends AbstractDao {
      *         reverse chronological order (newest episode first).
      */
     public List<PodcastEpisode> getNewestEpisodes(int count) {
-        String sql = "select " + EPISODE_COLUMNS + " from podcast_episode where status = ? and publish_date is not null " +
+        String sql = "select " + EPISODE_QUERY_COLUMNS
+                     + " from podcast_episode where status = ? and publish_date is not null " +
                      "order by publish_date desc limit ?";
         return query(sql, episodeRowMapper, PodcastStatus.COMPLETED, count);
     }
@@ -140,12 +145,12 @@ public class PodcastDao extends AbstractDao {
      * @return The episode or <code>null</code> if not found.
      */
     public PodcastEpisode getEpisode(int episodeId) {
-        String sql = "select " + EPISODE_COLUMNS + " from podcast_episode where id=?";
+        String sql = "select " + EPISODE_QUERY_COLUMNS + " from podcast_episode where id=?";
         return queryOne(sql, episodeRowMapper, episodeId);
     }
 
     public PodcastEpisode getEpisodeByUrl(String url) {
-        String sql = "select " + EPISODE_COLUMNS + " from podcast_episode where url=?";
+        String sql = "select " + EPISODE_QUERY_COLUMNS + " from podcast_episode where url=?";
         return queryOne(sql, episodeRowMapper, url);
     }
 

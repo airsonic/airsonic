@@ -33,7 +33,8 @@ import java.util.List;
  */
 public class AvatarDao extends AbstractDao {
 
-    private static final String COLUMNS = "id, name, created_date, mime_type, width, height, data";
+    private static final String INSERT_COLUMNS = "name, created_date, mime_type, width, height, data";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final AvatarRowMapper rowMapper = new AvatarRowMapper();
 
     /**
@@ -42,7 +43,7 @@ public class AvatarDao extends AbstractDao {
      * @return All system avatars.
      */
     public List<Avatar> getAllSystemAvatars() {
-        String sql = "select " + COLUMNS + " from system_avatar";
+        String sql = "select " + QUERY_COLUMNS + " from system_avatar";
         return query(sql, rowMapper);
     }
 
@@ -53,7 +54,7 @@ public class AvatarDao extends AbstractDao {
      * @return The avatar or <code>null</code> if not found.
      */
     public Avatar getSystemAvatar(int id) {
-        String sql = "select " + COLUMNS + " from system_avatar where id=" + id;
+        String sql = "select " + QUERY_COLUMNS + " from system_avatar where id=" + id;
         return queryOne(sql, rowMapper);
     }
 
@@ -64,7 +65,7 @@ public class AvatarDao extends AbstractDao {
      * @return The avatar or <code>null</code> if not found.
      */
     public Avatar getCustomAvatar(String username) {
-        String sql = "select " + COLUMNS + " from custom_avatar where username=?";
+        String sql = "select " + QUERY_COLUMNS + " from custom_avatar where username=?";
         return queryOne(sql, rowMapper, username);
     }
 
@@ -79,8 +80,9 @@ public class AvatarDao extends AbstractDao {
         update(sql, username);
 
         if (avatar != null) {
-            update("insert into custom_avatar(" + COLUMNS + ", username) values(" + questionMarks(COLUMNS) + ", ?)",
-                   null, avatar.getName(), avatar.getCreatedDate(), avatar.getMimeType(),
+            update("insert into custom_avatar(" + INSERT_COLUMNS
+                   + ", username) values(" + questionMarks(INSERT_COLUMNS) + ", ?)",
+                   avatar.getName(), avatar.getCreatedDate(), avatar.getMimeType(),
                    avatar.getWidth(), avatar.getHeight(), avatar.getData(), username);
         }
     }

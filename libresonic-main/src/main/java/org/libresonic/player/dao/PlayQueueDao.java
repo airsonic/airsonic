@@ -33,11 +33,12 @@ import org.libresonic.player.domain.SavedPlayQueue;
  */
 public class PlayQueueDao extends AbstractDao {
 
-    private static final String COLUMNS = "id, username, current, position_millis, changed, changed_by";
+    private static final String INSERT_COLUMNS = "username, current, position_millis, changed, changed_by";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final RowMapper rowMapper = new PlayQueueMapper();
 
     public synchronized SavedPlayQueue getPlayQueue(String username) {
-        SavedPlayQueue playQueue = queryOne("select " + COLUMNS + " from play_queue where username=?", rowMapper, username);
+        SavedPlayQueue playQueue = queryOne("select " + QUERY_COLUMNS + " from play_queue where username=?", rowMapper, username);
         if (playQueue == null) {
             return null;
         }
@@ -48,8 +49,8 @@ public class PlayQueueDao extends AbstractDao {
 
     public synchronized void savePlayQueue(SavedPlayQueue playQueue) {
         update("delete from play_queue where username=?", playQueue.getUsername());
-        update("insert into play_queue(" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")",
-               null, playQueue.getUsername(), playQueue.getCurrentMediaFileId(), playQueue.getPositionMillis(),
+        update("insert into play_queue(" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")",
+               playQueue.getUsername(), playQueue.getCurrentMediaFileId(), playQueue.getPositionMillis(),
                playQueue.getChanged(), playQueue.getChangedBy());
         int id = queryForInt("select max(id) from play_queue", 0);
         playQueue.setId(id);
