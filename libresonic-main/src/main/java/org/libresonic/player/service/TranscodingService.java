@@ -329,8 +329,8 @@ public class TranscodingService {
             title = "Unknown Artist";
         }
 
-        List<String> result = new LinkedList<>(Arrays.asList(StringUtil.split(command)));
-        result.set(0, getExecutableName(result));
+        List<String> result = new LinkedList<String>(Arrays.asList(StringUtil.split(command)));
+        result.set(0, getTranscodeDirectory().getPath() + File.separatorChar + result.get(0));
 
         File tmpFile = null;
 
@@ -379,20 +379,6 @@ public class TranscodingService {
             result.set(i, cmd);
         }
         return new TranscodeInputStream(new ProcessBuilder(result), in, tmpFile);
-    }
-
-    private String getExecutableName(List<String> transcodeTokens) {
-        String executableName = transcodeTokens.get(0);
-        String transcodeDirectoryPath = getTranscodeDirectory().getPath() + File.separatorChar + executableName;
-        File file = new File(transcodeDirectoryPath);
-        if(file.exists()) {
-            if(!file.canExecute()) {
-                throw new RuntimeException("Transcoder is not executable at " + transcodeDirectoryPath);
-            }
-            return transcodeDirectoryPath;
-        } else {
-            return executableName;
-        }
     }
 
     /**

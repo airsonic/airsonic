@@ -41,9 +41,10 @@ import org.libresonic.player.util.FileUtil;
  * @author Sindre Mehus
  */
 public class AlbumDao extends AbstractDao {
-
-    private static final String COLUMNS = "id, path, name, artist, song_count, duration_seconds, cover_art_path, " +
+    private static final String INSERT_COLUMNS = "path, name, artist, song_count, duration_seconds, cover_art_path, " +
                                           "year, genre, play_count, last_played, comment, created, last_scanned, present, folder_id";
+
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private final RowMapper rowMapper = new AlbumMapper();
 
@@ -55,7 +56,7 @@ public class AlbumDao extends AbstractDao {
      * @return The album or null.
      */
     public Album getAlbum(String artistName, String albumName) {
-        return queryOne("select " + COLUMNS + " from album where artist=? and name=?", rowMapper, artistName, albumName);
+        return queryOne("select " + QUERY_COLUMNS + " from album where artist=? and name=?", rowMapper, artistName, albumName);
     }
 
     /**
@@ -67,7 +68,7 @@ public class AlbumDao extends AbstractDao {
     public Album getAlbumForFile(MediaFile file) {
 
         // First, get all albums with the correct album name (irrespective of artist).
-        List<Album> candidates = query("select " + COLUMNS + " from album where name=?", rowMapper, file.getAlbumName());
+        List<Album> candidates = query("select " + QUERY_COLUMNS + " from album where name=?", rowMapper, file.getAlbumName());
         if (candidates.isEmpty()) {
             return null;
         }
@@ -91,7 +92,7 @@ public class AlbumDao extends AbstractDao {
     }
 
     public Album getAlbum(int id) {
-        return queryOne("select " + COLUMNS + " from album where id=?", rowMapper, id);
+        return queryOne("select " + QUERY_COLUMNS + " from album where id=?", rowMapper, id);
     }
 
     public List<Album> getAlbumsForArtist(final String artist, final List<MusicFolder> musicFolders) {
@@ -102,7 +103,8 @@ public class AlbumDao extends AbstractDao {
             put("artist", artist);
             put("folders", MusicFolder.toIdList(musicFolders));
         }};
-        return namedQuery("select " + COLUMNS + " from album where artist = :artist and present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS
+                          + " from album where artist = :artist and present and folder_id in (:folders) " +
                           "order by name",
                           rowMapper, args);
     }
@@ -135,7 +137,7 @@ public class AlbumDao extends AbstractDao {
 
         if (n == 0) {
 
-            update("insert into album (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")", null, album.getPath(),
+            update("insert into album (" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")", album.getPath(),
                    album.getName(), album.getArtist(), album.getSongCount(), album.getDurationSeconds(),
                    album.getCoverArtPath(), album.getYear(), album.getGenre(), album.getPlayCount(), album.getLastPlayed(),
                    album.getComment(), album.getCreated(), album.getLastScanned(), album.isPresent(), album.getFolderId());
@@ -164,7 +166,7 @@ public class AlbumDao extends AbstractDao {
             put("offset", offset);
         }};
         String orderBy = byArtist ? "artist, name" : "name";
-        return namedQuery("select " + COLUMNS + " from album where present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS + " from album where present and folder_id in (:folders) " +
                           "order by " + orderBy + " limit :count offset :offset", rowMapper, args);
     }
 
@@ -185,7 +187,8 @@ public class AlbumDao extends AbstractDao {
             put("count", count);
             put("offset", offset);
         }};
-        return namedQuery("select " + COLUMNS + " from album where play_count > 0 and present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS
+                          + " from album where play_count > 0 and present and folder_id in (:folders) " +
                           "order by play_count desc limit :count offset :offset", rowMapper, args);
     }
 
@@ -206,7 +209,8 @@ public class AlbumDao extends AbstractDao {
             put("count", count);
             put("offset", offset);
         }};
-        return namedQuery("select " + COLUMNS + " from album where last_played is not null and present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS
+                          + " from album where last_played is not null and present and folder_id in (:folders) " +
                           "order by last_played desc limit :count offset :offset", rowMapper, args);
     }
 
@@ -227,7 +231,7 @@ public class AlbumDao extends AbstractDao {
             put("count", count);
             put("offset", offset);
         }};
-        return namedQuery("select " + COLUMNS + " from album where present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS + " from album where present and folder_id in (:folders) " +
                           "order by created desc limit :count offset :offset", rowMapper, args);
     }
 
@@ -250,7 +254,7 @@ public class AlbumDao extends AbstractDao {
             put("offset", offset);
             put("username", username);
         }};
-        return namedQuery("select " + prefix(COLUMNS, "album") + " from starred_album, album where album.id = starred_album.album_id and " +
+        return namedQuery("select " + prefix(QUERY_COLUMNS, "album") + " from starred_album, album where album.id = starred_album.album_id and " +
                           "album.present and album.folder_id in (:folders) and starred_album.username = :username " +
                           "order by starred_album.created desc limit :count offset :offset",
                           rowMapper, args);
@@ -275,7 +279,7 @@ public class AlbumDao extends AbstractDao {
             put("offset", offset);
             put("genre", genre);
         }};
-        return namedQuery("select " + COLUMNS + " from album where present and folder_id in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS + " from album where present and folder_id in (:folders) " +
                           "and genre = :genre limit :count offset :offset", rowMapper, args);
     }
 
@@ -302,18 +306,18 @@ public class AlbumDao extends AbstractDao {
             put("toYear", toYear);
         }};
         if (fromYear <= toYear) {
-            return namedQuery("select " + COLUMNS + " from album where present and folder_id in (:folders) " +
+            return namedQuery("select " + QUERY_COLUMNS + " from album where present and folder_id in (:folders) " +
                               "and year between :fromYear and :toYear order by year limit :count offset :offset",
                               rowMapper, args);
         } else {
-            return namedQuery("select " + COLUMNS + " from album where present and folder_id in (:folders) " +
+            return namedQuery("select " + QUERY_COLUMNS + " from album where present and folder_id in (:folders) " +
                               "and year between :toYear and :fromYear order by year desc limit :count offset :offset",
                               rowMapper, args);
         }
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select top 1 id from album where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from album where last_scanned != ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from album where last_scanned != ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
@@ -323,7 +327,7 @@ public class AlbumDao extends AbstractDao {
     }
 
     public void expunge() {
-        int minId = queryForInt("select top 1 id from album where not present", 0);
+        int minId = queryForInt("select min(id) from album where not present", 0);
         int maxId = queryForInt("select max(id) from album where not present", 0);
 
         final int batchSize = 1000;

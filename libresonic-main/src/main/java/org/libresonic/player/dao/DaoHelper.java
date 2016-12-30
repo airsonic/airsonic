@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.dao;
 
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
@@ -43,4 +44,5 @@ public interface DaoHelper {
      */
     NamedParameterJdbcTemplate getNamedParameterJdbcTemplate();
 
+    DataSource getDataSource();
 }

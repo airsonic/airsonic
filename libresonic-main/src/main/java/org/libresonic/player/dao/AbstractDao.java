@@ -19,15 +19,23 @@
  */
 package org.libresonic.player.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import org.libresonic.player.Logger;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.Assert;
 
 /**
  * Abstract superclass for all DAO's.
@@ -107,6 +115,16 @@ public class AbstractDao {
         return result;
     }
 
+    protected <T> List<T> namedQueryWithLimit(String sql, RowMapper<T> rowMapper, Map<String, Object> args, int limit) {
+        long t = System.nanoTime();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(daoHelper.getDataSource());
+        jdbcTemplate.setMaxRows(limit);
+        NamedParameterJdbcTemplate namedTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
+        List<T> result = namedTemplate.query(sql, args, rowMapper);
+        log(sql, t);
+        return result;
+    }
+
     protected List<String> queryForStrings(String sql, Object... args) {
         long t = System.nanoTime();
         List<String> result = getJdbcTemplate().queryForList(sql, args, String.class);
@@ -173,4 +191,5 @@ public class AbstractDao {
     public void setDaoHelper(DaoHelper daoHelper) {
         this.daoHelper = daoHelper;
     }
+
 }

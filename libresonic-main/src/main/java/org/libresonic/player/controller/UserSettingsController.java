@@ -33,6 +33,7 @@ import org.libresonic.player.validator.UserSettingsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -71,29 +72,34 @@ public class UserSettingsController {
 
     @RequestMapping(method = RequestMethod.GET)
     protected String displayForm(HttpServletRequest request, Model model) throws Exception {
-        UserSettingsCommand command = new UserSettingsCommand();
+        UserSettingsCommand command;
+        if(!model.containsAttribute("command")) {
+             command = new UserSettingsCommand();
 
+            User user = getUser(request);
+            if (user != null) {
+                command.setUser(user);
+                command.setEmail(user.getEmail());
+                UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
+                command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
+                command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
+            } else {
+                command.setNewUser(true);
+                command.setStreamRole(true);
+                command.setSettingsRole(true);
+            }
+
+        } else {
+            command = (UserSettingsCommand) model.asMap().get("command");
+        }
+        command.setAdmin(User.USERNAME_ADMIN.equals(command.getUsername()));
         command.setUsers(securityService.getAllUsers());
         command.setTranscodingSupported(transcodingService.isDownsamplingSupported(null));
         command.setTranscodeDirectory(transcodingService.getTranscodeDirectory().getPath());
         command.setTranscodeSchemes(TranscodeScheme.values());
         command.setLdapEnabled(settingsService.isLdapEnabled());
         command.setAllMusicFolders(settingsService.getAllMusicFolders());
-        User user = getUser(request);
-        if (user != null) {
-            command.setUser(user);
-            command.setEmail(user.getEmail());
-            command.setAdmin(User.USERNAME_ADMIN.equals(user.getUsername()));
-            UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
-            command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
-            command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
-        } else {
-            command.setNewUser(true);
-            command.setStreamRole(true);
-            command.setSettingsRole(true);
-        }
-
-        model.addAttribute("command",command);
+        model.addAttribute("command", command);
         return "userSettings";
     }
 
@@ -121,19 +127,35 @@ public class UserSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
 
-        if (command.isDeleteUser()) {
-            deleteUser(command);
-        } else if (command.isNewUser()) {
-            createUser(command);
+        if(!bindingResult.hasErrors()) {
+            if (command.isDeleteUser()) {
+                deleteUser(command);
+            } else if (command.isNewUser()) {
+                createUser(command);
+            } else {
+                updateUser(command);
+            }
+            redirectAttributes.addFlashAttribute("settings_reload", true);
+            redirectAttributes.addFlashAttribute("settings_toast", true);
         } else {
-            updateUser(command);
+            redirectAttributes.addFlashAttribute("command", command);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.command", bindingResult);
+            redirectAttributes.addFlashAttribute("userIndex", getUserIndex(command));
         }
-        redirectAttributes.addFlashAttribute("settings_reload", true);
-        redirectAttributes.addFlashAttribute("settings_toast", true);
 
         return "redirect:userSettings.view";
+    }
+
+    private Integer getUserIndex(UserSettingsCommand command) {
+        List<User> allUsers = securityService.getAllUsers();
+        for (int i = 0; i < allUsers.size(); i++) {
+            if(StringUtils.equalsIgnoreCase(allUsers.get(i).getUsername(), command.getUsername())) {
+                return i;
+            }
+        }
+        return null;
     }
 
     private void deleteUser(UserSettingsCommand command) {

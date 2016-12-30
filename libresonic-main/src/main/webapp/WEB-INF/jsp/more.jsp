@@ -342,7 +342,7 @@
         <td class="more-shortcut">m</td><td class="more-shortcut-descr"><fmt:message key="more.keyboard.sidebar"/></td>
     </tr>
     <tr>
-        <td class="more-shortcut">&#8593;</td><td class="more-shortcut-descr"><fmt:message key="more.keyboard.next"/></td>
+        <td class="more-shortcut">&#8594;</td><td class="more-shortcut-descr"><fmt:message key="more.keyboard.next"/></td>
         <td class="more-shortcut">g <fmt:message key="more.keyboard.then"/> o</td><td class="more-shortcut-descr"><fmt:message key="more.keyboard.podcasts"/></td>
         <td class="more-shortcut">q</td><td class="more-shortcut-descr"><fmt:message key="more.keyboard.playqueue"/></td>
     </tr>

@@ -34,7 +34,8 @@ import org.libresonic.player.domain.Bookmark;
  */
 public class BookmarkDao extends AbstractDao {
 
-    private static final String COLUMNS = "id, media_file_id, position_millis, username, comment, created, changed";
+    private static final String INSERT_COLUMNS = "media_file_id, position_millis, username, comment, created, changed";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private BookmarkRowMapper bookmarkRowMapper = new BookmarkRowMapper();
 
@@ -44,7 +45,7 @@ public class BookmarkDao extends AbstractDao {
      * @return Possibly empty list of all bookmarks.
      */
     public List<Bookmark> getBookmarks() {
-        String sql = "select " + COLUMNS + " from bookmark";
+        String sql = "select " + QUERY_COLUMNS + " from bookmark";
         return query(sql, bookmarkRowMapper);
     }
 
@@ -54,7 +55,7 @@ public class BookmarkDao extends AbstractDao {
      * @return Possibly empty list of all bookmarks for the user.
      */
     public List<Bookmark> getBookmarks(String username) {
-        String sql = "select " + COLUMNS + " from bookmark where username=?";
+        String sql = "select " + QUERY_COLUMNS + " from bookmark where username=?";
         return query(sql, bookmarkRowMapper, username);
     }
 
@@ -66,9 +67,9 @@ public class BookmarkDao extends AbstractDao {
                 bookmark.getPositionMillis(), bookmark.getComment(), bookmark.getChanged(), bookmark.getMediaFileId(), bookmark.getUsername());
 
         if (n == 0) {
-            update("insert into bookmark (" + COLUMNS + ") values (" + questionMarks(COLUMNS) + ")", null,
-                    bookmark.getMediaFileId(), bookmark.getPositionMillis(), bookmark.getUsername(), bookmark.getComment(),
-                    bookmark.getCreated(), bookmark.getChanged());
+            update("insert into bookmark (" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")",
+                   bookmark.getMediaFileId(), bookmark.getPositionMillis(), bookmark.getUsername(), bookmark.getComment(),
+                   bookmark.getCreated(), bookmark.getChanged());
             int id = queryForInt("select id from bookmark where media_file_id=? and username=?", 0, bookmark.getMediaFileId(), bookmark.getUsername());
             bookmark.setId(id);
         }

@@ -40,18 +40,19 @@ import java.util.TreeMap;
 public class PlaylistDao extends AbstractDao {
 
     private static final Logger LOG = Logger.getLogger(PlaylistDao.class);
-    private static final String COLUMNS = "id, username, is_public, name, comment, file_count, duration_seconds, " +
-            "created, changed, imported_from";
+    private static final String INSERT_COLUMNS = "username, is_public, name, comment, file_count, duration_seconds, " +
+                                                "created, changed, imported_from";
+    private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final RowMapper rowMapper = new PlaylistMapper();
 
     public List<Playlist> getReadablePlaylistsForUser(String username) {
 
         List<Playlist> result1 = getWritablePlaylistsForUser(username);
-        List<Playlist> result2 = query("select " + COLUMNS + " from playlist where is_public", rowMapper);
-        List<Playlist> result3 = query("select " + prefix(COLUMNS, "playlist") + " from playlist, playlist_user where " +
-                "playlist.id = playlist_user.playlist_id and " +
-                "playlist.username != ? and " +
-                "playlist_user.username = ?", rowMapper, username, username);
+        List<Playlist> result2 = query("select " + QUERY_COLUMNS + " from playlist where is_public", rowMapper);
+        List<Playlist> result3 = query("select " + prefix(QUERY_COLUMNS, "playlist") + " from playlist, playlist_user where " +
+                                       "playlist.id = playlist_user.playlist_id and " +
+                                       "playlist.username != ? and " +
+                                       "playlist_user.username = ?", rowMapper, username, username);
 
         // Put in sorted map to avoid duplicates.
         SortedMap<Integer, Playlist> map = new TreeMap<Integer, Playlist>();
@@ -68,20 +69,20 @@ public class PlaylistDao extends AbstractDao {
     }
 
     public List<Playlist> getWritablePlaylistsForUser(String username) {
-        return query("select " + COLUMNS + " from playlist where username=?", rowMapper, username);
+        return query("select " + QUERY_COLUMNS + " from playlist where username=?", rowMapper, username);
     }
 
     public Playlist getPlaylist(int id) {
-        return queryOne("select " + COLUMNS + " from playlist where id=?", rowMapper, id);
+        return queryOne("select " + QUERY_COLUMNS + " from playlist where id=?", rowMapper, id);
     }
 
     public List<Playlist> getAllPlaylists() {
-        return query("select " + COLUMNS + " from playlist", rowMapper);
+        return query("select " + QUERY_COLUMNS + " from playlist", rowMapper);
     }
 
     public synchronized void createPlaylist(Playlist playlist) {
-        update("insert into playlist(" + COLUMNS + ") values(" + questionMarks(COLUMNS) + ")",
-                null, playlist.getUsername(), playlist.isShared(), playlist.getName(), playlist.getComment(),
+        update("insert into playlist(" + INSERT_COLUMNS + ") values(" + questionMarks(INSERT_COLUMNS) + ")",
+                playlist.getUsername(), playlist.isShared(), playlist.getName(), playlist.getComment(),
                 0, 0, playlist.getCreated(), playlist.getChanged(), playlist.getImportedFrom());
 
         int id = queryForInt("select max(id) from playlist", 0);

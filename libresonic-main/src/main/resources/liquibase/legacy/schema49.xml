@@ -1,0 +1,65 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema49_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 21</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="21" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 21</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema49_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="album" columnName="year" />
+            </not>
+        </preConditions>
+        <addColumn tableName="album">
+            <column name="year" type="int"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema49_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="album" columnName="genre" />
+            </not>
+        </preConditions>
+        <addColumn tableName="album">
+            <column name="genre" type="${varchar_type}"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema49_004" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="genre" />
+            </not>
+        </preConditions>
+        <createTable tableName="genre">
+            <column name="name" type="${varchar_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="song_count" type="int" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="schema49_005" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="genre" columnName="album_count" />
+            </not>
+        </preConditions>
+        <addColumn tableName="genre">
+            <column name="album_count" type="int" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
