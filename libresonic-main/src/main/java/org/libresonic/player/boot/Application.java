@@ -1,12 +1,9 @@
 package org.libresonic.player.boot;
 
 import org.directwebremoting.servlet.DwrServlet;
-import org.libresonic.player.filter.RESTFilter;
-import org.libresonic.player.security.RESTRequestParameterProcessingFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +15,6 @@ import org.springframework.context.annotation.ImportResource;
 @ImportResource(value = {"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
-        "classpath:/applicationContext-security.xml",
         "classpath:/libresonic-servlet.xml"})
 public class Application extends SpringBootServletInitializer {
 
@@ -33,21 +29,6 @@ public class Application extends SpringBootServletInitializer {
         servlet.addInitParameter("crossDomainSessionSecurity","false");
         return servlet;
     }
-
-    /**
-     * Registers the rest servlet filter.
-     *
-     * @return a registration bean.
-     */
-    @Bean
-    public FilterRegistrationBean restFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new RESTFilter());
-        registration.addUrlPatterns("/rest/*");
-        registration.setName("RESTFilter");
-        return registration;
-    }
-
 
 
     @Override
