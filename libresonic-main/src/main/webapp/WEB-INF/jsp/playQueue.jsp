@@ -11,7 +11,6 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/jwplayer-5.10.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/cast_sender-v1.js"/>"></script>
     <%@ include file="playQueueCast.jsp" %>
     <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
     <style type="text/css">
@@ -845,5 +844,14 @@
     <p><fmt:message key="main.addtoplaylist.text"/></p>
     <div id="dialog-select-playlist-list"></div>
 </div>
+
+<script type="text/javascript">
+    window['__onGCastApiAvailable'] = function(isAvailable) {
+        if (isAvailable) {
+            CastPlayer.initializeCastPlayer();
+        }
+    };
+</script>
+<script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
 </body></html>
