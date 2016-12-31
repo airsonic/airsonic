@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "org.libresonic.player.controller,org.libresonic.player.validator,org.libresonic.player.security")
 @Configuration
 @ImportResource(value = {"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",

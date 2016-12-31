@@ -13,9 +13,6 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <mvc:annotation-driven />
-    <context:component-scan base-package="org.libresonic.player.controller,
-        org.libresonic.player.validator,
-        org.libresonic.player.security"/>
 
     <bean id="wapController" class="org.libresonic.player.controller.WapController">
         <property name="settingsService" ref="settingsService"/>
