@@ -217,6 +217,10 @@ public class SettingsService {
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<String, List<MusicFolder>>();
 
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+
+    private static final long LOCAL_IP_LOOKUP_DELAY_SECONDS = 60;
+
     private String localIpAddress;
 
     private void removeObseleteProperties() {
@@ -1285,6 +1289,7 @@ public class SettingsService {
                 localIpAddress = Util.getLocalIpAddress();
             }
         };
+        executor.scheduleWithFixedDelay(task,0, LOCAL_IP_LOOKUP_DELAY_SECONDS, TimeUnit.SECONDS);
     }
 
     public void setInternetRadioDao(InternetRadioDao internetRadioDao) {

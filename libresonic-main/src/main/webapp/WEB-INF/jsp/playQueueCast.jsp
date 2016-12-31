@@ -7,8 +7,6 @@
         this.castSession = null;
         this.mediaSession = null;
         this.volume = 1.0;
-
-        this.initializeCastPlayer();
     };
 
     CastPlayer.prototype.initializeCastPlayer = function () {
