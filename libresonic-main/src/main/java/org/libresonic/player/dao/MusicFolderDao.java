@@ -40,6 +40,8 @@ public class MusicFolderDao extends AbstractDao {
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final MusicFolderRowMapper rowMapper = new MusicFolderRowMapper();
 
+    private UserDao userDao;
+
     /**
      * Returns all music folders.
      *
@@ -60,7 +62,7 @@ public class MusicFolderDao extends AbstractDao {
         update(sql, musicFolder.getPath(), musicFolder.getName(), musicFolder.isEnabled(), musicFolder.getChanged());
 
         Integer id = queryForInt("select max(id) from music_folder", 0);
-        update("insert into music_folder_user (music_folder_id, username) select ?, username from user", id);
+        update("insert into music_folder_user (music_folder_id, username) select ?, username from " + userDao.getUserTable(), id);
         LOG.info("Created music folder " + musicFolder.getPath());
     }
 
@@ -105,4 +107,7 @@ public class MusicFolderDao extends AbstractDao {
         }
     }
 
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 }

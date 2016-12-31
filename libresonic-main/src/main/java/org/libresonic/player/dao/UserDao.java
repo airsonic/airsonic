@@ -358,7 +358,7 @@ public class UserDao extends AbstractDao {
         }
     }
 
-    private String getUserTable() {
+    String getUserTable() {
         return userTableQuote + "user" + userTableQuote;
     }
 
