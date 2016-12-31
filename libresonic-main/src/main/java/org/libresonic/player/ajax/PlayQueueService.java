@@ -697,7 +697,7 @@ public class PlayQueueService {
     }
 
     private String formatFormat(Player player, MediaFile file) {
-        return transcodingService.getSuffix(player, file, null);
+        return file.getFormat();
     }
 
     private String formatContentType(String format) {
