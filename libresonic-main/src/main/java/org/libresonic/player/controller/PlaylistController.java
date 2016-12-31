@@ -79,7 +79,7 @@ public class PlaylistController {
         map.put("editAllowed", username.equals(playlist.getUsername()) || securityService.isAdmin(username));
         map.put("partyMode", userSettings.isPartyModeEnabled());
 
-        return new ModelAndView("playList","model",map);
+        return new ModelAndView("playlist","model",map);
     }
 
 

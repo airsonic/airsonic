@@ -263,7 +263,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getSongsByGenre", method = RequestMethod.GET)
     public void getSongsByGenre(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -754,7 +754,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getPlaylists", method = RequestMethod.GET)
     public void getPlaylists(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1500,7 +1500,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getPodcasts", method = RequestMethod.GET)
     public void getPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
