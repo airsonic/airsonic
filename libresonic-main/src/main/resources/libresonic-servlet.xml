@@ -14,23 +14,12 @@
 
     <mvc:annotation-driven />
 
-    <bean id="wapController" class="org.libresonic.player.controller.WapController">
-        <property name="settingsService" ref="settingsService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="searchService" ref="searchService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="musicIndexService" ref="musicIndexService"/>
-    </bean>
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="mappings">
             <props>
                 <prop key="/podcast/**">podcastController</prop>
-                <prop key="/wap/download.view">downloadController</prop>
-                <prop key="/wap/**">wapController</prop>
             </props>
         </property>
     </bean>
