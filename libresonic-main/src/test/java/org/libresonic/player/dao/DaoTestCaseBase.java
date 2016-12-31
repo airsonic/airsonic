@@ -59,6 +59,7 @@ public abstract class DaoTestCaseBase extends TestCase {
         internetRadioDao.setDaoHelper(daoHelper);
         ratingDao.setDaoHelper(daoHelper);
         musicFolderDao.setDaoHelper(daoHelper);
+        musicFolderDao.setUserDao(userDao);
         userDao.setDaoHelper(daoHelper);
         transcodingDao.setDaoHelper(daoHelper);
         podcastDao.setDaoHelper(daoHelper);

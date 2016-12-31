@@ -45,6 +45,7 @@
 
     <bean id="musicFolderDao" class="org.libresonic.player.dao.MusicFolderDao">
         <property name="daoHelper" ref="daoHelper"/>
+        <property name="userDao" ref="userDao" />
     </bean>
 
     <bean id="userDao" class="org.libresonic.player.dao.UserDao">
