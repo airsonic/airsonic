@@ -159,7 +159,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getMusicFolders", method = RequestMethod.GET)
     public void getMusicFolders(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -176,7 +176,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getIndexes", method = RequestMethod.GET)
     public void getIndexes(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Response res = createResponse();
@@ -246,7 +246,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getGenres", method = RequestMethod.GET)
     public void getGenres(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Genres genres = new Genres();
@@ -286,7 +286,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getArtists", method = RequestMethod.GET)
     public void getArtists(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -311,7 +311,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getSimilarSongs", method = RequestMethod.GET)
     public void getSimilarSongs(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -338,7 +338,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getSimilarSongs2", method = RequestMethod.GET)
     public void getSimilarSongs2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -366,7 +366,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getTopSongs", method = RequestMethod.GET)
     public void getTopSongs(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -388,7 +388,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getArtistInfo", method = RequestMethod.GET)
     public void getArtistInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -424,7 +424,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getArtistInfo2", method = RequestMethod.GET)
     public void getArtistInfo2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -481,6 +481,7 @@ public class RESTController {
         return result;
     }
 
+    @RequestMapping(value = "/rest/getArtist", method = RequestMethod.GET)
     public void getArtist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -566,7 +567,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getSong", method = RequestMethod.GET)
     public void getSong(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -588,7 +589,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getMusicDirectory", method = RequestMethod.GET)
     public void getMusicDirectory(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -632,7 +633,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @Deprecated
+    @RequestMapping(value = "/rest/search", method = RequestMethod.GET)
     public void search(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -676,7 +677,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/search2", method = RequestMethod.GET)
     public void search2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -715,7 +716,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/search3", method = RequestMethod.GET)
     public void search3(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -780,6 +781,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
+    @RequestMapping(value = "/rest/getPlaylist", method = RequestMethod.GET)
     public void getPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -808,7 +810,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/jukeboxControl", method = RequestMethod.GET)
     public void jukeboxControl(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
 
@@ -887,7 +889,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/createPlaylist", method = RequestMethod.GET)
     public void createPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
         String username = securityService.getCurrentUsername(request);
@@ -932,7 +934,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/updatePlaylist", method = RequestMethod.GET)
     public void updatePlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
         String username = securityService.getCurrentUsername(request);
@@ -1000,7 +1002,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/deletePlaylist", method = RequestMethod.GET)
     public void deletePlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
         String username = securityService.getCurrentUsername(request);
@@ -1071,7 +1073,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getAlbumList2", method = RequestMethod.GET)
     public void getAlbumList2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1139,7 +1141,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getVideos", method = RequestMethod.GET)
     public void getVideos(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1158,7 +1160,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getNowPlaying", method = RequestMethod.GET)
     public void getNowPlaying(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         NowPlaying result = new NowPlaying();
@@ -1311,6 +1313,7 @@ public class RESTController {
         return null;
     }
 
+    @RequestMapping(value = "/rest/download", method = RequestMethod.GET)
     public ModelAndView download(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1334,6 +1337,7 @@ public class RESTController {
         return downloadController.handleRequest(request, response);
     }
 
+    @RequestMapping(value = "/rest/stream", method = RequestMethod.GET)
     public ModelAndView stream(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1346,6 +1350,7 @@ public class RESTController {
         return null;
     }
 
+    @RequestMapping(value = "/rest/hls", method = RequestMethod.GET)
     public ModelAndView hls(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1367,7 +1372,7 @@ public class RESTController {
         return null;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/scrobble", method = RequestMethod.GET)
     public void scrobble(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1400,12 +1405,12 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/star", method = RequestMethod.GET)
     public void star(HttpServletRequest request, HttpServletResponse response) throws Exception {
         starOrUnstar(request, response, true);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/unstar", method = RequestMethod.GET)
     public void unstar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         starOrUnstar(request, response, false);
     }
@@ -1454,7 +1459,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getStarred", method = RequestMethod.GET)
     public void getStarred(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1477,7 +1482,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getStarred2", method = RequestMethod.GET)
     public void getStarred2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1538,7 +1543,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getNewestPodcasts", method = RequestMethod.GET)
     public void getNewestPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1575,7 +1580,7 @@ public class RESTController {
         return e;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/refreshPodcasts", method = RequestMethod.GET)
     public void refreshPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1587,7 +1592,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/createPodcastChannel", method = RequestMethod.GET)
     public void createPodcastChannel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1601,7 +1606,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/deletePodcastChannel", method = RequestMethod.GET)
     public void deletePodcastChannel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1615,7 +1620,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/deletePodcastEpisode", method = RequestMethod.GET)
     public void deletePodcastEpisode(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1629,7 +1634,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/downloadPodcastEpisode", method = RequestMethod.GET)
     public void downloadPodcastEpisode(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1649,7 +1654,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getInternetRadioStations", method = RequestMethod.GET)
     public void getInternetRadioStations(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1667,7 +1672,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getBookmarks", method = RequestMethod.GET)
     public void getBookmarks(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1692,7 +1697,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/createBookmark", method = RequestMethod.GET)
     public void createBookmark(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -1707,7 +1712,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/deleteBookmark", method = RequestMethod.GET)
     public void deleteBookmark(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1719,7 +1724,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getPlayQueue", method = RequestMethod.GET)
     public void getPlayQueue(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -1750,7 +1755,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/savePlayQueue", method = RequestMethod.GET)
     public void savePlayQueue(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -1770,7 +1775,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getShares", method = RequestMethod.GET)
     public void getShares(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1792,7 +1797,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/createShare", method = RequestMethod.GET)
     public void createShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1837,7 +1842,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/deleteShare", method = RequestMethod.GET)
     public void deleteShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1857,7 +1862,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/updateShare", method = RequestMethod.GET)
     public void updateShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1930,19 +1935,19 @@ public class RESTController {
         return result;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getCoverArt", method = RequestMethod.GET)
     public ModelAndView getCoverArt(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         return coverArtController.handleRequest(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getAvatar", method = RequestMethod.GET)
     public ModelAndView getAvatar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         return avatarController.handleRequest(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/changePassword", method = RequestMethod.GET)
     public void changePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1966,7 +1971,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getUser", method = RequestMethod.GET)
     public void getUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1989,7 +1994,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getUsers", method = RequestMethod.GET)
     public void getUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -2040,7 +2045,7 @@ public class RESTController {
         return result;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/createUser", method = RequestMethod.GET)
     public void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -2076,7 +2081,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/updateUser", method = RequestMethod.GET)
     public void updateUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -2134,7 +2139,7 @@ public class RESTController {
         return request.getParameter(name) != null;
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/deleteUser", method = RequestMethod.GET)
     public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -2154,7 +2159,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getChatMessages", method = RequestMethod.GET)
     public void getChatMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         long since = getLongParameter(request, "since", 0L);
@@ -2175,14 +2180,14 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/addChatMessage", method = RequestMethod.GET)
     public void addChatMessage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         chatService.doAddMessage(getRequiredStringParameter(request, "message"), request);
         writeEmptyResponse(request, response);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/getLyrics", method = RequestMethod.GET)
     public void getLyrics(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String artist = request.getParameter("artist");
@@ -2199,7 +2204,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @RequestMapping(value = "/rest/setRating", method = RequestMethod.GET)
     public void setRating(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Integer rating = getRequiredIntParameter(request, "rating");
