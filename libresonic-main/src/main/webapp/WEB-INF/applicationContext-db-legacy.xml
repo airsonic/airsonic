@@ -11,7 +11,7 @@
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 
         <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-        <property name="url" value="jdbc:hsqldb:file:#{systemProperties['libresonic.home']}/db/libresonic" />
+        <property name="url" value="jdbc:hsqldb:file:#{T(org.libresonic.player.service.SettingsService).libresonicHome.path}/db/libresonic" />
         <property name="username" value="sa" />
         <property name="password" value="" />
     </bean>
