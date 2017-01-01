@@ -25,37 +25,42 @@ import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller for the page used to generate the Podcast XML file.
  *
  * @author Sindre Mehus
  */
-public class PodcastController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/podcast")
+public class PodcastController  {
 
     private static final DateFormat RSS_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
 
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String url = request.getRequestURL().toString();
         String username = securityService.getCurrentUsername(request);
         List<Playlist> playlists = playlistService.getReadablePlaylistsForUser(username);
-        List<Podcast> podcasts = new ArrayList<Podcast>();
+        List<Podcast> podcasts = new ArrayList<>();
 
         for (Playlist playlist : playlists) {
 
@@ -85,27 +90,16 @@ public class PodcastController extends ParameterizableViewController {
             podcasts.add(new Podcast(playlist.getName(), publishDate, enclosureUrl, length, type));
         }
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
-        ModelAndView result = super.handleRequestInternal(request, response);
         map.put("url", url);
         map.put("podcasts", podcasts);
 
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("podcast","model",map);
     }
 
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 
     /**
      * Contains information about a single Podcast.

@@ -19,17 +19,6 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.service.MediaFileService;
@@ -37,23 +26,41 @@ import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Controller for the page used to play videos.
  *
  * @author Sindre Mehus
  */
-public class VideoPlayerController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/videoPlayer")
+public class VideoPlayerController {
 
     public static final int DEFAULT_BIT_RATE = 2000;
     public static final int[] BIT_RATES = {200, 300, 400, 500, 700, 1000, 1200, 1500, 2000, 3000, 5000};
 
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private SecurityService securityService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);
@@ -87,9 +94,7 @@ public class VideoPlayerController extends ParameterizableViewController {
         map.put("defaultBitRate", DEFAULT_BIT_RATE);
         map.put("user", user);
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("videoPlayer", "model", map);
     }
 
     public static Map<String, Integer> createSkipOffsets(int durationSeconds) {
@@ -100,19 +105,4 @@ public class VideoPlayerController extends ParameterizableViewController {
         return result;
     }
 
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }

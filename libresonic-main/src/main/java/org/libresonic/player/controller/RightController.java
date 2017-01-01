@@ -19,35 +19,40 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
+import org.libresonic.player.service.VersionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.VersionService;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller for the right frame.
  *
  * @author Sindre Mehus
  */
-public class RightController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/right")
+public class RightController  {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private VersionService versionService;
 
-    @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
-        ModelAndView result = super.handleRequestInternal(request, response);
+    @RequestMapping(method = RequestMethod.GET)
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        ModelAndView result = new ModelAndView("right");
 
         UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
         if (userSettings.isFinalVersionNotificationEnabled() && versionService.isNewFinalVersionAvailable()) {
@@ -68,15 +73,4 @@ public class RightController extends ParameterizableViewController {
         return result;
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setVersionService(VersionService versionService) {
-        this.versionService = versionService;
-    }
 }

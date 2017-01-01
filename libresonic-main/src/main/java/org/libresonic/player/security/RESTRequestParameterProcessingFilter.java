@@ -27,13 +27,14 @@ import org.libresonic.player.controller.RESTController;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -56,10 +57,16 @@ public class RESTRequestParameterProcessingFilter implements Filter {
     private static final Logger LOG = Logger.getLogger(RESTRequestParameterProcessingFilter.class);
 
     private final JAXBWriter jaxbWriter = new JAXBWriter();
-    private ProviderManager authenticationManager;
-    private SettingsService settingsService;
+    private AuthenticationManager authenticationManager;
     private SecurityService securityService;
     private LoginFailureLogger loginFailureLogger;
+
+    private static RequestMatcher requiresAuthenticationRequestMatcher = new RegexRequestMatcher("/rest/.+\\.view\\??.*",null);
+
+    protected boolean requiresAuthentication(HttpServletRequest request,
+                                             HttpServletResponse response) {
+        return requiresAuthenticationRequestMatcher.matches(request);
+    }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         if (!(request instanceof HttpServletRequest)) {
@@ -71,6 +78,13 @@ public class RESTRequestParameterProcessingFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        if (!requiresAuthentication(httpRequest, httpResponse)) {
+            chain.doFilter(request, response);
+
+            return;
+        }
+
 
         String username = StringUtils.trimToNull(httpRequest.getParameter("u"));
         String password = decrypt(StringUtils.trimToNull(httpRequest.getParameter("p")));
@@ -185,17 +199,19 @@ public class RESTRequestParameterProcessingFilter implements Filter {
     public void destroy() {
     }
 
-    public void setAuthenticationManager(ProviderManager authenticationManager) {
+
+    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
+    public SecurityService getSecurityService() {
+        return securityService;
     }
 
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
+
 
     public void setLoginFailureLogger(LoginFailureLogger loginFailureLogger) {
         this.loginFailureLogger = loginFailureLogger;

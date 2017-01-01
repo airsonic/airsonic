@@ -30,10 +30,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
@@ -65,20 +68,32 @@ import org.libresonic.player.util.Util;
  *
  * @author Sindre Mehus
  */
-public class StreamController implements Controller {
+@Controller
+@RequestMapping("/stream/**")
+public class StreamController  {
 
     private static final Logger LOG = Logger.getLogger(StreamController.class);
 
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     private AudioScrobblerService audioScrobblerService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SearchService searchService;
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TransferStatus status = null;
@@ -410,39 +425,4 @@ public class StreamController implements Controller {
         out.flush();
     }
 
-    public void setStatusService(StatusService statusService) {
-        this.statusService = statusService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setTranscodingService(TranscodingService transcodingService) {
-        this.transcodingService = transcodingService;
-    }
-
-    public void setAudioScrobblerService(AudioScrobblerService audioScrobblerService) {
-        this.audioScrobblerService = audioScrobblerService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
-    }
 }

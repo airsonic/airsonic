@@ -20,6 +20,7 @@
 package org.libresonic.player.security;
 
 import org.libresonic.player.Logger;
+import org.springframework.stereotype.Component;
 
 /**
  * Logs login failures. Can be used by tools like fail2ban for blocking IP addresses.
@@ -27,6 +28,7 @@ import org.libresonic.player.Logger;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Component
 public class LoginFailureLogger {
 
     private static final Logger LOG = Logger.getLogger(LoginFailureLogger.class);

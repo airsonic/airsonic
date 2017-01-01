@@ -2,7 +2,6 @@ package org.libresonic.player.controller;
 
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.User;
-import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
@@ -43,7 +42,7 @@ public class LoginController {
         if (username != null && password != null) {
             username = StringUtil.urlEncode(username);
             password = StringUtil.urlEncode(password);
-            return new ModelAndView(new RedirectView("/j_spring_security_check?"+
+            return new ModelAndView(new RedirectView("/login?"+
                     UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY+"=" + username +
                     "&"+UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY+"=" + password
             ));

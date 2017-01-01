@@ -29,36 +29,33 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Controller for the top frame.
- *
- * @author Sindre Mehus
- */
 @Controller
-@RequestMapping("/top")
-public class TopController {
+@RequestMapping("/gettingStarted")
+public class GettingStartedController {
 
     @Autowired
     private SettingsService settingsService;
-    @Autowired
-    private SecurityService securityService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
-        Map<String, Object> map = new HashMap<>();
+    public ModelAndView gettingStarted(HttpServletRequest request) {
+        ControllerUtils.updatePortAndContextPath(request,settingsService);
 
-        User user = securityService.getCurrentUser(request);
-        UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
+        if (request.getParameter("hide") != null) {
+            settingsService.setGettingStartedEnabled(false);
+            settingsService.save();
+            return new ModelAndView(new RedirectView("home.view"));
+        }
 
-        map.put("user", user);
-        map.put("showSideBar", userSettings.isShowSideBar());
-        map.put("showAvatar", userSettings.getAvatarScheme() != AvatarScheme.NONE);
-        return new ModelAndView("top","model", map);
+        Map<String, Object> map = new HashMap<>();;
+        map.put("runningAsRoot", "root".equals(System.getProperty("user.name")));
+        return new ModelAndView("gettingStarted", "model", map);
     }
+
 }

@@ -32,6 +32,10 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
@@ -42,14 +46,18 @@ import org.libresonic.player.service.SecurityService;
 /**
  * @author Sindre Mehus
  */
-public class ImportPlaylistController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/importPlaylist")
+public class ImportPlaylistController {
 
     private static final long MAX_PLAYLIST_SIZE_MB = 5L;
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PlaylistService playlistService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -79,16 +87,8 @@ public class ImportPlaylistController extends ParameterizableViewController {
             map.put("error", e.getMessage());
         }
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("importPlaylist","model",map);
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
 }

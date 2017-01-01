@@ -19,35 +19,18 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.libresonic.player.domain.*;
+import org.libresonic.player.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.CoverArtScheme;
-import org.libresonic.player.domain.Genre;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.MediaScannerService;
-import org.libresonic.player.service.RatingService;
-import org.libresonic.player.service.SearchService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.*;
 
 import static org.springframework.web.bind.ServletRequestUtils.getIntParameter;
 import static org.springframework.web.bind.ServletRequestUtils.getStringParameter;
@@ -57,18 +40,27 @@ import static org.springframework.web.bind.ServletRequestUtils.getStringParamete
  *
  * @author Sindre Mehus
  */
-public class HomeController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/home")
+public class HomeController  {
 
     private static final int LIST_SIZE = 40;
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaScannerService mediaScannerService;
+    @Autowired
     private RatingService ratingService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SearchService searchService;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         User user = securityService.getCurrentUser(request);
         if (user.isAdminRole() && settingsService.isGettingStartedEnabled()) {
@@ -85,7 +77,7 @@ public class HomeController extends ParameterizableViewController {
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(user.getUsername(),
                                                                                 selectedMusicFolder == null ? null : selectedMusicFolder.getId());
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         List<Album> albums = Collections.emptyList();
         switch (listType) {
             case HIGHEST:
@@ -142,13 +134,11 @@ public class HomeController extends ParameterizableViewController {
         map.put("musicFolder", selectedMusicFolder);
         map.put("listReloadDelay", userSettings.getListReloadDelay());
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("home","model",map);
     }
 
     private List<Album> getHighestRated(int offset, int count, List<MusicFolder> musicFolders) {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile mediaFile : ratingService.getHighestRatedAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(mediaFile);
             album.setRating((int) Math.round(ratingService.getAverageRating(mediaFile) * 10.0D));
@@ -158,7 +148,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getMostFrequent(int offset, int count, List<MusicFolder> musicFolders) {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile mediaFile : mediaFileService.getMostFrequentlyPlayedAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(mediaFile);
             album.setPlayCount(mediaFile.getPlayCount());
@@ -168,7 +158,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getMostRecent(int offset, int count, List<MusicFolder> musicFolders) {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile mediaFile : mediaFileService.getMostRecentlyPlayedAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(mediaFile);
             album.setLastPlayed(mediaFile.getLastPlayed());
@@ -178,7 +168,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getNewest(int offset, int count, List<MusicFolder> musicFolders) throws IOException {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getNewestAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(file);
             Date created = file.getCreated();
@@ -192,7 +182,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getStarred(int offset, int count, String username, List<MusicFolder> musicFolders) throws IOException {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getStarredAlbums(offset, count, username, musicFolders)) {
             result.add(createAlbum(file));
         }
@@ -200,7 +190,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getRandom(int count, List<MusicFolder> musicFolders) throws IOException {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile file : searchService.getRandomAlbums(count, musicFolders)) {
             result.add(createAlbum(file));
         }
@@ -208,7 +198,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getAlphabetical(int offset, int count, boolean byArtist, List<MusicFolder> musicFolders) throws IOException {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getAlphabeticalAlbums(offset, count, byArtist, musicFolders)) {
             result.add(createAlbum(file));
         }
@@ -216,7 +206,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getByYear(int offset, int count, int fromYear, int toYear, List<MusicFolder> musicFolders) {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getAlbumsByYear(offset, count, fromYear, toYear, musicFolders)) {
             Album album = createAlbum(file);
             album.setYear(file.getYear());
@@ -226,7 +216,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Integer> createDecades() {
-        List<Integer> result = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>();
         int decade = Calendar.getInstance().get(Calendar.YEAR) / 10;
         for (int i = 0; i < 10; i++) {
             result.add((decade - i) * 10);
@@ -235,7 +225,7 @@ public class HomeController extends ParameterizableViewController {
     }
 
     private List<Album> getByGenre(int offset, int count, String genre, List<MusicFolder> musicFolders) {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getAlbumsByGenre(offset, count, genre, musicFolders)) {
             result.add(createAlbum(file));
         }
@@ -250,30 +240,6 @@ public class HomeController extends ParameterizableViewController {
         album.setAlbumTitle(file.getAlbumName());
         album.setCoverArtPath(file.getCoverArtPath());
         return album;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setMediaScannerService(MediaScannerService mediaScannerService) {
-        this.mediaScannerService = mediaScannerService;
-    }
-
-    public void setRatingService(RatingService ratingService) {
-        this.ratingService = ratingService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
     }
 
     /**

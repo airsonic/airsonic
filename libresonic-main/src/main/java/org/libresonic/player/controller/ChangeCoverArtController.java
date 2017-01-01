@@ -19,30 +19,34 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.domain.MediaFile;
+import org.libresonic.player.service.MediaFileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.service.MediaFileService;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controller for changing cover art.
  *
  * @author Sindre Mehus
  */
-public class ChangeCoverArtController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/changeCoverArt")
+public class ChangeCoverArtController  {
 
+    @Autowired
     private MediaFileService mediaFileService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
@@ -57,18 +61,13 @@ public class ChangeCoverArtController extends ParameterizableViewController {
             album = dir.getAlbumName();
         }
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("artist", artist);
         map.put("album", album);
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
 
-        return result;
+        return new ModelAndView("changeCoverArt","model",map);
     }
 
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 }

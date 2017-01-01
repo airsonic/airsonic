@@ -37,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Controller for the page used to administrate the set of music folders.
@@ -96,11 +97,7 @@ public class MusicFolderSettingsController {
     }
 
     private List<MusicFolderSettingsCommand.MusicFolderInfo> wrap(List<MusicFolder> musicFolders) {
-        ArrayList<MusicFolderSettingsCommand.MusicFolderInfo> result = new ArrayList<MusicFolderSettingsCommand.MusicFolderInfo>();
-        for (MusicFolder musicFolder : musicFolders) {
-            result.add(new MusicFolderSettingsCommand.MusicFolderInfo(musicFolder));
-        }
-        return result;
+        return musicFolders.stream().map(MusicFolderSettingsCommand.MusicFolderInfo::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @RequestMapping(method = RequestMethod.POST)

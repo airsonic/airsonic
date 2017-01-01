@@ -19,35 +19,41 @@
  */
 package org.libresonic.player.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.metadata.JaudiotaggerParser;
 import org.libresonic.player.service.metadata.MetaDataParser;
 import org.libresonic.player.service.metadata.MetaDataParserFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for the page used to edit MP3 tags.
  *
  * @author Sindre Mehus
  */
-public class EditTagsController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/editTags")
+public class EditTagsController  {
 
+    @Autowired
     private MetaDataParserFactory metaDataParserFactory;
+    @Autowired
     private MediaFileService mediaFileService;
 
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
@@ -70,9 +76,7 @@ public class EditTagsController extends ParameterizableViewController {
         map.put("id", id);
         map.put("songs", songs);
 
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("editTags","model",map);
     }
 
     private Song createSong(MediaFile file, int index) {
@@ -92,13 +96,6 @@ public class EditTagsController extends ParameterizableViewController {
         return song;
     }
 
-    public void setMetaDataParserFactory(MetaDataParserFactory metaDataParserFactory) {
-        this.metaDataParserFactory = metaDataParserFactory;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 
     /**
      * Contains information about a single song.

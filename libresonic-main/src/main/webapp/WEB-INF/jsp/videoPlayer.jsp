@@ -64,7 +64,7 @@
     <script type="text/javascript">
         var CastPlayer = new CastPlayer();
     </script>
-</c:if>
+
 
 <h1 style="padding-top:1em;padding-bottom:0.5em;">
     <img id="starImage" src="<spring:theme code="${not empty model.video.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"

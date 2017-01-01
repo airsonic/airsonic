@@ -20,21 +20,19 @@
 package org.libresonic.player.controller;
 
 import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.CoverArtScheme;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,17 +43,24 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
-public class StarredController extends ParameterizableViewController {
+@Controller
+@RequestMapping("/starred")
+public class StarredController {
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaFileService mediaFileService;
 
-    @Override
+    @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         User user = securityService.getCurrentUser(request);
         String username = user.getUsername();
@@ -69,8 +74,8 @@ public class StarredController extends ParameterizableViewController {
         mediaFileService.populateStarredDate(albums, username);
         mediaFileService.populateStarredDate(files, username);
 
-        List<MediaFile> songs = new ArrayList<MediaFile>();
-        List<MediaFile> videos = new ArrayList<MediaFile>();
+        List<MediaFile> songs = new ArrayList<>();
+        List<MediaFile> videos = new ArrayList<>();
         for (MediaFile file : files) {
             (file.isVideo() ? videos : songs).add(file);
         }
@@ -83,28 +88,7 @@ public class StarredController extends ParameterizableViewController {
         map.put("albums", albums);
         map.put("songs", songs);
         map.put("videos", videos);
-        ModelAndView result = super.handleRequestInternal(request, response);
-        result.addObject("model", map);
-        return result;
+        return new ModelAndView("starred","model",map);
     }
 
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setMediaFileDao(MediaFileDao mediaFileDao) {
-        this.mediaFileDao = mediaFileDao;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
 }

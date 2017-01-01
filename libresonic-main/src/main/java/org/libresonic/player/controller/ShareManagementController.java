@@ -23,39 +23,42 @@ import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PlayQueue;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.Share;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.ShareService;
+import org.libresonic.player.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller for sharing music on Twitter, Facebook etc.
  *
  * @author Sindre Mehus
  */
-public class ShareManagementController extends MultiActionController {
+@Controller
+@RequestMapping("/createShare")
+public class ShareManagementController  {
 
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private ShareService shareService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private SecurityService securityService;
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView createShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         List<MediaFile> files = getMediaFiles(request);
@@ -94,7 +97,7 @@ public class ShareManagementController extends MultiActionController {
         String playerId = request.getParameter("player");
         Integer playlistId = ServletRequestUtils.getIntParameter(request, "playlist");
 
-        List<MediaFile> result = new ArrayList<MediaFile>();
+        List<MediaFile> result = new ArrayList<>();
 
         if (id != null) {
             MediaFile album = mediaFileService.getMediaFile(id);
@@ -121,27 +124,4 @@ public class ShareManagementController extends MultiActionController {
         return result;
     }
 
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setShareService(ShareService shareService) {
-        this.shareService = shareService;
-    }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setPlaylistService(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
 }

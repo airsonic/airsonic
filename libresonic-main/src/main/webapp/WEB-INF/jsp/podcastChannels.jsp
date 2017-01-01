@@ -99,7 +99,7 @@
 </tr></table>
 
 <c:if test="${model.user.podcastRole}">
-    <form method="post" action="podcastReceiverAdmin.view?">
+    <form:form method="post" action="podcastReceiverAdmin.view?">
         <table>
             <tr>
                 <td><fmt:message key="podcastreceiver.subscribe"/></td>
@@ -107,7 +107,7 @@
                 <td><input type="submit" value="<fmt:message key="common.ok"/>"/></td>
             </tr>
         </table>
-    </form>
+    </form:form>
 </c:if>
 
 </body>

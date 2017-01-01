@@ -12,7 +12,9 @@
 </head>
 <body class="mainframe bgcolor1" onload="document.getElementById('j_username').focus()">
 
-<form action="<c:url value="/j_spring_security_check"/>" method="POST">
+<form action="/login" method="POST">
+
+    <sec:csrfInput />
     <div class="bgcolor2 shadow" align="center" style="padding:20px 50px 20px 50px; margin-top:100px;margin-left:50px;margin-right:50px">
 
         <div style="margin-bottom:1em;max-width:50em;text-align:left;"><sub:wiki text="${model.loginMessage}"/></div>

@@ -22,9 +22,12 @@ package org.libresonic.player.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import org.libresonic.player.domain.Avatar;
@@ -37,8 +40,11 @@ import org.libresonic.player.service.SettingsService;
  *
  * @author Sindre Mehus
  */
-public class AvatarController implements Controller, LastModified {
+@Controller
+@RequestMapping("/avatar")
+public class AvatarController implements LastModified {
 
+    @Autowired
     private SettingsService settingsService;
 
     public long getLastModified(HttpServletRequest request) {
@@ -54,6 +60,7 @@ public class AvatarController implements Controller, LastModified {
         return result;
     }
 
+    @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Avatar avatar = getAvatar(request);
 
@@ -87,7 +94,4 @@ public class AvatarController implements Controller, LastModified {
         return settingsService.getSystemAvatar(userSettings.getSystemAvatarId());
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 }
