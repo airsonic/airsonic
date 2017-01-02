@@ -676,7 +676,6 @@ public class MediaFileDao extends AbstractDao {
         for (int id = minId; id <= maxId; id += batchSize) {
             update("delete from media_file where id between ? and ? and not present", id, id + batchSize);
         }
-        update("checkpoint");
     }
 
     private static class MediaFileMapper implements RowMapper<MediaFile> {
