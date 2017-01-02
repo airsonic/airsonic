@@ -1,5 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1" isErrorPage="true" %>
-<%@ page import="java.io.PrintWriter, java.io.StringWriter"%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" isErrorPage="true" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 
 <html><head>
     <!--[if lt IE 7.]>
@@ -22,8 +24,6 @@
 </p>
 
 <%
-    StringWriter sw = new StringWriter();
-    exception.printStackTrace(new PrintWriter(sw));
 
     long totalMemory = Runtime.getRuntime().totalMemory();
     long freeMemory = Runtime.getRuntime().freeMemory();
@@ -32,9 +32,7 @@
 
 <table class="ruleTable indent">
     <tr><td class="ruleTableHeader">Exception</td>
-        <td class="ruleTableCell"><%=exception.getClass().getName()%></td></tr>
-    <tr><td class="ruleTableHeader">Message</td>
-        <td class="ruleTableCell"><%=exception.getMessage()%></td></tr>
+        <td class="ruleTableCell"><c:out value="${exception}" /></td></tr>
     <tr><td class="ruleTableHeader">Java version</td>
         <td class="ruleTableCell"><%=System.getProperty("java.vendor") + ' ' + System.getProperty("java.version")%></td></tr>
     <tr><td class="ruleTableHeader">Operating system</td>
@@ -43,8 +41,16 @@
         <td class="ruleTableCell"><%=application.getServerInfo()%></td></tr>
     <tr><td class="ruleTableHeader">Memory</td>
         <td class="ruleTableCell">Used <%=usedMemory/1024L/1024L%> of <%=totalMemory/1024L/1024L%> MB</td></tr>
-    <tr><td class="ruleTableHeader" style="vertical-align:top;">Stack trace</td>
-        <td class="ruleTableCell" style="white-space:pre"><%=sw.getBuffer()%></td></tr>
+    <c:if test="${not empty trace}">
+        <tr>
+            <td class="ruleTableHeader" style="vertical-align:top;">Stack trace</td>
+            <td class="ruleTableCell" style="white-space:pre">
+                <pre>
+                        ${fn:escapeXml(trace)}
+                </pre>
+            </td>
+        </tr>
+    </c:if>
 </table>
 
 </body>

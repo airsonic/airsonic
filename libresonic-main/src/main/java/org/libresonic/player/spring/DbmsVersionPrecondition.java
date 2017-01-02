@@ -1,62 +1,29 @@
 package org.libresonic.player.spring;
 
-import liquibase.changelog.ChangeSet;
-import liquibase.changelog.DatabaseChangeLog;
 import liquibase.database.Database;
-import liquibase.exception.PreconditionErrorException;
-import liquibase.exception.PreconditionFailedException;
-import liquibase.exception.ValidationErrors;
-import liquibase.exception.Warnings;
-import liquibase.precondition.Precondition;
-import liquibase.serializer.AbstractLiquibaseSerializable;
+import liquibase.exception.CustomPreconditionErrorException;
+import liquibase.exception.CustomPreconditionFailedException;
+import liquibase.exception.DatabaseException;
+import liquibase.precondition.CustomPrecondition;
 
-public class DbmsVersionPrecondition extends AbstractLiquibaseSerializable implements Precondition {
+public class DbmsVersionPrecondition implements CustomPrecondition {
     private Integer major;
     private Integer minor;
 
     @Override
-    public String getName() {
-        return "dbmsVersion";
-    }
-
-    @Override
-    public Warnings warn(Database database) {
-        return new Warnings();
-    }
-
-    @Override
-    public ValidationErrors validate(Database database) {
-        return new ValidationErrors();
-    }
-
-    @Override
-    public void check(
-            Database database, DatabaseChangeLog changeLog, ChangeSet changeSet
-    ) throws PreconditionFailedException, PreconditionErrorException {
+    public void check(Database database) throws CustomPreconditionFailedException, CustomPreconditionErrorException {
         try {
             int dbMajor = database.getDatabaseMajorVersion();
             int dbMinor = database.getDatabaseMinorVersion();
             if(major != null && !major.equals(dbMajor)) {
-                throw new PreconditionFailedException("DBMS Major Version Precondition failed: expected " + major + ", got " + dbMajor, changeLog, this);
+                throw new CustomPreconditionFailedException("DBMS Major Version Precondition failed: expected " + major + ", got " + dbMajor);
             }
             if(minor != null && !minor.equals(dbMinor)) {
-                throw new PreconditionFailedException("DBMS Minor Version Precondition failed: expected " + minor + ", got " + dbMinor, changeLog, this);
+                throw new CustomPreconditionFailedException("DBMS Minor Version Precondition failed: expected " + minor + ", got " + dbMinor);
             }
-        } catch (PreconditionFailedException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new PreconditionErrorException(e, changeLog, this);
+        } catch (DatabaseException e) {
+            throw new CustomPreconditionErrorException(e.getMessage());
         }
-    }
-
-    @Override
-    public String getSerializedObjectName() {
-        return getName();
-    }
-
-    @Override
-    public String getSerializedObjectNamespace() {
-        return GENERIC_CHANGELOG_EXTENSION_NAMESPACE;
     }
 
     public Integer getMajor() {
@@ -74,4 +41,5 @@ public class DbmsVersionPrecondition extends AbstractLiquibaseSerializable imple
     public void setMinor(Integer minor) {
         this.minor = minor;
     }
+
 }

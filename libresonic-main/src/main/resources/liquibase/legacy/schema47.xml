@@ -238,7 +238,7 @@
             </customPrecondition>
             <sqlCheck expectedResult="0">
                 select count(*) from INFORMATION_SCHEMA.SYSTEM_INDEXINFO where
-                TABLE_NAME = 'album' and INDEX_NAME = 'idx_album_name';
+                lower(TABLE_NAME) = 'album' and lower(INDEX_NAME) = 'idx_album_name';
             </sqlCheck>
         </preConditions>
         <createIndex tableName="album" indexName="idx_album_name">

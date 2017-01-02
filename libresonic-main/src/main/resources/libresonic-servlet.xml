@@ -47,4 +47,6 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <bean class="org.libresonic.player.spring.LoggingExceptionResolver" />
+
 </beans>
