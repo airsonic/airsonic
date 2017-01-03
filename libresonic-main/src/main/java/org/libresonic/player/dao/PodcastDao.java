@@ -122,7 +122,7 @@ public class PodcastDao extends AbstractDao {
     public List<PodcastEpisode> getEpisodes(int channelId) {
         String sql = "select " + EPISODE_QUERY_COLUMNS + " from podcast_episode where channel_id = ? " +
                      "and status != ? order by publish_date desc";
-        return query(sql, episodeRowMapper, channelId, PodcastStatus.DELETED);
+        return query(sql, episodeRowMapper, channelId, PodcastStatus.DELETED.name());
     }
 
     /**
@@ -135,7 +135,7 @@ public class PodcastDao extends AbstractDao {
         String sql = "select " + EPISODE_QUERY_COLUMNS
                      + " from podcast_episode where status = ? and publish_date is not null " +
                      "order by publish_date desc limit ?";
-        return query(sql, episodeRowMapper, PodcastStatus.COMPLETED, count);
+        return query(sql, episodeRowMapper, PodcastStatus.COMPLETED.name(), count);
     }
 
     /**
