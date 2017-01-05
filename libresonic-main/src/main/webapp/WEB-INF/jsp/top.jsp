@@ -146,7 +146,7 @@
 
             <div class="detail">
                 <fmt:message key="top.logout" var="logout"><fmt:param value="${model.user.username}"/></fmt:message>
-                <a href="j_spring_security_logout" target="_top">${fn:escapeXml(logout)}</a>
+                <a href="/logout" target="_top">${fn:escapeXml(logout)}</a>
             </div>
         </td>
 

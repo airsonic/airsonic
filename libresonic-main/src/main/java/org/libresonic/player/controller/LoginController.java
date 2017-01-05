@@ -6,7 +6,10 @@ import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +25,6 @@ import java.util.Map;
  * Spring MVC Controller that serves the login page.
  */
 @Controller
-@RequestMapping("/login")
 public class LoginController {
 
 
@@ -33,7 +35,7 @@ public class LoginController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // Auto-login if "user" and "password" parameters are given.
@@ -60,6 +62,16 @@ public class LoginController {
         }
 
         return new ModelAndView("login", "model", map);
+    }
+
+    @RequestMapping(value="/logout", method = RequestMethod.GET)
+    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            LOG.info("User "+auth.getName()+" requested logout.");
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/login?logout";
     }
 
 }
