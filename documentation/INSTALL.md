@@ -14,7 +14,7 @@ This document is designed to explain how to install LibreSonic as a Tomcat modul
 In order to install and run Libresonic, you will need:
 
   * A JDK installation. 1.8.x series of OpenJDK or Oracle JDK 8+ should work.
-  * A running [Tomcat](http://tomcat.apache.org/) server. If you're unfamiliar with Tomcat, there are many [guides](https://www.linode.com/docs/websites/frameworks/apache-tomcat-on-ubuntu-16-04) on it.
+  * A running [Tomcat](http://tomcat.apache.org/) server. If you're unfamiliar with Tomcat, there are many [guides](https://www.linode.com/docs/websites/frameworks/apache-tomcat-on-ubuntu-16-04) on it. For debian/ubuntu like distributions, you may need to ensure /etc/default/tomcat8 has the correct JAVA_HOME set.
 
 
 ### Download Libresonic
