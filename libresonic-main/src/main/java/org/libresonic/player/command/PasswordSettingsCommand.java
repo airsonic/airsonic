@@ -31,7 +31,6 @@ public class PasswordSettingsCommand {
     private String password;
     private String confirmPassword;
     private boolean ldapAuthenticated;
-    private boolean toast;
 
     public String getUsername() {
         return username;
@@ -65,11 +64,4 @@ public class PasswordSettingsCommand {
         this.ldapAuthenticated = ldapAuthenticated;
     }
 
-    public boolean isToast() {
-        return toast;
-    }
-
-    public void setToast(boolean toast) {
-        this.toast = toast;
-    }
 }

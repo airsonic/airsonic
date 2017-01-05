@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  */
 @org.springframework.stereotype.Controller
 @RequestMapping("/passwordSettings")
-@SessionAttributes( value="command", types={PasswordSettingsCommand.class} )
+//@SessionAttributes( value="command", types={PasswordSettingsCommand.class} )
 public class PasswordSettingsController {
 
     @Autowired
@@ -56,14 +56,6 @@ public class PasswordSettingsController {
         binder.addValidators(passwordSettingsValidator);
     }
 
-  /*  @ModelAttribute
-    protected Object formBackingObject(HttpServletRequest request) throws Exception {
-        PasswordSettingsCommand command = new PasswordSettingsCommand();
-        User user = securityService.getCurrentUser(request);
-        command.setUsername(user.getUsername());
-        command.setLdapAuthenticated(user.isLdapAuthenticated());
-        return command;
-    }*/
 
     @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView displayForm(HttpServletRequest request) throws Exception {
@@ -75,14 +67,17 @@ public class PasswordSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") @Validated PasswordSettingsCommand command) throws Exception {
-        User user = securityService.getUserByName(command.getUsername());
-        user.setPassword(command.getPassword());
-        securityService.updateUser(user);
+    protected String doSubmitAction(HttpServletRequest request,@ModelAttribute("command") @Validated PasswordSettingsCommand command,BindingResult bindingResult) throws Exception {
+        if (!bindingResult.hasErrors()) {
+            User user = securityService.getUserByName(command.getUsername());
+            user.setPassword(command.getPassword());
+            securityService.updateUser(user);
 
-        command.setPassword(null);
-        command.setConfirmPassword(null);
-        command.setToast(true);
+            command.setPassword(null);
+            command.setConfirmPassword(null);
+            request.setAttribute("settings_toast",true);
+
+        }
         return "passwordSettings";
     }
 
