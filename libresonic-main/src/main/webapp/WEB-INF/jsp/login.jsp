@@ -12,7 +12,7 @@
 </head>
 <body class="mainframe bgcolor1" onload="document.getElementById('j_username').focus()">
 
-<form action="/login" method="POST">
+<form action="<c:url value="/login"/>" method="POST">
 
     <sec:csrfInput />
     <div class="bgcolor2 shadow" align="center" style="padding:20px 50px 20px 50px; margin-top:100px;margin-left:50px;margin-right:50px">

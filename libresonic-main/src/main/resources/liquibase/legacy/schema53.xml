@@ -39,7 +39,7 @@
             </customPrecondition>
             <sqlCheck expectedResult="0">
                 select count(*) from INFORMATION_SCHEMA.SYSTEM_INDEXINFO where
-                TABLE_NAME = 'podcast_episode' and INDEX_NAME = 'idx_podcast_episode_url';
+                lower(TABLE_NAME) = 'podcast_episode' and lower(INDEX_NAME) = 'idx_podcast_episode_url';
             </sqlCheck>
         </preConditions>
         <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
