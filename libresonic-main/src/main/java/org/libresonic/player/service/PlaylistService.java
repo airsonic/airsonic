@@ -19,31 +19,29 @@
  */
 package org.libresonic.player.service;
 
+import chameleon.playlist.SpecificPlaylist;
+import chameleon.playlist.SpecificPlaylistFactory;
+import chameleon.playlist.SpecificPlaylistProvider;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.dao.PlaylistDao;
 import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Playlist;
 import org.libresonic.player.domain.User;
+import org.libresonic.player.service.playlist.PlaylistExportHandler;
+import org.libresonic.player.service.playlist.PlaylistImportHandler;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
-import org.libresonic.player.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Provides services for loading and saving playlists to and from persistent storage.
@@ -54,11 +52,34 @@ import java.util.regex.Pattern;
 public class PlaylistService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlaylistService.class);
-    private MediaFileService mediaFileService;
     private MediaFileDao mediaFileDao;
     private PlaylistDao playlistDao;
     private SecurityService securityService;
     private SettingsService settingsService;
+    private List<PlaylistExportHandler> exportHandlers;
+    private List<PlaylistImportHandler> importHandlers;
+
+    public PlaylistService(
+            MediaFileDao mediaFileDao,
+            PlaylistDao playlistDao,
+            SecurityService securityService,
+            SettingsService settingsService,
+            List<PlaylistExportHandler> exportHandlers,
+            List<PlaylistImportHandler> importHandlers
+    ) {
+        Assert.notNull(mediaFileDao);
+        Assert.notNull(playlistDao);
+        Assert.notNull(securityService);
+        Assert.notNull(settingsService);
+        Assert.notNull(exportHandlers);
+        Assert.notNull(importHandlers);
+        this.mediaFileDao = mediaFileDao;
+        this.playlistDao = playlistDao;
+        this.securityService = securityService;
+        this.settingsService = settingsService;
+        this.exportHandlers = exportHandlers;
+        this.importHandlers = importHandlers;
+    }
 
     public List<Playlist> getAllPlaylists() {
         return sort(playlistDao.getAllPlaylists());
@@ -147,14 +168,20 @@ public class PlaylistService {
         playlistDao.updatePlaylist(playlist);
     }
 
-    public Playlist importPlaylist(String username, String playlistName, String fileName, String format,
-            InputStream inputStream, Playlist existingPlaylist) throws Exception {
-        PlaylistFormat playlistFormat = getPlaylistFormat(format);
-        if (playlistFormat == null) {
-            throw new Exception("Unsupported playlist format: " + format);
-        }
+    public Playlist importPlaylist(
+            String username, String playlistName, String fileName, InputStream inputStream, Playlist existingPlaylist
+    ) throws Exception {
 
-        Pair<List<MediaFile>, List<String>> result = parseFiles(IOUtils.toByteArray(inputStream), playlistFormat);
+        // TODO: handle other encodings
+        final SpecificPlaylist inputSpecificPlaylist = SpecificPlaylistFactory.getInstance().readFrom(inputStream, "UTF-8");
+        if (inputSpecificPlaylist == null) {
+            throw new Exception("Unsupported playlist " + fileName);
+        }
+        PlaylistImportHandler importHandler = getImportHandler(inputSpecificPlaylist);
+        LOG.debug("Using "+importHandler.getClass().getSimpleName()+" playlist import handler");
+
+        Pair<List<MediaFile>, List<String>> result = importHandler.handle(inputSpecificPlaylist);
+
         if (result.getFirst().isEmpty() && !result.getSecond().isEmpty()) {
             throw new Exception("No songs in the playlist were found.");
         }
@@ -183,28 +210,35 @@ public class PlaylistService {
         return playlist;
     }
 
-    private Pair<List<MediaFile>, List<String>> parseFiles(byte[] playlist, PlaylistFormat playlistFormat) throws IOException {
-        Pair<List<MediaFile>, List<String>> result = null;
-
-        // Try with multiple encodings; use the one that finds the most files.
-        String[] encodings = {StringUtil.ENCODING_LATIN, StringUtil.ENCODING_UTF8, Charset.defaultCharset().name()};
-        for (String encoding : encodings) {
-            Pair<List<MediaFile>, List<String>> files = parseFilesWithEncoding(playlist, playlistFormat, encoding);
-            if (result == null || result.getFirst().size() < files.getFirst().size()) {
-                result = files;
-            }
-        }
-        return result;
-    }
-
-    private Pair<List<MediaFile>, List<String>> parseFilesWithEncoding(byte[] playlist, PlaylistFormat playlistFormat, String encoding) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(playlist), encoding));
-        return playlistFormat.parse(reader, mediaFileService);
+    public String getExportPlaylistExtension() {
+        String format = settingsService.getPlaylistExportFormat();
+        SpecificPlaylistProvider provider = SpecificPlaylistFactory.getInstance().findProviderById(format);
+        return provider.getContentTypes()[0].getExtensions()[0];
     }
 
     public void exportPlaylist(int id, OutputStream out) throws Exception {
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(out, StringUtil.ENCODING_UTF8));
-        new M3UFormat().format(getFilesInPlaylist(id, true), writer);
+        String format = settingsService.getPlaylistExportFormat();
+        SpecificPlaylistProvider provider = SpecificPlaylistFactory.getInstance().findProviderById(format);
+        PlaylistExportHandler handler = getExportHandler(provider);
+        SpecificPlaylist specificPlaylist = handler.handle(id, provider);
+        specificPlaylist.writeTo(out, StringUtil.ENCODING_UTF8);
+    }
+
+    private PlaylistImportHandler getImportHandler(SpecificPlaylist playlist) {
+        return importHandlers.stream()
+                             .filter(handler -> handler.canHandle(playlist.getClass()))
+                             .findFirst()
+                             .orElseThrow(() -> new RuntimeException("No import handler for " + playlist.getClass()
+                                                                                                        .getName()));
+
+    }
+
+    private PlaylistExportHandler getExportHandler(SpecificPlaylistProvider provider) {
+        return exportHandlers.stream()
+                             .filter(handler -> handler.canHandle(provider.getClass()))
+                             .findFirst()
+                             .orElseThrow(() -> new RuntimeException("No export handler for " + provider.getClass()
+                                                                                                        .getName()));
     }
 
     public void importPlaylists() {
@@ -238,10 +272,6 @@ public class PlaylistService {
     }
 
     private void importPlaylistIfUpdated(File file, List<Playlist> allPlaylists) throws Exception {
-        String format = FilenameUtils.getExtension(file.getPath());
-        if (getPlaylistFormat(format) == null) {
-            return;
-        }
 
         String fileName = file.getName();
         Playlist existingPlaylist = null;
@@ -256,238 +286,10 @@ public class PlaylistService {
         }
         InputStream in = new FileInputStream(file);
         try {
-            importPlaylist(User.USERNAME_ADMIN, FilenameUtils.getBaseName(fileName), fileName, format, in, existingPlaylist);
+            importPlaylist(User.USERNAME_ADMIN, FilenameUtils.getBaseName(fileName), fileName, in, existingPlaylist);
             LOG.info("Auto-imported playlist " + file);
         } finally {
             IOUtils.closeQuietly(in);
-        }
-    }
-
-    private PlaylistFormat getPlaylistFormat(String format) {
-        if (format == null) {
-            return null;
-        }
-        if (format.equalsIgnoreCase("m3u") || format.equalsIgnoreCase("m3u8")) {
-            return new M3UFormat();
-        }
-        if (format.equalsIgnoreCase("pls")) {
-            return new PLSFormat();
-        }
-        if (format.equalsIgnoreCase("xspf")) {
-            return new XSPFFormat();
-        }
-        return null;
-    }
-
-    public void setPlaylistDao(PlaylistDao playlistDao) {
-        this.playlistDao = playlistDao;
-    }
-
-    public void setMediaFileDao(MediaFileDao mediaFileDao) {
-        this.mediaFileDao = mediaFileDao;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    /**
-     * Abstract superclass for playlist formats.
-     */
-    private abstract class PlaylistFormat {
-        public abstract Pair<List<MediaFile>, List<String>> parse(BufferedReader reader, MediaFileService mediaFileService) throws IOException;
-
-        public abstract void format(List<MediaFile> files, PrintWriter writer) throws IOException;
-
-
-        protected MediaFile getMediaFile(String path) {
-            try {
-                File file = new File(path);
-                if (!file.exists()) {
-                    return null;
-                }
-
-                file = normalizePath(file);
-                if (file == null) {
-                    return null;
-                }
-                MediaFile mediaFile = mediaFileService.getMediaFile(file);
-                if (mediaFile != null && mediaFile.exists()) {
-                    return mediaFile;
-                }
-            } catch (SecurityException x) {
-                // Ignored
-            } catch (IOException x) {
-                // Ignored
-            }
-            return null;
-        }
-
-        /**
-         * Paths in an external playlist may not have the same upper/lower case as in the (case sensitive) media_file table.
-         * This methods attempts to normalize the external path to match the one stored in the table.
-         */
-        private File normalizePath(File file) throws IOException {
-
-            // Only relevant for Windows where paths are case insensitive.
-            if (!Util.isWindows()) {
-                return file;
-            }
-
-            // Find the most specific music folder.
-            String canonicalPath = file.getCanonicalPath();
-            MusicFolder containingMusicFolder = null;
-            for (MusicFolder musicFolder : settingsService.getAllMusicFolders()) {
-                String musicFolderPath = musicFolder.getPath().getPath();
-                if (canonicalPath.toLowerCase().startsWith(musicFolderPath.toLowerCase())) {
-                    if (containingMusicFolder == null || containingMusicFolder.getPath().length() < musicFolderPath.length()) {
-                        containingMusicFolder = musicFolder;
-                    }
-                }
-            }
-
-            if (containingMusicFolder == null) {
-                return null;
-            }
-
-            return new File(containingMusicFolder.getPath().getPath() + canonicalPath.substring(containingMusicFolder.getPath().getPath().length()));
-            // TODO: Consider slashes.
-        }
-    }
-
-    private class M3UFormat extends PlaylistFormat {
-        public Pair<List<MediaFile>, List<String>> parse(BufferedReader reader, MediaFileService mediaFileService) throws IOException {
-            List<MediaFile> ok = new ArrayList<MediaFile>();
-            List<String> error = new ArrayList<String>();
-            String line = reader.readLine();
-            while (line != null) {
-                if (!line.startsWith("#")) {
-                    MediaFile file = getMediaFile(line);
-                    if (file != null) {
-                        ok.add(file);
-                    } else {
-                        error.add(line);
-                    }
-                }
-                line = reader.readLine();
-            }
-            return new Pair<List<MediaFile>, List<String>>(ok, error);
-        }
-
-        public void format(List<MediaFile> files, PrintWriter writer) throws IOException {
-            writer.println("#EXTM3U");
-            for (MediaFile file : files) {
-                writer.println(file.getPath());
-            }
-            if (writer.checkError()) {
-                throw new IOException("Error when writing playlist");
-            }
-        }
-    }
-
-    /**
-     * Implementation of PLS playlist format.
-     */
-    private class PLSFormat extends PlaylistFormat {
-        public Pair<List<MediaFile>, List<String>> parse(BufferedReader reader, MediaFileService mediaFileService) throws IOException {
-            List<MediaFile> ok = new ArrayList<MediaFile>();
-            List<String> error = new ArrayList<String>();
-
-            Pattern pattern = Pattern.compile("^File\\d+=(.*)$");
-            String line = reader.readLine();
-            while (line != null) {
-
-                Matcher matcher = pattern.matcher(line);
-                if (matcher.find()) {
-                    String path = matcher.group(1);
-                    MediaFile file = getMediaFile(path);
-                    if (file != null) {
-                        ok.add(file);
-                    } else {
-                        error.add(path);
-                    }
-                }
-                line = reader.readLine();
-            }
-            return new Pair<List<MediaFile>, List<String>>(ok, error);
-        }
-
-        public void format(List<MediaFile> files, PrintWriter writer) throws IOException {
-            writer.println("[playlist]");
-            int counter = 0;
-
-            for (MediaFile file : files) {
-                counter++;
-                writer.println("File" + counter + '=' + file.getPath());
-            }
-            writer.println("NumberOfEntries=" + counter);
-            writer.println("Version=2");
-
-            if (writer.checkError()) {
-                throw new IOException("Error when writing playlist.");
-            }
-        }
-    }
-
-    /**
-     * Implementation of XSPF (http://www.xspf.org/) playlist format.
-     */
-    private class XSPFFormat extends PlaylistFormat {
-        public Pair<List<MediaFile>, List<String>> parse(BufferedReader reader, MediaFileService mediaFileService) throws IOException {
-            List<MediaFile> ok = new ArrayList<MediaFile>();
-            List<String> error = new ArrayList<String>();
-
-            SAXBuilder builder = new SAXBuilder();
-            Document document;
-            try {
-                document = builder.build(reader);
-            } catch (JDOMException x) {
-                LOG.warn("Failed to parse XSPF playlist.", x);
-                throw new IOException("Failed to parse XSPF playlist.");
-            }
-
-            Element root = document.getRootElement();
-            Namespace ns = root.getNamespace();
-            Element trackList = root.getChild("trackList", ns);
-            List<?> tracks = trackList.getChildren("track", ns);
-
-            for (Object obj : tracks) {
-                Element track = (Element) obj;
-                String location = track.getChildText("location", ns);
-                if (location != null) {
-                    MediaFile file = getMediaFile(location);
-                    if (file != null) {
-                        ok.add(file);
-                    } else {
-                        error.add(location);
-                    }
-                }
-            }
-            return new Pair<List<MediaFile>, List<String>>(ok, error);
-        }
-
-        public void format(List<MediaFile> files, PrintWriter writer) throws IOException {
-            writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            writer.println("<playlist version=\"1\" xmlns=\"http://xspf.org/ns/0/\">");
-            writer.println("    <trackList>");
-
-            for (MediaFile file : files) {
-                writer.println("        <track><location>file://" + StringEscapeUtils.escapeXml(file.getPath()) + "</location></track>");
-            }
-            writer.println("    </trackList>");
-            writer.println("</playlist>");
-
-            if (writer.checkError()) {
-                throw new IOException("Error when writing playlist.");
-            }
         }
     }
 

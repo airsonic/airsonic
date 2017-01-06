@@ -129,13 +129,10 @@
         <property name="transcodingService" ref="transcodingService"/>
     </bean>
 
-    <bean id="playlistService" class="org.libresonic.player.service.PlaylistService">
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaFileDao" ref="mediaFileDao"/>
-        <property name="playlistDao" ref="playlistDao"/>
-    </bean>
+    <context:component-scan base-package="org.libresonic.player.service.playlist" />
+
+    <!--suppress SpringBeanConstructorArgInspection, AutowiredDependenciesInspection -->
+    <bean id="playlistService" class="org.libresonic.player.service.PlaylistService" autowire="constructor"/>
 
     <bean id="versionService" class="org.libresonic.player.service.VersionService" />
 

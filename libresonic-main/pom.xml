@@ -14,6 +14,7 @@
 
     <properties>
         <metrics.version>3.1.0</metrics.version>
+        <chameleon.version>1.2.0-RELEASE</chameleon.version>
     </properties>
 
     <dependencies>
@@ -40,6 +41,13 @@
             <version>${metrics.version}</version>
         </dependency>
         <!-- END Metrics -->
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.4.1</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
@@ -387,6 +395,26 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
             <version>3.3.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.muff1nman.chameleon</groupId>
+            <artifactId>core</artifactId>
+            <version>${chameleon.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.muff1nman.chameleon</groupId>
+            <artifactId>playlist-xspf</artifactId>
+            <version>${chameleon.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.muff1nman.chameleon</groupId>
+            <artifactId>playlist-all</artifactId>
+            <version>${chameleon.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

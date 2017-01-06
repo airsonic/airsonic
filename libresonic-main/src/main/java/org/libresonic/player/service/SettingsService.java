@@ -107,6 +107,7 @@ public class SettingsService {
     private static final String KEY_SMTP_USER = "SmtpUser";
     private static final String KEY_SMTP_PASSWORD = "SmtpPassword";
     private static final String KEY_SMTP_FROM = "SmtpFrom";
+    private static final String KEY_EXPORT_PLAYLIST_FORMAT = "PlaylistExportFormat";
 
     // Database Settings
     private static final String KEY_DATABASE_CONFIG_TYPE = "DatabaseConfigType";
@@ -174,6 +175,7 @@ public class SettingsService {
     private static final boolean DEFAULT_SONOS_ENABLED = false;
     private static final String DEFAULT_SONOS_SERVICE_NAME = "Libresonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
+    private static final String DEFAULT_EXPORT_PLAYLIST_FORMAT = "m3u";
 
     private static final String DEFAULT_SMTP_SERVER = null;
     private static final String DEFAULT_SMTP_ENCRYPTION = "None";
@@ -1362,5 +1364,9 @@ public class SettingsService {
         setDatabaseMysqlVarcharMaxlength(DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH);
         setDatabaseUsertableQuote(DEFAULT_DATABASE_USERTABLE_QUOTE);
         setDatabaseConfigType(DEFAULT_DATABASE_CONFIG_TYPE);
+    }
+
+    public String getPlaylistExportFormat() {
+        return getProperty(KEY_EXPORT_PLAYLIST_FORMAT, DEFAULT_EXPORT_PLAYLIST_FORMAT);
     }
 }
