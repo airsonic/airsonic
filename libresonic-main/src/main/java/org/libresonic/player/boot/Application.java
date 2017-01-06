@@ -11,6 +11,7 @@ import org.libresonic.player.filter.RequestEncodingFilter;
 import org.libresonic.player.filter.ResponseHeaderFilter;
 import org.libresonic.player.spring.AdditionalPropertySourceConfigurer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -19,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {JmxAutoConfiguration.class})
 @Configuration
 @ImportResource(value = {"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
@@ -149,14 +150,11 @@ public class Application extends SpringBootServletInitializer {
         // Customize the application or call application.sources(...) to add sources
         // Since our example is itself a @Configuration class (via @SpringBootApplication)
         // we actually don't need to override this method.
-        return application.sources(Application.class);
+        return application.sources(Application.class).web(true).initializers(new AdditionalPropertySourceConfigurer());
     }
 
     public static void main(String[] args) {
-        new Application().configure(new SpringApplicationBuilder(Application.class))
-                         .web(true)
-                         .initializers(new AdditionalPropertySourceConfigurer())
-                         .run(args);
+        new SpringApplicationBuilder(Application.class).run(args);
     }
 
 }
