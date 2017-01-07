@@ -19,22 +19,22 @@
  */
 package org.libresonic.player.controller;
 
+import org.libresonic.player.command.PasswordSettingsCommand;
+import org.libresonic.player.domain.User;
+import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.validator.PasswordSettingsValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
-import org.springframework.stereotype.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.*;
-import org.libresonic.player.service.*;
-import org.libresonic.player.command.*;
-import org.libresonic.player.domain.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Controller for the page used to change password.
@@ -43,7 +43,6 @@ import javax.servlet.http.*;
  */
 @org.springframework.stereotype.Controller
 @RequestMapping("/passwordSettings")
-//@SessionAttributes( value="command", types={PasswordSettingsCommand.class} )
 public class PasswordSettingsController {
 
     @Autowired
@@ -67,7 +66,7 @@ public class PasswordSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(HttpServletRequest request,@ModelAttribute("command") @Validated PasswordSettingsCommand command,BindingResult bindingResult) throws Exception {
+    protected String doSubmitAction(HttpServletRequest request,@ModelAttribute("command") @Validated PasswordSettingsCommand command,BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
         if (!bindingResult.hasErrors()) {
             User user = securityService.getUserByName(command.getUsername());
             user.setPassword(command.getPassword());
@@ -75,10 +74,12 @@ public class PasswordSettingsController {
 
             command.setPassword(null);
             command.setConfirmPassword(null);
-            request.setAttribute("settings_toast",true);
+            redirectAttributes.addFlashAttribute("settings_toast", true);
 
+        } else {
+            return "passwordSettings";
         }
-        return "passwordSettings";
+        return "redirect:passwordSettings.view";
     }
 
 }
