@@ -27,8 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -49,23 +51,24 @@ import org.libresonic.player.service.SettingsService;
  */
 @Controller
 @RequestMapping("/playlists")
-public class PlaylistsController extends ParameterizableViewController {
+public class PlaylistsController {
 
     @Autowired
     private SecurityService securityService;
+
     @Autowired
     private PlaylistService playlistService;
 
-    @Override
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.GET)
+    public String doGet(HttpServletRequest request, Model model) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
         User user = securityService.getCurrentUser(request);
         List<Playlist> playlists = playlistService.getReadablePlaylistsForUser(user.getUsername());
 
         map.put("playlists", playlists);
-        return new ModelAndView("playlists","model",map);
+        model.addAttribute("model", map);
+        return "playlists";
     }
-
 
 }
