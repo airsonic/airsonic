@@ -35,7 +35,7 @@ public class LoginController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(value = "/login", method = { RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // Auto-login if "user" and "password" parameters are given.
@@ -62,16 +62,6 @@ public class LoginController {
         }
 
         return new ModelAndView("login", "model", map);
-    }
-
-    @RequestMapping(value="/logout", method = RequestMethod.GET)
-    public String logoutPage (HttpServletRequest request, HttpServletResponse response) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null){
-            LOG.info("User "+auth.getName()+" requested logout.");
-            new SecurityContextLogoutHandler().logout(request, response, auth);
-        }
-        return "redirect:/login?logout";
     }
 
 }

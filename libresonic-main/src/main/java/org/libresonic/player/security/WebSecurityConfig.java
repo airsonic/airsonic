@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/flash/**", "/script/**", "/sonos/**", "/crossdomain.xml")
                     .permitAll()
                 .antMatchers("/personalSettings.view", "/passwordSettings.view",
-                        "/playerSettings.view", "/shareSettings.view")
+                        "/playerSettings.view", "/shareSettings.view","/passwordSettings.view")
                     .hasRole("SETTINGS")
                 .antMatchers("/generalSettings.view","/advancedSettings.view","/userSettings.view",
                         "/musicFolderSettings.view","/networkSettings.view")
@@ -86,6 +87,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .failureUrl("/login?error=1")
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
+            // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
+            .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout")
             .and().rememberMe().userDetailsService(securityService).key("libresonic");
 
     }
