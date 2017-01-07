@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("recover.view", "accessDenied.view",
                         "coverArt.view", "/hls/**", "/stream/**", "/ws/**",
                         "/share/**", "/style/**", "/icons/**",
-                        "/flash/**", "/script/**", "/sonos/**", "/crossdomain.xml")
+                        "/flash/**", "/script/**", "/sonos/**", "/crossdomain.xml", "/login")
                     .permitAll()
                 .antMatchers("/personalSettings.view", "/passwordSettings.view",
                         "/playerSettings.view", "/shareSettings.view","/passwordSettings.view")
@@ -88,7 +88,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .usernameParameter("j_username")
                     .passwordParameter("j_password")
             // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
-            .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout")
+            .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl("/login?logout")
             .and().rememberMe().userDetailsService(securityService).key("libresonic");
 
     }
