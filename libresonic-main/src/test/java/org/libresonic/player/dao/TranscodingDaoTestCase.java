@@ -1,22 +1,34 @@
 package org.libresonic.player.dao;
 
-import java.util.List;
-
+import org.junit.Before;
+import org.junit.Test;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.Transcoding;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test of {@link TranscodingDao}.
  *
  * @author Sindre Mehus
  */
-public class TranscodingDaoTestCase extends DaoTestCaseBase {
+public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
 
-    @Override
-    protected void setUp() throws Exception {
+    @Autowired
+    TranscodingDao transcodingDao;
+
+    @Autowired
+    PlayerDao playerDao;
+
+    @Before
+    public void setUp() throws Exception {
         getJdbcTemplate().execute("delete from transcoding2");
     }
 
+    @Test
     public void testCreateTranscoding() {
         Transcoding transcoding = new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false);
         transcodingDao.createTranscoding(transcoding);
@@ -25,6 +37,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBase {
         assertTranscodingEquals(transcoding, newTranscoding);
     }
 
+    @Test
     public void testUpdateTranscoding() {
         Transcoding transcoding = new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false);
         transcodingDao.createTranscoding(transcoding);
@@ -43,6 +56,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBase {
         assertTranscodingEquals(transcoding, newTranscoding);
     }
 
+    @Test
     public void testDeleteTranscoding() {
         assertEquals("Wrong number of transcodings.", 0, transcodingDao.getAllTranscodings().size());
 
@@ -59,6 +73,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong number of transcodings.", 0, transcodingDao.getAllTranscodings().size());
     }
 
+    @Test
     public void testPlayerTranscoding() {
         Player player = new Player();
         playerDao.createPlayer(player);
@@ -89,6 +104,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong number of transcodings.", 0, activeTranscodings.size());
     }
 
+    @Test
     public void testCascadingDeletePlayer() {
         Player player = new Player();
         playerDao.createPlayer(player);
@@ -105,6 +121,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong number of transcodings.", 0, activeTranscodings.size());
     }
 
+    @Test
     public void testCascadingDeleteTranscoding() {
         Player player = new Player();
         playerDao.createPlayer(player);

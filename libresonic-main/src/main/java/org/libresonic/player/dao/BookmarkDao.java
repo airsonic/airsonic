@@ -19,13 +19,13 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.domain.Bookmark;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.libresonic.player.domain.Bookmark;
 
 /**
  * Provides database services for media file bookmarks.
@@ -62,7 +62,8 @@ public class BookmarkDao extends AbstractDao {
     /**
      * Creates or updates a bookmark.  If created, the ID of the bookmark will be set by this method.
      */
-    public synchronized void createOrUpdateBookmark(Bookmark bookmark) {
+    @Transactional
+    public void createOrUpdateBookmark(Bookmark bookmark) {
         int n = update("update bookmark set position_millis=?, comment=?, changed=? where media_file_id=? and username=?",
                 bookmark.getPositionMillis(), bookmark.getComment(), bookmark.getChanged(), bookmark.getMediaFileId(), bookmark.getUsername());
 
@@ -78,7 +79,8 @@ public class BookmarkDao extends AbstractDao {
     /**
      * Deletes the bookmark for the given username and media file.
      */
-    public synchronized void deleteBookmark(String username, int mediaFileId) {
+    @Transactional
+    public void deleteBookmark(String username, int mediaFileId) {
         update("delete from bookmark where username=? and media_file_id=?", username, mediaFileId);
     }
 

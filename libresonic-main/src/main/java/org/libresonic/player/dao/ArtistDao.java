@@ -24,6 +24,7 @@ import org.libresonic.player.domain.Artist;
 import org.libresonic.player.domain.MusicFolder;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -91,7 +92,8 @@ public class ArtistDao extends AbstractDao {
      *
      * @param artist The artist to create/update.
      */
-    public synchronized void createOrUpdateArtist(Artist artist) {
+    @Transactional
+    public void createOrUpdateArtist(Artist artist) {
         String sql = "update artist set " +
                      "cover_art_path=?," +
                      "album_count=?," +

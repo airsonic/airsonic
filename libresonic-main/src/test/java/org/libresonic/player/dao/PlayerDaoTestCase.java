@@ -1,25 +1,34 @@
 package org.libresonic.player.dao;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.libresonic.player.domain.PlayQueue;
+import org.libresonic.player.domain.Player;
+import org.libresonic.player.domain.PlayerTechnology;
+import org.libresonic.player.domain.TranscodeScheme;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Date;
 import java.util.List;
 
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.PlayerTechnology;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.TranscodeScheme;
+import static org.junit.Assert.*;
 
 /**
  * Unit test of {@link PlayerDao}.
  *
  * @author Sindre Mehus
  */
-public class PlayerDaoTestCase extends DaoTestCaseBase {
+public class PlayerDaoTestCase extends DaoTestCaseBean2 {
 
-    @Override
-    protected void setUp() throws Exception {
+    @Autowired
+    PlayerDao playerDao;
+
+    @Before
+    public void setUp() throws Exception {
         getJdbcTemplate().execute("delete from player");
     }
 
+    @Test
     public void testCreatePlayer() {
         Player player = new Player();
         player.setName("name");
@@ -41,6 +50,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBase {
         assertPlayerEquals(player, newPlayer2);
     }
 
+    @Test
     public void testDefaultValues() {
         playerDao.createPlayer(new Player());
         Player player = playerDao.getAllPlayers().get(0);
@@ -50,6 +60,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBase {
         assertNull("Player client ID should be null by default.", player.getClientId());
     }
 
+    @Test
     public void testIdentity() {
         Player player = new Player();
 
@@ -76,6 +87,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong number of players.", 3, playerDao.getAllPlayers().size());
     }
 
+    @Test
     public void testPlaylist() {
         Player player = new Player();
         playerDao.createPlayer(player);
@@ -87,6 +99,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBase {
         assertNotSame("Wrong playlist.", playQueue, player.getPlayQueue());
     }
 
+    @Test
     public void testGetPlayersForUserAndClientId() {
         Player player = new Player();
         player.setUsername("sindre");
@@ -108,6 +121,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBase {
         assertPlayerEquals(player, players.get(0));
     }
 
+    @Test
     public void testUpdatePlayer() {
         Player player = new Player();
         playerDao.createPlayer(player);
@@ -129,6 +143,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBase {
         assertPlayerEquals(player, newPlayer);
     }
 
+    @Test
     public void testDeletePlayer() {
         assertEquals("Wrong number of players.", 0, playerDao.getAllPlayers().size());
 

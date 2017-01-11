@@ -19,21 +19,17 @@
  */
 package org.libresonic.player.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.ObjectUtils;
-import org.springframework.jdbc.core.RowMapper;
-
 import org.libresonic.player.domain.Album;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.util.FileUtil;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  * Provides database services for albums.
@@ -114,7 +110,8 @@ public class AlbumDao extends AbstractDao {
      *
      * @param album The album to create/update.
      */
-    public synchronized void createOrUpdateAlbum(Album album) {
+    @Transactional
+    public void createOrUpdateAlbum(Album album) {
         String sql = "update album set " +
                      "path=?," +
                      "song_count=?," +

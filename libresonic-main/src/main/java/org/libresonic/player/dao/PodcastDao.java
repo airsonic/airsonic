@@ -19,15 +19,15 @@
  */
 package org.libresonic.player.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import org.springframework.jdbc.core.RowMapper;
-
 import org.libresonic.player.domain.PodcastChannel;
 import org.libresonic.player.domain.PodcastEpisode;
 import org.libresonic.player.domain.PodcastStatus;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Provides database services for Podcast channels and episodes.
@@ -51,7 +51,8 @@ public class PodcastDao extends AbstractDao {
      * @param channel The Podcast channel to create.
      * @return The ID of the newly created channel.
      */
-    public synchronized int createChannel(PodcastChannel channel) {
+    @Transactional
+    public int createChannel(PodcastChannel channel) {
         String sql = "insert into podcast_channel (" + CHANNEL_INSERT_COLUMNS + ") values (" + questionMarks(
                 CHANNEL_INSERT_COLUMNS) + ")";
         update(sql, channel.getUrl(), channel.getTitle(), channel.getDescription(), channel.getImageUrl(),

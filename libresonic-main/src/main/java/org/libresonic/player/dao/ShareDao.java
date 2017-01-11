@@ -19,17 +19,17 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.domain.MusicFolder;
+import org.libresonic.player.domain.Share;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.jdbc.core.RowMapper;
-
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.Share;
 
 /**
  * Provides database services for shared media.
@@ -49,7 +49,8 @@ public class ShareDao extends AbstractDao {
      *
      * @param share The share to create.  The ID of the share will be set by this method.
      */
-    public synchronized void createShare(Share share) {
+    @Transactional
+    public void createShare(Share share) {
         String sql = "insert into share (" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")";
         update(sql, share.getName(), share.getDescription(), share.getUsername(), share.getCreated(),
                 share.getExpires(), share.getLastVisited(), share.getVisitCount());

@@ -1,29 +1,36 @@
 package org.libresonic.player.dao;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.libresonic.player.domain.AvatarScheme;
 import org.libresonic.player.domain.TranscodeScheme;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.domain.UserSettings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Date;
 import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test of {@link UserDao}.
  *
  * @author Sindre Mehus
  */
-public class UserDaoTestCase extends DaoTestCaseBase {
+public class UserDaoTestCase extends DaoTestCaseBean2 {
 
-    @Override
-    protected void setUp() throws Exception {
-        JdbcTemplate template = getJdbcTemplate();
-        template.execute("delete from user_role");
-        template.execute("delete from user");
+    @Autowired
+    UserDao userDao;
+
+    @Before
+    public void setUp() throws Exception {
+        getJdbcTemplate().execute("delete from user_role");
+        getJdbcTemplate().execute("delete from user");
     }
 
+    @Test
     public void testCreateUser() {
         User user = new User("sindre", "secret", "sindre@activeobjects.no", false, 1000L, 2000L, 3000L);
         user.setAdminRole(true);
@@ -42,6 +49,28 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertUserEquals(user, newUser);
     }
 
+    @Test
+    public void testCreateUserTransactionalError() {
+        User user = new User ("muff1nman", "secret", "noemail") {
+            @Override
+            public boolean isPlaylistRole() {
+                throw new RuntimeException();
+            }
+        };
+
+        user.setAdminRole(true);
+        int beforeSize = userDao.getAllUsers().size();
+        boolean caughtException = false;
+        try {
+            userDao.createUser(user);
+        } catch (RuntimeException e) {
+            caughtException = true;
+        }
+        assertTrue("It was expected for createUser to throw an exception", caughtException);
+        assertEquals(beforeSize, userDao.getAllUsers().size());
+    }
+
+    @Test
     public void testUpdateUser() {
         User user = new User("sindre", "secret", null);
         user.setAdminRole(true);
@@ -81,6 +110,7 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong bytes uploaded.", 3, newUser.getBytesUploaded());
     }
 
+    @Test
     public void testGetUserByName() {
         User user = new User("sindre", "secret", null);
         userDao.createUser(user);
@@ -96,6 +126,7 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertNull("Error in getUserByName().", userDao.getUserByName(null));
     }
 
+    @Test
     public void testDeleteUser() {
         assertEquals("Wrong number of users.", 0, userDao.getAllUsers().size());
 
@@ -112,6 +143,7 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong number of users.", 0, userDao.getAllUsers().size());
     }
 
+    @Test
     public void testGetRolesForUser() {
         User user = new User("sindre", "secret", null);
         user.setAdminRole(true);
@@ -130,6 +162,7 @@ public class UserDaoTestCase extends DaoTestCaseBase {
         assertEquals("Wrong role.", "settings", roles[4]);
     }
 
+    @Test
     public void testUserSettings() {
         assertNull("Error in getUserSettings.", userDao.getUserSettings("sindre"));
 

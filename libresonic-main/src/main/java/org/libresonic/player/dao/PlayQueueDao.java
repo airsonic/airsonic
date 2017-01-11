@@ -18,13 +18,13 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.domain.SavedPlayQueue;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.springframework.jdbc.core.RowMapper;
-
-import org.libresonic.player.domain.SavedPlayQueue;
 
 /**
  * Provides database services for play queues
@@ -37,7 +37,8 @@ public class PlayQueueDao extends AbstractDao {
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final RowMapper rowMapper = new PlayQueueMapper();
 
-    public synchronized SavedPlayQueue getPlayQueue(String username) {
+    @Transactional
+    public SavedPlayQueue getPlayQueue(String username) {
         SavedPlayQueue playQueue = queryOne("select " + QUERY_COLUMNS + " from play_queue where username=?", rowMapper, username);
         if (playQueue == null) {
             return null;
@@ -47,7 +48,8 @@ public class PlayQueueDao extends AbstractDao {
         return playQueue;
     }
 
-    public synchronized void savePlayQueue(SavedPlayQueue playQueue) {
+    @Transactional
+    public void savePlayQueue(SavedPlayQueue playQueue) {
         update("delete from play_queue where username=?", playQueue.getUsername());
         update("insert into play_queue(" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")",
                playQueue.getUsername(), playQueue.getCurrentMediaFileId(), playQueue.getPositionMillis(),

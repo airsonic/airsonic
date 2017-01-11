@@ -7,31 +7,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MusicFolderDaoMock extends MusicFolderDao {
+public class MusicFolderTestData {
 
   private static String baseResources = "/MEDIAS/";
 
   public static String resolveBaseMediaPath() {
-    String baseDir = MusicFolderDaoMock.class.getResource(baseResources).toString().replace("file:","");
+    String baseDir = MusicFolderTestData.class.getResource(baseResources).toString().replace("file:","");
     return baseDir;
   }
 
   public static String resolveMusicFolderPath() {
-    return (MusicFolderDaoMock.resolveBaseMediaPath() + "Music");
+    return (MusicFolderTestData.resolveBaseMediaPath() + "Music");
   }
 
   public static String resolveMusic2FolderPath() {
-    return (MusicFolderDaoMock.resolveBaseMediaPath() + "Music2");
+    return (MusicFolderTestData.resolveBaseMediaPath() + "Music2");
   }
 
-  @Override
-  public List<MusicFolder> getAllMusicFolders() {
+  public static List<MusicFolder> getTestMusicFolders() {
     List<MusicFolder> liste = new ArrayList<>();
-    File musicDir = new File(MusicFolderDaoMock.resolveMusicFolderPath());
+    File musicDir = new File(MusicFolderTestData.resolveMusicFolderPath());
     MusicFolder musicFolder = new MusicFolder(1,musicDir,"Music",true,new Date());
     liste.add(musicFolder);
 
-    File music2Dir = new File(MusicFolderDaoMock.resolveMusic2FolderPath());
+    File music2Dir = new File(MusicFolderTestData.resolveMusic2FolderPath());
     MusicFolder musicFolder2 = new MusicFolder(2,music2Dir,"Music2",true,new Date());
     liste.add(musicFolder2);
     return liste;
