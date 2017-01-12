@@ -4,11 +4,7 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.directwebremoting.servlet.DwrServlet;
-import org.libresonic.player.filter.BootstrapVerificationFilter;
-import org.libresonic.player.filter.ParameterDecodingFilter;
-import org.libresonic.player.filter.RESTFilter;
-import org.libresonic.player.filter.RequestEncodingFilter;
-import org.libresonic.player.filter.ResponseHeaderFilter;
+import org.libresonic.player.filter.*;
 import org.libresonic.player.spring.AdditionalPropertySourceConfigurer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
@@ -139,6 +135,15 @@ public class Application extends SpringBootServletInitializer {
         registration.setOrder(6);
         return registration;
     }
+
+    @Bean
+    public FilterRegistrationBean metricsFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new MetricsFilter());
+        registration.setOrder(7);
+        return registration;
+    }
+
 
     @Bean
     public Filter noCacheFilter() {
