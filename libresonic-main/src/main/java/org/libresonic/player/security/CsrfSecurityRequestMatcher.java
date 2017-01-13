@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
     private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
     private RegexRequestMatcher dwrRequestMatcher = new RegexRequestMatcher("/dwr/.*\\.dwr", "POST");
+    private RegexRequestMatcher restRequestMatcher = new RegexRequestMatcher("/rest/.*\\.view(\\?.*)?", "POST");
 
     @Override
     public boolean matches(HttpServletRequest request) {
@@ -29,6 +30,8 @@ public class CsrfSecurityRequestMatcher implements RequestMatcher {
             requireCsrfToken = false;
         } else {
             if (dwrRequestMatcher.matches(request)) {
+                requireCsrfToken = false;
+            } else if (restRequestMatcher.matches(request)) {
                 requireCsrfToken = false;
             }
         }
