@@ -145,16 +145,21 @@ public class Application extends SpringBootServletInitializer {
         return new ResponseHeaderFilter();
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+    private static SpringApplicationBuilder doConfigure(SpringApplicationBuilder application) {
         // Customize the application or call application.sources(...) to add sources
         // Since our example is itself a @Configuration class (via @SpringBootApplication)
         // we actually don't need to override this method.
         return application.sources(Application.class).web(true).initializers(new AdditionalPropertySourceConfigurer());
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return doConfigure(application);
+    }
+
     public static void main(String[] args) {
-        new SpringApplicationBuilder(Application.class).run(args);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder();
+        doConfigure(builder).run(args);
     }
 
 }
