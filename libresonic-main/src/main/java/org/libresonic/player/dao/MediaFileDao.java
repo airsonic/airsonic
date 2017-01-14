@@ -26,6 +26,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.libresonic.player.domain.Genre;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -129,7 +130,8 @@ public class MediaFileDao extends AbstractDao {
      *
      * @param file The media file to create/update.
      */
-    public synchronized void createOrUpdateMediaFile(MediaFile file) {
+    @Transactional
+    public void createOrUpdateMediaFile(MediaFile file) {
         String sql = "update media_file set " +
                      "folder=?," +
                      "type=?," +

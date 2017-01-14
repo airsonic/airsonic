@@ -1,13 +1,15 @@
 package org.libresonic.player.boot;
 
-import javax.servlet.Filter;
-import javax.servlet.ServletContextListener;
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.directwebremoting.servlet.DwrServlet;
 import org.libresonic.player.filter.*;
 import org.libresonic.player.spring.AdditionalPropertySourceConfigurer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -16,7 +18,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-@SpringBootApplication(exclude = {JmxAutoConfiguration.class})
+import javax.servlet.Filter;
+import javax.servlet.ServletContextListener;
+
+@SpringBootApplication(exclude = {
+        JmxAutoConfiguration.class,
+        JdbcTemplateAutoConfiguration.class,
+        DataSourceAutoConfiguration.class,
+        DataSourceTransactionManagerAutoConfiguration.class,
+        LiquibaseAutoConfiguration.class})
 @Configuration
 @ImportResource(value = {"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",

@@ -19,14 +19,14 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.Transcoding;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.springframework.jdbc.core.RowMapper;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.Transcoding;
 
 /**
  * Provides database services for transcoding configurations.
@@ -82,7 +82,8 @@ public class TranscodingDao extends AbstractDao {
      *
      * @param transcoding The transcoding to create.
      */
-    public synchronized void createTranscoding(Transcoding transcoding) {
+    @Transactional
+    public void createTranscoding(Transcoding transcoding) {
         Integer existingMax = getJdbcTemplate().queryForObject("select max(id) from transcoding2", Integer.class);
         if(existingMax == null) {
             existingMax = 0;

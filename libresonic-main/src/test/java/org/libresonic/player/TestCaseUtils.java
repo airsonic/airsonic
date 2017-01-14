@@ -15,8 +15,6 @@ import java.util.stream.Collectors;
 
 public class TestCaseUtils {
 
-  private static final String LIBRESONIC_HOME_FOR_TEST = "/tmp/libresonic";
-
   private static File libresonicHomeDirForTest = null;
 
   /**

@@ -19,23 +19,32 @@
  */
 package org.libresonic.player.dao;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.libresonic.player.domain.MusicFolder;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.File;
 import java.util.Date;
 
-import org.libresonic.player.domain.MusicFolder;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test of {@link MusicFolderDao}.
  *
  * @author Sindre Mehus
  */
-public class MusicFolderDaoTestCase extends DaoTestCaseBase {
+public class MusicFolderDaoTestCase extends DaoTestCaseBean2 {
 
-    @Override
-    protected void setUp() throws Exception {
+    @Autowired
+    MusicFolderDao musicFolderDao;
+
+    @Before
+    public void setUp() throws Exception {
         getJdbcTemplate().execute("delete from music_folder");
     }
 
+    @Test
     public void testCreateMusicFolder() {
         MusicFolder musicFolder = new MusicFolder(new File("path"), "name", true, new Date());
         musicFolderDao.createMusicFolder(musicFolder);
@@ -44,6 +53,7 @@ public class MusicFolderDaoTestCase extends DaoTestCaseBase {
         assertMusicFolderEquals(musicFolder, newMusicFolder);
     }
 
+    @Test
     public void testUpdateMusicFolder() {
         MusicFolder musicFolder = new MusicFolder(new File("path"), "name", true, new Date());
         musicFolderDao.createMusicFolder(musicFolder);
@@ -59,6 +69,7 @@ public class MusicFolderDaoTestCase extends DaoTestCaseBase {
         assertMusicFolderEquals(musicFolder, newMusicFolder);
     }
 
+    @Test
     public void testDeleteMusicFolder() {
         assertEquals("Wrong number of music folders.", 0, musicFolderDao.getAllMusicFolders().size());
 

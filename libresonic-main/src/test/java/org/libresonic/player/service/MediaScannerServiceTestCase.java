@@ -1,17 +1,24 @@
 package org.libresonic.player.service;
 
 import com.codahale.metrics.ConsoleReporter;
-import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import org.libresonic.player.TestCaseUtils;
 import org.libresonic.player.dao.*;
 import org.libresonic.player.domain.Album;
 import org.libresonic.player.domain.Artist;
 import org.libresonic.player.domain.MediaFile;
-import org.springframework.context.ApplicationContext;
+import org.libresonic.player.util.LibresonicHomeRule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.rules.SpringClassRule;
+import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.util.List;
 import java.util.Map;
@@ -30,47 +37,59 @@ import java.util.concurrent.TimeUnit;
  * An empty database is created on the fly.
  *
  */
-public class MediaScannerServiceTestCase extends TestCase {
+@ContextConfiguration(locations = {
+        "/applicationContext-service.xml",
+        "/applicationContext-cache.xml",
+        "/applicationContext-testdb.xml",
+        "/applicationContext-mockSonos.xml"})
+public class MediaScannerServiceTestCase {
 
-  private static String baseResources = "/org/libresonic/player/service/mediaScannerServiceTestCase/";
+  @ClassRule
+  public static final SpringClassRule classRule = new SpringClassRule() {
+    LibresonicHomeRule libresonicRule = new LibresonicHomeRule();
+    @Override
+    public Statement apply(Statement base, Description description) {
+      Statement spring = super.apply(base, description);
+      return libresonicRule.apply(spring, description);
+    }
+  };
+
+  @Rule
+  public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
   private final MetricRegistry metrics = new MetricRegistry();
 
+  @Autowired
+  private MediaScannerService mediaScannerService;
 
-  private MediaScannerService mediaScannerService = null;
-  private MediaFileDao mediaFileDao = null;
-  private MusicFolderDao musicFolderDao = null;
-  private DaoHelper daoHelper = null;
-  private MediaFileService mediaFileService = null;
-  private ArtistDao artistDao = null;
-  private AlbumDao albumDao = null;
+  @Autowired
+  private MediaFileDao mediaFileDao;
 
+  @Autowired
+  private MusicFolderDao musicFolderDao;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
+  @Autowired
+  private DaoHelper daoHelper;
 
-    System.setProperty("libresonic.home", TestCaseUtils.libresonicHomePathForTest());
+  @Autowired
+  private MediaFileService mediaFileService;
 
-    TestCaseUtils.cleanLibresonicHomeForTest();
+  @Autowired
+  private ArtistDao artistDao;
 
-    // load spring context
-    ApplicationContext context = TestCaseUtils.loadSpringApplicationContext(baseResources);
+  @Autowired
+  private AlbumDao albumDao;
 
-    mediaScannerService = (MediaScannerService)context.getBean("mediaScannerService");
-    mediaFileDao = (MediaFileDao)context.getBean("mediaFileDao");
-    musicFolderDao = (MusicFolderDao) context.getBean("musicFolderDao");
-    daoHelper = (DaoHelper) context.getBean("daoHelper");
-    mediaFileService = (MediaFileService) context.getBean("mediaFileService");
-    artistDao = (ArtistDao) context.getBean("artistDao");
-    albumDao = (AlbumDao) context.getBean("albumDao");
-  }
-
+  @Autowired
+  private SettingsService settingsService;
 
   /**
    * Tests the MediaScannerService by scanning the test media library into an empty database.
    */
+  @Test
   public void testScanLibrary() {
+    MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
+    settingsService.clearMusicFolderCache();
 
     Timer globalTimer = metrics.timer(MetricRegistry.name(MediaScannerServiceTestCase.class, "Timer.global"));
 
@@ -85,10 +104,10 @@ public class MediaScannerServiceTestCase extends TestCase {
 
 
     // Music Folder Music must have 3 children
-    List<MediaFile> listeMusicChildren = mediaFileDao.getChildrenOf(MusicFolderDaoMock.resolveMusicFolderPath());
+    List<MediaFile> listeMusicChildren = mediaFileDao.getChildrenOf(MusicFolderTestData.resolveMusicFolderPath());
     Assert.assertEquals(3,listeMusicChildren.size());
     // Music Folder Music2 must have 1 children
-    List<MediaFile> listeMusic2Children = mediaFileDao.getChildrenOf(MusicFolderDaoMock.resolveMusic2FolderPath());
+    List<MediaFile> listeMusic2Children = mediaFileDao.getChildrenOf(MusicFolderTestData.resolveMusic2FolderPath());
     Assert.assertEquals(1,listeMusic2Children.size());
 
     System.out.println("--- List of all artists ---");

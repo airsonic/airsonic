@@ -22,6 +22,7 @@ package org.libresonic.player.dao;
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -86,7 +87,8 @@ public class PlayerDao extends AbstractDao {
      *
      * @param player The player to create.
      */
-    public synchronized void createPlayer(Player player) {
+    @Transactional
+    public void createPlayer(Player player) {
         Integer existingMax = getJdbcTemplate().queryForObject("select max(id) from player", Integer.class);
         if(existingMax == null) {
             existingMax = 0;

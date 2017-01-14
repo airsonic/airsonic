@@ -1,20 +1,30 @@
 package org.libresonic.player.dao;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.libresonic.player.domain.InternetRadio;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Date;
 
-import org.libresonic.player.domain.InternetRadio;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test of {@link InternetRadioDao}.
  *
  * @author Sindre Mehus
  */
-public class InternetRadioDaoTestCase extends DaoTestCaseBase {
+public class InternetRadioDaoTestCase extends DaoTestCaseBean2 {
 
-    protected void setUp() throws Exception {
+    @Autowired
+    InternetRadioDao internetRadioDao;
+
+    @Before
+    public void setUp() throws Exception {
         getJdbcTemplate().execute("delete from internet_radio");
     }
 
+    @Test
     public void testCreateInternetRadio() {
         InternetRadio radio = new InternetRadio("name", "streamUrl", "homePageUrl", true, new Date());
         internetRadioDao.createInternetRadio(radio);
@@ -23,6 +33,7 @@ public class InternetRadioDaoTestCase extends DaoTestCaseBase {
         assertInternetRadioEquals(radio, newRadio);
     }
 
+    @Test
     public void testUpdateInternetRadio() {
         InternetRadio radio = new InternetRadio("name", "streamUrl", "homePageUrl", true, new Date());
         internetRadioDao.createInternetRadio(radio);
@@ -39,6 +50,7 @@ public class InternetRadioDaoTestCase extends DaoTestCaseBase {
         assertInternetRadioEquals(radio, newRadio);
     }
 
+    @Test
     public void testDeleteInternetRadio() {
         assertEquals("Wrong number of radios.", 0, internetRadioDao.getAllInternetRadios().size());
 
