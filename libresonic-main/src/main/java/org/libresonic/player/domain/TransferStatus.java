@@ -19,9 +19,9 @@
  */
 package org.libresonic.player.domain;
 
-import java.io.File;
-
 import org.libresonic.player.util.BoundedList;
+
+import java.io.File;
 
 /**
  * Status for a single transfer (stream, download or upload).

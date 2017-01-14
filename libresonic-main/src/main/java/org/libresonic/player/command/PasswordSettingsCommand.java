@@ -19,7 +19,7 @@
  */
 package org.libresonic.player.command;
 
-import org.libresonic.player.controller.*;
+import org.libresonic.player.controller.PasswordSettingsController;
 
 /**
  * Command used in {@link PasswordSettingsController}.

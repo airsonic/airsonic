@@ -19,13 +19,13 @@
  */
 package org.libresonic.player.service.metadata;
 
+import org.apache.commons.io.FilenameUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.io.InputStreamReaderThread;
 import org.libresonic.player.service.ServiceLocator;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.util.StringUtil;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.InputStream;

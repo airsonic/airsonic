@@ -19,12 +19,12 @@
  */
 package org.libresonic.player.service.metadata;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.service.ServiceLocator;
 import org.libresonic.player.service.SettingsService;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.util.List;

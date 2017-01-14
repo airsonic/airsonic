@@ -20,6 +20,7 @@
 package org.libresonic.player.domain;
 
 import junit.framework.TestCase;
+
 import static org.libresonic.player.domain.TranscodeScheme.*;
 
 /**

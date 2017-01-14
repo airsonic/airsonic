@@ -19,23 +19,11 @@
  */
 package org.libresonic.player.service;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.binding.annotations.AnnotationLocalServiceBinder;
 import org.fourthline.cling.model.DefaultServiceManager;
-import org.fourthline.cling.model.meta.Device;
-import org.fourthline.cling.model.meta.DeviceDetails;
-import org.fourthline.cling.model.meta.DeviceIdentity;
-import org.fourthline.cling.model.meta.Icon;
-import org.fourthline.cling.model.meta.LocalDevice;
-import org.fourthline.cling.model.meta.LocalService;
-import org.fourthline.cling.model.meta.ManufacturerDetails;
-import org.fourthline.cling.model.meta.ModelDetails;
-import org.fourthline.cling.model.meta.RemoteDevice;
+import org.fourthline.cling.model.meta.*;
 import org.fourthline.cling.model.types.DLNADoc;
 import org.fourthline.cling.model.types.DeviceType;
 import org.fourthline.cling.model.types.UDADeviceType;
@@ -44,12 +32,15 @@ import org.fourthline.cling.support.connectionmanager.ConnectionManagerService;
 import org.fourthline.cling.support.model.ProtocolInfos;
 import org.fourthline.cling.support.model.dlna.DLNAProfiles;
 import org.fourthline.cling.support.model.dlna.DLNAProtocolInfo;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.upnp.ApacheUpnpServiceConfiguration;
 import org.libresonic.player.service.upnp.FolderBasedContentDirectory;
 import org.libresonic.player.service.upnp.MSMediaReceiverRegistrarService;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sindre Mehus

@@ -19,15 +19,6 @@
  */
 package org.libresonic.player.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -41,13 +32,21 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.UrlRedirectType;
 import org.libresonic.player.service.upnp.ClingRouter;
 import org.libresonic.player.service.upnp.NATPMPRouter;
 import org.libresonic.player.service.upnp.Router;
 import org.libresonic.player.util.StringUtil;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Provides network-related services, including port forwarding on UPnP routers and

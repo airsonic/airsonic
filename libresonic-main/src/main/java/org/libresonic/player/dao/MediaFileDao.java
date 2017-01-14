@@ -20,12 +20,11 @@
 package org.libresonic.player.dao;
 
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.domain.RandomSearchCriteria;
-import org.springframework.jdbc.core.RowMapper;
-
 import org.libresonic.player.domain.Genre;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
+import org.libresonic.player.domain.RandomSearchCriteria;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;

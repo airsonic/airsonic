@@ -19,14 +19,10 @@
  */
 package org.libresonic.player.command;
 
-import java.util.List;
-
 import org.libresonic.player.controller.PersonalSettingsController;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.Avatar;
-import org.libresonic.player.domain.Theme;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.domain.*;
+
+import java.util.List;
 
 /**
  * Command used in {@link PersonalSettingsController}.

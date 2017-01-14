@@ -19,8 +19,6 @@
  */
 package org.libresonic.player.service.upnp;
 
-import java.util.concurrent.Executors;
-
 import org.fourthline.cling.DefaultUpnpServiceConfiguration;
 import org.fourthline.cling.transport.impl.apache.StreamClientConfigurationImpl;
 import org.fourthline.cling.transport.impl.apache.StreamClientImpl;
@@ -29,6 +27,8 @@ import org.fourthline.cling.transport.impl.apache.StreamServerImpl;
 import org.fourthline.cling.transport.spi.NetworkAddressFactory;
 import org.fourthline.cling.transport.spi.StreamClient;
 import org.fourthline.cling.transport.spi.StreamServer;
+
+import java.util.concurrent.Executors;
 
 /**
  * UPnP configuration which uses Apache HttpComponents.  Needed to make UPnP work

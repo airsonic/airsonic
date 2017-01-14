@@ -19,22 +19,18 @@
  */
 package org.libresonic.player.io;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import org.libresonic.player.Logger;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.TransferStatus;
-import org.libresonic.player.domain.VideoTranscodingSettings;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.AudioScrobblerService;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.SearchService;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.service.sonos.SonosHelper;
 import org.libresonic.player.util.FileUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Implementation of {@link InputStream} which reads from a {@link org.libresonic.player.domain.PlayQueue}.

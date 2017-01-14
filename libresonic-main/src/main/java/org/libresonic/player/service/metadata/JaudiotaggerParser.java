@@ -19,8 +19,6 @@
  */
 package org.libresonic.player.service.metadata;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.MediaFile;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
@@ -30,6 +28,8 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.reference.GenreTypes;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.MediaFile;
 
 import java.io.File;
 import java.util.SortedSet;

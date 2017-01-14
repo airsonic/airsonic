@@ -19,28 +19,22 @@
  */
 package org.libresonic.player.ajax;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-
 import org.libresonic.player.Logger;
-import org.libresonic.player.domain.AvatarScheme;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.PlayStatus;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.MediaScannerService;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.StatusService;
 import org.libresonic.player.util.StringUtil;
+
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Provides AJAX-enabled services for retrieving the currently playing file and directory.

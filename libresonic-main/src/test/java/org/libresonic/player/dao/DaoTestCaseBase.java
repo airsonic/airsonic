@@ -1,6 +1,5 @@
 package org.libresonic.player.dao;
 
-import javax.sql.DataSource;
 import junit.framework.TestCase;
 import liquibase.exception.LiquibaseException;
 import org.libresonic.player.TestCaseUtils;
@@ -10,8 +9,9 @@ import org.libresonic.player.util.FileUtil;
 import org.libresonic.player.util.Util;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
 
 import java.io.File;
 import java.util.HashMap;

@@ -19,9 +19,9 @@
  */
 package org.libresonic.player.ajax;
 
-import java.util.List;
-
 import org.libresonic.player.util.StringUtil;
+
+import java.util.List;
 
 /**
  * The playlist of a player.

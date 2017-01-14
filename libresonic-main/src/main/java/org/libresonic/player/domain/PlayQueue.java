@@ -19,14 +19,10 @@
  */
 package org.libresonic.player.domain;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * A play queue is a list of music files that are associated to a remote player.

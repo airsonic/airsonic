@@ -19,12 +19,12 @@
  */
 package org.libresonic.player.util;
 
+import junit.framework.TestCase;
+import org.libresonic.player.domain.UrlRedirectType;
+
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Locale;
-
-import junit.framework.TestCase;
-import org.libresonic.player.domain.UrlRedirectType;
 
 /**
  * Unit test of {@link StringUtil}.

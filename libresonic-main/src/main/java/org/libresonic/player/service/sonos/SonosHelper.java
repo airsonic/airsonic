@@ -19,58 +19,22 @@
 
 package org.libresonic.player.service.sonos;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.ServletRequestUtils;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.sonos.services._1.AbstractMedia;
-import com.sonos.services._1.AlbumArtUrl;
-import com.sonos.services._1.ItemType;
-import com.sonos.services._1.MediaCollection;
-import com.sonos.services._1.MediaList;
-import com.sonos.services._1.MediaMetadata;
-import com.sonos.services._1.TrackMetadata;
-
+import com.sonos.services._1.*;
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.controller.CoverArtController;
 import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.CoverArtScheme;
-import org.libresonic.player.domain.Genre;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.MusicFolderContent;
-import org.libresonic.player.domain.MusicIndex;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.PlayerTechnology;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.domain.PodcastChannel;
-import org.libresonic.player.domain.PodcastEpisode;
-import org.libresonic.player.domain.PodcastStatus;
-import org.libresonic.player.domain.SearchCriteria;
-import org.libresonic.player.domain.SearchResult;
-import org.libresonic.player.service.LastFmService;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.MusicIndexService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.PodcastService;
-import org.libresonic.player.service.RatingService;
-import org.libresonic.player.service.SearchService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.SonosService;
-import org.libresonic.player.service.TranscodingService;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.service.*;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
+import org.springframework.web.bind.ServletRequestUtils;
+
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.*;
 
 /**
  * @author Sindre Mehus

@@ -41,6 +41,7 @@ import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;

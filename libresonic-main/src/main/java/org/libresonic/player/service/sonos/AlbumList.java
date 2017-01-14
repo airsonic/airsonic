@@ -19,9 +19,9 @@
 
 package org.libresonic.player.service.sonos;
 
-import java.util.List;
-
 import org.libresonic.player.domain.MediaFile;
+
+import java.util.List;
 
 /**
  * @author Sindre Mehus

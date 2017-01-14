@@ -28,14 +28,13 @@ import org.fourthline.cling.support.model.BrowseResult;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.Res;
 import org.fourthline.cling.support.model.SortCriterion;
-import org.seamless.util.MimeType;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.util.StringUtil;
+import org.seamless.util.MimeType;
 
 /**
  * @author Sindre Mehus

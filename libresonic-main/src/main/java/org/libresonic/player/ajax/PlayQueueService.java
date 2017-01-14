@@ -19,46 +19,21 @@
  */
 package org.libresonic.player.ajax;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import org.directwebremoting.WebContextFactory;
+import org.libresonic.player.dao.MediaFileDao;
+import org.libresonic.player.dao.PlayQueueDao;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.service.*;
+import org.libresonic.player.service.PlaylistService;
+import org.libresonic.player.util.StringUtil;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.directwebremoting.WebContextFactory;
-import org.springframework.web.servlet.support.RequestContextUtils;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.dao.PlayQueueDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.PodcastEpisode;
-import org.libresonic.player.domain.PodcastStatus;
-import org.libresonic.player.domain.SavedPlayQueue;
-import org.libresonic.player.domain.UrlRedirectType;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.JukeboxService;
-import org.libresonic.player.service.LastFmService;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.PodcastService;
-import org.libresonic.player.service.RatingService;
-import org.libresonic.player.service.SearchService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.TranscodingService;
-import org.libresonic.player.util.StringUtil;
+import java.util.*;
 
 /**
  * Provides AJAX-enabled services for manipulating the play queue of a player.

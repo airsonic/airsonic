@@ -19,11 +19,11 @@
  */
 package org.libresonic.player.validator;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.command.UserSettingsCommand;
 import org.libresonic.player.controller.UserSettingsController;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

@@ -19,14 +19,14 @@
  */
 package org.libresonic.player.domain;
 
+import com.google.common.base.Function;
+import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.base.Objects;
-import com.google.common.collect.Lists;
 
 /**
  * Represents a top level directory in which music or other media is stored.

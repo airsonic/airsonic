@@ -19,13 +19,13 @@
  */
 package org.libresonic.player.command;
 
+import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.controller.MusicFolderSettingsController;
+import org.libresonic.player.domain.MusicFolder;
+
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-
-import org.libresonic.player.controller.MusicFolderSettingsController;
-import org.libresonic.player.domain.MusicFolder;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Command used in {@link MusicFolderSettingsController}.

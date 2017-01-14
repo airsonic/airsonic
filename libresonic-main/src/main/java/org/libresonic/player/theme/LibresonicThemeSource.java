@@ -19,12 +19,11 @@
  */
 package org.libresonic.player.theme;
 
-import org.springframework.ui.context.support.ResourceBundleThemeSource;
-import org.springframework.context.MessageSource;
-import org.springframework.context.support.ResourceBundleMessageSource;
-
 import org.libresonic.player.domain.Theme;
 import org.libresonic.player.service.SettingsService;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.ui.context.support.ResourceBundleThemeSource;
 
 /**
  * Theme source implementation which uses two resource bundles: the

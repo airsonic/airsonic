@@ -19,9 +19,9 @@
  */
 package org.libresonic.player.util;
 
-import java.io.Serializable;
-
 import org.apache.commons.lang.ObjectUtils;
+
+import java.io.Serializable;
 
 /**
  * @author Sindre Mehus

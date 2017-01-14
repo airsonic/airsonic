@@ -19,10 +19,18 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.persistence.jaxb.JAXBContext;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.jdom.Attribute;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+import org.libresonic.player.Logger;
+import org.libresonic.player.util.StringUtil;
+import org.libresonic.restapi.Error;
+import org.libresonic.restapi.ObjectFactory;
+import org.libresonic.restapi.Response;
+import org.libresonic.restapi.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,19 +39,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import org.apache.commons.io.IOUtils;
-import org.eclipse.persistence.jaxb.JAXBContext;
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
-import org.libresonic.restapi.Error;
-import org.libresonic.restapi.ObjectFactory;
-import org.libresonic.restapi.Response;
-import org.libresonic.restapi.ResponseStatus;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.util.StringUtil;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static org.springframework.web.bind.ServletRequestUtils.getStringParameter;
 

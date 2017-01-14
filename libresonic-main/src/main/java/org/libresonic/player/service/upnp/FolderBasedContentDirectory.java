@@ -19,36 +19,25 @@
  */
 package org.libresonic.player.service.upnp;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import java.util.List;
-
 import org.fourthline.cling.support.contentdirectory.ContentDirectoryErrorCode;
 import org.fourthline.cling.support.contentdirectory.ContentDirectoryException;
-import org.fourthline.cling.support.model.BrowseFlag;
-import org.fourthline.cling.support.model.BrowseResult;
-import org.fourthline.cling.support.model.DIDLContent;
-import org.fourthline.cling.support.model.DIDLObject;
-import org.fourthline.cling.support.model.PersonWithRole;
-import org.fourthline.cling.support.model.SortCriterion;
-import org.fourthline.cling.support.model.WriteStatus;
+import org.fourthline.cling.support.model.*;
 import org.fourthline.cling.support.model.container.Container;
 import org.fourthline.cling.support.model.container.MusicAlbum;
 import org.fourthline.cling.support.model.container.PlaylistContainer;
 import org.fourthline.cling.support.model.container.StorageFolder;
 import org.fourthline.cling.support.model.item.Item;
 import org.fourthline.cling.support.model.item.MusicTrack;
-
 import org.libresonic.player.Logger;
-import org.libresonic.player.domain.CoverArtScheme;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MediaLibraryStatistics;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.Playlist;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.util.Util;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Sindre Mehus

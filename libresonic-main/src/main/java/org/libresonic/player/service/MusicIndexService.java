@@ -19,28 +19,15 @@
  */
 package org.libresonic.player.service;
 
+import org.libresonic.player.domain.*;
+import org.libresonic.player.domain.MusicIndex.SortableArtist;
+import org.libresonic.player.util.FileUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-
-import org.libresonic.player.domain.Artist;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.MusicFolderContent;
-import org.libresonic.player.domain.MusicIndex;
-import org.libresonic.player.domain.MusicIndex.SortableArtist;
-import org.libresonic.player.util.FileUtil;
+import java.util.*;
 
 /**
  * Provides services for grouping artists by index.

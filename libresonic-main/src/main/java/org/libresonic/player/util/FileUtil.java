@@ -19,13 +19,13 @@
  */
 package org.libresonic.player.util;
 
+import org.libresonic.player.Logger;
+
 import java.io.Closeable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
-
-import org.libresonic.player.Logger;
 
 /**
  * Miscellaneous file utility methods.

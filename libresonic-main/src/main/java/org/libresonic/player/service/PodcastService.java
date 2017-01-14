@@ -19,26 +19,6 @@
  */
 package org.libresonic.player.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -57,7 +37,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.PodcastDao;
 import org.libresonic.player.domain.MediaFile;
@@ -68,6 +47,15 @@ import org.libresonic.player.service.metadata.MetaData;
 import org.libresonic.player.service.metadata.MetaDataParser;
 import org.libresonic.player.service.metadata.MetaDataParserFactory;
 import org.libresonic.player.util.StringUtil;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Provides services for Podcast reception.

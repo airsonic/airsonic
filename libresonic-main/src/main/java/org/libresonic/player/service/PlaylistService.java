@@ -19,25 +19,6 @@
  */
 package org.libresonic.player.service;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -46,7 +27,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.dao.PlaylistDao;
@@ -57,6 +37,12 @@ import org.libresonic.player.domain.User;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
+
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides services for loading and saving playlists to and from persistent storage.

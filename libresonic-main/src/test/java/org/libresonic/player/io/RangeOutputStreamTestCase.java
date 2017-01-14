@@ -22,11 +22,7 @@ package org.libresonic.player.io;
 import junit.framework.TestCase;
 import org.libresonic.player.util.HttpRange;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 /**
  * @author Sindre Mehus

@@ -19,16 +19,14 @@
  */
 package org.libresonic.player.domain;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import org.apache.commons.io.FilenameUtils;
+import org.libresonic.player.util.FileUtil;
+
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.commons.io.FilenameUtils;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-
-import org.libresonic.player.util.FileUtil;
 
 /**
  * A media file (audio, video or directory) with an assortment of its meta data.
