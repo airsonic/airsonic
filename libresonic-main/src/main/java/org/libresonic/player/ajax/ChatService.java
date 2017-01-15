@@ -19,20 +19,17 @@
  */
 package org.libresonic.player.ajax;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.util.BoundedList;
 import org.apache.commons.lang.StringUtils;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
+import org.libresonic.player.Logger;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.util.BoundedList;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

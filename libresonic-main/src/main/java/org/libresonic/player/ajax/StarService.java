@@ -19,12 +19,12 @@
  */
 package org.libresonic.player.ajax;
 
+import org.directwebremoting.WebContext;
+import org.directwebremoting.WebContextFactory;
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.service.SecurityService;
-import org.directwebremoting.WebContext;
-import org.directwebremoting.WebContextFactory;
 
 /**
  * Provides AJAX-enabled services for starring.

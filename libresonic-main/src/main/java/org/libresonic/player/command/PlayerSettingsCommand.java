@@ -19,14 +19,14 @@
  */
 package org.libresonic.player.command;
 
-import java.util.Date;
-import java.util.List;
-
 import org.libresonic.player.controller.PlayerSettingsController;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.PlayerTechnology;
 import org.libresonic.player.domain.TranscodeScheme;
 import org.libresonic.player.domain.Transcoding;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Command used in {@link PlayerSettingsController}.

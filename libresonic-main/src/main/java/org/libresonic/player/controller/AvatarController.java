@@ -19,9 +19,10 @@
  */
 package org.libresonic.player.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.libresonic.player.domain.Avatar;
+import org.libresonic.player.domain.AvatarScheme;
+import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -30,10 +31,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.LastModified;
 
-import org.libresonic.player.domain.Avatar;
-import org.libresonic.player.domain.AvatarScheme;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.SettingsService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Controller which produces avatar images.

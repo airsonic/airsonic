@@ -19,12 +19,18 @@
  */
 package org.libresonic.player.i18n;
 
-import org.libresonic.player.service.*;
-import org.libresonic.player.domain.*;
-import org.springframework.web.servlet.*;
+import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
+import org.springframework.web.servlet.LocaleResolver;
 
-import javax.servlet.http.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Locale resolver implementation which returns the locale selected in the settings.

@@ -19,17 +19,17 @@
  */
 package org.libresonic.player.controller;
 
-import java.awt.Dimension;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.io.PlayQueueInputStream;
+import org.libresonic.player.io.RangeOutputStream;
+import org.libresonic.player.io.ShoutCastOutputStream;
+import org.libresonic.player.service.*;
+import org.libresonic.player.service.sonos.SonosHelper;
+import org.libresonic.player.util.HttpRange;
+import org.libresonic.player.util.StringUtil;
+import org.libresonic.player.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -38,29 +38,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.TransferStatus;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.VideoTranscodingSettings;
-import org.libresonic.player.io.PlayQueueInputStream;
-import org.libresonic.player.io.RangeOutputStream;
-import org.libresonic.player.io.ShoutCastOutputStream;
-import org.libresonic.player.service.AudioScrobblerService;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.SearchService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.StatusService;
-import org.libresonic.player.service.TranscodingService;
-import org.libresonic.player.service.sonos.SonosHelper;
-import org.libresonic.player.util.HttpRange;
-import org.libresonic.player.util.StringUtil;
-import org.libresonic.player.util.Util;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A controller which streams the content of a {@link org.libresonic.player.domain.PlayQueue} to a remote

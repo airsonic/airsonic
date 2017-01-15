@@ -19,14 +19,22 @@
  */
 package org.libresonic.player;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.libresonic.player.domain.Version;
-import org.libresonic.player.service.*;
-import org.libresonic.player.util.*;
-import org.apache.commons.lang.exception.*;
+import org.libresonic.player.service.ServiceLocator;
+import org.libresonic.player.service.SettingsService;
+import org.libresonic.player.service.VersionService;
+import org.libresonic.player.util.BoundedList;
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Logger implementation which logs to LIBRESONIC_HOME/libresonic.log.

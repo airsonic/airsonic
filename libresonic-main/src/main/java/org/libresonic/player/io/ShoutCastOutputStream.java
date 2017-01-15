@@ -19,11 +19,11 @@
  */
 package org.libresonic.player.io;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PlayQueue;
 import org.libresonic.player.service.SettingsService;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;

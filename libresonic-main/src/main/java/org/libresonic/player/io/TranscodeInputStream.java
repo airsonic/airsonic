@@ -19,11 +19,13 @@
  */
 package org.libresonic.player.io;
 
-import org.libresonic.player.*;
+import org.apache.commons.io.IOUtils;
+import org.libresonic.player.Logger;
 
-import org.apache.commons.io.*;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Subclass of {@link InputStream} which provides on-the-fly transcoding.

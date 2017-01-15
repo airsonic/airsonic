@@ -19,6 +19,18 @@
  */
 package org.libresonic.player.service;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.PrefixFileFilter;
+import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.Logger;
+import org.libresonic.player.controller.VideoPlayerController;
+import org.libresonic.player.dao.TranscodingDao;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.io.TranscodeInputStream;
+import org.libresonic.player.util.StringUtil;
+import org.libresonic.player.util.Util;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,24 +38,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
-import org.apache.commons.lang.StringUtils;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.controller.VideoPlayerController;
-import org.libresonic.player.dao.TranscodingDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.TranscodeScheme;
-import org.libresonic.player.domain.Transcoding;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.domain.VideoTranscodingSettings;
-import org.libresonic.player.io.TranscodeInputStream;
-import org.libresonic.player.util.StringUtil;
-import org.libresonic.player.util.Util;
 
 /**
  * Provides services for transcoding media. Transcoding is the process of

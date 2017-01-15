@@ -19,23 +19,22 @@
  */
 package org.libresonic.player.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.libresonic.player.dao.PlayerDao;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.Transcoding;
 import org.libresonic.player.domain.TransferStatus;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.util.StringUtil;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Provides services for maintaining the set of players.

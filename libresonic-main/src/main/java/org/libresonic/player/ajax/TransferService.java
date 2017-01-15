@@ -19,11 +19,11 @@
  */
 package org.libresonic.player.ajax;
 
-import org.libresonic.player.domain.*;
-import org.libresonic.player.controller.*;
-import org.directwebremoting.*;
+import org.directwebremoting.WebContextFactory;
+import org.libresonic.player.controller.UploadController;
+import org.libresonic.player.domain.TransferStatus;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpSession;
 
 /**
  * Provides AJAX-enabled services for retrieving the status of ongoing transfers.

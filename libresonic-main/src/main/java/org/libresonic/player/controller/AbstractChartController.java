@@ -19,13 +19,13 @@
  */
 package org.libresonic.player.controller;
 
-import org.springframework.web.servlet.support.*;
-import org.springframework.web.servlet.mvc.*;
-import org.springframework.ui.context.*;
+import org.springframework.ui.context.Theme;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+
 import java.awt.*;
-import java.util.*;
+import java.util.Locale;
 
 /**
  * Abstract super class for controllers which generate charts.

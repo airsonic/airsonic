@@ -19,18 +19,15 @@
  */
 package org.libresonic.player.cache;
 
-
-import java.io.File;
-
-import org.springframework.beans.factory.InitializingBean;
-
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.ConfigurationFactory;
 import org.libresonic.player.Logger;
 import org.libresonic.player.service.SettingsService;
+import org.springframework.beans.factory.InitializingBean;
+
+import java.io.File;
 
 /**
  * Initializes Ehcache and creates caches.

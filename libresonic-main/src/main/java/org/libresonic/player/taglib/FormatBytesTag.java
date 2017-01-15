@@ -19,14 +19,16 @@
  */
 package org.libresonic.player.taglib;
 
-import org.libresonic.player.util.*;
-import org.springframework.web.servlet.support.*;
+import org.libresonic.player.util.StringUtil;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
-import java.io.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Converts a byte-count to a formatted string suitable for display to the user, with respect

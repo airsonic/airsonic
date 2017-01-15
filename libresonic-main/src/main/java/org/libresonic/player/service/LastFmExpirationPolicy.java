@@ -19,10 +19,10 @@
 
 package org.libresonic.player.service;
 
+import de.umass.lastfm.cache.ExpirationPolicy;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import de.umass.lastfm.cache.ExpirationPolicy;
 
 /**
  * Artist and album info is cached permanently. Everything else is cached one year.

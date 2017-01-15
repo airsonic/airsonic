@@ -19,20 +19,13 @@
  */
 package org.libresonic.player.service;
 
-import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
-
 import org.libresonic.player.Logger;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.Transcoding;
-import org.libresonic.player.domain.TransferStatus;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.VideoTranscodingSettings;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.service.jukebox.AudioPlayer;
 import org.libresonic.player.util.FileUtil;
+
+import java.io.InputStream;
 
 import static org.libresonic.player.service.jukebox.AudioPlayer.State.EOM;
 

@@ -19,10 +19,10 @@
  */
 package org.libresonic.player.service.metadata;
 
-import java.io.File;
-
 import junit.framework.TestCase;
 import org.libresonic.player.domain.MediaFile;
+
+import java.io.File;
 
 /**
  * Unit test of {@link MetaDataParser}.
