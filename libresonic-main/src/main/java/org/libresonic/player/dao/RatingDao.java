@@ -19,16 +19,14 @@
  */
 package org.libresonic.player.dao;
 
-import java.util.ArrayList;
+import org.libresonic.player.domain.MediaFile;
+import org.libresonic.player.domain.MusicFolder;
+import org.springframework.dao.EmptyResultDataAccessException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.dao.EmptyResultDataAccessException;
-
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
 
 import static org.libresonic.player.domain.MediaFile.MediaType.ALBUM;
 

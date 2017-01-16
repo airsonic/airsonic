@@ -22,7 +22,6 @@ package org.libresonic.player.ajax;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.MediaFileService;

@@ -19,10 +19,12 @@
  */
 package org.libresonic.player.command;
 
-import org.libresonic.player.domain.*;
-import org.libresonic.player.controller.*;
+import org.libresonic.player.controller.SearchController;
+import org.libresonic.player.domain.MediaFile;
+import org.libresonic.player.domain.Player;
+import org.libresonic.player.domain.User;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Command used in {@link SearchController}.

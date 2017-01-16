@@ -19,24 +19,7 @@
  */
 package org.libresonic.player.controller;
 
-import java.awt.Dimension;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.Player;
 import org.libresonic.player.service.MediaFileService;
@@ -44,6 +27,22 @@ import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.awt.*;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Controller which produces the HLS (Http Live Streaming) playlist.

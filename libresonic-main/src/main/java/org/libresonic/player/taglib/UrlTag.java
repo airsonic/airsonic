@@ -19,16 +19,17 @@
  */
 package org.libresonic.player.taglib;
 
+import org.apache.commons.lang.CharUtils;
+import org.apache.taglibs.standard.tag.common.core.UrlSupport;
 import org.libresonic.player.Logger;
 import org.libresonic.player.filter.ParameterDecodingFilter;
 import org.libresonic.player.util.StringUtil;
-import org.apache.taglibs.standard.tag.common.core.UrlSupport;
-import org.apache.commons.lang.CharUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

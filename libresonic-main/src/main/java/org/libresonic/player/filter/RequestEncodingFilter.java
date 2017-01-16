@@ -20,8 +20,9 @@
 package org.libresonic.player.filter;
 
 import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.IOException;
 
 /**
  * Configurable filter for setting the character encoding to use for the HTTP request.

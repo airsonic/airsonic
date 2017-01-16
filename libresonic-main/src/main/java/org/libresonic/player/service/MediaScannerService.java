@@ -19,27 +19,16 @@
  */
 package org.libresonic.player.service;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import org.apache.commons.lang.ObjectUtils;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.ArtistDao;
 import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.Album;
-import org.libresonic.player.domain.Artist;
-import org.libresonic.player.domain.Genres;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MediaLibraryStatistics;
-import org.libresonic.player.domain.MusicFolder;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.util.FileUtil;
+
+import java.io.File;
+import java.util.*;
 
 /**
  * Provides services for scanning the music library.

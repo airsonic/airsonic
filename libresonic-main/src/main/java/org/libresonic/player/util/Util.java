@@ -19,21 +19,16 @@
  */
 package org.libresonic.player.util;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import org.libresonic.player.Logger;
+import org.libresonic.player.service.SettingsService;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.service.SettingsService;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.*;
 
 /**
  * Miscellaneous general utility methods.

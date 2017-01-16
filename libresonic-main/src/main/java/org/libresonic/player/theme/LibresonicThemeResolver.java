@@ -19,12 +19,17 @@
  */
 package org.libresonic.player.theme;
 
-import org.libresonic.player.service.*;
-import org.libresonic.player.domain.*;
-import org.springframework.web.servlet.*;
+import org.libresonic.player.domain.Theme;
+import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
+import org.springframework.web.servlet.ThemeResolver;
 
-import javax.servlet.http.*;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Theme resolver implementation which returns the theme selected in the settings.

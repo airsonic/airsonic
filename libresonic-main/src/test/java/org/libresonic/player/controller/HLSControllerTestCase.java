@@ -19,10 +19,10 @@
  */
 package org.libresonic.player.controller;
 
-import java.awt.Dimension;
-
 import junit.framework.TestCase;
 import org.libresonic.player.util.Pair;
+
+import java.awt.*;
 
 /**
  * @author Sindre Mehus

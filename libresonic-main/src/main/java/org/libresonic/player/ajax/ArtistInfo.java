@@ -19,9 +19,9 @@
 
 package org.libresonic.player.ajax;
 
-import java.util.List;
-
 import org.libresonic.player.domain.ArtistBio;
+
+import java.util.List;
 
 /**
  * @author Sindre Mehus

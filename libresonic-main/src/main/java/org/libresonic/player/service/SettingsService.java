@@ -20,20 +20,12 @@
 package org.libresonic.player.service;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AvatarDao;
 import org.libresonic.player.dao.InternetRadioDao;
 import org.libresonic.player.dao.MusicFolderDao;
 import org.libresonic.player.dao.UserDao;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.Avatar;
-import org.libresonic.player.domain.InternetRadio;
-import org.libresonic.player.domain.MediaLibraryStatistics;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.Theme;
-import org.libresonic.player.domain.UrlRedirectType;
-import org.libresonic.player.domain.UserSettings;
+import org.libresonic.player.domain.*;
 import org.libresonic.player.util.FileUtil;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;

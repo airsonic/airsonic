@@ -19,13 +19,12 @@
  */
 package org.libresonic.player.service;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-
 import junit.framework.TestCase;
 import org.libresonic.player.TestCaseUtils;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Unit test of {@link SettingsService}.

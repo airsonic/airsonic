@@ -19,25 +19,15 @@
  */
 package org.libresonic.player.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.zip.CRC32;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.*;
+import org.libresonic.player.io.RangeOutputStream;
+import org.libresonic.player.service.*;
+import org.libresonic.player.util.FileUtil;
+import org.libresonic.player.util.HttpRange;
+import org.libresonic.player.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -47,23 +37,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.LastModified;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.domain.TransferStatus;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.io.RangeOutputStream;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.StatusService;
-import org.libresonic.player.util.FileUtil;
-import org.libresonic.player.util.HttpRange;
-import org.libresonic.player.util.Util;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.zip.CRC32;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * A controller used for downloading files to a remote client. If the requested path refers to a file, the

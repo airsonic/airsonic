@@ -19,27 +19,27 @@
  */
 package org.libresonic.player.controller;
 
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.Avatar;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.Avatar;
+import org.libresonic.player.service.SecurityService;
+import org.libresonic.player.service.SettingsService;
+import org.libresonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

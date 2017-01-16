@@ -19,17 +19,24 @@
 
 package org.libresonic.player.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import com.sonos.services._1.*;
+import com.sonos.services._1_1.SonosSoap;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.headers.Header;
+import org.apache.cxf.helpers.CastUtils;
+import org.apache.cxf.jaxb.JAXBDataBinding;
+import org.apache.cxf.jaxws.context.WrappedMessageContext;
+import org.apache.cxf.message.Message;
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.AlbumListType;
+import org.libresonic.player.domain.MediaFile;
+import org.libresonic.player.domain.Playlist;
+import org.libresonic.player.domain.User;
+import org.libresonic.player.service.sonos.SonosHelper;
+import org.libresonic.player.service.sonos.SonosServiceRegistration;
+import org.libresonic.player.service.sonos.SonosSoapFault;
+import org.w3c.dom.Node;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -41,60 +48,12 @@ import javax.xml.ws.Holder;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.cxf.headers.Header;
-import org.apache.cxf.helpers.CastUtils;
-import org.apache.cxf.jaxb.JAXBDataBinding;
-import org.apache.cxf.jaxws.context.WrappedMessageContext;
-import org.apache.cxf.message.Message;
-import org.w3c.dom.Node;
-
-import com.sonos.services._1.AbstractMedia;
-import com.sonos.services._1.AddToContainerResult;
-import com.sonos.services._1.ContentKey;
-import com.sonos.services._1.CreateContainerResult;
-import com.sonos.services._1.Credentials;
-import com.sonos.services._1.DeleteContainerResult;
-import com.sonos.services._1.DeviceAuthTokenResult;
-import com.sonos.services._1.DeviceLinkCodeResult;
-import com.sonos.services._1.ExtendedMetadata;
-import com.sonos.services._1.GetExtendedMetadata;
-import com.sonos.services._1.GetExtendedMetadataResponse;
-import com.sonos.services._1.GetExtendedMetadataText;
-import com.sonos.services._1.GetExtendedMetadataTextResponse;
-import com.sonos.services._1.GetMediaMetadata;
-import com.sonos.services._1.GetMediaMetadataResponse;
-import com.sonos.services._1.GetMetadata;
-import com.sonos.services._1.GetMetadataResponse;
-import com.sonos.services._1.GetSessionId;
-import com.sonos.services._1.GetSessionIdResponse;
-import com.sonos.services._1.HttpHeaders;
-import com.sonos.services._1.LastUpdate;
-import com.sonos.services._1.MediaCollection;
-import com.sonos.services._1.MediaList;
-import com.sonos.services._1.MediaMetadata;
-import com.sonos.services._1.MediaUriAction;
-import com.sonos.services._1.RateItem;
-import com.sonos.services._1.RateItemResponse;
-import com.sonos.services._1.RelatedBrowse;
-import com.sonos.services._1.RemoveFromContainerResult;
-import com.sonos.services._1.RenameContainerResult;
-import com.sonos.services._1.ReorderContainerResult;
-import com.sonos.services._1.ReportPlaySecondsResult;
-import com.sonos.services._1.Search;
-import com.sonos.services._1.SearchResponse;
-import com.sonos.services._1.SegmentMetadataList;
-import com.sonos.services._1_1.SonosSoap;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.service.sonos.SonosHelper;
-import org.libresonic.player.service.sonos.SonosServiceRegistration;
-import org.libresonic.player.service.sonos.SonosSoapFault;
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * For manual testing of this service:

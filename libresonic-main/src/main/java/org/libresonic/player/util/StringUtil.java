@@ -19,34 +19,24 @@
  */
 package org.libresonic.player.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.domain.UrlRedirectType;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-import org.libresonic.player.domain.UrlRedirectType;
 
 /**
  * Miscellaneous string utility methods.

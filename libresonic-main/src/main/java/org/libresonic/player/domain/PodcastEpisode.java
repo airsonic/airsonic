@@ -21,8 +21,6 @@ package org.libresonic.player.domain;
 
 import java.util.Date;
 
-import org.libresonic.player.util.StringUtil;
-
 /**
  * A Podcast episode belonging to a channel.
  *

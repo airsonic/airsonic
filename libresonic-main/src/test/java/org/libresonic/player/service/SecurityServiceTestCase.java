@@ -19,7 +19,7 @@
  */
 package org.libresonic.player.service;
 
-import junit.framework.*;
+import junit.framework.TestCase;
 /**
  * Unit test of {@link SecurityService}.
  *

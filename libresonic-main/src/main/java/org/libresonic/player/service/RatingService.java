@@ -19,14 +19,14 @@
  */
 package org.libresonic.player.service;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.libresonic.player.dao.RatingDao;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.util.FileUtil;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides services for user ratings.

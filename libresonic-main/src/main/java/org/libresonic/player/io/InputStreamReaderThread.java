@@ -19,10 +19,13 @@
  */
 package org.libresonic.player.io;
 
-import org.libresonic.player.*;
-import org.apache.commons.io.*;
+import org.apache.commons.io.IOUtils;
+import org.libresonic.player.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Utility class which reads everything from an input stream and optionally logs it.

@@ -19,13 +19,13 @@
 
 package org.libresonic.player.domain;
 
+import junit.framework.TestCase;
+
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import junit.framework.TestCase;
 
 public class SortableArtistTestCase extends TestCase {
 

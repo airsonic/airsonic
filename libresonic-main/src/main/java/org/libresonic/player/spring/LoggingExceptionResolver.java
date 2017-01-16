@@ -1,11 +1,12 @@
 package org.libresonic.player.spring;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.libresonic.player.Logger;
 import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class LoggingExceptionResolver implements HandlerExceptionResolver, Ordered {
 

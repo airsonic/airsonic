@@ -19,13 +19,13 @@
  */
 package org.libresonic.player.domain;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
 import junit.framework.TestCase;
 import org.libresonic.player.domain.PlayQueue.SortOrder;
 import org.libresonic.player.domain.PlayQueue.Status;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Unit test of {@link PlayQueue}.

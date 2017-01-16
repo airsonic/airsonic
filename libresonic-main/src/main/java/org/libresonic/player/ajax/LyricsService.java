@@ -19,10 +19,6 @@
  */
 package org.libresonic.player.ajax;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.SocketException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -34,9 +30,12 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.util.StringUtil;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.SocketException;
 
 /**
  * Provides AJAX-enabled services for retrieving song lyrics from chartlyrics.com.

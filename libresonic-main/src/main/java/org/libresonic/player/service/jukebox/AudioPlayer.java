@@ -19,19 +19,18 @@
  */
 package org.libresonic.player.service.jukebox;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicReference;
+import org.apache.commons.io.IOUtils;
+import org.libresonic.player.Logger;
+import org.libresonic.player.service.JukeboxService;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.SourceDataLine;
 
-import org.apache.commons.io.IOUtils;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.service.JukeboxService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.libresonic.player.service.jukebox.AudioPlayer.State.*;
 

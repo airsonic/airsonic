@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.ajax;
 
+import org.directwebremoting.WebContextFactory;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
@@ -29,17 +30,12 @@ import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
-import org.directwebremoting.WebContextFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Provides AJAX-enabled services for manipulating playlists.

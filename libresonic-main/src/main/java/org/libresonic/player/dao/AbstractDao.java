@@ -19,23 +19,15 @@
  */
 package org.libresonic.player.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.libresonic.player.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.*;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-
-import org.libresonic.player.Logger;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.util.Assert;
 
 /**
  * Abstract superclass for all DAO's.

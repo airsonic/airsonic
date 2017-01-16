@@ -19,11 +19,10 @@
  */
 package org.libresonic.player.domain;
 
+import org.libresonic.player.service.SearchService;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.libresonic.player.service.MediaScannerService;
-import org.libresonic.player.service.SearchService;
 
 /**
  * The outcome of a search.

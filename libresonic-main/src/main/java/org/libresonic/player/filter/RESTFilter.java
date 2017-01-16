@@ -19,23 +19,17 @@
  */
 package org.libresonic.player.filter;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.util.NestedServletException;
-
 import org.libresonic.player.Logger;
 import org.libresonic.player.controller.JAXBWriter;
 import org.libresonic.player.controller.RESTController;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.util.NestedServletException;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
 
 import static org.libresonic.player.controller.RESTController.ErrorCode.GENERIC;
 import static org.libresonic.player.controller.RESTController.ErrorCode.MISSING_PARAMETER;

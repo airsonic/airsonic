@@ -19,17 +19,12 @@
  */
 package org.libresonic.player.controller;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.io.IOException;
-
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import org.apache.commons.lang.RandomStringUtils;
+
+import javax.swing.*;
+
+import java.awt.*;
+import java.io.IOException;
 
 /**
  * @author Sindre Mehus

@@ -24,7 +24,7 @@ package org.libresonic.player.domain;
  * @author Sindre Mehus
  */
 
-import junit.framework.*;
+import junit.framework.TestCase;
 
 public class VersionTestCase extends TestCase {
 

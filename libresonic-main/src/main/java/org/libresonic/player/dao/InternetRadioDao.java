@@ -19,14 +19,13 @@
  */
 package org.libresonic.player.dao;
 
+import org.libresonic.player.Logger;
+import org.libresonic.player.domain.InternetRadio;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-
-import org.libresonic.player.Logger;
-import org.libresonic.player.domain.InternetRadio;
 
 /**
  * Provides database services for internet radio.

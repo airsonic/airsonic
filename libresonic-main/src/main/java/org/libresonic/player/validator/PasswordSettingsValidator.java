@@ -19,10 +19,11 @@
  */
 package org.libresonic.player.validator;
 
+import org.libresonic.player.command.PasswordSettingsCommand;
+import org.libresonic.player.controller.PasswordSettingsController;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.*;
-import org.libresonic.player.command.*;
-import org.libresonic.player.controller.*;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 /**
  * Validator for {@link PasswordSettingsController}.

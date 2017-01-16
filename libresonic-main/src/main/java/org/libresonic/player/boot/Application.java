@@ -3,7 +3,7 @@ package org.libresonic.player.boot;
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.directwebremoting.servlet.DwrServlet;
 import org.libresonic.player.filter.*;
-import org.libresonic.player.spring.AdditionalPropertySourceConfigurer;
+import org.libresonic.player.spring.LibresonicPropertySourceConfigurer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -164,7 +164,7 @@ public class Application extends SpringBootServletInitializer {
         // Customize the application or call application.sources(...) to add sources
         // Since our example is itself a @Configuration class (via @SpringBootApplication)
         // we actually don't need to override this method.
-        return application.sources(Application.class).web(true).initializers(new AdditionalPropertySourceConfigurer());
+        return application.sources(Application.class).web(true).initializers(new LibresonicPropertySourceConfigurer());
     }
 
     @Override

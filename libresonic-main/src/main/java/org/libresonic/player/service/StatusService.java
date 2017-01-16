@@ -20,19 +20,12 @@
 package org.libresonic.player.service;
 
 import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.PlayStatus;
+import org.libresonic.player.domain.Player;
 import org.libresonic.player.domain.TransferStatus;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Provides services for maintaining the list of stream, download and upload statuses.
