@@ -29,17 +29,12 @@ public class MetricsFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest httpServletRequest = (HttpServletRequest)request;
 
         String timerName = httpServletRequest.getRequestURI();
         try (MetricsManager.Timer t = MetricsManager.condition(timerName.contains("main.view")).timer(this,timerName)) {
             chain.doFilter(request, response);
         }
-
-      /*  MetricsManager.buildTimer(MetricsFilter.class,timerName).condition(timerName.contains("main.view")).exec(() -> {
-            chain.doFilter(request,response);
-        }); */
     }
 
     @Override

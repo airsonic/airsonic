@@ -10,10 +10,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class MetricsManager {
 
+    // Main metrics registry
     private static final MetricRegistry metrics = new MetricRegistry();
+
+    // Potential metrics reporters
     private static JmxReporter reporter;
-    private static final NullTimer nullTimerSingleton = new NullTimer(null);
-    private static ConditionFalseTimerBuilder conditionFalseTimerBuilderSingleton = new ConditionFalseTimerBuilder();
 
     static {
         reporter = JmxReporter.forRegistry(metrics)
@@ -23,14 +24,36 @@ public class MetricsManager {
         reporter.start();
     }
 
+    /**
+     * Creates a {@link Timer} whose name is based on a class name and a
+     * qualified name.
+     * @param clazz
+     * @param name
+     * @return
+     */
     public static Timer timer(Class clazz, String name) {
         return new TimerBuilder().timer(clazz,name);
     }
 
+    /**
+     * Creates a {@link Timer} whose name is based on an object's class name and a
+     * qualified name.
+     * @param ref
+     * @param name
+     * @return
+     */
     public static Timer timer(Object ref, String name) {
         return timer(ref.getClass(),name);
     }
 
+    /**
+     * Initiate a {@link TimerBuilder} using a condition.
+     * If the condition is false, a void {@link Timer} will finally be built thus
+     * no timer will be registered in the Metrics registry.
+     *
+     * @param ifTrue
+     * @return
+     */
     public static TimerBuilder condition(boolean ifTrue) {
         if (ifTrue == false) {
             return conditionFalseTimerBuilderSingleton;
@@ -38,18 +61,10 @@ public class MetricsManager {
         return new TimerBuilder();
     }
 
-   /* public interface TimerExecutor {
-        void doWithTimer() throws Exception;
-    } */
-
+    /**
+     * A class that builds a {@link Timer}
+     */
     public static class TimerBuilder {
-
-       /* public TimerBuilder condition(boolean ifTrue) {
-            if (ifTrue == false) {
-                theTimer = nullTimerSingleton;
-            }
-            return this;
-        } */
 
         public Timer timer(Class clazz, String name) {
             com.codahale.metrics.Timer t = metrics.timer(MetricRegistry.name(clazz,name));
@@ -61,30 +76,11 @@ public class MetricsManager {
             return timer(ref.getClass(),name);
         }
 
-
-     /*   public void exec(TimerExecutor executor) throws Exception {
-            if (theTimer == null) {
-                com.codahale.metrics.Timer t = metrics.timer(MetricRegistry.name(clazz, name));
-                com.codahale.metrics.Timer.Context tContext = t.time();
-                theTimer = new Timer(tContext);
-            }
-
-            executor.doWithTimer();
-
-            theTimer.close();
-        }
-        */
-    }
-
-    private static class ConditionFalseTimerBuilder extends TimerBuilder {
-        @Override
-        public Timer timer(Class clazz, String name) {
-            return nullTimerSingleton;
-        }
     }
 
     /**
-     *
+     * A class that holds a Metrics timer context implementing {@link AutoCloseable}
+     * thus it can be used in a try-with-resources statement.
      */
     public static class Timer implements AutoCloseable {
 
@@ -101,6 +97,13 @@ public class MetricsManager {
 
     }
 
+
+    // -----------------------------------------------------------------
+    // Convenient singletons to avoid creating useless objects instances
+    // -----------------------------------------------------------------
+    private static final NullTimer nullTimerSingleton = new NullTimer(null);
+    private static final ConditionFalseTimerBuilder conditionFalseTimerBuilderSingleton = new ConditionFalseTimerBuilder();
+
     private static class NullTimer extends Timer {
 
         protected NullTimer(com.codahale.metrics.Timer.Context timerContext) {
@@ -112,4 +115,12 @@ public class MetricsManager {
             // Does nothing
         }
     }
+
+    private static class ConditionFalseTimerBuilder extends TimerBuilder {
+        @Override
+        public Timer timer(Class clazz, String name) {
+            return nullTimerSingleton;
+        }
+    }
+
 }
