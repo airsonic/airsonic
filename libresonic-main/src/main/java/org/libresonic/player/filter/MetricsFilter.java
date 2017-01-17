@@ -33,7 +33,7 @@ public class MetricsFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest)request;
 
         String timerName = httpServletRequest.getRequestURI();
-        try (MetricsManager.Timer t = MetricsManager.buildTimer(this,timerName).condition(timerName.contains("main.view")).timer()) {
+        try (MetricsManager.Timer t = MetricsManager.condition(timerName.contains("main.view")).timer(this,timerName)) {
             chain.doFilter(request, response);
         }
 

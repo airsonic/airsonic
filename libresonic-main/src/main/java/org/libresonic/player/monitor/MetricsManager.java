@@ -13,6 +13,7 @@ public class MetricsManager {
     private static final MetricRegistry metrics = new MetricRegistry();
     private static JmxReporter reporter;
     private static final NullTimer nullTimerSingleton = new NullTimer(null);
+    private static ConditionFalseTimerBuilder conditionFalseTimerBuilderSingleton = new ConditionFalseTimerBuilder();
 
     static {
         reporter = JmxReporter.forRegistry(metrics)
@@ -22,54 +23,46 @@ public class MetricsManager {
         reporter.start();
     }
 
-
-    public static TimerBuilder buildTimer(Class clazz, String name) {
-        return new TimerBuilder(clazz,name);
+    public static Timer timer(Class clazz, String name) {
+        return new TimerBuilder().timer(clazz,name);
     }
 
-    public static TimerBuilder buildTimer(Object ref, String name) {
-        return new TimerBuilder(ref.getClass(),name);
+    public static Timer timer(Object ref, String name) {
+        return timer(ref.getClass(),name);
     }
 
-    public interface TimerExecutor {
+    public static TimerBuilder condition(boolean ifTrue) {
+        if (ifTrue == false) {
+            return conditionFalseTimerBuilderSingleton;
+        }
+        return new TimerBuilder();
+    }
+
+   /* public interface TimerExecutor {
         void doWithTimer() throws Exception;
-    }
-
+    } */
 
     public static class TimerBuilder {
-        private Timer theTimer;
-        private Class clazz;
-        private String name;
 
-        public TimerBuilder() {
-        }
-
-        public TimerBuilder(Timer theTimer) {
-            this.theTimer = theTimer;
-        }
-
-        public TimerBuilder(Class clazz, String name) {
-            this.clazz = clazz;
-            this.name = name;
-        }
-
-        public TimerBuilder condition(boolean ifTrue) {
+       /* public TimerBuilder condition(boolean ifTrue) {
             if (ifTrue == false) {
                 theTimer = nullTimerSingleton;
             }
             return this;
+        } */
+
+        public Timer timer(Class clazz, String name) {
+            com.codahale.metrics.Timer t = metrics.timer(MetricRegistry.name(clazz,name));
+            com.codahale.metrics.Timer.Context tContext =  t.time();
+            return new Timer(tContext);
         }
 
-        public Timer timer() {
-            if (theTimer == null) {
-                com.codahale.metrics.Timer t = metrics.timer(MetricRegistry.name(clazz,name));
-                com.codahale.metrics.Timer.Context tContext =  t.time();
-                theTimer = new Timer(tContext);
-            }
-            return theTimer;
+        public Timer timer(Object ref, String name) {
+            return timer(ref.getClass(),name);
         }
 
-        public void exec(TimerExecutor executor) throws Exception {
+
+     /*   public void exec(TimerExecutor executor) throws Exception {
             if (theTimer == null) {
                 com.codahale.metrics.Timer t = metrics.timer(MetricRegistry.name(clazz, name));
                 com.codahale.metrics.Timer.Context tContext = t.time();
@@ -79,6 +72,14 @@ public class MetricsManager {
             executor.doWithTimer();
 
             theTimer.close();
+        }
+        */
+    }
+
+    private static class ConditionFalseTimerBuilder extends TimerBuilder {
+        @Override
+        public Timer timer(Class clazz, String name) {
+            return nullTimerSingleton;
         }
     }
 
@@ -98,9 +99,6 @@ public class MetricsManager {
             timerContext.stop();
         }
 
-        public Timer condition() {
-            return null;
-        }
     }
 
     private static class NullTimer extends Timer {
@@ -114,6 +112,4 @@ public class MetricsManager {
             // Does nothing
         }
     }
-
-
 }
