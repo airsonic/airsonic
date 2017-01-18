@@ -29,7 +29,6 @@ public class IndexController {
 
     @RequestMapping(method = { RequestMethod.GET})
     public ModelAndView index(HttpServletRequest request) {
-        ControllerUtils.updatePortAndContextPath(request,settingsService);
         UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
 
         Map<String, Object> map = new HashMap<String, Object>();

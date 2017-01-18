@@ -76,21 +76,6 @@
         <module>libresonic-main</module>
     </modules>
 
-    <profiles>
-        <profile>
-            <id>full</id>
-            <modules>
-                <module>libresonic-booter</module>
-                <module>libresonic-installer-windows</module>
-                <module>libresonic-installer-mac</module>
-                <module>libresonic-installer-debian</module>
-                <module>libresonic-installer-rpm</module>
-                <module>libresonic-assembly</module>
-            </modules>
-        </profile>
-
-    </profiles>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
