@@ -41,7 +41,6 @@ public class GettingStartedController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView gettingStarted(HttpServletRequest request) {
-        ControllerUtils.updatePortAndContextPath(request,settingsService);
 
         if (request.getParameter("hide") != null) {
             settingsService.setGettingStartedEnabled(false);
