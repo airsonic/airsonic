@@ -12,6 +12,7 @@
 </c:import>
 
 <form method="post" action="internetRadioSettings.view">
+<sec:csrfInput />
 <table class="indent">
     <tr>
         <th><fmt:message key="internetradiosettings.name"/></th>

@@ -122,6 +122,7 @@
     </h2>
 
     <form id="randomPlayQueue" method="post" action="randomPlayQueue.view?">
+        <sec:csrfInput />
         <table>
             <tr>
                 <td><fmt:message key="more.random.text"/></td>
@@ -291,6 +292,7 @@
     </h2>
 
     <form method="post" enctype="multipart/form-data" action="upload.view">
+        <sec:csrfInput />
         <table>
             <tr>
                 <td><fmt:message key="more.upload.source"/></td>

@@ -34,6 +34,7 @@
 </c:import>
 
 <form method="post" action="sonosSettings.view">
+    <sec:csrfInput />
 
     <div>
         <input type="checkbox" name="sonosEnabled" id="sonosEnabled" class="checkbox"

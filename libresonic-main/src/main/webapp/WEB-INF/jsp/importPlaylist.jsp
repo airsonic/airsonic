@@ -30,6 +30,7 @@
     <fmt:message key="importPlaylist.text"/>
 </div>
 <form method="post" enctype="multipart/form-data" action="importPlaylist.view">
+    <sec:csrfInput />
     <input type="file" id="file" name="file" size="40"/>
     <input type="submit" value="<fmt:message key="common.ok"/>"/>
 </form>
