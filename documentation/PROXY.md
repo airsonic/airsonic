@@ -20,25 +20,32 @@ free.
 
 ## Libresonic configuration
 
-A few settings can be tweaked in Libresonic's startup script or Tomcat
-configuration.
+A few settings should be tweaked via Spring Boot or Tomcat
+configuration:
 
-The reverse proxy will handle HTTPS connections, so there is no need for
-Libresonic to handle them, which is why we set `httpsPort` to 0:
+  - Set the context path to `/libresonic`
+  - Set the correct address to listen to
+  - Set the correct port to listen to
 
-    libresonic.httpsPort=0
+#### Spring Boot
 
-Furthermore, the internal Libresonic server should only be accessible from the
-inside of the reverse proxy : we tell Libresonic to listen on the local IP
-only:
+Add the following java args:
 
-    libresonic.host=127.0.0.1
-    libresonic.port=4040
+```java -Dserver.port=4040 -Dserver.address=127.0.0.1 -Dserver.contextPath=/libresonic -jar libresonic.war```
 
-Finally, if Libresonic should be accessible from a subdirectory, the context
-path must be set correctly:
+#### Tomcat
+Modify your `<Connector>` with the proper address and port:
 
-    libresonic.contextPath=/libresonic
+```
+<Connector 
+    port="4040" 
+    address="127.0.0.1"
+    ...
+```
+See [HTTP Connector](https://tomcat.apache.org/tomcat-7.0-doc/config/http.html) for further detail.
+
+For the context path, tomcat will automatically deploy to a context path matching your war name. So if you're using 
+libresonic.war, you do not need to change anything.
 
 ## Reverse proxy configuration
 
