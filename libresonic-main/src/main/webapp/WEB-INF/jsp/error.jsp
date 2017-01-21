@@ -31,6 +31,16 @@
 %>
 
 <table class="ruleTable indent">
+    <tr><td class="ruleTableHeader">Status</td>
+        <td class="ruleTableCell"><c:out value="${status}" /></td></tr>
+    <tr><td class="ruleTableHeader">Error</td>
+        <td class="ruleTableCell"><c:out value="${error}" /></td></tr>
+    <tr><td class="ruleTableHeader">Message</td>
+        <td class="ruleTableCell"><c:out value="${message}" /></td></tr>
+    <tr><td class="ruleTableHeader">Path</td>
+        <td class="ruleTableCell"><c:out value="${path}" /></td></tr>
+    <tr><td class="ruleTableHeader">Time</td>
+        <td class="ruleTableCell"><c:out value="${timestamp}" /></td></tr>
     <tr><td class="ruleTableHeader">Exception</td>
         <td class="ruleTableCell"><c:out value="${exception}" /></td></tr>
     <tr><td class="ruleTableHeader">Java version</td>
