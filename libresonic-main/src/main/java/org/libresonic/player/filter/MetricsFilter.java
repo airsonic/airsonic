@@ -25,6 +25,7 @@ public class MetricsFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest)request;
 
         String timerName = httpServletRequest.getRequestURI();
+        // Add a metric that measures the time spent for each http request for the /main.view url.
         try (MetricsManager.Timer t = metricsManager.condition(timerName.contains("main.view")).timer(this,timerName)) {
             chain.doFilter(request, response);
         }
