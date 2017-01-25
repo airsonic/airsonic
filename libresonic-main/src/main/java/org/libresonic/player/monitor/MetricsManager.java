@@ -2,6 +2,7 @@ package org.libresonic.player.monitor;
 
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
+import org.libresonic.player.service.ApacheCommonsConfigurationService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,18 +11,41 @@ import java.util.concurrent.TimeUnit;
  */
 public class MetricsManager {
 
+    private ApacheCommonsConfigurationService configurationService;
+
     // Main metrics registry
     private static final MetricRegistry metrics = new MetricRegistry();
+
+    private static Boolean metricsActivatedByConfiguration = null;
+    private static Object _lock = new Object();
 
     // Potential metrics reporters
     private static JmxReporter reporter;
 
-    static {
-        reporter = JmxReporter.forRegistry(metrics)
-                .convertRatesTo(TimeUnit.SECONDS.SECONDS)
-                .convertDurationsTo(TimeUnit.MILLISECONDS)
-                .build();
-        reporter.start();
+    private void configureMetricsActivation() {
+        if (configurationService.containsKey("Metrics")) {
+            metricsActivatedByConfiguration = Boolean.TRUE;
+
+            // Start a Metrics JMX reporter
+            reporter = JmxReporter.forRegistry(metrics)
+                    .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                    .convertDurationsTo(TimeUnit.MILLISECONDS)
+                    .build();
+            reporter.start();
+        } else {
+            metricsActivatedByConfiguration = Boolean.FALSE;
+        }
+    }
+
+    private boolean metricsActivatedByConfiguration() {
+        if (metricsActivatedByConfiguration == null) {
+            synchronized (_lock) {
+                if (metricsActivatedByConfiguration == null) {
+                    configureMetricsActivation();
+                }
+            }
+        }
+        return metricsActivatedByConfiguration.booleanValue();
     }
 
     /**
@@ -31,8 +55,12 @@ public class MetricsManager {
      * @param name
      * @return
      */
-    public static Timer timer(Class clazz, String name) {
-        return new TimerBuilder().timer(clazz,name);
+    public Timer timer(Class clazz, String name) {
+        if (metricsActivatedByConfiguration()) {
+            return new TimerBuilder().timer(clazz, name);
+        } else {
+            return nullTimerSingleton;
+        }
     }
 
     /**
@@ -42,7 +70,7 @@ public class MetricsManager {
      * @param name
      * @return
      */
-    public static Timer timer(Object ref, String name) {
+    public Timer timer(Object ref, String name) {
         return timer(ref.getClass(),name);
     }
 
@@ -54,11 +82,19 @@ public class MetricsManager {
      * @param ifTrue
      * @return
      */
-    public static TimerBuilder condition(boolean ifTrue) {
-        if (ifTrue == false) {
-            return conditionFalseTimerBuilderSingleton;
+    public TimerBuilder condition(boolean ifTrue) {
+        if (metricsActivatedByConfiguration()) {
+            if (ifTrue == false) {
+                return conditionFalseTimerBuilderSingleton;
+            }
+            return new TimerBuilder();
+        } else {
+            return nullTimerBuilderSingleton;
         }
-        return new TimerBuilder();
+    }
+
+    public void setConfigurationService(ApacheCommonsConfigurationService configurationService) {
+        this.configurationService = configurationService;
     }
 
     /**
@@ -102,7 +138,8 @@ public class MetricsManager {
     // Convenient singletons to avoid creating useless objects instances
     // -----------------------------------------------------------------
     private static final NullTimer nullTimerSingleton = new NullTimer(null);
-    private static final ConditionFalseTimerBuilder conditionFalseTimerBuilderSingleton = new ConditionFalseTimerBuilder();
+    private static final NullTimerBuilder conditionFalseTimerBuilderSingleton = new NullTimerBuilder();
+    private static final NullTimerBuilder nullTimerBuilderSingleton = new NullTimerBuilder();
 
     private static class NullTimer extends Timer {
 
@@ -116,7 +153,7 @@ public class MetricsManager {
         }
     }
 
-    private static class ConditionFalseTimerBuilder extends TimerBuilder {
+    private static class NullTimerBuilder extends TimerBuilder {
         @Override
         public Timer timer(Class clazz, String name) {
             return nullTimerSingleton;

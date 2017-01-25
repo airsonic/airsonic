@@ -147,9 +147,14 @@ public class Application extends SpringBootServletInitializer {
     }
 
     @Bean
+    public Filter metricsFilter() {
+        return new MetricsFilter();
+    }
+
+    @Bean
     public FilterRegistrationBean metricsFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(new MetricsFilter());
+        registration.setFilter(metricsFilter());
         registration.setOrder(7);
         return registration;
     }
