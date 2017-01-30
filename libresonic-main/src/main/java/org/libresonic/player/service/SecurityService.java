@@ -62,11 +62,22 @@ public class SecurityService implements UserDetailsService {
      * @throws DataAccessException       If user could not be found for a repository-specific reason.
      */
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
-        User user = getUserByName(username);
+        return loadUserByUsername(username, true);
+    }
+
+    public UserDetails loadUserByUsername(String username, boolean caseSensitive)
+            throws UsernameNotFoundException, DataAccessException {
+        User user = getUserByName(username, caseSensitive);
         if (user == null) {
             throw new UsernameNotFoundException("User \"" + username + "\" was not found.");
         }
 
+        List<GrantedAuthority> authorities = getGrantedAuthorities(username);
+
+        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
+    }
+
+    public List<GrantedAuthority> getGrantedAuthorities(String username) {
         String[] roles = userDao.getRolesForUser(username);
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("IS_AUTHENTICATED_ANONYMOUSLY"));
@@ -74,8 +85,7 @@ public class SecurityService implements UserDetailsService {
         for (int i = 0; i < roles.length; i++) {
             authorities.add(new SimpleGrantedAuthority("ROLE_" + roles[i].toUpperCase()));
         }
-
-        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
+        return authorities;
     }
 
     /**
@@ -86,7 +96,7 @@ public class SecurityService implements UserDetailsService {
      */
     public User getCurrentUser(HttpServletRequest request) {
         String username = getCurrentUsername(request);
-        return username == null ? null : userDao.getUserByName(username);
+        return username == null ? null : getUserByName(username);
     }
 
     /**
@@ -106,7 +116,17 @@ public class SecurityService implements UserDetailsService {
      * @return The user, or <code>null</code> if not found.
      */
     public User getUserByName(String username) {
-        return userDao.getUserByName(username);
+        return getUserByName(username, true);
+    }
+
+    /**
+     * Returns the user with the given username
+     * @param username
+     * @param caseSensitive If false, will do a case insensitive search
+     * @return
+     */
+    public User getUserByName(String username, boolean caseSensitive) {
+        return userDao.getUserByName(username, caseSensitive);
     }
 
     /**
