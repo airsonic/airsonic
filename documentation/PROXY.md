@@ -98,7 +98,8 @@ The following configuration works for Apache (without HTTPS):
 
 ### HAProxy
 
-The following configuration works for HAProxy (HTTPS with HTTP redirection):
+The following configuration works for HAProxy 1.7 (HTTPS with HTTP
+redirection):
 
 ```haproxy
 frontend https
@@ -115,8 +116,7 @@ frontend https
     option forwardfor
 
     # HTTP: Redirect insecure requests to HTTPS
-    acl http ssl_fc,not
-    http-request redirect scheme https if http
+    http-request redirect scheme https if !{ ssl_fc }
 
     # HTTPS: Forward requests to the Libresonic backend
     acl is_libresonic  path_beg -i /libresonic
