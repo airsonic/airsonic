@@ -48,7 +48,7 @@ public class DBController {
     @Autowired
     private DaoHelper daoHelper;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = { RequestMethod.GET, RequestMethod.POST })
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
 
