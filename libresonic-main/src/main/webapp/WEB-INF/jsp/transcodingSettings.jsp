@@ -14,6 +14,7 @@
 </c:import>
 
 <form method="post" action="transcodingSettings.view">
+<sec:csrfInput />
 <table class="indent">
     <tr>
         <th><fmt:message key="transcodingsettings.name"/></th>

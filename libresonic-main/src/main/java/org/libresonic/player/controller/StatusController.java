@@ -80,7 +80,7 @@ public class StatusController {
     }
 
 
-    private static class TransferStatusHolder {
+    public static class TransferStatusHolder {
         private TransferStatus transferStatus;
         private boolean isStream;
         private boolean isDownload;

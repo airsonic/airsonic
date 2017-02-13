@@ -208,6 +208,7 @@
 
 <div id="commentForm" style="display:none">
     <form method="post" action="setMusicFileInfo.view">
+        <sec:csrfInput />
         <input type="hidden" name="action" value="comment">
         <input type="hidden" name="id" value="${model.dir.id}">
         <textarea name="comment" rows="6" cols="70">${model.dir.comment}</textarea>

@@ -1,6 +1,0 @@
--Xmx150m
--verbose:gc
--Dlibresonic.host=0.0.0.0
--Dlibresonic.port=4040
--Dlibresonic.httpsPort=0
--Dlibresonic.contextPath=/

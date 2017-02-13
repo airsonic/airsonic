@@ -62,6 +62,7 @@
             } catch(e) { return; }
             elements = form.getElementsByTagName("input");
             for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "hidden") continue;
                 if (elements[i].type == "submit") continue;
                 if (data[elements[i].name]) elements[i].value = data[elements[i].name];
             }
@@ -87,9 +88,17 @@
             var data = {}
             var elements = [];
             elements = form.getElementsByTagName("input");
-            for (var i = 0; i < elements.length; i++) data[elements[i].name] = elements[i].value;
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "hidden") continue;
+                if (elements[i].type == "submit") continue;
+                data[elements[i].name] = elements[i].value;
+            }
             elements = form.getElementsByTagName("select");
-            for (var i = 0; i < elements.length; i++) data[elements[i].name] = elements[i].value;
+            for (var i = 0; i < elements.length; i++) {
+                if (elements[i].type == "hidden") continue;
+                if (elements[i].type == "submit") continue;
+                data[elements[i].name] = elements[i].value;
+            }
             localStorage.setItem("randomPlayQueue", JSON.stringify(data));
         }
 
@@ -122,6 +131,7 @@
     </h2>
 
     <form id="randomPlayQueue" method="post" action="randomPlayQueue.view?">
+        <sec:csrfInput />
         <table>
             <tr>
                 <td><fmt:message key="more.random.text"/></td>
@@ -291,6 +301,7 @@
     </h2>
 
     <form method="post" enctype="multipart/form-data" action="upload.view">
+        <sec:csrfInput />
         <table>
             <tr>
                 <td><fmt:message key="more.upload.source"/></td>

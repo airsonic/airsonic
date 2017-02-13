@@ -98,6 +98,8 @@ public class AdvancedSettingsController {
             settingsService.setSmtpPassword(command.getSmtpPassword());
         }
 
+        settingsService.save();
+
         return "redirect:advancedSettings.view";
     }
 

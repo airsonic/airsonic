@@ -461,8 +461,7 @@ public class PlaylistService {
             for (Object obj : tracks) {
                 Element track = (Element) obj;
                 String location = track.getChildText("location", ns);
-                if (location != null && location.startsWith("file://")) {
-                    location = location.replaceFirst("file://", "");
+                if (location != null) {
                     MediaFile file = getMediaFile(location);
                     if (file != null) {
                         ok.add(file);

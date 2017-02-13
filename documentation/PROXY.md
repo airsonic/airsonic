@@ -20,25 +20,32 @@ free.
 
 ## Libresonic configuration
 
-A few settings can be tweaked in Libresonic's startup script or Tomcat
-configuration.
+A few settings should be tweaked via Spring Boot or Tomcat
+configuration:
 
-The reverse proxy will handle HTTPS connections, so there is no need for
-Libresonic to handle them, which is why we set `httpsPort` to 0:
+  - Set the context path to `/libresonic`
+  - Set the correct address to listen to
+  - Set the correct port to listen to
 
-    libresonic.httpsPort=0
+#### Spring Boot
 
-Furthermore, the internal Libresonic server should only be accessible from the
-inside of the reverse proxy : we tell Libresonic to listen on the local IP
-only:
+Add the following java args:
 
-    libresonic.host=127.0.0.1
-    libresonic.port=4040
+```java -Dserver.port=4040 -Dserver.address=127.0.0.1 -Dserver.contextPath=/libresonic -jar libresonic.war```
 
-Finally, if Libresonic should be accessible from a subdirectory, the context
-path must be set correctly:
+#### Tomcat
+Modify your `<Connector>` with the proper address and port:
 
-    libresonic.contextPath=/libresonic
+```
+<Connector 
+    port="4040" 
+    address="127.0.0.1"
+    ...
+```
+See [HTTP Connector](https://tomcat.apache.org/tomcat-7.0-doc/config/http.html) for further detail.
+
+For the context path, tomcat will automatically deploy to a context path matching your war name. So if you're using 
+libresonic.war, you do not need to change anything.
 
 ## Reverse proxy configuration
 
@@ -91,19 +98,39 @@ The following configuration works for Apache (without HTTPS):
 
 ### HAProxy
 
-The following configuration works for HAProxy (HTTPS only):
+The following configuration works for HAProxy 1.7 (HTTPS with HTTP
+redirection):
 
 ```haproxy
 frontend https
-    bind $server_public_ip$:443 ssl crt /etc/haproxy/ssl/$server_ssl_keys$.pem
 
-    # Let Libresonic handle all requests under /libresonic
-    acl url_libresonic path_beg -i /libresonic
-    use_backend libresonic-backend if url_libresonic
+    # Make sure that we are in HTTP mode so that we can rewrite headers
+    mode http
 
-    # Change default backend to libresonic backend if you don't have a web backend
-    default_backend web-backend
+    # Listen on the HTTPS and HTTP ports
+    bind :80
+    bind :443 ssl crt /etc/haproxy/cert_key.pem
+
+    # Some useful headers
+    option httpclose
+    option forwardfor
+
+    # HTTP: Redirect insecure requests to HTTPS
+    http-request redirect scheme https if !{ ssl_fc }
+
+    # HTTPS: Forward requests to the Libresonic backend
+    acl is_libresonic  path_beg -i /libresonic
+    use_backend libresonic-backend if is_libresonic
 
 backend libresonic-backend
-  server libresonic 127.0.0.1:4040 check
+
+    # Make sure that we are in HTTP mode so that we can rewrite headers
+    mode http
+
+    # Rewrite all redirects to use HTTPS, similar to what Nginx does in the
+    # proxy_redirect directive.
+    http-response replace-value Location ^http://(.*)$ https://\1
+
+    # Forward requests to Libresonic running on localhost on port 4040
+    server libresonic 127.0.0.1:4040 check
 ```

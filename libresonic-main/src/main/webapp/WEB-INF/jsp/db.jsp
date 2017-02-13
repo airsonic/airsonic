@@ -7,6 +7,7 @@
 <h1>Database query</h1>
 
 <form method="post" action="db.view">
+    <sec:csrfInput />
     <textarea rows="10" cols="80" id="query" name="query" style="margin-top:1em">${model.query}</textarea>
     <input type="submit" value="<fmt:message key="common.ok"/>">
 </form>

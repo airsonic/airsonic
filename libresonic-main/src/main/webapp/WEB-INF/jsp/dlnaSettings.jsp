@@ -34,6 +34,7 @@
 </c:import>
 
 <form method="post" action="dlnaSettings.view">
+    <sec:csrfInput />
 
     <div>
         <input type="checkbox" name="dlnaEnabled" id="dlnaEnabled" class="checkbox"

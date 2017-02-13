@@ -1,8 +1,0 @@
-#! /bin/sh
-
-set -e
-
-# Stop Libresonic service.
-if [ -e /etc/init.d/libresonic ]; then
-  invoke-rc.d libresonic stop
-fi

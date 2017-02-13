@@ -91,6 +91,7 @@
 <body class="mainframe bgcolor1" onload="search()">
 <h1><fmt:message key="changecoverart.title"/></h1>
 <form action="javascript:search()">
+    <sec:csrfInput />
     <table class="indent"><tr>
         <td><input id="artist" name="artist" placeholder="<fmt:message key="changecoverart.artist"/>" size="35" type="text" value="${model.artist}" onclick="select()"/></td>
         <td><input id="album" name="album" placeholder="<fmt:message key="changecoverart.album"/>" size="35" type="text" value="${model.album}" onclick="select()"/></td>
@@ -99,6 +100,7 @@
 </form>
 
 <form action="javascript:setImage(dwr.util.getValue('url'))">
+    <sec:csrfInput />
     <table><tr>
         <td><label for="url"><fmt:message key="changecoverart.address"/></label></td>
         <td style="padding-left:0.5em"><input type="text" name="url" size="50" id="url" value="http://" onclick="select()"/></td>

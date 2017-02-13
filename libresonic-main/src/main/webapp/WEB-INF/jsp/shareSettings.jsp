@@ -14,6 +14,7 @@
 </c:import>
 
 <form method="post" action="shareSettings.view">
+    <sec:csrfInput />
 
     <table class="music indent">
         <tr>

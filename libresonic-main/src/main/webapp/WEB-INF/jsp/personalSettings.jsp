@@ -241,6 +241,7 @@
 </form:form>
 
 <form method="post" enctype="multipart/form-data" action="avatarUpload.view">
+    <sec:csrfInput />
     <table>
         <tr>
             <td style="padding-right:1em"><fmt:message key="personalsettings.avatar.changecustom"/></td>
