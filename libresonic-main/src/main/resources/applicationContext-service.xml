@@ -92,6 +92,10 @@
 
     <bean id="configurationService" class="org.libresonic.player.service.ApacheCommonsConfigurationService" />
 
+    <bean id="metricsManager" class="org.libresonic.player.monitor.MetricsManager">
+        <property name="configurationService" ref="configurationService" />
+    </bean>
+
     <bean id="settingsService" class="org.libresonic.player.service.SettingsService" init-method="init">
         <property name="internetRadioDao" ref="internetRadioDao"/>
         <property name="musicFolderDao" ref="musicFolderDao"/>

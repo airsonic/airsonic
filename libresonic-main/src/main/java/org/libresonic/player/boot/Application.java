@@ -154,6 +154,20 @@ public class Application extends SpringBootServletInitializer implements Embedde
     }
 
     @Bean
+    public Filter metricsFilter() {
+        return new MetricsFilter();
+    }
+
+    @Bean
+    public FilterRegistrationBean metricsFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(metricsFilter());
+        registration.setOrder(7);
+        return registration;
+    }
+
+
+    @Bean
     public Filter noCacheFilter() {
         return new ResponseHeaderFilter();
     }
