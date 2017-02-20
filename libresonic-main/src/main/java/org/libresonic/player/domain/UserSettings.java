@@ -33,7 +33,6 @@ public class UserSettings {
     private Locale locale;
     private String themeId;
     private boolean showNowPlayingEnabled;
-    private boolean showChatEnabled;
     private boolean showArtistInfoEnabled;
     private boolean finalVersionNotificationEnabled;
     private boolean betaVersionNotificationEnabled;
@@ -92,14 +91,6 @@ public class UserSettings {
 
     public void setShowNowPlayingEnabled(boolean showNowPlayingEnabled) {
         this.showNowPlayingEnabled = showNowPlayingEnabled;
-    }
-
-    public boolean isShowChatEnabled() {
-        return showChatEnabled;
-    }
-
-    public void setShowChatEnabled(boolean showChatEnabled) {
-        this.showChatEnabled = showChatEnabled;
     }
 
     public boolean isShowArtistInfoEnabled() {

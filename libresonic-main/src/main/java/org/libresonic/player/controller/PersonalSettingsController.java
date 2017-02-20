@@ -69,7 +69,6 @@ public class PersonalSettingsController  {
         command.setPartyModeEnabled(userSettings.isPartyModeEnabled());
         command.setQueueFollowingSongs(userSettings.isQueueFollowingSongs());
         command.setShowNowPlayingEnabled(userSettings.isShowNowPlayingEnabled());
-        command.setShowChatEnabled(userSettings.isShowChatEnabled());
         command.setShowArtistInfoEnabled(userSettings.isShowArtistInfoEnabled());
         command.setNowPlayingAllowed(userSettings.isNowPlayingAllowed());
         command.setMainVisibility(userSettings.getMainVisibility());
@@ -137,7 +136,6 @@ public class PersonalSettingsController  {
         settings.setPartyModeEnabled(command.isPartyModeEnabled());
         settings.setQueueFollowingSongs(command.isQueueFollowingSongs());
         settings.setShowNowPlayingEnabled(command.isShowNowPlayingEnabled());
-        settings.setShowChatEnabled(command.isShowChatEnabled());
         settings.setShowArtistInfoEnabled(command.isShowArtistInfoEnabled());
         settings.setNowPlayingAllowed(command.isNowPlayingAllowed());
         settings.setMainVisibility(command.getMainVisibility());

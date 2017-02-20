@@ -132,8 +132,6 @@
         <tr>
             <td><form:checkbox path="showNowPlayingEnabled" id="nowPlaying" cssClass="checkbox"/></td>
             <td><label for="nowPlaying"><fmt:message key="personalsettings.shownowplaying"/></label></td>
-            <td style="padding-left:2em"><form:checkbox path="showChatEnabled" id="chat" cssClass="checkbox"/></td>
-            <td><label for="chat"><fmt:message key="personalsettings.showchat"/></label></td>
             <td style="padding-left:2em"><form:checkbox path="showArtistInfoEnabled" id="artistInfo" cssClass="checkbox"/></td>
             <td><label for="artistInfo"><fmt:message key="personalsettings.showartistinfo"/></label></td>
         </tr>

@@ -32,7 +32,7 @@ public class IndexController {
         UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("showRight", userSettings.isShowNowPlayingEnabled() || userSettings.isShowChatEnabled());
+        map.put("showRight", userSettings.isShowNowPlayingEnabled());
         map.put("autoHidePlayQueue", userSettings.isAutoHidePlayQueue());
         map.put("listReloadDelay", userSettings.getListReloadDelay());
         map.put("keyboardShortcutsEnabled", userSettings.isKeyboardShortcutsEnabled());

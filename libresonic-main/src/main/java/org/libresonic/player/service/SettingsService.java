@@ -1123,7 +1123,6 @@ public class SettingsService {
         settings.setBetaVersionNotificationEnabled(false);
         settings.setSongNotificationEnabled(true);
         settings.setShowNowPlayingEnabled(true);
-        settings.setShowChatEnabled(true);
         settings.setPartyModeEnabled(false);
         settings.setNowPlayingAllowed(true);
         settings.setAutoHidePlayQueue(true);

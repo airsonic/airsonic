@@ -6,30 +6,20 @@
     <%@ include file="jquery.jsp" %>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/chatService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
 
     <script type="text/javascript">
-
-        var chatRevision = 0;
 
         function init() {
             dwr.engine.setErrorHandler(null);
 
             startGetScanningStatusTimer();
 
-            <c:if test="${model.showChat}">
-            chatService.addMessage(null);
-            </c:if>
-
             <c:if test="${model.showNowPlaying}">
             startGetNowPlayingTimer();
             </c:if>
 
-            <c:if test="${model.showChat}">
-            startGetMessagesTimer();
-            </c:if>
         }
 
         function startGetNowPlayingTimer() {
@@ -73,67 +63,6 @@
             $("#nowPlaying").html(html);
         }
 
-        function startGetMessagesTimer() {
-            chatService.getMessages(chatRevision, getMessagesCallback);
-            setTimeout("startGetMessagesTimer()", 10000);
-        }
-
-        function addMessage() {
-            chatService.addMessage($("#message").val());
-            $("#message").val(null);
-            setTimeout("startGetMessagesTimer()", 500);
-        }
-        function clearMessages() {
-            chatService.clearMessages();
-            setTimeout("startGetMessagesTimer()", 500);
-        }
-
-        function getMessagesCallback(messages) {
-
-            if (messages == null) {
-                return;
-            }
-            chatRevision = messages.revision;
-
-            // Delete all the rows except for the "pattern" row
-            dwr.util.removeAllRows("chatlog", { filter:function(div) {
-                return (div.id != "pattern");
-            }});
-
-            // Create a new set cloned from the pattern row
-            for (var i = 0; i < messages.messages.length; i++) {
-                var message = messages.messages[i];
-                var id = i + 1;
-                dwr.util.cloneNode("pattern", { idSuffix:id });
-                $("#user" + id).text(message.username);
-                $("#date" + id).text(" [" + formatDate(message.date) + "]");
-                $("#content" + id).text(message.content);
-                $("#pattern" + id).show();
-            }
-
-            var clearDiv = $("#clearDiv");
-            if (clearDiv) {
-                if (messages.messages.length == 0) {
-                    clearDiv.hide();
-                } else {
-                    clearDiv.show();
-                }
-            }
-        }
-
-        function formatDate(date) {
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            var result = hours < 10 ? "0" : "";
-            result += hours;
-            result += ":";
-            if (minutes < 10) {
-                result += "0";
-            }
-            result += minutes;
-            return result;
-        }
-
         function startGetScanningStatusTimer() {
             nowPlayingService.getScanningStatus(getScanningStatusCallback);
         }
@@ -164,25 +93,6 @@
 </div>
 
 <div id="nowPlaying"></div>
-
-<c:if test="${model.showChat}">
-    <h2><fmt:message key="main.chat"/></h2>
-    <div style="padding-top:0.3em;padding-bottom:0.3em">
-        <input type="text" id="message" placeholder="<fmt:message key="main.message"/>" style="width:100%" onkeypress="dwr.util.onReturn(event, addMessage)"/>
-    </div>
-
-    <table>
-        <tbody id="chatlog">
-        <tr id="pattern" style="display:none;margin:0;padding:0 0 0.15em 0;border:0"><td>
-            <span id="user" class="detail" style="font-weight:bold"></span>&nbsp;<span id="date" class="detail"></span> <span id="content"></span></td>
-        </tr>
-        </tbody>
-    </table>
-
-    <c:if test="${model.user.adminRole}">
-        <div id="clearDiv" style="display:none;" class="forward"><a href="javascript:clearMessages()"> <fmt:message key="main.clearchat"/></a></div>
-    </c:if>
-</c:if>
 
 </body>
 </html>

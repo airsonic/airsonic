@@ -300,10 +300,6 @@
 
     <bean id="ajaxTransferService" class="org.libresonic.player.ajax.TransferService"/>
 
-    <bean id="ajaxChatService" class="org.libresonic.player.ajax.ChatService" init-method="init">
-        <property name="securityService" ref="securityService"/>
-    </bean>
-
     <bean id="localeResolver" class="org.libresonic.player.i18n.LibresonicLocaleResolver">
         <property name="securityService" ref="securityService"/>
         <property name="settingsService" ref="settingsService"/>

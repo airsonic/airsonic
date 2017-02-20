@@ -21,7 +21,6 @@ package org.libresonic.player.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.Logger;
-import org.libresonic.player.ajax.ChatService;
 import org.libresonic.player.ajax.LyricsInfo;
 import org.libresonic.player.ajax.LyricsService;
 import org.libresonic.player.ajax.PlayQueueService;
@@ -112,8 +111,6 @@ public class RESTController {
     private ShareService shareService;
     @Autowired
     private PlaylistService playlistService;
-    @Autowired
-    private ChatService chatService;
     @Autowired
     private LyricsService lyricsService;
     @Autowired
@@ -2183,34 +2180,6 @@ public class RESTController {
 
         securityService.deleteUser(username);
 
-        writeEmptyResponse(request, response);
-    }
-
-    @RequestMapping(value = "/rest/getChatMessages", method = {RequestMethod.GET, RequestMethod.POST})
-    public void getChatMessages(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request = wrapRequest(request);
-        long since = getLongParameter(request, "since", 0L);
-
-        ChatMessages result = new ChatMessages();
-        for (ChatService.Message message : chatService.getMessages(0L).getMessages()) {
-            long time = message.getDate().getTime();
-            if (time > since) {
-                ChatMessage c = new ChatMessage();
-                result.getChatMessage().add(c);
-                c.setUsername(message.getUsername());
-                c.setTime(time);
-                c.setMessage(message.getContent());
-            }
-        }
-        Response res = createResponse();
-        res.setChatMessages(result);
-        jaxbWriter.writeResponse(request, response, res);
-    }
-
-    @RequestMapping(value = "/rest/addChatMessage", method = {RequestMethod.GET, RequestMethod.POST})
-    public void addChatMessage(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request = wrapRequest(request);
-        chatService.doAddMessage(getRequiredStringParameter(request, "message"), request);
         writeEmptyResponse(request, response);
     }
 

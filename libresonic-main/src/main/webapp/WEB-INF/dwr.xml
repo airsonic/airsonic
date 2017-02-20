@@ -40,10 +40,6 @@
             <param name="beanName" value="ajaxTransferService"/>
         </create>
 
-        <create creator="spring" javascript="chatService">
-            <param name="beanName" value="ajaxChatService"/>
-        </create>
-
         <convert converter="bean" match="org.libresonic.player.ajax.NetworkStatus"/>
         <convert converter="bean" match="org.libresonic.player.ajax.NowPlayingInfo"/>
         <convert converter="bean" match="org.libresonic.player.ajax.ScanInfo"/>
@@ -58,8 +54,6 @@
         <convert converter="bean" match="org.libresonic.player.ajax.UploadInfo"/>
         <convert converter="bean" match="org.libresonic.player.ajax.LyricsInfo"/>
         <convert converter="bean" match="org.libresonic.player.ajax.CoverArtInfo"/>
-        <convert converter="bean" match="org.libresonic.player.ajax.ChatService$Message"/>
-        <convert converter="bean" match="org.libresonic.player.ajax.ChatService$Messages"/>
         <convert converter="bean" match="org.libresonic.player.ajax.SimilarArtist"/>
         <convert converter="bean" match="org.libresonic.player.ajax.ArtistInfo"/>
         <convert converter="bean" match="org.libresonic.player.ajax.TopSong"/>

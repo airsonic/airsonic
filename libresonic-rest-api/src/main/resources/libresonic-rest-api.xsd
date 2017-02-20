@@ -30,7 +30,6 @@
             <xs:element name="license" type="sub:License" minOccurs="1" maxOccurs="1"/>
             <xs:element name="users" type="sub:Users" minOccurs="1" maxOccurs="1"/>
             <xs:element name="user" type="sub:User" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="chatMessages" type="sub:ChatMessages" minOccurs="1" maxOccurs="1"/>
             <xs:element name="albumList" type="sub:AlbumList" minOccurs="1" maxOccurs="1"/>
             <xs:element name="albumList2" type="sub:AlbumList2" minOccurs="1" maxOccurs="1"/>
             <xs:element name="randomSongs" type="sub:Songs" minOccurs="1" maxOccurs="1"/>
@@ -334,18 +333,6 @@
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
-    </xs:complexType>
-
-    <xs:complexType name="ChatMessages">
-        <xs:sequence>
-            <xs:element name="chatMessage" type="sub:ChatMessage" minOccurs="0" maxOccurs="unbounded"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="ChatMessage">
-        <xs:attribute name="username" type="xs:string" use="required"/>
-        <xs:attribute name="time" type="xs:long" use="required"/>
-        <xs:attribute name="message" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="AlbumList">

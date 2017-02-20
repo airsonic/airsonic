@@ -45,7 +45,7 @@ public class UserDao extends AbstractDao {
             "playlist_track_number, playlist_artist, playlist_album, playlist_genre, " +
             "playlist_year, playlist_bit_rate, playlist_duration, playlist_format, playlist_file_size, " +
             "last_fm_enabled, last_fm_username, last_fm_password, transcode_scheme, show_now_playing, selected_music_folder_id, " +
-            "party_mode_enabled, now_playing_allowed, avatar_scheme, system_avatar_id, changed, show_chat, show_artist_info, auto_hide_play_queue, " +
+            "party_mode_enabled, now_playing_allowed, avatar_scheme, system_avatar_id, changed, show_artist_info, auto_hide_play_queue, " +
             "view_as_list, default_album_list, queue_following_songs, show_side_bar, list_reload_delay, keyboard_shortcuts_enabled";
 
     private static final Integer ROLE_ID_ADMIN = 1;
@@ -212,7 +212,7 @@ public class UserDao extends AbstractDao {
                                                    settings.getTranscodeScheme().name(), settings.isShowNowPlayingEnabled(),
                                                    settings.getSelectedMusicFolderId(), settings.isPartyModeEnabled(), settings.isNowPlayingAllowed(),
                                                    settings.getAvatarScheme().name(), settings.getSystemAvatarId(), settings.getChanged(),
-                                                   settings.isShowChatEnabled(), settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
+                                                   settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
                                                    settings.isViewAsList(), settings.getDefaultAlbumList().getId(), settings.isQueueFollowingSongs(),
                                                    settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled()});
     }
@@ -367,7 +367,6 @@ public class UserDao extends AbstractDao {
             settings.setAvatarScheme(AvatarScheme.valueOf(rs.getString(col++)));
             settings.setSystemAvatarId((Integer) rs.getObject(col++));
             settings.setChanged(rs.getTimestamp(col++));
-            settings.setShowChatEnabled(rs.getBoolean(col++));
             settings.setShowArtistInfoEnabled(rs.getBoolean(col++));
             settings.setAutoHidePlayQueue(rs.getBoolean(col++));
             settings.setViewAsList(rs.getBoolean(col++));
