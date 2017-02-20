@@ -18,6 +18,7 @@ In addition to being a streaming media server, Libresonic works very well as a l
 
 Based on Java technology, Libresonic runs on most platforms, including Windows, Mac, Linux and Unix variants.
 
+![Screenshot](contrib/assets/screenshot.jpg)
 
 History
 -----
