@@ -34,8 +34,7 @@ public class ApacheCommonsConfigurationService {
         }
         Parameters params = new Parameters();
         PropertiesConfigurationLayout layout = new PropertiesConfigurationLayout();
-        // https://issues.apache.org/jira/browse/CONFIGURATION-644
-//        layout.setHeaderComment(HEADER_COMMENT);
+        layout.setHeaderComment(HEADER_COMMENT);
         layout.setGlobalSeparator("=");
         builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class).configure(
                 params.properties()
