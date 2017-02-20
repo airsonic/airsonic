@@ -28,4 +28,5 @@
     <include file="schema53.xml" relativeToChangelogFile="true"/>
     <include file="schema61.xml" relativeToChangelogFile="true"/>
     <include file="schema62.xml" relativeToChangelogFile="true"/>
+    <include file="schema100.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

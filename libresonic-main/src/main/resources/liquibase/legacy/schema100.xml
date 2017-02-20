@@ -1,0 +1,19 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <!-- SCHEMA VERSION NO LONGER USED. 100 is the last version. -->
+    <changeSet id="schema100_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 100</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="100" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 100</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
