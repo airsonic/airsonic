@@ -40,7 +40,21 @@ Daily WAR files are built by Jenkins and available [here](https://jenkins.zifnab
 
 		INFO: Deployment of web application archive /var/lib/tomcat8/webapps/libresonic.war has finished in 46,192 ms
 
-4.  In your web browser, navigate to `192.0.2.10:8080/libresonic/`, replacing `192.0.2.0` with your server's IP address, or `127.0.0.1` if installing locally.
+4.  In your web browser, navigate to `http://IP_ADDRESS:8080/libresonic/`, replacing `IP_ADDRESS` with your server's IP address, or `127.0.0.1` if installing locally.
+
+## Alternative to Tomcat
+
+If you'd prefer not to use a Tomcat container, you can also run Libresonic as a standalone application.
+Note that, in that case, libresonic will available at `http://IP_ADDRESS:8080` (and not `IP_ADDRESS:8080/libresonic/`).
+
+Download the Libresonic Pre-Compiled Package as explained above and put it anywhere. Then create the libresonic directory.
+
+Now you can simply run java against the libresonic.war package using a command like :
+
+
+```
+java -jar libresonic.war
+```
 
 ## Installing From Source
 
