@@ -85,7 +85,6 @@ public class SettingsService {
     private static final String KEY_LDAP_SEARCH_FILTER = "LdapSearchFilter";
     private static final String KEY_LDAP_AUTO_SHADOWING = "LdapAutoShadowing";
     private static final String KEY_GETTING_STARTED_ENABLED = "GettingStartedEnabled";
-    private static final String KEY_PORT_FORWARDING_ENABLED = "PortForwardingEnabled";
     private static final String KEY_PORT = "Port";
     private static final String KEY_HTTPS_PORT = "HttpsPort";
     private static final String KEY_URL_REDIRECTION_ENABLED = "UrlRedirectionEnabled";
@@ -156,7 +155,6 @@ public class SettingsService {
     private static final String DEFAULT_LDAP_MANAGER_PASSWORD = null;
     private static final String DEFAULT_LDAP_SEARCH_FILTER = "(sAMAccountName={0})";
     private static final boolean DEFAULT_LDAP_AUTO_SHADOWING = false;
-    private static final boolean DEFAULT_PORT_FORWARDING_ENABLED = false;
     private static final boolean DEFAULT_GETTING_STARTED_ENABLED = true;
     private static final int DEFAULT_PORT = 80;
     private static final int DEFAULT_HTTPS_PORT = 0;
@@ -187,7 +185,8 @@ public class SettingsService {
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
             "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", 
-            "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort");
+            "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort",
+            "PortForwardingEnabled");
 
     private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
     private static final String THEMES_FILE = "/org/libresonic/player/theme/themes.txt";
@@ -668,14 +667,6 @@ public class SettingsService {
 
     public void setGettingStartedEnabled(boolean isGettingStartedEnabled) {
         setBoolean(KEY_GETTING_STARTED_ENABLED, isGettingStartedEnabled);
-    }
-
-    public boolean isPortForwardingEnabled() {
-        return getBoolean(KEY_PORT_FORWARDING_ENABLED, DEFAULT_PORT_FORWARDING_ENABLED);
-    }
-
-    public void setPortForwardingEnabled(boolean isPortForwardingEnabled) {
-        setBoolean(KEY_PORT_FORWARDING_ENABLED, isPortForwardingEnabled);
     }
 
     public int getPort() {

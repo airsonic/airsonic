@@ -123,7 +123,6 @@
 
     <bean id="networkService" class="org.libresonic.player.service.NetworkService" init-method="init">
         <property name="settingsService" ref="settingsService"/>
-        <property name="upnpService" ref="upnpService"/>
     </bean>
 
     <bean id="playerService" class="org.libresonic.player.service.PlayerService" init-method="init">
@@ -206,7 +205,6 @@
 
     <bean id="upnpService" class="org.libresonic.player.service.UPnPService" init-method="init">
         <property name="settingsService" ref="settingsService"/>
-        <property name="versionService" ref="versionService"/>
         <property name="folderBasedContentDirectory" ref="folderBasedContentDirectory"/>
     </bean>
 

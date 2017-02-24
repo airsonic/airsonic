@@ -34,9 +34,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.UrlRedirectType;
-import org.libresonic.player.service.upnp.ClingRouter;
-import org.libresonic.player.service.upnp.NATPMPRouter;
-import org.libresonic.player.service.upnp.Router;
 import org.libresonic.player.util.StringUtil;
 
 import java.io.IOException;
@@ -57,7 +54,6 @@ import java.util.concurrent.TimeUnit;
 public class NetworkService {
 
     private static final Logger LOG = Logger.getLogger(NetworkService.class);
-    private static final long PORT_FORWARDING_DELAY = 3600L;
     private static final long URL_REDIRECTION_DELAY = 2 * 3600L;
 
     private static final String URL_REDIRECTION_REGISTER_URL = getBackendUrl() + "/backend/redirect/register.view";
@@ -65,31 +61,20 @@ public class NetworkService {
     private static final String URL_REDIRECTION_TEST_URL = getBackendUrl() + "/backend/redirect/test.view";
 
     private SettingsService settingsService;
-    private UPnPService upnpService;
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(4);
-    private final PortForwardingTask portForwardingTask = new PortForwardingTask();
     private final URLRedirectionTask urlRedirectionTask = new URLRedirectionTask();
-    private Future<?> portForwardingFuture;
     private Future<?> urlRedirectionFuture;
 
-    private final Status portForwardingStatus = new Status();
+    private final static Status portForwardingStatus;
+    static {
+        portForwardingStatus = new Status();
+        portForwardingStatus.setText("NOT SUPPORTED");
+    }
     private final Status urlRedirectionStatus = new Status();
     private boolean testUrlRedirection;
 
     public void init() {
-        initPortForwarding(10);
         initUrlRedirection(false);
-    }
-
-    /**
-     * Configures UPnP port forwarding.
-     */
-    public synchronized void initPortForwarding(int initialDelaySeconds) {
-        portForwardingStatus.setText("Idle");
-        if (portForwardingFuture != null) {
-            portForwardingFuture.cancel(true);
-        }
-        portForwardingFuture = executor.scheduleWithFixedDelay(portForwardingTask, initialDelaySeconds, PORT_FORWARDING_DELAY, TimeUnit.SECONDS);
     }
 
     /**
@@ -131,95 +116,6 @@ public class NetworkService {
 
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
-    }
-
-    public void setUpnpService(UPnPService upnpService) {
-        this.upnpService = upnpService;
-    }
-
-    private class PortForwardingTask extends Task {
-
-        @Override
-        protected void execute() {
-
-            boolean enabled = settingsService.isPortForwardingEnabled();
-            portForwardingStatus.setText("Looking for router...");
-            Router router = findRouter();
-            if (router == null) {
-                LOG.warn("No UPnP router found.");
-                portForwardingStatus.setText("No router found.");
-            } else {
-
-                portForwardingStatus.setText("Router found.");
-
-                int port = settingsService.getPort();
-                int httpsPort = settingsService.getHttpsPort();
-
-                // Create new NAT entry.
-                if (enabled) {
-                    try {
-                        router.addPortMapping(port, port, 0);
-                        String message = "Successfully forwarding port " + port;
-
-                        if (httpsPort != 0 && httpsPort != port) {
-                            router.addPortMapping(httpsPort, httpsPort, 0);
-                            message += " and port " + httpsPort;
-                        }
-                        message += ".";
-
-                        LOG.info(message);
-                        portForwardingStatus.setText(message);
-                    } catch (Throwable x) {
-                        String message = "Failed to create port forwarding.";
-                        LOG.warn(message, x);
-                        portForwardingStatus.setText(message + " See log for details.");
-                    }
-                }
-
-                // Delete NAT entry.
-                else {
-                    try {
-                        router.deletePortMapping(port, port);
-                        LOG.info("Deleted port mapping for port " + port);
-                        if (httpsPort != 0 && httpsPort != port) {
-                            router.deletePortMapping(httpsPort, httpsPort);
-                            LOG.info("Deleted port mapping for port " + httpsPort);
-                        }
-                    } catch (Throwable x) {
-                        LOG.warn("Failed to delete port mapping.", x);
-                    }
-                    portForwardingStatus.setText("Port forwarding disabled.");
-                }
-            }
-
-            //  Don't do it again if disabled.
-            if (!enabled && portForwardingFuture != null) {
-                portForwardingFuture.cancel(false);
-            }
-        }
-
-        private Router findRouter() {
-
-            try {
-                Router router = ClingRouter.findRouter(upnpService);
-                if (router != null) {
-                    return router;
-                }
-            } catch (Throwable x) {
-                LOG.warn("Failed to find UPnP router using Cling library.", x);
-            }
-
-            try {
-                Router router = NATPMPRouter.findRouter();
-                if (router != null) {
-                    return router;
-                }
-            } catch (Throwable x) {
-                LOG.warn("Failed to find NAT-PMP router.", x);
-            }
-
-            return null;
-        }
     }
 
     private class URLRedirectionTask extends Task {

@@ -33,7 +33,6 @@ import org.fourthline.cling.support.model.ProtocolInfos;
 import org.fourthline.cling.support.model.dlna.DLNAProfiles;
 import org.fourthline.cling.support.model.dlna.DLNAProtocolInfo;
 import org.libresonic.player.Logger;
-import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.upnp.ApacheUpnpServiceConfiguration;
 import org.libresonic.player.service.upnp.FolderBasedContentDirectory;
 import org.libresonic.player.service.upnp.MSMediaReceiverRegistrarService;
@@ -51,7 +50,6 @@ public class UPnPService {
     private static final Logger LOG = Logger.getLogger(UPnPService.class);
 
     private SettingsService settingsService;
-    private VersionService versionService;
     private UpnpService upnpService;
     private FolderBasedContentDirectory folderBasedContentDirectory;
 
@@ -114,8 +112,6 @@ public class UPnPService {
         DeviceType type = new UDADeviceType("MediaServer", 1);
 
         // TODO: DLNACaps
-        Version version = versionService.getLocalVersion();
-        String versionString = version == null ? null : version.toString();
 
         DeviceDetails details = new DeviceDetails(serverName, new ManufacturerDetails(serverName),
                 new ModelDetails(serverName),
@@ -154,7 +150,7 @@ public class UPnPService {
 
         // For compatibility with Microsoft
         LocalService<MSMediaReceiverRegistrarService> receiverService = new AnnotationLocalServiceBinder().read(MSMediaReceiverRegistrarService.class);
-        receiverService.setManager(new DefaultServiceManager<MSMediaReceiverRegistrarService>(receiverService, MSMediaReceiverRegistrarService.class));
+        receiverService.setManager(new DefaultServiceManager<>(receiverService, MSMediaReceiverRegistrarService.class));
 
         return new LocalDevice(identity, type, details, new Icon[]{icon}, new LocalService[]{contentDirectoryservice, connetionManagerService, receiverService});
     }
@@ -178,10 +174,6 @@ public class UPnPService {
 
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
-    }
-
-    public void setVersionService(VersionService versionService) {
-        this.versionService = versionService;
     }
 
     public void setFolderBasedContentDirectory(FolderBasedContentDirectory folderBasedContentDirectory) {

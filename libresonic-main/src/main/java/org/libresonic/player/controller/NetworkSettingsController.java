@@ -51,7 +51,6 @@ public class NetworkSettingsController {
     @ModelAttribute
     protected void formBackingObject(Model model) throws Exception {
         NetworkSettingsCommand command = new NetworkSettingsCommand();
-        command.setPortForwardingEnabled(settingsService.isPortForwardingEnabled());
         command.setUrlRedirectionEnabled(settingsService.isUrlRedirectionEnabled());
         command.setUrlRedirectType(settingsService.getUrlRedirectType().name());
         command.setUrlRedirectFrom(settingsService.getUrlRedirectFrom());
@@ -68,7 +67,6 @@ public class NetworkSettingsController {
     @RequestMapping(method = RequestMethod.POST)
     protected String doSubmitAction(@ModelAttribute("command") NetworkSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
-        settingsService.setPortForwardingEnabled(command.isPortForwardingEnabled());
         settingsService.setUrlRedirectionEnabled(command.isUrlRedirectionEnabled());
         settingsService.setUrlRedirectType(UrlRedirectType.valueOf(command.getUrlRedirectType()));
         settingsService.setUrlRedirectFrom(StringUtils.lowerCase(command.getUrlRedirectFrom()));
@@ -80,7 +78,6 @@ public class NetworkSettingsController {
         }
 
         settingsService.save();
-        networkService.initPortForwarding(0);
         networkService.initUrlRedirection(true);
 
         redirectAttributes.addFlashAttribute("settings_toast", true);

@@ -26,21 +26,12 @@ package org.libresonic.player.command;
  */
 public class NetworkSettingsCommand {
 
-    private boolean portForwardingEnabled;
     private boolean urlRedirectionEnabled;
     private String urlRedirectFrom;
     private String urlRedirectCustomUrl;
     private String urlRedirectType;
     private int port;
     private boolean toast;
-
-    public void setPortForwardingEnabled(boolean portForwardingEnabled) {
-        this.portForwardingEnabled = portForwardingEnabled;
-    }
-
-    public boolean isPortForwardingEnabled() {
-        return portForwardingEnabled;
-    }
 
     public boolean isUrlRedirectionEnabled() {
         return urlRedirectionEnabled;
