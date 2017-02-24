@@ -47,6 +47,22 @@ public class VersionTestCase extends TestCase {
         doTestVersion("1.5.beta1", "1.6");
         doTestVersion("1.5.beta1", "1.5.beta2");
         doTestVersion("1.5.beta2", "1.5.beta11");
+
+        doTestVersion("6.2-SNAPSHOT", "6.11-SNAPSHOT");
+    }
+
+    public void testIsPreview() {
+        Version version = new Version("1.6.0-SNAPSHOT");
+        assertTrue("Version should be snapshot", version.isPreview());
+
+        version = new Version("1.6.0-beta2");
+        assertTrue("Version should be snapshot", version.isPreview());
+
+        version = new Version("1.6.0");
+        assertFalse("Version should not be snapshot", version.isPreview());
+
+        version = new Version("1.6.0-RELEASE");
+        assertFalse("Version should not be snapshot", version.isPreview());
     }
 
     /**

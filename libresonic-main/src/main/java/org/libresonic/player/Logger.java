@@ -115,7 +115,7 @@ public class Logger {
                 return true;  // versionService not yet available.
             }
             Version localVersion = versionService.getLocalVersion();
-            debugEnabled = localVersion == null || localVersion.getBeta() != 0;
+            debugEnabled = localVersion == null || localVersion.isPreview();
         }
         return debugEnabled;
     }
