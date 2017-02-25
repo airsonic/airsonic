@@ -43,7 +43,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -220,7 +222,7 @@ public class DownloadController implements LastModified {
         ZipOutputStream out = new ZipOutputStream(RangeOutputStream.wrap(response.getOutputStream(), range));
         out.setMethod(ZipOutputStream.STORED);  // No compression.
 
-        List<MediaFile> filesToDownload = new ArrayList<MediaFile>();
+        Set<MediaFile> filesToDownload = new HashSet<>();
         if (indexes == null) {
             filesToDownload.addAll(files);
         } else {
