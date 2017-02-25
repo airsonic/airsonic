@@ -20,9 +20,7 @@
 package org.libresonic.player.util;
 
 import junit.framework.TestCase;
-import org.libresonic.player.domain.UrlRedirectType;
 
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -182,22 +180,6 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in fileSystemSafe().", "foo-bar", StringUtil.fileSystemSafe("foo:bar"));
     }
 
-    public void testRewriteUrl() {
-        assertEquals("Error in rewriteUrl().", "http://foo/", StringUtil.rewriteUrl("http://foo/", "http://foo/"));
-        assertEquals("Error in rewriteUrl().", "http://foo:81/", StringUtil.rewriteUrl("http://foo/", "http://foo:81/"));
-        assertEquals("Error in rewriteUrl().", "http://bar/", StringUtil.rewriteUrl("http://foo/", "http://bar/"));
-        assertEquals("Error in rewriteUrl().", "http://bar.com/", StringUtil.rewriteUrl("http://foo.com/", "http://bar.com/"));
-        assertEquals("Error in rewriteUrl().", "http://bar.com/", StringUtil.rewriteUrl("http://foo.com/", "http://bar.com/"));
-        assertEquals("Error in rewriteUrl().", "http://bar.com/a", StringUtil.rewriteUrl("http://foo.com/a", "http://bar.com/"));
-        assertEquals("Error in rewriteUrl().", "http://bar.com/a/b", StringUtil.rewriteUrl("http://foo.com/a/b", "http://bar.com/c"));
-        assertEquals("Error in rewriteUrl().", "http://bar.com:8080/a?b=1&c=2", StringUtil.rewriteUrl("http://foo.com/a?b=1&c=2", "http://bar.com:8080/e?f=3"));
-        assertEquals("Error in rewriteUrl().", "http://foo.com:8080/a?b=1&c=2", StringUtil.rewriteUrl("http://foo.com/a?b=1&c=2", "http://foo.com:8080/e?f=3"));
-        assertEquals("Error in rewriteUrl().", "https://foo.com:8080/a?b=1&c=2", StringUtil.rewriteUrl("http://foo.com/a?b=1&c=2", "https://foo.com:8080/e?f=3"));
-        assertEquals("Error in rewriteUrl().", "http://foo/", StringUtil.rewriteUrl("http://foo/", "not:a:url"));
-        assertEquals("Error in rewriteUrl().", "http://foo/", StringUtil.rewriteUrl("http://foo/", ""));
-        assertEquals("Error in rewriteUrl().", "http://foo/", StringUtil.rewriteUrl("http://foo/", null));
-    }
-
     public void testRemoveMarkup() {
         assertEquals("Error in removeMarkup()", "foo", StringUtil.removeMarkup("<b>foo</b>"));
         assertEquals("Error in removeMarkup()", "foobar", StringUtil.removeMarkup("<b>foo</b>bar"));
@@ -206,26 +188,4 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in removeMarkup()", null, StringUtil.removeMarkup(null));
     }
 
-    public void testRewriteRemoteUrl() throws MalformedURLException {
-
-        UrlRedirectType urlRedirectType = UrlRedirectType.NORMAL;
-        String urlRedirectCustomUrl = null;
-        assertEquals("http://192.168.1.10:4040/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("http://localhost:4040/stream?id=42", false, urlRedirectType, null, urlRedirectCustomUrl, "", "192.168.1.10", 4040));
-        assertEquals("http://192.168.1.10:4040/libresonic/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("http://localhost:4040/libresonic/stream?id=42", false, urlRedirectType, null, urlRedirectCustomUrl, "libresonic", "192.168.1.10", 4040));
-        assertEquals("http://192.168.1.10:4040/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("https://localhost:4443/stream?id=42", false, urlRedirectType, null, urlRedirectCustomUrl, "", "192.168.1.10", 4040));
-        assertEquals("http://192.168.1.10:4040/libresonic/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("https://localhost:4443/libresonic/stream?id=42", false, urlRedirectType, null, urlRedirectCustomUrl, "libresonic", "192.168.1.10", 4040));
-
-        assertEquals("http://sindre.libresonic.org:80/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("http://localhost:4040/stream?id=42", true, urlRedirectType, "sindre", urlRedirectCustomUrl, "", "192.168.1.10", 4040));
-        assertEquals("http://sindre.libresonic.org:80/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("http://localhost:4040/libresonic/stream?id=42", true, urlRedirectType, "sindre", urlRedirectCustomUrl, "libresonic", "192.168.1.10", 4040));
-        assertEquals("http://sindre.libresonic.org:80/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("https://localhost:4443/stream?id=42", true, urlRedirectType, "sindre", urlRedirectCustomUrl, "", "192.168.1.10", 4040));
-        assertEquals("http://sindre.libresonic.org:80/stream?id=42",
-                     StringUtil.rewriteRemoteUrl("https://localhost:4443/libresonic/stream?id=42", true, urlRedirectType, "sindre", urlRedirectCustomUrl, "libresonic", "192.168.1.10", 4040));
-    }
 }

@@ -22,6 +22,7 @@ package org.libresonic.player.controller;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PlayQueue;
 import org.libresonic.player.domain.Player;
+import org.libresonic.player.service.NetworkService;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.TranscodingService;
@@ -62,16 +63,8 @@ public class M3UController  {
 
         Player player = playerService.getPlayer(request, response);
 
-        String url = request.getRequestURL().toString();
-        url = url.replaceFirst("play.m3u.*", "stream?");
-
-        // Rewrite URLs in case we're behind a proxy.
-        if (settingsService.isRewriteUrlEnabled()) {
-            String referer = request.getHeader("referer");
-            url = StringUtil.rewriteUrl(url, referer);
-        }
-
-        url = settingsService.rewriteRemoteUrl(url);
+        String url = NetworkService.getBaseUrl(request);
+        url = url + "stream?";
 
         if (player.isExternalWithPlaylist()) {
             createClientSidePlaylist(response.getWriter(), player, url);

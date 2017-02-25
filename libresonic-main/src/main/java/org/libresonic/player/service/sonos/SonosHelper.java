@@ -23,18 +23,18 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sonos.services._1.*;
-import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.controller.CoverArtController;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.*;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
-import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.*;
+
+import static org.libresonic.player.service.NetworkService.getBaseUrl;
 
 /**
  * @author Sindre Mehus
@@ -634,7 +634,7 @@ public class SonosHelper {
         Player player = createPlayerIfNecessary(username);
         MediaFile song = mediaFileService.getMediaFile(mediaFileId);
 
-        return getBaseUrl(request) + "stream?id=" + song.getId() + "&player=" + player.getId();
+        return NetworkService.getBaseUrl(request) + "stream?id=" + song.getId() + "&player=" + player.getId();
     }
 
     private Player createPlayerIfNecessary(String username) {
@@ -652,30 +652,6 @@ public class SonosHelper {
         }
 
         return players.get(0);
-    }
-
-    public String getBaseUrl(HttpServletRequest request) {
-        int port = settingsService.getPort();
-        String contextPath = settingsService.getUrlRedirectContextPath();
-
-        // Note that the server IP can be overridden by the "ip" parameter. Used when Libresonic and Sonos are
-        // on different networks.
-        String ip = settingsService.getLocalIpAddress();
-        if (request != null) {
-            ip = ServletRequestUtils.getStringParameter(request, "ip", ip);
-        }
-
-        // Note: Serving media and cover art with http (as opposed to https) works when using jetty and LibresonicDeployer.
-        StringBuilder url = new StringBuilder("http://")
-                .append(ip)
-                .append(":")
-                .append(port)
-                .append("/");
-
-        if (StringUtils.isNotEmpty(contextPath)) {
-            url.append(contextPath).append("/");
-        }
-        return url.toString();
     }
 
     public void setMediaFileService(MediaFileService mediaFileService) {

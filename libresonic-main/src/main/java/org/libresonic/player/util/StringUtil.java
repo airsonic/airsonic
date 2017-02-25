@@ -22,7 +22,6 @@ package org.libresonic.player.util;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.domain.UrlRedirectType;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -458,67 +457,6 @@ public final class StringUtil {
 
         } catch (MalformedURLException x) {
             return null;
-        }
-    }
-
-    /**
-     * Rewrites the URL by changing the protocol, host and port.
-     *
-     * @param urlToRewrite               The URL to rewrite.
-     * @param urlWithProtocolHostAndPort Use protocol, host and port from this URL.
-     * @return The rewritten URL, or an unchanged URL if either argument is not a proper URL.
-     */
-    public static String rewriteUrl(String urlToRewrite, String urlWithProtocolHostAndPort) {
-        if (urlToRewrite == null) {
-            return null;
-        }
-
-        try {
-            URL urlA = new URL(urlToRewrite);
-            URL urlB = new URL(urlWithProtocolHostAndPort);
-
-            URL result = new URL(urlB.getProtocol(), urlB.getHost(), urlB.getPort(), urlA.getFile());
-            return result.toExternalForm();
-        } catch (MalformedURLException x) {
-            return urlToRewrite;
-        }
-    }
-
-    /**
-     * Rewrites an URL to make it accessible from remote clients.
-     */
-    public static String rewriteRemoteUrl(String localUrl, boolean urlRedirectionEnabled, UrlRedirectType urlRedirectType,
-                                          String urlRedirectFrom, String urlRedirectCustomUrl, String urlRedirectContextPath,
-                                          String localIp, int localPort)  {
-        try {
-            URLBuilder urlBuilder = new URLBuilder(localUrl);
-            if (urlRedirectionEnabled) {
-                if (urlRedirectType == UrlRedirectType.NORMAL) {
-                    String libresonicHost = urlRedirectFrom + ".libresonic.org";
-                    urlBuilder.setHost(libresonicHost);
-                    urlBuilder.setPort(80);
-                    urlBuilder.setProtocol(URLBuilder.HTTP);
-                    if (StringUtils.isNotBlank(urlRedirectContextPath)) {
-                        urlBuilder.setFile(urlBuilder.getFile().replaceFirst("^/" + urlRedirectContextPath, ""));
-                    }
-
-                } else {
-                    URL customUrl = new URL(urlRedirectCustomUrl);
-                    urlBuilder.setProtocol(URLBuilder.HTTP);
-                    urlBuilder.setHost(customUrl.getHost());
-                    urlBuilder.setPort(localPort);
-                }
-
-            } else {
-                urlBuilder.setProtocol(URLBuilder.HTTP);
-                urlBuilder.setHost(localIp);
-                urlBuilder.setPort(localPort);
-            }
-
-            return urlBuilder.getURLAsString();
-
-        } catch (Exception e) {
-            return localUrl;
         }
     }
 

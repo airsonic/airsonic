@@ -115,12 +115,12 @@ public class ShareService {
         shareDao.deleteShare(id);
     }
 
-    public String getShareBaseUrl() {
-        return settingsService.getUrlRedirectUrl() + "/share/";
+    public String getShareBaseUrl(HttpServletRequest request) {
+        return NetworkService.getBaseUrl(request) + "/share/";
     }
 
-    public String getShareUrl(Share share) {
-        return getShareBaseUrl() + share.getName();
+    public String getShareUrl(HttpServletRequest request, Share share) {
+        return getShareBaseUrl(request) + share.getName();
     }
 
     public void setSecurityService(SecurityService securityService) {

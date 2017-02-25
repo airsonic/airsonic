@@ -63,7 +63,7 @@ public class ShareSettingsController {
     public String doGet(HttpServletRequest request, Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("shareBaseUrl", shareService.getShareBaseUrl());
+        map.put("shareBaseUrl", shareService.getShareBaseUrl(request));
         map.put("shareInfos", getShareInfos(request));
         map.put("user", securityService.getCurrentUser(request));
 

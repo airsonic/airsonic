@@ -72,7 +72,6 @@ public class ShareManagementController  {
         }
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("urlRedirectionEnabled", settingsService.isUrlRedirectionEnabled());
         map.put("dir", dir);
         map.put("user", securityService.getCurrentUser(request));
 
@@ -83,7 +82,7 @@ public class ShareManagementController  {
             shareService.updateShare(share);
         }
 
-        map.put("playUrl", shareService.getShareUrl(share));
+        map.put("playUrl", shareService.getShareUrl(request, share));
 
         return new ModelAndView("createShare", "model", map);
     }

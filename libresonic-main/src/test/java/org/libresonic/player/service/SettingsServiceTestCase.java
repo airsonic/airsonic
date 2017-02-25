@@ -63,7 +63,6 @@ public class SettingsServiceTestCase extends TestCase {
         assertEquals("Wrong default Podcast episode download count.", 1, settingsService.getPodcastEpisodeDownloadCount());
         assertTrue("Wrong default Podcast folder.", settingsService.getPodcastFolder().endsWith("Podcast"));
         assertEquals("Wrong default Podcast update interval.", 24, settingsService.getPodcastUpdateInterval());
-        assertEquals("Wrong default rewrite URL enabled.", true, settingsService.isRewriteUrlEnabled());
         assertEquals("Wrong default LDAP enabled.", false, settingsService.isLdapEnabled());
         assertEquals("Wrong default LDAP URL.", "ldap://host.domain.com:389/cn=Users,dc=domain,dc=com", settingsService.getLdapUrl());
         assertNull("Wrong default LDAP manager DN.", settingsService.getLdapManagerDn());
@@ -89,7 +88,6 @@ public class SettingsServiceTestCase extends TestCase {
         settingsService.setPodcastEpisodeDownloadCount(-1);
         settingsService.setPodcastFolder("d:/podcasts");
         settingsService.setPodcastUpdateInterval(-1);
-        settingsService.setRewriteUrlEnabled(false);
         settingsService.setLdapEnabled(true);
         settingsService.setLdapUrl("newLdapUrl");
         settingsService.setLdapManagerDn("admin");
@@ -126,7 +124,6 @@ public class SettingsServiceTestCase extends TestCase {
         assertEquals("Wrong Podcast episode download count.", -1, settingsService.getPodcastEpisodeDownloadCount());
         assertEquals("Wrong Podcast folder.", "d:/podcasts", settingsService.getPodcastFolder());
         assertEquals("Wrong Podcast update interval.", -1, settingsService.getPodcastUpdateInterval());
-        assertEquals("Wrong rewrite URL enabled.", false, settingsService.isRewriteUrlEnabled());
         assertTrue("Wrong LDAP enabled.", settingsService.isLdapEnabled());
         assertEquals("Wrong LDAP URL.", "newLdapUrl", settingsService.getLdapUrl());
         assertEquals("Wrong LDAP manager DN.", "admin", settingsService.getLdapManagerDn());

@@ -19,6 +19,8 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.lang3.StringUtils;
+import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.Player;
@@ -32,6 +34,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,14 +42,20 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
+import static org.libresonic.player.controller.ExternalPlayerController.SHARE_PATH;
+
 /**
  * Controller for the page used to play shared music (Twitter, Facebook etc).
  *
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping("/share/**")
+@RequestMapping(SHARE_PATH + "**")
 public class ExternalPlayerController {
+
+    private static final Logger LOG = Logger.getLogger(ExternalPlayerController.class);
+
+    public static final String SHARE_PATH = "/share/";
 
     @Autowired
     private SettingsService settingsService;
@@ -60,18 +69,22 @@ public class ExternalPlayerController {
     @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
-        String pathInfo = request.getPathInfo();
+        String pathRelativeToBase = new UrlPathHelper().getPathWithinApplication(request);
 
-        if (pathInfo == null || !pathInfo.startsWith("/")) {
+        String shareName = StringUtils.removeStart(pathRelativeToBase, SHARE_PATH);
+
+        if(StringUtils.isBlank(shareName)) {
+            LOG.warn("Could not find share with shareName " + shareName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
 
-        Share share = shareService.getShareByName(pathInfo.substring(1));
+        Share share = shareService.getShareByName(shareName);
 
         if (share != null && share.getExpires() != null && share.getExpires().before(new Date())) {
+            LOG.warn("Share " + shareName + " is expired");
             share = null;
         }
 
@@ -85,7 +98,6 @@ public class ExternalPlayerController {
 
         map.put("share", share);
         map.put("songs", getSongs(share, player.getUsername()));
-        map.put("redirectUrl", settingsService.getUrlRedirectUrl());
         map.put("player", player.getId());
 
         return new ModelAndView("externalPlayer", "model", map);

@@ -34,7 +34,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Provides persistent storage of application settings and preferences.
@@ -77,7 +78,6 @@ public class SettingsService {
     private static final String KEY_HLS_COMMAND = "HlsCommand3";
     private static final String KEY_JUKEBOX_COMMAND = "JukeboxCommand2";
     private static final String KEY_VIDEO_IMAGE_COMMAND = "VideoImageCommand";
-    private static final String KEY_REWRITE_URL = "RewriteUrl";
     private static final String KEY_LDAP_ENABLED = "LdapEnabled";
     private static final String KEY_LDAP_URL = "LdapUrl";
     private static final String KEY_LDAP_MANAGER_DN = "LdapManagerDn";
@@ -85,13 +85,6 @@ public class SettingsService {
     private static final String KEY_LDAP_SEARCH_FILTER = "LdapSearchFilter";
     private static final String KEY_LDAP_AUTO_SHADOWING = "LdapAutoShadowing";
     private static final String KEY_GETTING_STARTED_ENABLED = "GettingStartedEnabled";
-    private static final String KEY_PORT = "Port";
-    private static final String KEY_HTTPS_PORT = "HttpsPort";
-    private static final String KEY_URL_REDIRECTION_ENABLED = "UrlRedirectionEnabled";
-    private static final String KEY_URL_REDIRECT_TYPE = "UrlRedirectType";
-    private static final String KEY_URL_REDIRECT_FROM = "UrlRedirectFrom";
-    private static final String KEY_URL_REDIRECT_CONTEXT_PATH = "UrlRedirectContextPath";
-    private static final String KEY_URL_REDIRECT_CUSTOM_URL = "UrlRedirectCustomUrl";
     private static final String KEY_SERVER_ID = "ServerId";
     private static final String KEY_SETTINGS_CHANGED = "SettingsChanged";
     private static final String KEY_LAST_SCANNED = "LastScanned";
@@ -100,6 +93,7 @@ public class SettingsService {
     private static final String KEY_MEDIA_LIBRARY_STATISTICS = "MediaLibraryStatistics";
     private static final String KEY_DLNA_ENABLED = "DlnaEnabled";
     private static final String KEY_DLNA_SERVER_NAME = "DlnaServerName";
+    private static final String KEY_DLNA_BASE_LAN_URL = "DlnaBaseLANURL";
     private static final String KEY_SONOS_ENABLED = "SonosEnabled";
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
@@ -148,7 +142,6 @@ public class SettingsService {
     private static final String DEFAULT_HLS_COMMAND = "ffmpeg -ss %o -t %d -i %s -async 1 -b:v %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mpegts -c:v libx264 -preset superfast -c:a libmp3lame -threads 0 -";
     private static final String DEFAULT_JUKEBOX_COMMAND = "ffmpeg -ss %o -i %s -map 0:0 -v 0 -ar 44100 -ac 2 -f s16be -";
     private static final String DEFAULT_VIDEO_IMAGE_COMMAND = "ffmpeg -r 1 -ss %o -t 1 -i %s -s %wx%h -v 0 -f mjpeg -";
-    private static final boolean DEFAULT_REWRITE_URL = true;
     private static final boolean DEFAULT_LDAP_ENABLED = false;
     private static final String DEFAULT_LDAP_URL = "ldap://host.domain.com:389/cn=Users,dc=domain,dc=com";
     private static final String DEFAULT_LDAP_MANAGER_DN = null;
@@ -156,13 +149,6 @@ public class SettingsService {
     private static final String DEFAULT_LDAP_SEARCH_FILTER = "(sAMAccountName={0})";
     private static final boolean DEFAULT_LDAP_AUTO_SHADOWING = false;
     private static final boolean DEFAULT_GETTING_STARTED_ENABLED = true;
-    private static final int DEFAULT_PORT = 80;
-    private static final int DEFAULT_HTTPS_PORT = 0;
-    private static final boolean DEFAULT_URL_REDIRECTION_ENABLED = false;
-    private static final UrlRedirectType DEFAULT_URL_REDIRECT_TYPE = UrlRedirectType.NORMAL;
-    private static final String DEFAULT_URL_REDIRECT_FROM = "yourname";
-    private static final String DEFAULT_URL_REDIRECT_CONTEXT_PATH = System.getProperty("libresonic.contextPath", "").replaceAll("/", "");
-    private static final String DEFAULT_URL_REDIRECT_CUSTOM_URL = "http://";
     private static final String DEFAULT_SERVER_ID = null;
     private static final long DEFAULT_SETTINGS_CHANGED = 0L;
     private static final boolean DEFAULT_ORGANIZE_BY_FOLDER_STRUCTURE = true;
@@ -170,6 +156,7 @@ public class SettingsService {
     private static final String DEFAULT_MEDIA_LIBRARY_STATISTICS = "0 0 0 0 0";
     private static final boolean DEFAULT_DLNA_ENABLED = false;
     private static final String DEFAULT_DLNA_SERVER_NAME = "Libresonic";
+    private static final String DEFAULT_DLNA_BASE_LAN_URL = null;
     private static final boolean DEFAULT_SONOS_ENABLED = false;
     private static final String DEFAULT_SONOS_SERVICE_NAME = "Libresonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
@@ -186,7 +173,8 @@ public class SettingsService {
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
             "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", 
             "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort",
-            "PortForwardingEnabled");
+            "PortForwardingEnabled", "RewriteUrl", "UrlRedirectCustomUrl", "UrlRedirectContextPath",
+            "UrlRedirectFrom", "UrlRedirectionEnabled", "UrlRedirectType", "Port", "HttpsPort");
 
     private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
     private static final String THEMES_FILE = "/org/libresonic/player/theme/themes.txt";
@@ -200,19 +188,12 @@ public class SettingsService {
     private UserDao userDao;
     private AvatarDao avatarDao;
     private ApacheCommonsConfigurationService configurationService;
-    private VersionService versionService;
 
     private String[] cachedCoverArtFileTypesArray;
     private String[] cachedMusicFileTypesArray;
     private String[] cachedVideoFileTypesArray;
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<String, List<MusicFolder>>();
-
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-    private static final long LOCAL_IP_LOOKUP_DELAY_SECONDS = 60;
-
-    private String localIpAddress;
 
     private void removeObseleteProperties() {
 
@@ -249,7 +230,6 @@ public class SettingsService {
     public void init() {
         logServerInfo();
         ServiceLocator.setSettingsService(this);
-        scheduleLocalIpAddressLookup();
     }
 
     private void logServerInfo() {
@@ -594,14 +574,6 @@ public class SettingsService {
         return getProperty(KEY_VIDEO_IMAGE_COMMAND, DEFAULT_VIDEO_IMAGE_COMMAND);
     }
 
-    public boolean isRewriteUrlEnabled() {
-        return getBoolean(KEY_REWRITE_URL, DEFAULT_REWRITE_URL);
-    }
-
-    public void setRewriteUrlEnabled(boolean rewriteUrl) {
-        setBoolean(KEY_REWRITE_URL, rewriteUrl);
-    }
-
     public boolean isLdapEnabled() {
         return getBoolean(KEY_LDAP_ENABLED, DEFAULT_LDAP_ENABLED);
     }
@@ -667,69 +639,6 @@ public class SettingsService {
 
     public void setGettingStartedEnabled(boolean isGettingStartedEnabled) {
         setBoolean(KEY_GETTING_STARTED_ENABLED, isGettingStartedEnabled);
-    }
-
-    public int getPort() {
-        return getInt(KEY_PORT, DEFAULT_PORT);
-    }
-
-    public void setPort(int port) {
-        setInt(KEY_PORT, port);
-    }
-
-    public int getHttpsPort() {
-        return getInt(KEY_HTTPS_PORT, DEFAULT_HTTPS_PORT);
-    }
-
-    public void setHttpsPort(int httpsPort) {
-        setInt(KEY_HTTPS_PORT, httpsPort);
-    }
-
-    public boolean isUrlRedirectionEnabled() {
-        return getBoolean(KEY_URL_REDIRECTION_ENABLED, DEFAULT_URL_REDIRECTION_ENABLED);
-    }
-
-    public void setUrlRedirectionEnabled(boolean isUrlRedirectionEnabled) {
-        setBoolean(KEY_URL_REDIRECTION_ENABLED, isUrlRedirectionEnabled);
-    }
-
-    public String getUrlRedirectUrl() {
-        if (getUrlRedirectType() == UrlRedirectType.NORMAL) {
-            return "http://" + getUrlRedirectFrom() + ".libresonic.org";
-        }
-        return StringUtils.removeEnd(getUrlRedirectCustomUrl(), "/");
-    }
-
-    public String getUrlRedirectFrom() {
-        return getProperty(KEY_URL_REDIRECT_FROM, DEFAULT_URL_REDIRECT_FROM);
-    }
-
-    public void setUrlRedirectFrom(String urlRedirectFrom) {
-        setProperty(KEY_URL_REDIRECT_FROM, urlRedirectFrom);
-    }
-
-    public UrlRedirectType getUrlRedirectType() {
-        return UrlRedirectType.valueOf(getProperty(KEY_URL_REDIRECT_TYPE, DEFAULT_URL_REDIRECT_TYPE.name()));
-    }
-
-    public void setUrlRedirectType(UrlRedirectType urlRedirectType) {
-        setProperty(KEY_URL_REDIRECT_TYPE, urlRedirectType.name());
-    }
-
-    public String getUrlRedirectContextPath() {
-        return getProperty(KEY_URL_REDIRECT_CONTEXT_PATH, DEFAULT_URL_REDIRECT_CONTEXT_PATH);
-    }
-
-    public void setUrlRedirectContextPath(String contextPath) {
-        setProperty(KEY_URL_REDIRECT_CONTEXT_PATH, contextPath);
-    }
-
-    public String getUrlRedirectCustomUrl() {
-        return StringUtils.trimToNull(getProperty(KEY_URL_REDIRECT_CUSTOM_URL, DEFAULT_URL_REDIRECT_CUSTOM_URL));
-    }
-
-    public void setUrlRedirectCustomUrl(String customUrl) {
-        setProperty(KEY_URL_REDIRECT_CUSTOM_URL, customUrl);
     }
 
     public String getServerId() {
@@ -1210,6 +1119,14 @@ public class SettingsService {
         setString(KEY_DLNA_SERVER_NAME, dlnaServerName);
     }
 
+    public String getDlnaBaseLANURL() {
+        return getString(KEY_DLNA_BASE_LAN_URL, DEFAULT_DLNA_BASE_LAN_URL);
+    }
+
+    public void setDlnaBaseLANURL(String dlnaBaseLANURL) {
+        setString(KEY_DLNA_BASE_LAN_URL, dlnaBaseLANURL);
+    }
+
     public boolean isSonosEnabled() {
         return getBoolean(KEY_SONOS_ENABLED, DEFAULT_SONOS_ENABLED);
     }
@@ -1234,19 +1151,6 @@ public class SettingsService {
         setInt(KEY_SONOS_SERVICE_ID, sonosServiceid);
     }
 
-    public String getLocalIpAddress() {
-        return localIpAddress;
-    }
-
-    /**
-     * Rewrites an URL to make it accessible from remote clients.
-     */
-    public String rewriteRemoteUrl(String localUrl) {
-        return StringUtil.rewriteRemoteUrl(localUrl, isUrlRedirectionEnabled(), getUrlRedirectType(), getUrlRedirectFrom(),
-                                           getUrlRedirectCustomUrl(), getUrlRedirectContextPath(), getLocalIpAddress(),
-                                           getPort());
-    }
-
     private void setProperty(String key, Object value) {
         if (value == null) {
             configurationService.clearProperty(key);
@@ -1265,15 +1169,6 @@ public class SettingsService {
         return result.toArray(new String[result.size()]);
     }
 
-    private void scheduleLocalIpAddressLookup() {
-        Runnable task = new Runnable() {
-            public void run() {
-                localIpAddress = Util.getLocalIpAddress();
-            }
-        };
-        executor.scheduleWithFixedDelay(task,0, LOCAL_IP_LOOKUP_DELAY_SECONDS, TimeUnit.SECONDS);
-    }
-
     public void setInternetRadioDao(InternetRadioDao internetRadioDao) {
         this.internetRadioDao = internetRadioDao;
     }
@@ -1288,10 +1183,6 @@ public class SettingsService {
 
     public void setAvatarDao(AvatarDao avatarDao) {
         this.avatarDao = avatarDao;
-    }
-
-    public void setVersionService(VersionService versionService) {
-        this.versionService = versionService;
     }
 
     public String getSmtpServer() {

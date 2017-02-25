@@ -66,7 +66,7 @@ public class PasswordSettingsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(HttpServletRequest request,@ModelAttribute("command") @Validated PasswordSettingsCommand command,BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") @Validated PasswordSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
         if (!bindingResult.hasErrors()) {
             User user = securityService.getUserByName(command.getUsername());
             user.setPassword(command.getPassword());
@@ -75,11 +75,10 @@ public class PasswordSettingsController {
             command.setPassword(null);
             command.setConfirmPassword(null);
             redirectAttributes.addFlashAttribute("settings_toast", true);
-
+            return "redirect:passwordSettings.view";
         } else {
             return "passwordSettings";
         }
-        return "redirect:passwordSettings.view";
     }
 
 }

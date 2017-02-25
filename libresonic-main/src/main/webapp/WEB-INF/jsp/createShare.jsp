@@ -12,33 +12,24 @@
     <span style="vertical-align: middle"><fmt:message key="share.title"/></span>
 </h1>
 
-<c:choose>
-    <c:when test="${model.urlRedirectionEnabled}">
-        <fmt:message key="share.warning"/>
-        <p>
-            <a href="http://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
-            <a href="http://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><fmt:message key="share.facebook"/></a>
-        </p>
+<fmt:message key="share.warning"/>
+<p>
+    <a href="http://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
+    <a href="http://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><fmt:message key="share.facebook"/></a>
+</p>
 
-        <p>
-            <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
-            <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><fmt:message key="share.twitter"/></a>
-        </p>
-        <p>
-            <g:plusone size="small" annotation="none" href="${model.playUrl}"></g:plusone>&nbsp;<fmt:message key="share.googleplus"/>
-        </p>
-        <p>
-            <fmt:message key="share.link">
-                <fmt:param>${model.playUrl}</fmt:param>
-            </fmt:message>
-        </p>
-    </c:when>
-    <c:otherwise>
-        <p>
-            <fmt:message key="share.disabled"/>
-        </p>
-    </c:otherwise>
-</c:choose>
+<p>
+    <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
+    <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><fmt:message key="share.twitter"/></a>
+</p>
+<p>
+    <g:plusone size="small" annotation="none" href="${model.playUrl}"></g:plusone>&nbsp;<fmt:message key="share.googleplus"/>
+</p>
+<p>
+    <fmt:message key="share.link">
+        <fmt:param>${model.playUrl}</fmt:param>
+    </fmt:message>
+</p>
 
 <div style="padding-top:1em">
     <c:if test="${not empty model.dir}">

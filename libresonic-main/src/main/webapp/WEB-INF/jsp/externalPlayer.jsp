@@ -15,7 +15,7 @@
             <sub:param name="size" value="500"/>
         </sub:url>
         <meta name="og:title" content="${fn:escapeXml(model.songs[0].artist)} &mdash; ${fn:escapeXml(model.songs[0].albumName)}"/>
-        <meta name="og:image" content="${model.redirectUrl}${coverArtUrl}"/>
+        <meta name="og:image" content="${coverArtUrl}"/>
     </c:if>
 
     <script type="text/javascript">

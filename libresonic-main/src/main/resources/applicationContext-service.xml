@@ -101,7 +101,6 @@
         <property name="musicFolderDao" ref="musicFolderDao"/>
         <property name="userDao" ref="userDao"/>
         <property name="avatarDao" ref="avatarDao"/>
-        <property name="versionService" ref="versionService"/>
         <property name="configurationService" ref="configurationService" />
     </bean>
 
@@ -121,9 +120,7 @@
         <property name="albumDao" ref="albumDao"/>
     </bean>
 
-    <bean id="networkService" class="org.libresonic.player.service.NetworkService" init-method="init">
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
+    <bean id="networkService" class="org.libresonic.player.service.NetworkService" />
 
     <bean id="playerService" class="org.libresonic.player.service.PlayerService" init-method="init">
         <property name="playerDao" ref="playerDao"/>
@@ -214,7 +211,7 @@
         <property name="artistDao" ref="artistDao"/>
     </bean>
 
-    <bean id="sonosService" class="org.libresonic.player.service.SonosService" init-method="init">
+    <bean id="sonosService" class="org.libresonic.player.service.SonosService">
         <property name="sonosHelper" ref="sonosHelper"/>
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="securityService" ref="securityService"/>

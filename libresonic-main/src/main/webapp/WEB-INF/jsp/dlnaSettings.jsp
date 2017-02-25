@@ -41,10 +41,10 @@
                <c:if test="${model.dlnaEnabled}">checked="checked"</c:if>/>
         <label for="dlnaEnabled"><fmt:message key="dlnasettings.enabled"/></label>
     </div>
-
     <p class="detail" style="width:60%;white-space:normal">
         <fmt:message key="dlnasettings.description"/>
     </p>
+
     <div>
         <fmt:message key="dlnasettings.servername"/>
         <input name="dlnaServerName" id="dlnaServerName" size="40"
@@ -52,6 +52,15 @@
     </div>
     <p class="detail" style="width:60%;white-space:normal;padding-top:0">
         <fmt:message key="dlnasettings.servername.description"/>
+    </p>
+
+    <div>
+        <label for="dlnaBaseLANURL" ><fmt:message key="dlnasettings.baselanurl"/></label>
+        <input type="text" size="50" name="dlnaBaseLANURL" id="dlnaBaseLANURL"
+               value="<c:out value="${model.dlnaBaseLANURL}" />" />
+    </div>
+    <p class="detail" style="width:60%;white-space:normal">
+        <fmt:message key="dlnasettings.lanurl.description"/>
     </p>
 
     <p>

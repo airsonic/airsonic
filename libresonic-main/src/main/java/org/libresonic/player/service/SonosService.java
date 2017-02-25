@@ -51,9 +51,6 @@ import javax.xml.ws.handler.MessageContext;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * For manual testing of this service:
@@ -101,8 +98,6 @@ public class SonosService implements SonosSoap {
     private PlaylistService playlistService;
     private UPnPService upnpService;
 
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
     /**
      * The context for the request. This is used to get the Auth information
      * form the headers as well as using the request url to build the correct
@@ -110,26 +105,6 @@ public class SonosService implements SonosSoap {
      */
     @Resource
     private WebServiceContext context;
-
-    private String localIp;
-
-    public void init() {
-        executor.scheduleWithFixedDelay(new Runnable() {
-            @Override
-            public void run() {
-                registerIfLocalIpChanged();
-            }
-        }, 8, 60, TimeUnit.SECONDS);
-    }
-
-    private void registerIfLocalIpChanged() {
-        if (settingsService.isSonosEnabled()) {
-            if (localIp == null || !localIp.equals(settingsService.getLocalIpAddress())) {
-                localIp = settingsService.getLocalIpAddress();
-                setMusicServiceEnabled(true);
-            }
-        }
-    }
 
     public void setMusicServiceEnabled(boolean enabled) {
         List<String> sonosControllers = upnpService.getSonosControllerHosts();
@@ -141,7 +116,7 @@ public class SonosService implements SonosSoap {
 
         String sonosServiceName = settingsService.getSonosServiceName();
         int sonosServiceId = settingsService.getSonosServiceId();
-        String libresonicBaseUrl = sonosHelper.getBaseUrl(getRequest());
+        String libresonicBaseUrl = NetworkService.getBaseUrl(getRequest());
 
         for (String sonosController : sonosControllers) {
             try {

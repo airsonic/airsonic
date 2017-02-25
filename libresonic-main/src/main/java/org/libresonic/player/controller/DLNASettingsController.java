@@ -56,6 +56,7 @@ public class DLNASettingsController {
 
         map.put("dlnaEnabled", settingsService.isDlnaEnabled());
         map.put("dlnaServerName", settingsService.getDlnaServerName());
+        map.put("dlnaBaseLANURL", settingsService.getDlnaBaseLANURL());
 
         model.addAttribute("model", map);
         return "dlnaSettings";
@@ -71,6 +72,7 @@ public class DLNASettingsController {
     private void handleParameters(HttpServletRequest request) {
         boolean dlnaEnabled = ServletRequestUtils.getBooleanParameter(request, "dlnaEnabled", false);
         String dlnaServerName = StringUtils.trimToNull(request.getParameter("dlnaServerName"));
+        String dlnaBaseLANURL = StringUtils.trimToNull(request.getParameter("dlnaBaseLANURL"));
         if (dlnaServerName == null) {
             dlnaServerName = "Libresonic";
         }
@@ -78,6 +80,7 @@ public class DLNASettingsController {
         upnpService.setMediaServerEnabled(false);
         settingsService.setDlnaEnabled(dlnaEnabled);
         settingsService.setDlnaServerName(dlnaServerName);
+        settingsService.setDlnaBaseLANURL(dlnaBaseLANURL);
         settingsService.save();
         upnpService.setMediaServerEnabled(dlnaEnabled);
     }

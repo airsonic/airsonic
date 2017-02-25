@@ -1809,7 +1809,7 @@ public class RESTController {
 
         Shares result = new Shares();
         for (Share share : shareService.getSharesForUser(user)) {
-            org.libresonic.restapi.Share s = createJaxbShare(share);
+            org.libresonic.restapi.Share s = createJaxbShare(request, share);
             result.getShare().add(s);
 
             for (MediaFile mediaFile : shareService.getSharedFiles(share.getId(), musicFolders)) {
@@ -1833,11 +1833,6 @@ public class RESTController {
             return;
         }
 
-        if (!settingsService.isUrlRedirectionEnabled()) {
-            error(request, response, ErrorCode.GENERIC, "Sharing is only supported for *.libresonic.org domain names.");
-            return;
-        }
-
         List<MediaFile> files = new ArrayList<MediaFile>();
         for (int id : getRequiredIntParameters(request, "id")) {
             files.add(mediaFileService.getMediaFile(id));
@@ -1852,7 +1847,7 @@ public class RESTController {
         shareService.updateShare(share);
 
         Shares result = new Shares();
-        org.libresonic.restapi.Share s = createJaxbShare(share);
+        org.libresonic.restapi.Share s = createJaxbShare(request, share);
         result.getShare().add(s);
 
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
@@ -1912,10 +1907,10 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    private org.libresonic.restapi.Share createJaxbShare(Share share) {
+    private org.libresonic.restapi.Share createJaxbShare(HttpServletRequest request, Share share) {
         org.libresonic.restapi.Share result = new org.libresonic.restapi.Share();
         result.setId(String.valueOf(share.getId()));
-        result.setUrl(shareService.getShareUrl(share));
+        result.setUrl(shareService.getShareUrl(request, share));
         result.setUsername(share.getUsername());
         result.setCreated(jaxbWriter.convertDate(share.getCreated()));
         result.setVisitCount(share.getVisitCount());

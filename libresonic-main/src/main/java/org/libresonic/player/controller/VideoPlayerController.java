@@ -21,10 +21,7 @@ package org.libresonic.player.controller;
 
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.User;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
+import org.libresonic.player.service.*;
 import org.libresonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,8 +52,6 @@ public class VideoPlayerController {
     @Autowired
     private MediaFileService mediaFileService;
     @Autowired
-    private SettingsService settingsService;
-    @Autowired
     private PlayerService playerService;
     @Autowired
     private SecurityService securityService;
@@ -72,24 +67,14 @@ public class VideoPlayerController {
 
         Integer duration = file.getDurationSeconds();
         String playerId = playerService.getPlayer(request, response).getId();
-        String url = request.getRequestURL().toString();
-        String streamUrl = url.replaceFirst("/videoPlayer.view.*", "/stream?id=" + file.getId() + "&player=" + playerId);
-        String coverArtUrl = url.replaceFirst("/videoPlayer.view.*", "/coverArt.view?id=" + file.getId());
-
-        // Rewrite URLs in case we're behind a proxy.
-        if (settingsService.isRewriteUrlEnabled()) {
-            String referer = request.getHeader("referer");
-            streamUrl = StringUtil.rewriteUrl(streamUrl, referer);
-            coverArtUrl = StringUtil.rewriteUrl(coverArtUrl, referer);
-        }
-
-        String remoteStreamUrl = settingsService.rewriteRemoteUrl(streamUrl);
-        String remoteCoverArtUrl = settingsService.rewriteRemoteUrl(coverArtUrl);
+        String url = NetworkService.getBaseUrl(request);
+        String streamUrl = url + "/stream?id=" + file.getId() + "&player=" + playerId;
+        String coverArtUrl = url + "/coverArt.view?id=" + file.getId();
 
         map.put("video", file);
         map.put("streamUrl", streamUrl);
-        map.put("remoteStreamUrl", remoteStreamUrl);
-        map.put("remoteCoverArtUrl", remoteCoverArtUrl);
+        map.put("remoteStreamUrl", streamUrl);
+        map.put("remoteCoverArtUrl", coverArtUrl);
         map.put("duration", duration);
         map.put("bitRates", BIT_RATES);
         map.put("defaultBitRate", DEFAULT_BIT_RATE);

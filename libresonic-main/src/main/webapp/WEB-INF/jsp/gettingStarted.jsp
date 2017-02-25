@@ -41,7 +41,7 @@
     <tr>
         <td style="font-size:26pt;padding:20pt">3</td>
         <td>
-            <div style="font-size:14pt"><a href="networkSettings.view"><fmt:message key="gettingStarted.step3.title"/></a></div>
+            <div style="font-size:14pt"><fmt:message key="gettingStarted.step3.title"/></div>
             <div style="padding-top:5pt"><fmt:message key="gettingStarted.step3.text"/></div>
         </td>
     </tr>

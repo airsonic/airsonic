@@ -20,7 +20,7 @@
 package org.libresonic.player.service.upnp;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.fourthline.cling.support.contentdirectory.AbstractContentDirectoryService;
 import org.fourthline.cling.support.contentdirectory.ContentDirectoryException;
 import org.fourthline.cling.support.contentdirectory.DIDLParser;
@@ -92,20 +92,11 @@ public abstract class LibresonicContentDirectory extends AbstractContentDirector
     }
 
     protected String getBaseUrl() {
-        int port = settingsService.getPort();
-        String contextPath = settingsService.getUrlRedirectContextPath();
-
-        // Note: Serving media and cover art with http (as opposed to https) works when using jetty and LibresonicDeployer.
-        StringBuilder url = new StringBuilder("http://")
-                .append(settingsService.getLocalIpAddress())
-                .append(":")
-                .append(port)
-                .append("/");
-
-        if (StringUtils.isNotEmpty(contextPath)) {
-            url.append(contextPath).append("/");
+        String dlnaBaseLANURL = settingsService.getDlnaBaseLANURL();
+        if(StringUtils.isBlank(dlnaBaseLANURL)) {
+            throw new RuntimeException("DLNA Base LAN URL is not set correctly");
         }
-        return url.toString();
+        return dlnaBaseLANURL;
     }
 
     protected BrowseResult createBrowseResult(DIDLContent didl, int count, int totalMatches) throws Exception {

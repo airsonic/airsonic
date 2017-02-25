@@ -79,14 +79,7 @@ public class PodcastController  {
             String suffix = songs.get(0).getFormat();
             String type = StringUtil.getMimeType(suffix);
 
-            // Rewrite URLs in case we're behind a proxy.
-            if (settingsService.isRewriteUrlEnabled()) {
-                String referer = request.getHeader("referer");
-                url = StringUtil.rewriteUrl(url, referer);
-            }
-
-            String enclosureUrl = url.replaceFirst("/podcast.*", "/stream?playlist=" + playlist.getId());
-            enclosureUrl = settingsService.rewriteRemoteUrl(enclosureUrl);
+            String enclosureUrl = url + "/stream?playlist=" + playlist.getId();
 
             podcasts.add(new Podcast(playlist.getName(), publishDate, enclosureUrl, length, type));
         }
