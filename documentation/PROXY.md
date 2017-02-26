@@ -104,9 +104,6 @@ redirection):
 ```haproxy
 frontend https
 
-    # Make sure that we are in HTTP mode so that we can rewrite headers
-    mode http
-
     # Listen on the HTTPS and HTTP ports
     bind :80
     bind :443 ssl crt /etc/haproxy/cert_key.pem
