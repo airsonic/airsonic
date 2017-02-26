@@ -98,7 +98,7 @@ The following configuration works for Apache (without HTTPS):
 
 ### HAProxy
 
-The following configuration works for HAProxy 1.7 (HTTPS with HTTP
+The following configuration works for HAProxy (HTTPS with HTTP
 redirection):
 
 ```haproxy
