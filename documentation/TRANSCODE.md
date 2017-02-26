@@ -20,7 +20,7 @@ sudo yum install ffmpeg
 In the case that ffmpeg is not available, you have two options.
 - Add a repository that provides ffmpeg
 - Build the binary from source
-  - Outdated documentation for this can be found at [TRANSCODE.TXT](documentation/developer/TRANSCODE.TXT)
+  - Outdated documentation for this can be found at [TRANSCODE.TXT](developer/TRANSCODE.TXT)
 
 Create a `transcode` directory within your `libresonic.home` directory:
 
