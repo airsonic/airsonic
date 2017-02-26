@@ -112,8 +112,7 @@ frontend https
     option httpclose
     option forwardfor
 
-    # HTTP: Redirect insecure requests to HTTPS
-    http-request redirect scheme https if !{ ssl_fc }
+
 
     # HTTPS: Forward requests to the Libresonic backend
     acl is_libresonic  path_beg -i /libresonic
