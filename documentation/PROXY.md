@@ -112,16 +112,11 @@ frontend https
     option httpclose
     option forwardfor
 
-
-
     # HTTPS: Forward requests to the Libresonic backend
     acl is_libresonic  path_beg -i /libresonic
     use_backend libresonic-backend if is_libresonic
 
 backend libresonic-backend
-
-    # Make sure that we are in HTTP mode so that we can rewrite headers
-    mode http
 
     # Rewrite all redirects to use HTTPS, similar to what Nginx does in the
     # proxy_redirect directive.
