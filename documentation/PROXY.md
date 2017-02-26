@@ -108,11 +108,11 @@ frontend https
     bind :80
     bind :443 ssl crt /etc/haproxy/cert_key.pem
 
-    # Some useful headers
+    # Some useful headers (Can be placed in the "default" section)
     option httpclose
     option forwardfor
 
-    # HTTPS: Forward requests to the Libresonic backend
+    # Bind the URL with the right backend
     acl is_libresonic  path_beg -i /libresonic
     use_backend libresonic-backend if is_libresonic
 
