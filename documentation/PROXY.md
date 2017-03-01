@@ -98,38 +98,33 @@ The following configuration works for Apache (without HTTPS):
 
 ### HAProxy
 
-The following configuration works for HAProxy 1.7 (HTTPS with HTTP
-redirection):
+The following configuration works for HAProxy (HTTP and HTTPS):
 
 ```haproxy
-frontend https
 
-    # Make sure that we are in HTTP mode so that we can rewrite headers
+defaults
+    
+    # Use HTTP protocole
     mode http
-
+    
+frontend https
+    
     # Listen on the HTTPS and HTTP ports
     bind :80
-    bind :443 ssl crt /etc/haproxy/cert_key.pem
+    bind :443 ssl crt /etc/haproxy/certs/cert_key.pem
 
-    # Some useful headers
-    option httpclose
-    option forwardfor
-
-    # HTTP: Redirect insecure requests to HTTPS
-    http-request redirect scheme https if !{ ssl_fc }
-
-    # HTTPS: Forward requests to the Libresonic backend
+    # Bind URL with the right backend
     acl is_libresonic  path_beg -i /libresonic
     use_backend libresonic-backend if is_libresonic
 
 backend libresonic-backend
 
-    # Make sure that we are in HTTP mode so that we can rewrite headers
-    mode http
-
     # Rewrite all redirects to use HTTPS, similar to what Nginx does in the
     # proxy_redirect directive.
     http-response replace-value Location ^http://(.*)$ https://\1
+
+    # (OPTIONAL) Force HTTPS
+    redirect scheme https if !{ ssl_fc }
 
     # Forward requests to Libresonic running on localhost on port 4040
     server libresonic 127.0.0.1:4040 check
