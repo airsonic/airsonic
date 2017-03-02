@@ -235,7 +235,6 @@
     <!-- AJAX services -->
 
     <bean id="ajaxMultiService" class="org.libresonic.player.ajax.MultiService">
-        <property name="networkService" ref="networkService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="settingsService" ref="settingsService"/>
         <property name="securityService" ref="securityService"/>

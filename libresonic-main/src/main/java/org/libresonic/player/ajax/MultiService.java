@@ -45,23 +45,10 @@ public class MultiService {
 
     private static final Logger LOG = Logger.getLogger(MultiService.class);
 
-    private NetworkService networkService;
     private MediaFileService mediaFileService;
     private LastFmService lastFmService;
     private SecurityService securityService;
     private SettingsService settingsService;
-
-    /**
-     * Returns status for port forwarding and URL redirection.
-     */
-    public NetworkStatus getNetworkStatus() {
-        NetworkService.Status portForwardingStatus = networkService.getPortForwardingStatus();
-        NetworkService.Status urlRedirectionStatus = networkService.getURLRedirecionStatus();
-        return new NetworkStatus(portForwardingStatus.getText(),
-                                 portForwardingStatus.getDate(),
-                                 urlRedirectionStatus.getText(),
-                                 urlRedirectionStatus.getDate());
-    }
 
     public ArtistInfo getArtistInfo(int mediaFileId, int maxSimilarArtists, int maxTopSongs) {
         MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
@@ -109,10 +96,6 @@ public class MultiService {
         userSettings.setShowSideBar(show);
         userSettings.setChanged(new Date());
         settingsService.updateUserSettings(userSettings);
-    }
-
-    public void setNetworkService(NetworkService networkService) {
-        this.networkService = networkService;
     }
 
     public void setMediaFileService(MediaFileService mediaFileService) {

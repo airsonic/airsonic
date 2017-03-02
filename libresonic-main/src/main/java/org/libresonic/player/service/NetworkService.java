@@ -27,54 +27,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Date;
 
-/**
- * Provides network-related services, including port forwarding on UPnP routers and
- * URL redirection from http://xxxx.libresonic.org.
- *
- * @author Sindre Mehus
- */
 public class NetworkService {
-
-    public static final String NOT_SUPPORTED = "NOT SUPPORTED";
-
-    private final static Status portForwardingStatus;
-    private final static Status urlRedirectionStatus;
-
-    static {
-        portForwardingStatus = new Status();
-        portForwardingStatus.setText(NOT_SUPPORTED);
-        urlRedirectionStatus = new Status();
-        urlRedirectionStatus.setText(NOT_SUPPORTED);
-    }
-
-    public Status getPortForwardingStatus() {
-        return portForwardingStatus;
-    }
-
-    public Status getURLRedirecionStatus() {
-        return urlRedirectionStatus;
-    }
-
-    public static class Status {
-
-        private String text;
-        private Date date;
-
-        public void setText(String text) {
-            this.text = text;
-            date = new Date();
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public Date getDate() {
-            return date;
-        }
-    }
 
     public static String getBaseUrl(HttpServletRequest request) {
         try {
