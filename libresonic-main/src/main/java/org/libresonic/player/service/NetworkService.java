@@ -19,6 +19,8 @@
  */
 package org.libresonic.player.service;
 
+import org.apache.commons.lang3.StringUtils;
+import org.libresonic.player.Logger;
 import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,22 +30,62 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+
 public class NetworkService {
+
+    private static UrlPathHelper urlPathHelper = new UrlPathHelper();
+    private static final String X_FORWARDED_SERVER = "X-Forwarded-Server";
+    private static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+    private static final String X_FORWARDED_HOST = "X-Forwarded-Host";
+
+    private final static Logger LOG = Logger.getLogger(NetworkService.class);
 
     public static String getBaseUrl(HttpServletRequest request) {
         try {
-            UrlPathHelper urlPathHelper = new UrlPathHelper();
-            URL url = new URL(request.getRequestURL().toString());
-            String host = url.getHost();
-            String userInfo = url.getUserInfo();
-            String scheme = url.getProtocol();
-            int port = url.getPort();
+            URI uri;
+            try {
+                uri = calculateProxyUri(request);
+            } catch (Exception e) {
+                LOG.debug("Could not calculate proxy uri", e);
+                uri = calculateNonProxyUri(request);
+            }
 
-            URI uri = new URI(scheme, userInfo, host, port, urlPathHelper.getContextPath(request), null, null);
-            return uri.toString() + "/";
+            String baseUrl = uri.toString() + "/";
+            LOG.debug("Calculated base url to "  + baseUrl);
+            return baseUrl;
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException("Could not calculate base url", e);
         }
+    }
+
+    private static URI calculateProxyUri(HttpServletRequest request) throws URISyntaxException {
+        String xForardedHost = request.getHeader(X_FORWARDED_HOST);
+        if(!isValidXForwardedHost(xForardedHost)) {
+            xForardedHost = request.getHeader(X_FORWARDED_SERVER);
+            if(!isValidXForwardedHost(xForardedHost)) {
+                throw new RuntimeException("Cannot calculate proxy uri without HTTP header " + X_FORWARDED_HOST);
+            }
+        }
+
+        URI proxyHost = new URI("ignored://" + xForardedHost);
+        String host = proxyHost.getHost();
+        int port = proxyHost.getPort();
+        String scheme = request.getHeader(X_FORWARDED_PROTO);
+
+        return new URI(scheme, null, host, port, urlPathHelper.getContextPath(request), null, null);
+    }
+
+    private static boolean isValidXForwardedHost(String xForardedHost) {
+        return StringUtils.isNotBlank(xForardedHost) && !StringUtils.equals("null", xForardedHost);
+    }
+
+    private static URI calculateNonProxyUri(HttpServletRequest request) throws MalformedURLException, URISyntaxException {
+        URL url = new URL(request.getRequestURL().toString());
+        String host = url.getHost();
+        String scheme = url.getProtocol();
+        int port = url.getPort();
+        String userInfo = url.getUserInfo();
+        return new URI(scheme, userInfo, host, port, urlPathHelper.getContextPath(request), null, null);
     }
 
 }

@@ -49,6 +49,23 @@ libresonic.war, you do not need to change anything.
 
 ## Reverse proxy configuration
 
+#### How it works
+Libresonic expects proxies to provide information about their incoming URL so that Libresonic can craft it when needed.
+To do so, Libresonic looks for the following HTTP headers:
+
+ - `X-Forwarded-Host`
+   - Provides server name and optionally port in the case that the proxy is on a non-standard port
+ - `X-Forwarded-Proto`
+   - Tells Libresonic whether to craft an HTTP or HTTPS url
+ - `X-Forwarded-Server`
+   - This is only a fallback in the case that `X-Forwarded-Host` is not available
+
+Currently this is used wherever, `NetworkService#getBaseUrl` is called. A couple notable places include:
+
+- Stream urls
+- Share urls
+- Coverart urls
+
 ### Nginx
 
 The following configuration works for Nginx (HTTPS with HTTP redirection):
@@ -74,6 +91,7 @@ server {
       proxy_set_header X-Real-IP         $remote_addr;
       proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
       proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header X-Forwarded-Host  $http_host;
       proxy_set_header Host              $http_host;
       proxy_max_temp_file_size           0;
       proxy_pass                         http://127.0.0.1:4040;
@@ -97,6 +115,8 @@ The following configuration works for Apache (without HTTPS):
 ```
 
 ### HAProxy
+
+**OUTDATED since `X-Forwarded-Host`/`X-FORWARDED-PROTO` change**
 
 The following configuration works for HAProxy (HTTP and HTTPS):
 
