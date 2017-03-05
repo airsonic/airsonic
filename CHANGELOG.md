@@ -3,6 +3,18 @@
 # Libresonic/libresonic
 # -->
 
+
+v6.2.beta1
+----------
+
+  * Add external database support
+  * Upgrade to new version of Spring
+  * Replace subsonic-booter with Spring Boot
+  * Remove remote-access service and port-forwarding
+  * Remove vestigial Subsonic licensing calls
+  * Add a demo site
+  * Tests and bugfixes and documentation, oh my!
+
 v6.1.beta2
 --------
 
