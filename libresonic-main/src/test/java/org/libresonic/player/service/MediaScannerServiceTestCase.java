@@ -3,10 +3,14 @@ package org.libresonic.player.service;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.Assert;
+import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.io.RawInputStreamFacade;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.libresonic.player.TestCaseUtils;
@@ -14,15 +18,25 @@ import org.libresonic.player.dao.*;
 import org.libresonic.player.domain.Album;
 import org.libresonic.player.domain.Artist;
 import org.libresonic.player.domain.MediaFile;
+import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.util.LibresonicHomeRule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * A unit test class to test the MediaScannerService.
@@ -42,6 +56,7 @@ import java.util.concurrent.TimeUnit;
         "/applicationContext-cache.xml",
         "/applicationContext-testdb.xml",
         "/applicationContext-mockSonos.xml"})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MediaScannerServiceTestCase {
 
   @ClassRule
@@ -82,6 +97,13 @@ public class MediaScannerServiceTestCase {
 
   @Autowired
   private SettingsService settingsService;
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+    @Autowired
+    ResourceLoader resourceLoader;
+
 
   /**
    * Tests the MediaScannerService by scanning the test media library into an empty database.
@@ -136,4 +158,21 @@ public class MediaScannerServiceTestCase {
     System.out.print("End");
   }
 
+    @Test
+    public void testSpecialCharactersInFilename() throws Exception {
+        Resource resource = resourceLoader.getResource("MEDIAS/piano.mp3");
+        String directoryName = "Muff1nman\u2019s \uFF0FMusic";
+        String fileName = "Muff1nman\u2019s\uFF0FPiano.mp3";
+        File artistDir = temporaryFolder.newFolder(directoryName);
+        File musicFile = artistDir.toPath().resolve(fileName).toFile();
+        FileUtils.copyStreamToFile(new RawInputStreamFacade(resource.getInputStream()), musicFile);
+
+        MusicFolder musicFolder = new MusicFolder(1, temporaryFolder.getRoot(),"Music",true,new Date());
+        musicFolderDao.createMusicFolder(musicFolder);
+        settingsService.clearMusicFolderCache();
+        TestCaseUtils.execScan(mediaScannerService);
+        MediaFile mediaFile = mediaFileService.getMediaFile(musicFile);
+        System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(mediaFile));
+        assertNotNull(mediaFile);
+    }
 }
