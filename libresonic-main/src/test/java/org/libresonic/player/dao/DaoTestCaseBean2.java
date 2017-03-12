@@ -22,8 +22,8 @@ public class DaoTestCaseBean2 {
         LibresonicHomeRule libresonicRule = new LibresonicHomeRule();
         @Override
         public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return libresonicRule.apply(spring, description);
+            Statement newBase = libresonicRule.apply(base, description);
+            return super.apply(newBase, description);
         }
     };
 
