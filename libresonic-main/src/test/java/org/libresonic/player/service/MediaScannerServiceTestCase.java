@@ -3,10 +3,8 @@ package org.libresonic.player.service;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.Assert;
-import org.codehaus.plexus.util.FileUtils;
-import org.codehaus.plexus.util.io.RawInputStreamFacade;
+import org.apache.commons.io.IOUtils;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,13 +27,13 @@ import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -165,14 +163,15 @@ public class MediaScannerServiceTestCase {
         String fileName = "Muff1nman\u2019s\uFF0FPiano.mp3";
         File artistDir = temporaryFolder.newFolder(directoryName);
         File musicFile = artistDir.toPath().resolve(fileName).toFile();
-        FileUtils.copyStreamToFile(new RawInputStreamFacade(resource.getInputStream()), musicFile);
+        IOUtils.copy(resource.getInputStream(), new FileOutputStream(musicFile));
 
         MusicFolder musicFolder = new MusicFolder(1, temporaryFolder.getRoot(),"Music",true,new Date());
         musicFolderDao.createMusicFolder(musicFolder);
         settingsService.clearMusicFolderCache();
         TestCaseUtils.execScan(mediaScannerService);
         MediaFile mediaFile = mediaFileService.getMediaFile(musicFile);
-        System.out.println(new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(mediaFile));
+        assertEquals(mediaFile.getFile().toString(), musicFile.toString());
+        System.out.println(mediaFile.getFile().getPath());
         assertNotNull(mediaFile);
     }
 }
