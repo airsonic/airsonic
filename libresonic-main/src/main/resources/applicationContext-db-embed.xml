@@ -6,9 +6,9 @@
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 
-        <property name="driverClassName" value="${database.config.embed.driver}" />
-        <property name="url" value="${database.config.embed.url}" />
-        <property name="username" value="${database.config.embed.username}" />
-        <property name="password" value="${database.config.embed.password}" />
+        <property name="driverClassName" value="${DatabaseConfigEmbedDriver}" />
+        <property name="url" value="${DatabaseConfigEmbedUrl}" />
+        <property name="username" value="${DatabaseConfigEmbedUsername}" />
+        <property name="password" value="${DatabaseConfigEmbedPassword}" />
     </bean>
 </beans>

@@ -79,7 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/playerSettings.view", "/shareSettings.view","/passwordSettings.view")
                     .hasRole("SETTINGS")
                 .antMatchers("/generalSettings.view","/advancedSettings.view","/userSettings.view",
-                        "/musicFolderSettings.view")
+                        "/musicFolderSettings.view", "/databaseSettings.view")
                     .hasRole("ADMIN")
                 .antMatchers("/deletePlaylist.view","/savePlaylist.view")
                     .hasRole("PLAYLIST")
