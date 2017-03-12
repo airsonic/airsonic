@@ -5,25 +5,47 @@
 
 # Installing Libresonic
 
-This document is designed to explain how to install LibreSonic as a Tomcat module, on a computer running Linux. As the project expands, this guide will also expand to include other operating systems.
+This document is designed to explain how to run Libresonic. Although the
+commands here are tailored to Linux, these steps should be easy to also perform
+on Windows. If you find something that could be improved in this documentation, please help
+contribute on the github project at [https://github.com/Libresonic/libresonic](https://github.com/Libresonic/libresonic).
+
+This document aims to provide steps to install Libresonic in a quick fashion.
+However, there are other documents detailing specifics on running Libresonic.
+It is recommended to also read them after this document but before actually
+running Libresonic. To list some of the important ones:
+
+  * [PROXY](PROXY.md) - Recommended if you plan on exposing Libresonic to the internet
+  * [CONFIGURATION](CONFIGURATION.md) - Documents some startup configurations that cannot be changed in the Libresonic Settings Page
+  * [DATABASE](DATABASE.md) - Provides guidance on using a database other than HSQL 1.8. Strongly recommended for long term / heavy use.
+  * [MIGRATE](MIGRATE.md) - Documents upgrading from an old Subsonic installation
+  * [TRANSCODE](TRANSCODE.md) - Mandatory setup if you want Libresonic to convert between formats on the fly
 
 ## Installing From Pre-Compiled Package
+
+Libresonic is packaged in a [WAR format](https://en.wikipedia.org/wiki/WAR_(file_format)). 
+This format is suitable for any OS running Java. Although the WAR format
+typically requires an application container such as
+[Tomcat](http://tomcat.apache.org/), Libresonic produces an executable WAR that
+can be run standalone.
 
 ### Prerequisites
 
 In order to install and run Libresonic, you will need:
 
   * A JDK installation. 1.8.x series of OpenJDK or Oracle JDK 8+ should work.
-  * A running [Tomcat](http://tomcat.apache.org/) server. If you're unfamiliar with Tomcat, there are many [guides](https://www.linode.com/docs/websites/frameworks/apache-tomcat-on-ubuntu-16-04) on it. For debian/ubuntu like distributions, you may need to ensure /etc/default/tomcat8 has the correct JAVA_HOME set.
-
 
 ### Download Libresonic
 
-Daily WAR files are built by Jenkins and available [here](https://jenkins.zifnab.net/job/libresonic/), curtesy of [zifnab06](https://github.com/zifnab06).
+WAR files are available on the [Releases Page](https://github.com/Libresonic/libresonic/releases). Choose either stable or develop.
+
+### Tomcat Method
+
+You will need a running [Tomcat](http://tomcat.apache.org/) server. If you're unfamiliar with Tomcat, there are many [guides](https://www.linode.com/docs/websites/frameworks/apache-tomcat-on-ubuntu-16-04) on it. For debian/ubuntu like distributions, you may need to ensure /etc/default/tomcat8 has the correct JAVA\_HOME set.
 
 1.  Download the latest war file:
 
-		wget https://jenkins.zifnab.net/job/libresonic/lastSuccessfulBuild/artifact/.repository/org/libresonic/player/libresonic-main/6.1.beta2/libresonic-main-6.1.beta2.war -O /var/lib/tomcat8/webapps/libresonic.war
+		wget https://github.com/Libresonic/libresonic/releases/download/v6.2.beta1/libresonic-v6.2.beta1.war -O /var/lib/tomcat8/webapps/libresonic.war
 
 	Note that this command copies the war file directly to the Tomcat webapps directory, and renames it to `libresonic.war`.
 
@@ -42,15 +64,20 @@ Daily WAR files are built by Jenkins and available [here](https://jenkins.zifnab
 
 4.  In your web browser, navigate to `http://IP_ADDRESS:8080/libresonic/`, replacing `IP_ADDRESS` with your server's IP address, or `127.0.0.1` if installing locally.
 
-## Alternative to Tomcat
+### SpringBoot Alternative to Tomcat
 
 If you'd prefer not to use a Tomcat container, you can also run Libresonic as a standalone application.
 Note that, in that case, libresonic will available at `http://IP_ADDRESS:8080` (and not `IP_ADDRESS:8080/libresonic/`).
 
-Download the Libresonic Pre-Compiled Package as explained above and put it anywhere. Then create the libresonic directory.
+Download the Libresonic Pre-Compiled Package as explained above and put it
+anywhere. Then create the libresonic directory. You may have to change the
+permissions on the folder to align with the user you will run libresonic as.
 
-Now you can simply run java against the libresonic.war package using a command like :
+```
+mkdir /var/libresonic/
+```
 
+Now you can simply run java against the libresonic.war package using a command like:
 
 ```
 java -jar libresonic.war

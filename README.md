@@ -40,8 +40,15 @@ The [Subsonic source code](https://github.com/Libresonic/subsonic-svn) was relea
 Usage
 -----
 
-Libresonic can be downloaded from [Github](https://github.com/Libresonic/libresonic/releases) for personal usage. Packagers can reference the [release repository](https://libresonic.org/release/), but please contact the maintainer or wait until a [stable release policy](https://github.com/Libresonic/libresonic/issues/73) is available.
+Libresonic can be downloaded from
+[Github](https://github.com/Libresonic/libresonic/releases) for personal usage.
+Packagers can also reference the [release repository](https://libresonic.org/release/).
 
-Libresonic is packaged in [WAR format](https://en.wikipedia.org/wiki/WAR_(file_format)), suitable for deployment as a [webapp under Tomcat](https://tomcat.apache.org/tomcat-6.0-doc/deployer-howto.html). Comprehensive install documentation [is pending](https://github.com/Libresonic/libresonic/issues/64).
+Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/develop/INSTALL.md) for instructions on running Libresonic.
 
-Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/develop/INSTALL.md) for instructions on building from source.
+
+Community
+---------
+Please see [Reddit](https://www.reddit.com/r/libresonic) or
+[IRC](http://webchat.freenode.net?channels=%23libresonic) for community
+discussion.
