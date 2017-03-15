@@ -131,6 +131,11 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
+                        <archive>
+                            <manifest>
+                                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            </manifest>
+                        </archive>
                     </configuration>
                 </plugin>
                 <plugin>
