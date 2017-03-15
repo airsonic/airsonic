@@ -46,7 +46,7 @@ public class NetworkService {
             try {
                 uri = calculateProxyUri(request);
             } catch (Exception e) {
-                LOG.debug("Could not calculate proxy uri", e);
+                LOG.debug("Could not calculate proxy uri: " + e.getMessage());
                 uri = calculateNonProxyUri(request);
             }
 
@@ -54,7 +54,7 @@ public class NetworkService {
             LOG.debug("Calculated base url to "  + baseUrl);
             return baseUrl;
         } catch (MalformedURLException | URISyntaxException e) {
-            throw new RuntimeException("Could not calculate base url", e);
+            throw new RuntimeException("Could not calculate base url: " + e.getMessage());
         }
     }
 
