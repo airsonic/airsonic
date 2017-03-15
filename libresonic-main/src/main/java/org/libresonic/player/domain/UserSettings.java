@@ -56,6 +56,7 @@ public class UserSettings {
     private AvatarScheme avatarScheme = AvatarScheme.NONE;
     private Integer systemAvatarId;
     private Date changed = new Date();
+    private int paginationSize;
 
     public UserSettings(String username) {
         this.username = username;
@@ -285,6 +286,14 @@ public class UserSettings {
 
     public void setQueueFollowingSongs(boolean queueFollowingSongs) {
         this.queueFollowingSongs = queueFollowingSongs;
+    }
+
+    public int getPaginationSize() {
+        return paginationSize;
+    }
+
+    public void setPaginationSize(int paginationSize) {
+        this.paginationSize = paginationSize;
     }
 
     /**

@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -59,7 +61,9 @@ public class MainController  {
     private AdService adService;
 
     @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
+                                                 HttpServletRequest request,
+                                                 HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
         Player player = playerService.getPlayer(request, response);
@@ -84,7 +88,12 @@ public class MainController  {
             return new ModelAndView(new RedirectView("accessDenied.view"));
         }
 
-        List<MediaFile> children = mediaFiles.size() == 1 ? mediaFileService.getChildrenOf(dir, true, true, true) : getMultiFolderChildren(mediaFiles);
+        UserSettings userSettings = settingsService.getUserSettings(username);
+
+        List<MediaFile> children = mediaFiles.size() == 1 ? mediaFileService.getChildrenOf(dir,
+                true,
+                true,
+                true) : getMultiFolderChildren(mediaFiles);
         List<MediaFile> files = new ArrayList<>();
         List<MediaFile> subDirs = new ArrayList<>();
         for (MediaFile child : children) {
@@ -95,7 +104,14 @@ public class MainController  {
             }
         }
 
-        UserSettings userSettings = settingsService.getUserSettings(username);
+        int userPaginationPreference = userSettings.getPaginationSize();
+
+        if(userPaginationPreference <= 0) {
+            showAll = true;
+        }
+
+        boolean thereIsMoreSubDirs = trimToSize(showAll, subDirs, userPaginationPreference);
+        boolean thereIsMoreSAlbums = false;
 
         mediaFileService.populateStarredDate(dir, username);
         mediaFileService.populateStarredDate(children, username);
@@ -115,7 +131,9 @@ public class MainController  {
         map.put("brand", settingsService.getBrand());
         map.put("viewAsList", isViewAsList(request, userSettings));
         if (dir.isAlbum()) {
-            map.put("sieblingAlbums", getSieblingAlbums(dir));
+            List<MediaFile> sieblingAlbums = getSieblingAlbums(dir);
+            thereIsMoreSAlbums = trimToSize(showAll, sieblingAlbums, userPaginationPreference);
+            map.put("sieblingAlbums", sieblingAlbums);
             map.put("artist", guessArtist(children));
             map.put("album", guessAlbum(children));
         }
@@ -127,6 +145,7 @@ public class MainController  {
         } catch (SecurityException x) {
             // Happens if Podcast directory is outside music folder.
         }
+        map.put("thereIsMore", (thereIsMoreSubDirs || thereIsMoreSAlbums) && !BooleanUtils.isTrue(showAll));
 
         Integer userRating = ratingService.getRatingForUser(username, dir);
         Double averageRating = ratingService.getAverageRating(dir);
@@ -152,7 +171,18 @@ public class MainController  {
             view = "artistMain";
         }
 
-        return new ModelAndView(view,"model",map);
+        return new ModelAndView(view, "model", map);
+}
+
+    private <T> boolean trimToSize(Boolean showAll, List<T> list, int userPaginationPreference) {
+        boolean trimmed = false;
+        if(!BooleanUtils.isTrue(showAll)) {
+            if(list.size() > userPaginationPreference) {
+                trimmed = true;
+                list.subList(userPaginationPreference, list.size()).clear();
+            }
+        }
+        return trimmed;
     }
 
     private boolean isViewAsList(HttpServletRequest request, UserSettings userSettings) {

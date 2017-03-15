@@ -12,6 +12,7 @@
     <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -156,8 +157,7 @@
         });
     }
     function showAllAlbums() {
-        $("#showAllButton").hide();
-        $(".albumThumb").show();
+        window.location.href = updateQueryStringParameter(window.location.href, "showAll", "1");
     }
 </script>
 
@@ -468,11 +468,14 @@
 
     </tr>
 </table>
+<c:if test="${model.thereIsMore}">
+    <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+</c:if>
 
 <c:if test="${not model.viewAsList}">
     <div style="float: left">
         <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
-            <div class="albumThumb" style="display:${loopStatus.count < 10 ? 'inline-block' : 'none'}">
+            <div class="albumThumb">
                 <c:import url="coverArt.jsp">
                     <c:param name="albumId" value="${album.id}"/>
                     <c:param name="caption1" value="${fn:escapeXml(album.name)}"/>
@@ -485,7 +488,7 @@
                 </c:import>
             </div>
         </c:forEach>
-        <c:if test="${fn:length(model.sieblingAlbums) >= 10}">
+        <c:if test="${model.thereIsMore}">
             <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
         </c:if>
     </div>

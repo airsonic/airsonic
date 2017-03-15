@@ -23,6 +23,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
+    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
 
     <script type="text/javascript">
         var image;
@@ -60,6 +61,9 @@
             if (image != null) {
                 image.attr("src", "coverArt.view?id=" + id + "&size=" + size);
             }
+        }
+        function showAllAlbums() {
+            window.location.href = updateQueryStringParameter(window.location.href, "showAll", "1");
         }
     </script>
 
@@ -121,6 +125,9 @@
         </c:forEach>
     </c:if>
 </table>
+<c:if test="${model.thereIsMore && fn:length(model.subDirs) gt 0}">
+    <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+</c:if>
 
 <div style="clear:both;height:1.5em"></div>
 

@@ -31,6 +31,7 @@
     <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -154,8 +155,7 @@
         $().toastmessage('showSuccessToast', '<fmt:message key="main.addnext.toast"/>')
     }
     function showAllAlbums() {
-        $("#showAllButton").hide();
-        $(".albumThumb").show();
+        window.location.href = updateQueryStringParameter(window.location.href, "showAll", "1");
     }
 </script>
 
@@ -265,7 +265,7 @@
             <c:forEach items="${model.subDirs}" var="subDir" varStatus="loopStatus">
                 <c:if test="${subDir.album}">
                     <c:set var="albumCount" value="${albumCount + 1}"/>
-                    <div class="albumThumb" style="display:${loopStatus.count < 40 ? 'inline-block' : 'none'}">
+                    <div class="albumThumb">
                         <c:import url="coverArt.jsp">
                             <c:param name="albumId" value="${subDir.id}"/>
                             <c:param name="caption1" value="${fn:escapeXml(subDir.name)}"/>
@@ -279,7 +279,7 @@
                     </div>
                 </c:if>
             </c:forEach>
-            <c:if test="${albumCount >= 40}">
+            <c:if test="${model.thereIsMore}">
                 <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
             </c:if>
         </div>
