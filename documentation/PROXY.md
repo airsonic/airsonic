@@ -116,8 +116,6 @@ The following configuration works for Apache (without HTTPS):
 
 ### HAProxy
 
-**OUTDATED since `X-Forwarded-Host`/`X-FORWARDED-PROTO` change**
-
 The following configuration works for HAProxy (HTTP and HTTPS):
 
 ```haproxy
