@@ -47,7 +47,7 @@ public class PodcastReceiverAdminController {
     @Autowired
     private PodcastService podcastService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = { RequestMethod.POST, RequestMethod.GET })
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Integer channelId = ServletRequestUtils.getIntParameter(request, "channelId");
 
