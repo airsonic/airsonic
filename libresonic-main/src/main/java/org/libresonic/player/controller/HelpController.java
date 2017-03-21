@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.controller;
 
+import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.libresonic.player.Logger;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
@@ -32,7 +33,11 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,6 +48,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/help")
 public class HelpController {
+
+    private static final Logger logger = Logger.getLogger(HelpController.class);
+
+    private static final int LOG_LINES_TO_SHOW = 50;
 
     @Autowired
     private VersionService versionService;
@@ -78,12 +87,28 @@ public class HelpController {
         map.put("serverInfo", serverInfo);
         map.put("usedMemory", totalMemory - freeMemory);
         map.put("totalMemory", totalMemory);
-        map.put("logEntries", Logger.getLatestLogEntries());
-        map.put("logFile", Logger.getLogFile());
+        File logFile = SettingsService.getLogFile();
+        List<String> latestLogEntries = getLatestLogEntries(logFile);
+        map.put("logEntries", latestLogEntries);
+        map.put("logFile", logFile);
 
         return new ModelAndView("help","model",map);
     }
 
+    private static List<String> getLatestLogEntries(File logFile) {
+        try {
+            List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
+            ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset());
+            String current;
+            while((current = reader.readLine()) != null && lines.size() < LOG_LINES_TO_SHOW) {
+                lines.add(0, current);
+            }
+            return lines;
+        } catch (Exception e) {
+            logger.warn("Could not open log file " + logFile, e);
+            return null;
+        }
+    }
 
 
 }

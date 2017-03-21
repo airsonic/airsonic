@@ -246,6 +246,11 @@ public class SettingsService {
         return home;
     }
 
+    public static File getLogFile() {
+        File libresonicHome = SettingsService.getLibresonicHome();
+        return new File(libresonicHome, "libresonic.log");
+    }
+
 
     /**
      * Register in service locator so that non-Spring objects can access me.

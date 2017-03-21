@@ -56,8 +56,7 @@
 <table cellpadding="2" class="log indent">
     <c:forEach items="${model.logEntries}" var="entry">
         <tr>
-            <td>[<fmt:formatDate value="${entry.date}" dateStyle="short" timeStyle="long" type="both"/>]</td>
-            <td>${entry.level}</td><td>${entry.category}</td><td>${fn:escapeXml(entry.message)}</td>
+            <td>${fn:escapeXml(entry)}</td>
         </tr>
     </c:forEach>
 </table>
