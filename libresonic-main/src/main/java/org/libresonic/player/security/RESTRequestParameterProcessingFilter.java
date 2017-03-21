@@ -62,7 +62,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
     private SecurityService securityService;
     private LoginFailureLogger loginFailureLogger;
 
-    private static RequestMatcher requiresAuthenticationRequestMatcher = new RegexRequestMatcher("/rest/.+\\.view\\??.*",null);
+    private static RequestMatcher requiresAuthenticationRequestMatcher = new RegexRequestMatcher("/rest/.+",null);
 
     protected boolean requiresAuthentication(HttpServletRequest request,
                                              HttpServletResponse response) {
