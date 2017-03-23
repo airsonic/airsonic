@@ -20,14 +20,10 @@
 package org.libresonic.player.util;
 
 import org.libresonic.player.Logger;
-import org.libresonic.player.service.SettingsService;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.util.*;
 
 /**
@@ -38,7 +34,6 @@ import java.util.*;
 public final class Util {
 
     private static final Logger LOG = Logger.getLogger(Util.class);
-    private static final Random RANDOM = new Random(System.currentTimeMillis());
 
     /**
      * Disallow external instantiation.
@@ -65,10 +60,6 @@ public final class Util {
         return System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
     }
 
-    public static boolean isWindowsInstall() {
-        return "true".equals(System.getProperty("libresonic.windowsInstall"));
-    }
-
     /**
      * Similar to {@link ServletResponse#setContentLength(int)}, but this
      * method supports lengths bigger than 2GB.
@@ -84,90 +75,6 @@ public final class Util {
         } else {
             response.setHeader("Content-Length", String.valueOf(length));
         }
-    }
-
-    /**
-     * Returns the local IP address.  Honours the "libresonic.host" system property.
-     * <p/>
-     * NOTE: For improved performance, use {@link SettingsService#getLocalIpAddress()} instead.
-     *
-     * @return The local IP, or the loopback address (127.0.0.1) if not found.
-     */
-    public static String getLocalIpAddress() {
-        List<String> ipAddresses = getLocalIpAddresses();
-        String libresonicHost = System.getProperty("libresonic.host");
-        if (libresonicHost != null && ipAddresses.contains(libresonicHost)) {
-            return libresonicHost;
-        }
-        return ipAddresses.get(0);
-    }
-
-    private static List<String> getLocalIpAddresses() {
-        List<String> result = new ArrayList<String>();
-
-        // Try the simple way first.
-        try {
-            InetAddress address = InetAddress.getLocalHost();
-            if (!address.isLoopbackAddress()) {
-                result.add(address.getHostAddress());
-            }
-        } catch (Throwable x) {
-            LOG.warn("Failed to resolve local IP address.", x);
-        }
-
-        // Iterate through all network interfaces, looking for a suitable IP.
-        try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface iface = interfaces.nextElement();
-                Enumeration<InetAddress> addresses = iface.getInetAddresses();
-                while (addresses.hasMoreElements()) {
-                    InetAddress addr = addresses.nextElement();
-                    if (addr instanceof Inet4Address && !addr.isLoopbackAddress()) {
-                        result.add(addr.getHostAddress());
-                    }
-                }
-            }
-        } catch (Throwable x) {
-            LOG.warn("Failed to resolve local IP address.", x);
-        }
-
-        if (result.isEmpty()) {
-            result.add("127.0.0.1");
-        }
-
-        return result;
-    }
-
-    public static int randomInt(int min, int max) {
-        if (min >= max) {
-            return 0;
-        }
-        return min + RANDOM.nextInt(max - min);
-    }
-
-    public static <T> Iterable<T> toIterable(final Enumeration<?> e) {
-        return new Iterable<T>() {
-            public Iterator<T> iterator() {
-                return toIterator(e);
-            }
-        };
-    }
-
-    public static <T> Iterator<T> toIterator(final Enumeration<?> e) {
-        return new Iterator<T>() {
-            public boolean hasNext() {
-                return e.hasMoreElements();
-            }
-
-            public T next() {
-                return (T) e.nextElement();
-            }
-
-            public void remove() {
-                throw new UnsupportedOperationException();
-            }
-        };
     }
 
     public static <T> List<T> subList(List<T> list, long offset, long max) {

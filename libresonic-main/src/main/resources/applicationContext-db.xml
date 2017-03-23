@@ -23,7 +23,7 @@
     </bean>
 
     <bean id="userTableQuote" class="java.lang.String">
-        <constructor-arg value="${database.usertable.quote:}" />
+        <constructor-arg value="${DatabaseUsertableQuote:}" />
     </bean>
 
     <bean id="liquibase" class="org.libresonic.player.spring.SpringLiquibase">
@@ -33,7 +33,7 @@
         <property name="changeLogParameters">
             <map>
                 <entry key="defaultMusicFolder" value="#{T(org.libresonic.player.util.Util).getDefaultMusicFolder()}" />
-                <entry key="varcharLimit" value="${database.varchar.maxlength:512}" />
+                <entry key="mysqlVarcharLimit" value="${DatabaseMysqlMaxlength:512}" />
                 <entry key="userTableQuote" value-ref="userTableQuote" />
             </map>
         </property>

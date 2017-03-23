@@ -13,7 +13,7 @@ import java.util.List;
 public class LibresonicPropertySourceConfigurer implements
         ApplicationContextInitializer<ConfigurableWebApplicationContext> {
 
-    public static final String DATASOURCE_CONFIG_TYPE = "database.config.type";
+    public static final String DATASOURCE_CONFIG_TYPE = "DatabaseConfigType";
 
     public void initialize(ConfigurableWebApplicationContext ctx) {
 

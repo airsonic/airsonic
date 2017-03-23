@@ -26,6 +26,7 @@ import org.libresonic.player.dao.InternetRadioDao;
 import org.libresonic.player.dao.MusicFolderDao;
 import org.libresonic.player.dao.UserDao;
 import org.libresonic.player.domain.*;
+import org.libresonic.player.spring.DataSourceConfigType;
 import org.libresonic.player.util.FileUtil;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
@@ -105,6 +106,16 @@ public class SettingsService {
     private static final String KEY_SMTP_PASSWORD = "SmtpPassword";
     private static final String KEY_SMTP_FROM = "SmtpFrom";
 
+    // Database Settings
+    private static final String KEY_DATABASE_CONFIG_TYPE = "DatabaseConfigType";
+    private static final String KEY_DATABASE_CONFIG_EMBED_DRIVER = "DatabaseConfigEmbedDriver";
+    private static final String KEY_DATABASE_CONFIG_EMBED_URL = "DatabaseConfigEmbedUrl";
+    private static final String KEY_DATABASE_CONFIG_EMBED_USERNAME = "DatabaseConfigEmbedUsername";
+    private static final String KEY_DATABASE_CONFIG_EMBED_PASSWORD = "DatabaseConfigEmbedPassword";
+    private static final String KEY_DATABASE_CONFIG_JNDI_NAME = "DatabaseConfigJNDIName";
+    private static final String KEY_DATABASE_MYSQL_VARCHAR_MAXLENGTH = "DatabaseMysqlMaxlength";
+    private static final String KEY_DATABASE_USERTABLE_QUOTE = "DatabaseUsertableQuote";
+
     // Default values.
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
     private static final String DEFAULT_IGNORED_ARTICLES = "The El La Los Las Le Les";
@@ -168,13 +179,26 @@ public class SettingsService {
     private static final String DEFAULT_SMTP_PASSWORD = null;
     private static final String DEFAULT_SMTP_FROM = "libresonic@libresonic.org";
 
+    private static final DataSourceConfigType DEFAULT_DATABASE_CONFIG_TYPE = DataSourceConfigType.LEGACY;
+    private static final String DEFAULT_DATABASE_CONFIG_EMBED_DRIVER = null;
+    private static final String DEFAULT_DATABASE_CONFIG_EMBED_URL = null;
+    private static final String DEFAULT_DATABASE_CONFIG_EMBED_USERNAME = null;
+    private static final String DEFAULT_DATABASE_CONFIG_EMBED_PASSWORD = null;
+    private static final String DEFAULT_DATABASE_CONFIG_JNDI_NAME = null;
+    private static final Integer DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH = 512;
+    private static final String DEFAULT_DATABASE_USERTABLE_QUOTE = null;
+
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
             "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", 
             "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort",
             "PortForwardingEnabled", "RewriteUrl", "UrlRedirectCustomUrl", "UrlRedirectContextPath",
-            "UrlRedirectFrom", "UrlRedirectionEnabled", "UrlRedirectType", "Port", "HttpsPort");
+            "UrlRedirectFrom", "UrlRedirectionEnabled", "UrlRedirectType", "Port", "HttpsPort",
+            // Database settings renamed
+            "database.varchar.maxlength", "database.config.type", "database.config.embed.driver",
+            "database.config.embed.url", "database.config.embed.username", "database.config.embed.password",
+            "database.config.jndi.name", "database.usertable.quote");
 
     private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
     private static final String THEMES_FILE = "/org/libresonic/player/theme/themes.txt";
@@ -1243,7 +1267,83 @@ public class SettingsService {
         setString(KEY_SMTP_FROM, smtpFrom);
     }
 
+    public DataSourceConfigType getDatabaseConfigType() {
+        String raw = getString(KEY_DATABASE_CONFIG_TYPE, DEFAULT_DATABASE_CONFIG_TYPE.name());
+        return DataSourceConfigType.valueOf(StringUtils.upperCase(raw));
+    }
+
+    public void setDatabaseConfigType(DataSourceConfigType databaseConfigType) {
+        setString(KEY_DATABASE_CONFIG_TYPE, databaseConfigType.name());
+    }
+
+    public String getDatabaseConfigEmbedDriver() {
+        return getString(KEY_DATABASE_CONFIG_EMBED_DRIVER, DEFAULT_DATABASE_CONFIG_EMBED_DRIVER);
+    }
+
+    public void setDatabaseConfigEmbedDriver(String embedDriver) {
+        setString(KEY_DATABASE_CONFIG_EMBED_DRIVER, embedDriver);
+    }
+
+    public String getDatabaseConfigEmbedUrl() {
+        return getString(KEY_DATABASE_CONFIG_EMBED_URL, DEFAULT_DATABASE_CONFIG_EMBED_URL);
+    }
+
+    public void setDatabaseConfigEmbedUrl(String url) {
+        setString(KEY_DATABASE_CONFIG_EMBED_URL, url);
+    }
+
+    public String getDatabaseConfigEmbedUsername() {
+        return getString(KEY_DATABASE_CONFIG_EMBED_USERNAME, DEFAULT_DATABASE_CONFIG_EMBED_USERNAME);
+    }
+
+    public void setDatabaseConfigEmbedUsername(String username) {
+        setString(KEY_DATABASE_CONFIG_EMBED_USERNAME, username);
+    }
+
+    public String getDatabaseConfigEmbedPassword() {
+        return getString(KEY_DATABASE_CONFIG_EMBED_PASSWORD, DEFAULT_DATABASE_CONFIG_EMBED_PASSWORD);
+    }
+
+    public void setDatabaseConfigEmbedPassword(String password) {
+        setString(KEY_DATABASE_CONFIG_EMBED_PASSWORD, password);
+    }
+
+    public String getDatabaseConfigJNDIName() {
+        return getString(KEY_DATABASE_CONFIG_JNDI_NAME, DEFAULT_DATABASE_CONFIG_JNDI_NAME);
+    }
+
+    public void setDatabaseConfigJNDIName(String jndiName) {
+        setString(KEY_DATABASE_CONFIG_JNDI_NAME, jndiName);
+    }
+
+    public Integer getDatabaseMysqlVarcharMaxlength() {
+        return getInt(KEY_DATABASE_MYSQL_VARCHAR_MAXLENGTH, DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH);
+    }
+
+    public void setDatabaseMysqlVarcharMaxlength(int maxlength) {
+        setInt(KEY_DATABASE_MYSQL_VARCHAR_MAXLENGTH, maxlength);
+    }
+
+    public String getDatabaseUsertableQuote() {
+        return getString(KEY_DATABASE_USERTABLE_QUOTE, DEFAULT_DATABASE_USERTABLE_QUOTE);
+    }
+
+    public void setDatabaseUsertableQuote(String usertableQuote) {
+        setString(KEY_DATABASE_USERTABLE_QUOTE, usertableQuote);
+    }
+
     public void setConfigurationService(ApacheCommonsConfigurationService configurationService) {
         this.configurationService = configurationService;
+    }
+
+    public void resetDatabaseToDefault() {
+        setDatabaseConfigEmbedDriver(DEFAULT_DATABASE_CONFIG_EMBED_DRIVER);
+        setDatabaseConfigEmbedPassword(DEFAULT_DATABASE_CONFIG_EMBED_PASSWORD);
+        setDatabaseConfigEmbedUrl(DEFAULT_DATABASE_CONFIG_EMBED_URL);
+        setDatabaseConfigEmbedUsername(DEFAULT_DATABASE_CONFIG_EMBED_USERNAME);
+        setDatabaseConfigJNDIName(DEFAULT_DATABASE_CONFIG_JNDI_NAME);
+        setDatabaseMysqlVarcharMaxlength(DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH);
+        setDatabaseUsertableQuote(DEFAULT_DATABASE_USERTABLE_QUOTE);
+        setDatabaseConfigType(DEFAULT_DATABASE_CONFIG_TYPE);
     }
 }
