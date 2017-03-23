@@ -189,6 +189,10 @@
             <td><fmt:message key="personalsettings.listreloaddelay"/></td>
             <td><form:input path="listReloadDelay" size="24"/></td>
         </tr>
+        <tr>
+            <td><fmt:message key="personalsettings.paginationsize"/></td>
+            <td><form:input path="paginationSize" size="24"/></td>
+        </tr>
     </table>
 
     <table id="lastFmTable" style="padding-left:2em">

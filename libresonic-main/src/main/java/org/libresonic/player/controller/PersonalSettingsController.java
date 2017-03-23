@@ -82,6 +82,7 @@ public class PersonalSettingsController  {
         command.setLastFmEnabled(userSettings.isLastFmEnabled());
         command.setLastFmUsername(userSettings.getLastFmUsername());
         command.setLastFmPassword(userSettings.getLastFmPassword());
+        command.setPaginationSize(userSettings.getPaginationSize());
 
         Locale currentLocale = userSettings.getLocale();
         Locale[] locales = settingsService.getAvailableLocales();
@@ -150,6 +151,7 @@ public class PersonalSettingsController  {
         settings.setLastFmUsername(command.getLastFmUsername());
         settings.setSystemAvatarId(getSystemAvatarId(command));
         settings.setAvatarScheme(getAvatarScheme(command));
+        settings.setPaginationSize(command.getPaginationSize());
 
         if (StringUtils.isNotBlank(command.getLastFmPassword())) {
             settings.setLastFmPassword(command.getLastFmPassword());

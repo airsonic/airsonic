@@ -196,6 +196,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         assertNull("Error in getUserSettings().", userSettings.getSystemAvatarId());
         assertEquals("Error in getUserSettings().", 0, userSettings.getListReloadDelay());
         assertFalse("Error in getUserSettings().", userSettings.isKeyboardShortcutsEnabled());
+        assertEquals("Error in getUserSettings().", 0, userSettings.getPaginationSize());
 
         UserSettings settings = new UserSettings("sindre");
         settings.setLocale(Locale.SIMPLIFIED_CHINESE);
@@ -218,6 +219,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         settings.setChanged(new Date(9412L));
         settings.setListReloadDelay(60);
         settings.setKeyboardShortcutsEnabled(true);
+        settings.setPaginationSize(120);
 
         userDao.updateUserSettings(settings);
         userSettings = userDao.getUserSettings("sindre");
@@ -243,6 +245,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         assertEquals("Error in getUserSettings().", new Date(9412L), userSettings.getChanged());
         assertEquals("Error in getUserSettings().", 60, userSettings.getListReloadDelay());
         assertTrue("Error in getUserSettings().", userSettings.isKeyboardShortcutsEnabled());
+        assertEquals("Error in getUserSettings().", 120, userSettings.getPaginationSize());
 
         userDao.deleteUser("sindre");
         assertNull("Error in cascading delete.", userDao.getUserSettings("sindre"));

@@ -54,6 +54,7 @@ public class PersonalSettingsCommand {
     private boolean queueFollowingSongs;
     private boolean lastFmEnabled;
     private int listReloadDelay;
+    private int paginationSize;
     private String lastFmUsername;
     private String lastFmPassword;
 
@@ -263,5 +264,13 @@ public class PersonalSettingsCommand {
 
     public void setQueueFollowingSongs(boolean queueFollowingSongs) {
         this.queueFollowingSongs = queueFollowingSongs;
+    }
+
+    public int getPaginationSize() {
+        return paginationSize;
+    }
+
+    public void setPaginationSize(int paginationSize) {
+        this.paginationSize = paginationSize;
     }
 }

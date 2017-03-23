@@ -1061,6 +1061,7 @@ public class SettingsService {
         settings.setLastFmUsername(null);
         settings.setLastFmPassword(null);
         settings.setChanged(new Date());
+        settings.setPaginationSize(40);
 
         UserSettings.Visibility playlist = settings.getPlaylistVisibility();
         playlist.setArtistVisible(true);

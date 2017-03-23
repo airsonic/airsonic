@@ -46,7 +46,8 @@ public class UserDao extends AbstractDao {
             "playlist_year, playlist_bit_rate, playlist_duration, playlist_format, playlist_file_size, " +
             "last_fm_enabled, last_fm_username, last_fm_password, transcode_scheme, show_now_playing, selected_music_folder_id, " +
             "party_mode_enabled, now_playing_allowed, avatar_scheme, system_avatar_id, changed, show_artist_info, auto_hide_play_queue, " +
-            "view_as_list, default_album_list, queue_following_songs, show_side_bar, list_reload_delay, keyboard_shortcuts_enabled";
+            "view_as_list, default_album_list, queue_following_songs, show_side_bar, list_reload_delay, " +
+            "keyboard_shortcuts_enabled, pagination_size";
 
     private static final Integer ROLE_ID_ADMIN = 1;
     private static final Integer ROLE_ID_DOWNLOAD = 2;
@@ -214,7 +215,9 @@ public class UserDao extends AbstractDao {
                                                    settings.getAvatarScheme().name(), settings.getSystemAvatarId(), settings.getChanged(),
                                                    settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
                                                    settings.isViewAsList(), settings.getDefaultAlbumList().getId(), settings.isQueueFollowingSongs(),
-                                                   settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled()});
+                                                   settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled(),
+                                                   settings.getPaginationSize()
+        });
     }
 
     private static String encrypt(String s) {
@@ -375,6 +378,7 @@ public class UserDao extends AbstractDao {
             settings.setShowSideBar(rs.getBoolean(col++));
             settings.setListReloadDelay((Integer) rs.getObject(col++));
             settings.setKeyboardShortcutsEnabled(rs.getBoolean(col++));
+            settings.setPaginationSize(rs.getInt(col++));
 
             return settings;
         }
