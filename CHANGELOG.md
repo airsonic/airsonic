@@ -3,7 +3,6 @@
 # Libresonic/libresonic
 # -->
 
-
 v6.2.beta1
 ----------
 
@@ -14,6 +13,11 @@ v6.2.beta1
   * Remove vestigial Subsonic licensing calls
   * Add a demo site
   * Tests and bugfixes and documentation, oh my!
+
+v6.1
+----
+
+  * First real stable release!
 
 v6.1.beta2
 --------
