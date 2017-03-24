@@ -204,7 +204,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
             } else {
                 LOG.debug("Skipping tomcat optimization as we are not running on tomcat");
             }
-        } catch (ClassNotFoundException e) {
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
             LOG.debug("Skipping tomcat optimization as the tomcat classes are not available");
         } catch (Exception e) {
             LOG.warn("An error happened while trying to optimize tomcat", e);
