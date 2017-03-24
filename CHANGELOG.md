@@ -3,6 +3,13 @@
 # Libresonic/libresonic
 # -->
 
+v6.2.beta2
+----------
+
+  * Add database settings UI
+  * Documentation improvements
+  * Lots of spit and polish
+
 v6.2.beta1
 ----------
 
