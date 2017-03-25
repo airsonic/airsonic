@@ -4,7 +4,7 @@
            targetNamespace="http://libresonic.org/restapi"
            attributeFormDefault="unqualified"
            elementFormDefault="qualified"
-           version="1.13.0">
+           version="1.14.0">
 
     <xs:element name="subsonic-response" type="sub:Response"/>
 
@@ -52,6 +52,7 @@
         </xs:choice>
         <xs:attribute name="status" type="sub:ResponseStatus" use="required"/>
         <xs:attribute name="version" type="sub:Version" use="required"/>
+        <xs:attribute name="type" type="xs:string" use="required" />
     </xs:complexType>
 
     <xs:simpleType name="ResponseStatus">
