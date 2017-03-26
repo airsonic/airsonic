@@ -130,6 +130,11 @@ frontend https
     # Listen on the HTTPS and HTTP ports
     bind :80
     bind :443 ssl crt /etc/haproxy/certs/cert_key.pem
+    
+    # Add X-Headers necessary for HTTPS
+    # Replace frontend.example.com with your SSL host and include :[port] if not running on port 443
+    reqadd X-Forwarded-Host:\ frontend.example.com
+    reqadd X-Forwarded-Proto:\ https
 
     # Bind URL with the right backend
     acl is_libresonic  path_beg -i /libresonic
