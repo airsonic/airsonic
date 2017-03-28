@@ -20,6 +20,7 @@
 package org.libresonic.player.service;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.ArtistDao;
@@ -152,7 +153,7 @@ public class MediaScannerService {
         LOG.info("Starting to scan media library.");
 
         try {
-            Date lastScanned = new Date();
+            Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
 
             // Maps from artist name to album count.
             Map<String, Integer> albumCount = new HashMap<String, Integer>();

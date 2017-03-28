@@ -19,7 +19,8 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -35,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  * @author Sindre Mehus
  */
 public class AbstractDao {
-    private static final Logger LOG = Logger.getLogger(AbstractDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDao.class);
     
     private DaoHelper daoHelper;
 
@@ -79,7 +80,9 @@ public class AbstractDao {
 
     protected int update(String sql, Object... args) {
         long t = System.nanoTime();
+        LOG.trace("Executing query: [{}]", sql);
         int result = getJdbcTemplate().update(sql, args);
+        LOG.trace("Updated {} rows", result);
         log(sql, t);
         return result;
     }
