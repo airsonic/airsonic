@@ -23,17 +23,12 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.dao.ShareDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.Share;
-import org.libresonic.player.domain.User;
+import org.libresonic.player.domain.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Provides services for sharing media.
@@ -47,8 +42,8 @@ public class ShareService {
 
     private ShareDao shareDao;
     private SecurityService securityService;
-    private SettingsService settingsService;
     private MediaFileService mediaFileService;
+    private JWTSecurityService jwtSecurityService;
 
     public List<Share> getAllShares() {
         return shareDao.getAllShares();
@@ -115,12 +110,9 @@ public class ShareService {
         shareDao.deleteShare(id);
     }
 
-    public String getShareBaseUrl(HttpServletRequest request) {
-        return NetworkService.getBaseUrl(request) + "/share/";
-    }
-
     public String getShareUrl(HttpServletRequest request, Share share) {
-        return getShareBaseUrl(request) + share.getName();
+        String shareUrl = NetworkService.getBaseUrl(request) + "/ext/share/" + share.getName();
+        return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(shareUrl), share.getExpires()).build().toUriString();
     }
 
     public void setSecurityService(SecurityService securityService) {
@@ -131,11 +123,11 @@ public class ShareService {
         this.shareDao = shareDao;
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
     public void setMediaFileService(MediaFileService mediaFileService) {
         this.mediaFileService = mediaFileService;
+    }
+
+    public void setJwtSecurityService(JWTSecurityService jwtSecurityService) {
+        this.jwtSecurityService = jwtSecurityService;
     }
 }

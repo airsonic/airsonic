@@ -33,6 +33,7 @@ import org.libresonic.player.domain.*;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.util.Util;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -260,7 +261,12 @@ public class FolderBasedContentDirectory extends LibresonicContentDirectory {
     }
 
     private URI getAlbumArtUrl(MediaFile album) throws URISyntaxException {
-        return new URI(getBaseUrl() + "coverArt.view?id=" + album.getId() + "&size=" + CoverArtScheme.LARGE.getSize());
+        return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(getBaseUrl() + "/ext/coverArt.view")
+                .queryParam("id", album.getId())
+                .queryParam("size", CoverArtScheme.LARGE.getSize()))
+                .build()
+                .encode()
+                .toUri();
     }
 
     public void setMediaFileService(MediaFileService mediaFileService) {

@@ -98,6 +98,7 @@ public class SettingsService {
     private static final String KEY_SONOS_ENABLED = "SonosEnabled";
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
+    private static final String KEY_JWT_KEY = "JWTKey";
 
     private static final String KEY_SMTP_SERVER = "SmtpServer";
     private static final String KEY_SMTP_ENCRYPTION = "SmtpEncryption";
@@ -117,6 +118,7 @@ public class SettingsService {
     private static final String KEY_DATABASE_USERTABLE_QUOTE = "DatabaseUsertableQuote";
 
     // Default values.
+    private static final String DEFAULT_JWT_KEY = null;
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
     private static final String DEFAULT_IGNORED_ARTICLES = "The El La Los Las Le Les";
     private static final String DEFAULT_SHORTCUTS = "New Incoming Podcast";
@@ -1336,6 +1338,14 @@ public class SettingsService {
 
     public void setDatabaseUsertableQuote(String usertableQuote) {
         setString(KEY_DATABASE_USERTABLE_QUOTE, usertableQuote);
+    }
+
+    public String getJWTKey() {
+        return getString(KEY_JWT_KEY, DEFAULT_JWT_KEY);
+    }
+
+    public void setJWTKey(String jwtKey) {
+        setString(KEY_JWT_KEY, jwtKey);
     }
 
     public void setConfigurationService(ApacheCommonsConfigurationService configurationService) {

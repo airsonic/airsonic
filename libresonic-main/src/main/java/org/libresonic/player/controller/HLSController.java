@@ -22,6 +22,7 @@ package org.libresonic.player.controller;
 import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.Player;
+import org.libresonic.player.service.JWTSecurityService;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlayerService;
 import org.libresonic.player.service.SecurityService;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +52,7 @@ import java.util.regex.Pattern;
  * @author Sindre Mehus
  */
 @Controller(value = "hlsController")
-@RequestMapping("/hls/**")
+@RequestMapping(value = {"/hls/**", "/ext/hls/**"})
 public class HLSController {
 
     private static final int SEGMENT_DURATION = 10;
@@ -62,6 +64,8 @@ public class HLSController {
     private MediaFileService mediaFileService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private JWTSecurityService jwtSecurityService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -142,7 +146,12 @@ public class HLSController {
         for (Pair<Integer, Dimension> bitRate : bitRates) {
             Integer kbps = bitRate.getFirst();
             writer.println("#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=" + kbps * 1000L);
-            writer.print(contextPath + "hls/hls.m3u8?id=" + id + "&player=" + player.getId() + "&bitRate=" + kbps);
+            UriComponentsBuilder url = (UriComponentsBuilder.fromUriString(contextPath + "ext/hls/hls.m3u8")
+                    .queryParam("id", id)
+                    .queryParam("player", player.getId())
+                    .queryParam("bitRate", kbps));
+            jwtSecurityService.addJWTToken(url);
+            writer.print(url.toUriString());
             Dimension dimension = bitRate.getSecond();
             if (dimension != null) {
                 writer.print("@" + dimension.width + "x" + dimension.height);
@@ -173,17 +182,22 @@ public class HLSController {
     }
 
     private String createStreamUrl(HttpServletRequest request, Player player, int id, int offset, int duration, Pair<Integer, Dimension> bitRate) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getContextPath(request)).append("stream/stream.ts?id=").append(id).append("&hls=true&timeOffset=").append(offset)
-                .append("&player=").append(player.getId()).append("&duration=").append(duration);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getContextPath(request) + "ext/stream/stream.ts");
+        builder.queryParam("id", id);
+        builder.queryParam("hls", "true");
+        builder.queryParam("timeOffset", offset);
+        builder.queryParam("player", player.getId());
+        builder.queryParam("duration", duration);
         if (bitRate != null) {
-            builder.append("&maxBitRate=").append(bitRate.getFirst());
+            builder.queryParam("maxBitRate", bitRate.getFirst());
             Dimension dimension = bitRate.getSecond();
             if (dimension != null) {
-                builder.append("&size=").append(dimension.width).append("x").append(dimension.height);
+                builder.queryParam("size", dimension.width);
+                builder.queryParam("x", dimension.height);
             }
         }
-        return builder.toString();
+        jwtSecurityService.addJWTToken(builder);
+        return builder.toUriString();
     }
 
     private String getContextPath(HttpServletRequest request) {

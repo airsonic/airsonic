@@ -28,10 +28,6 @@ package org.libresonic.player.service;
 public class ServiceLocator {
 
     private static SettingsService settingsService;
-    private static VersionService versionService;
-
-    private ServiceLocator() {
-    }
 
     public static SettingsService getSettingsService() {
         return settingsService;
@@ -39,14 +35,6 @@ public class ServiceLocator {
 
     public static void setSettingsService(SettingsService settingsService) {
         ServiceLocator.settingsService = settingsService;
-    }
-
-    public static VersionService getVersionService() {
-        return versionService;
-    }
-
-    public static void setVersionService(VersionService versionService) {
-        ServiceLocator.versionService = versionService;
     }
 }
 

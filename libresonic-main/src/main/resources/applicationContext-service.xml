@@ -137,7 +137,7 @@
         <property name="playlistDao" ref="playlistDao"/>
     </bean>
 
-    <bean id="versionService" class="org.libresonic.player.service.VersionService" init-method="init"/>
+    <bean id="versionService" class="org.libresonic.player.service.VersionService" />
 
     <bean id="statusService" class="org.libresonic.player.service.StatusService">
         <property name="mediaFileService" ref="mediaFileService"/>
@@ -166,9 +166,9 @@
 
     <bean id="shareService" class="org.libresonic.player.service.ShareService">
         <property name="shareDao" ref="shareDao"/>
-        <property name="settingsService" ref="settingsService"/>
         <property name="securityService" ref="securityService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="jwtSecurityService" ref="jwtSecurityService" />
     </bean>
 
     <bean id="podcastService" class="org.libresonic.player.service.PodcastService" init-method="init">
@@ -198,6 +198,7 @@
         <property name="playerService" ref="playerService"/>
         <property name="transcodingService" ref="transcodingService"/>
         <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="jwtSecurityService" ref="jwtSecurityService" />
     </bean>
 
     <bean id="upnpService" class="org.libresonic.player.service.UPnPService" init-method="init">
@@ -297,6 +298,10 @@
     <bean id="localeResolver" class="org.libresonic.player.i18n.LibresonicLocaleResolver">
         <property name="securityService" ref="securityService"/>
         <property name="settingsService" ref="settingsService"/>
+    </bean>
+
+    <bean id="jwtSecurityService" class="org.libresonic.player.service.JWTSecurityService">
+        <constructor-arg ref="settingsService" />
     </bean>
 
 </beans>

@@ -10,12 +10,8 @@
     <meta name="og:type" content="album"/>
 
     <c:if test="${not empty model.songs}">
-        <sub:url value="/coverArt.view" var="coverArtUrl">
-            <sub:param name="id" value="${model.songs[0].id}"/>
-            <sub:param name="size" value="500"/>
-        </sub:url>
         <meta name="og:title" content="${fn:escapeXml(model.songs[0].artist)} &mdash; ${fn:escapeXml(model.songs[0].albumName)}"/>
-        <meta name="og:image" content="${coverArtUrl}"/>
+        <meta name="og:image" content="${model.songs[0].coverArtUrl}"/>
     </c:if>
 
     <script type="text/javascript">
@@ -45,21 +41,12 @@
             var list = new Array();
 
         <c:forEach items="${model.songs}" var="song" varStatus="loopStatus">
-        <%--@elvariable id="song" type="org.libresonic.player.domain.MediaFile"--%>
-        <sub:url value="/stream" var="streamUrl">
-            <sub:param name="id" value="${song.id}"/>
-            <sub:param name="player" value="${model.player}"/>
-            <sub:param name="maxBitRate" value="1200"/>
-        </sub:url>
-        <sub:url value="/coverArt.view" var="coverUrl">
-            <sub:param name="id" value="${song.id}"/>
-            <sub:param name="size" value="500"/>
-        </sub:url>
+        <%--@elvariable id="song" type="org.libresonic.player.domain.MediaFileWithUrlInfo"--%>
 
             // TODO: Use video provider for aac, m4a
             list[${loopStatus.count - 1}] = {
-                file: "${streamUrl}",
-                image: "${coverUrl}",
+                file: "${song.streamUrl}",
+                image: "${song.coverArtUrl}",
                 title: "${fn:escapeXml(song.title)}",
                 provider: "${song.video ? "video" : "sound"}",
                 description: "${fn:escapeXml(song.artist)}"

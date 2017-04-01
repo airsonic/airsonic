@@ -63,7 +63,6 @@ public class ShareSettingsController {
     public String doGet(HttpServletRequest request, Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("shareBaseUrl", shareService.getShareBaseUrl(request));
         map.put("shareInfos", getShareInfos(request));
         map.put("user", securityService.getCurrentUser(request));
 
@@ -121,7 +120,9 @@ public class ShareSettingsController {
             List<MediaFile> files = shareService.getSharedFiles(share.getId(), musicFolders);
             if (!files.isEmpty()) {
                 MediaFile file = files.get(0);
-                result.add(new ShareInfo(share, file.isDirectory() ? file : mediaFileService.getParentOf(file)));
+                result.add(new ShareInfo(shareService.getShareUrl(request, share), share, file.isDirectory() ? file :
+                        mediaFileService
+                        .getParentOf(file)));
             }
         }
         return result;
@@ -144,16 +145,22 @@ public class ShareSettingsController {
     }
 
     public static class ShareInfo {
+        private final String shareUrl;
         private final Share share;
         private final MediaFile dir;
 
-        public ShareInfo(Share share, MediaFile dir) {
+        public ShareInfo(String shareUrl, Share share, MediaFile dir) {
+            this.shareUrl = shareUrl;
             this.share = share;
             this.dir = dir;
         }
 
         public Share getShare() {
             return share;
+        }
+
+        public String getShareUrl() {
+            return shareUrl;
         }
 
         public MediaFile getDir() {

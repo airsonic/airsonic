@@ -68,10 +68,6 @@ public class VersionService {
      */
     private static final String VERSION_URL = "http://libresonic.org/release/version.txt";
 
-    public void init() {
-        ServiceLocator.setVersionService(this);
-    }
-
     /**
      * Returns the version number for the locally installed Libresonic version.
      *

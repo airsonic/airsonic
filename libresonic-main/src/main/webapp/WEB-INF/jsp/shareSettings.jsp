@@ -37,7 +37,7 @@
             </c:url>
 
             <tr>
-                <td style="padding-left:1em"><a href="${model.shareBaseUrl}${share.name}" target="_blank">${share.name}</a></td>
+                <td style="padding-left:1em"><a href="${shareInfo.shareUrl}" target="_blank">${share.name}</a></td>
                 <td style="padding-left:1em">${fn:escapeXml(share.username)}</td>
                 <td style="padding-left:1em"><input type="text" name="description[${share.id}]" size="40" value="${share.description}"/></td>
                 <td style="padding-left:1em"><fmt:formatDate value="${share.lastVisited}" type="date" dateStyle="medium"/></td>
