@@ -12,7 +12,7 @@ a list of community tested setups:
 | HyperSQL   | 2.X     | ✕         | ✕       | No curent plans to support, look into SQLite instead? |
 | PostgreSQL | 9.5     | ✔         | ✔       |        |
 | MariaDB    | 10.2    | ✔         | ✔       |        |
-| MySQL      | 5.7.1   | ✔         | ✕       | WIP    |
+| MySQL      | 5.7.17  | ✔         | ✕       | WIP    |
 
 If you wish to continue using the current hsql 1.8 database driver, no action is needed. If you wish to use another
 database, read on.
