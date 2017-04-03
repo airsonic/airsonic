@@ -1,12 +1,25 @@
+# Database Selection
+
+Libresonic is built with generic ANSI SQL (for the most part) and uses [Liquibase](http://www.liquibase.org/) 
+for database migrations in a database agnostic way and should be
+able to run against a variety of databases. However, not all databases have been verified to 
+work and you may run into issues with the liquibase migrations or runtime SQL issues. Here is 
+a list of community tested setups:
+
+| Database   | Version | Liquibase | Runtime | Notes  |
+|:----------:|:-------:|:---------:|:-------:|:------:|
+| HyperSQL   | 1.8     | ✔         | ✔       | Default|
+| HyperSQL   | 2.X     | ✕         | ✕       | No curent plans to support, look into SQLite instead? |
+| PostgreSQL | 9.5     | ✔         | ✔       |        |
+| MariaDB    | 10.2    | ✔         | ✔       |        |
+| MySQL      | 5.7.1   | ✔         | ✕       | WIP    |
+
+If you wish to continue using the current hsql 1.8 database driver, no action is needed. If you wish to use another
+database, read on.
+
 # Database Configuration
 
 *Before doing anything, make sure your database is properly backed up. Ensure your server is shutdown*
-
-Libresonic has the capability to override the database settings. If you wish to
-continue using the current hsql 1.8 database driver, no action is needed. When
-upgrading to a new version of Libresonic powered by liquibase you may see some
-liquibase logging to double check old migrations, but on subsequent startups it
-will not execute them again.
 
 For those that wish to change their database, instructions differ based on
 whether you wish for your database connection to be managed by your container (tomcat),
