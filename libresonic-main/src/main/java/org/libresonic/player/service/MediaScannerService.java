@@ -151,9 +151,10 @@ public class MediaScannerService {
 
     private void doScanLibrary() {
         LOG.info("Starting to scan media library.");
+        Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
+        LOG.debug("New last scan date is " + lastScanned);
 
         try {
-            Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
 
             // Maps from artist name to album count.
             Map<String, Integer> albumCount = new HashMap<String, Integer>();
