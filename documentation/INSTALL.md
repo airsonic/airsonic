@@ -123,9 +123,9 @@ On a Debian-based system, you can install all these prerequisites at once with:
 
 		git checkout develop
 
-3.  Using Maven, build Subsonic:
+3.  Using Maven, build Libresonic:
 
-		mvn package
+		mvn clean package
 
 4.  You should know have a war file:
 
