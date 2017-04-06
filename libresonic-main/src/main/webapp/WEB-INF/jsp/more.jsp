@@ -271,16 +271,6 @@
 <fmt:message key="more.apps.text"/>
 
 
-<a href="<c:url value="${model.jamstashUrl}"/>" target="_blank">
-    <img alt="Jamstash" src="<c:url value="/icons/default_light/jamstash.png"/>" style="float: right;margin-left: 3em; margin-right: 3em"/>
-</a>
-
-<h2>
-    <img src="<spring:theme code="html5Image"/>" alt=""/>
-    <span style="vertical-align: middle"><fmt:message key="more.jamstash.title"/></span>
-</h2>
-<fmt:message key="more.jamstash.text"><fmt:param>${model.jamstashUrl}</fmt:param></fmt:message>
-
 <h2>
     <img src="<spring:theme code="statusSmallImage"/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="more.status.title"/></span>
