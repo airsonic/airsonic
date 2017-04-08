@@ -90,6 +90,9 @@ public class AvatarController implements LastModified {
         if (userSettings.getAvatarScheme() == AvatarScheme.CUSTOM || forceCustom) {
             return settingsService.getCustomAvatar(username);
         }
+        if(userSettings.getAvatarScheme() == AvatarScheme.NONE) {
+            return null;
+        }
         return settingsService.getSystemAvatar(userSettings.getSystemAvatarId());
     }
 
