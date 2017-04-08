@@ -45,15 +45,17 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>javax.servlet.jsp-api</artifactId>
+            <version>2.3.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -398,6 +400,31 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.24</version>
         </dependency>
+
+
+        <!-- Embedded tomcat -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-jasper</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Embedded Jetty -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -414,6 +441,8 @@
                 <configuration>
                     <mainClass>org.libresonic.player.boot.Application</mainClass>
                     <layout>WAR</layout>
+                    <excludeGroupIds>${boot.group.excludes}</excludeGroupIds>
+                    <excludeArtifactIds>${boot.artifact.excludes}</excludeArtifactIds>
                 </configuration>
                 <executions>
                     <execution>
@@ -472,4 +501,23 @@
 
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>tomcat-embed</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <boot.group.excludes>org.eclipse.jetty,org.eclipse.jetty.websocket,org.mortbay.jasper,org.eclipse.jetty.toolchain,org.ow2.asm</boot.group.excludes>
+                <boot.artifact.excludes>spring-boot-starter-jetty</boot.artifact.excludes>
+            </properties>
+        </profile>
+        <profile>
+            <id>jetty-embed</id>
+            <properties>
+                <boot.group.excludes>org.apache.tomcat.embed</boot.group.excludes>
+                <boot.artifact.excludes>spring-boot-starter-tomcat</boot.artifact.excludes>
+            </properties>
+        </profile>
+    </profiles>
 </project>
