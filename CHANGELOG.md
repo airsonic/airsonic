@@ -3,6 +3,14 @@
 # Libresonic/libresonic
 # -->
 
+v6.2.beta3
+----------
+
+  * API endpoint security tightening
+  * More documentation
+  * Less licensing code
+  * More cowbell
+
 v6.2.beta2
 ----------
 
