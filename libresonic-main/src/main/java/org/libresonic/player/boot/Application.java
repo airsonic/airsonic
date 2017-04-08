@@ -129,7 +129,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
     public FilterRegistrationBean cacheFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(cacheFilter());
-        registration.addUrlPatterns("/icons/*", "/style/*");
+        registration.addUrlPatterns("/icons/*", "/style/*", "/script/*", "/dwr/*", "/icons/*", "/coverArt.view");
         registration.addInitParameter("Cache-Control", "max-age=36000");
         registration.setName("CacheFilter");
         registration.setOrder(5);
