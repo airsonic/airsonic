@@ -300,8 +300,7 @@
         <span style="vertical-align: middle"><fmt:message key="more.upload.title"/></span>
     </h2>
 
-    <form method="post" enctype="multipart/form-data" action="upload.view">
-        <sec:csrfInput />
+    <form method="post" enctype="multipart/form-data" action="upload.view?${_csrf.parameterName}=${_csrf.token}">
         <table>
             <tr>
                 <td><fmt:message key="more.upload.source"/></td>
