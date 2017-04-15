@@ -125,7 +125,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .frameOptions()
                     .sameOrigin()
                     .and().authorizeRequests()
-                    .antMatchers("recover.view", "accessDenied.view",
+                    .antMatchers("/recover.view", "/accessDenied.view",
                             "/style/**", "/icons/**", "/flash/**", "/script/**",
                             "/sonos/**", "/crossdomain.xml", "/login", "/error")
                     .permitAll()
