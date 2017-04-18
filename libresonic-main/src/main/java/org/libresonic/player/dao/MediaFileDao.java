@@ -24,6 +24,7 @@ import org.libresonic.player.domain.Genre;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.RandomSearchCriteria;
+import org.libresonic.player.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -164,6 +165,8 @@ public class MediaFileDao extends AbstractDao {
                      "present=?, " +
                      "version=? " +
                      "where path=?";
+
+        logger.trace("Updating media file {}", Util.debugObject(file));
 
         int n = update(sql,
                        file.getFolder(), file.getMediaType().name(), file.getFormat(), file.getTitle(), file.getAlbumName(), file.getArtist(),
