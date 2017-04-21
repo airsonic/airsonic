@@ -40,11 +40,12 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.util.Version;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.ArtistDao;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +64,7 @@ import static org.libresonic.player.service.SearchService.IndexType.*;
  */
 public class SearchService {
 
-    private static final Logger LOG = Logger.getLogger(SearchService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SearchService.class);
 
     private static final String FIELD_ID = "id";
     private static final String FIELD_TITLE = "title";

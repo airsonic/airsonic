@@ -19,7 +19,6 @@
  */
 package org.libresonic.player.io;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.AudioScrobblerService;
 import org.libresonic.player.service.MediaFileService;
@@ -27,6 +26,8 @@ import org.libresonic.player.service.SearchService;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.service.sonos.SonosHelper;
 import org.libresonic.player.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,7 @@ import java.util.List;
  */
 public class PlayQueueInputStream extends InputStream {
 
-    private static final Logger LOG = Logger.getLogger(PlayQueueInputStream.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlayQueueInputStream.class);
 
     private final Player player;
     private final TransferStatus status;

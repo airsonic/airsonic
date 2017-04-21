@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ import java.util.*;
  */
 public class PlayerDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(PlayerDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerDao.class);
     private static final String INSERT_COLUMNS = "name, type, username, ip_address, auto_control_enabled, m3u_bom_enabled, " +
                                                  "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;

@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.InternetRadio;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 public class InternetRadioDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(InternetRadioDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InternetRadioDao.class);
     private static final String INSERT_COLUMNS = "name, stream_url, homepage_url, enabled, changed";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final InternetRadioRowMapper rowMapper = new InternetRadioRowMapper();

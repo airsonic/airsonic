@@ -20,7 +20,6 @@
 package org.libresonic.player.controller;
 
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.io.PlayQueueInputStream;
 import org.libresonic.player.io.RangeOutputStream;
@@ -31,6 +30,8 @@ import org.libresonic.player.service.sonos.SonosHelper;
 import org.libresonic.player.util.HttpRange;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,7 +62,7 @@ import java.util.regex.Pattern;
 @RequestMapping(value = {"/stream/**", "/ext/stream/**"})
 public class StreamController  {
 
-    private static final Logger LOG = Logger.getLogger(StreamController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(StreamController.class);
 
     @Autowired
     private StatusService statusService;

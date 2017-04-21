@@ -19,7 +19,8 @@
  */
 package org.libresonic.player.util;
 
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
@@ -34,7 +35,7 @@ import java.util.Arrays;
  */
 public final class FileUtil {
 
-    private static final Logger LOG = Logger.getLogger(FileUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * Disallow external instantiation.

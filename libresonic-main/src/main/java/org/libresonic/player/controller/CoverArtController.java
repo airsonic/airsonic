@@ -22,13 +22,14 @@ package org.libresonic.player.controller;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.ArtistDao;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.*;
 import org.libresonic.player.service.metadata.JaudiotaggerParser;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -65,7 +66,7 @@ public class CoverArtController implements LastModified {
     public static final String PLAYLIST_COVERART_PREFIX = "pl-";
     public static final String PODCAST_COVERART_PREFIX = "pod-";
 
-    private static final Logger LOG = Logger.getLogger(CoverArtController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CoverArtController.class);
 
     @Autowired
     private MediaFileService mediaFileService;

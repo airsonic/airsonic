@@ -9,14 +9,15 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ResourceAccessor;
 import liquibase.util.StringUtils;
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.util.Iterator;
 import java.util.List;
 
 public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibase {
-    private static final Logger logger = Logger.getLogger(SpringLiquibase.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpringLiquibase.class);
 
     @Override
     public void afterPropertiesSet() throws LiquibaseException {

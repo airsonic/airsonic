@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MusicFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.io.File;
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class MusicFolderDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(MusicFolderDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MusicFolderDao.class);
     private static final String INSERT_COLUMNS = "path, name, enabled, changed";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final MusicFolderRowMapper rowMapper = new MusicFolderRowMapper();

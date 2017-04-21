@@ -20,12 +20,13 @@
 package org.libresonic.player.service;
 
 import net.sf.ehcache.Ehcache;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.UserDao;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.MusicFolder;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -47,7 +48,7 @@ import java.util.List;
  */
 public class SecurityService implements UserDetailsService {
 
-    private static final Logger LOG = Logger.getLogger(SecurityService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityService.class);
 
     private UserDao userDao;
     private SettingsService settingsService;

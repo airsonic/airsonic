@@ -19,9 +19,10 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.Playlist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ import java.util.*;
  */
 public class PlaylistDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(PlaylistDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlaylistDao.class);
     private static final String INSERT_COLUMNS = "username, is_public, name, comment, file_count, duration_seconds, " +
                                                 "created, changed, imported_from";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;

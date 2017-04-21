@@ -21,12 +21,13 @@ package org.libresonic.player.service;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.ArtistDao;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -39,7 +40,7 @@ import java.util.*;
 public class MediaScannerService {
 
     private static final int INDEX_VERSION = 15;
-    private static final Logger LOG = Logger.getLogger(MediaScannerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MediaScannerService.class);
 
     private MediaLibraryStatistics statistics;
 

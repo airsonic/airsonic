@@ -21,9 +21,10 @@ package org.libresonic.player.taglib;
 
 import org.apache.commons.lang.CharUtils;
 import org.apache.taglibs.standard.tag.common.core.UrlSupport;
-import org.libresonic.player.Logger;
 import org.libresonic.player.filter.ParameterDecodingFilter;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -54,7 +55,7 @@ import java.util.List;
 public class UrlTag extends BodyTagSupport {
 
     private String DEFAULT_ENCODING = "Utf8Hex";
-    private static final Logger LOG = Logger.getLogger(UrlTag.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UrlTag.class);
 
     private String var;
     private String value;

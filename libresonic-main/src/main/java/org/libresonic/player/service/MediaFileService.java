@@ -23,7 +23,6 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AlbumDao;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.domain.*;
@@ -32,6 +31,8 @@ import org.libresonic.player.service.metadata.MetaData;
 import org.libresonic.player.service.metadata.MetaDataParser;
 import org.libresonic.player.service.metadata.MetaDataParserFactory;
 import org.libresonic.player.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +47,7 @@ import static org.libresonic.player.domain.MediaFile.MediaType.*;
  */
 public class MediaFileService {
 
-    private static final Logger LOG = Logger.getLogger(MediaFileService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MediaFileService.class);
 
     private Ehcache mediaFileMemoryCache;
     private SecurityService securityService;

@@ -20,7 +20,8 @@
 package org.libresonic.player.io;
 
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +36,7 @@ import java.io.InputStreamReader;
  */
 public class InputStreamReaderThread extends Thread {
 
-    private static final Logger LOG = Logger.getLogger(InputStreamReaderThread.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InputStreamReaderThread.class);
 
     private InputStream input;
     private String name;

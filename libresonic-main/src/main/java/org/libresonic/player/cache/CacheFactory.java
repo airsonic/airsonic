@@ -23,8 +23,9 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.ConfigurationFactory;
-import org.libresonic.player.Logger;
 import org.libresonic.player.service.SettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.File;
@@ -37,7 +38,7 @@ import java.io.File;
  */
 public class CacheFactory implements InitializingBean {
 
-    private static final Logger LOG = Logger.getLogger(CacheFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CacheFactory.class);
     private CacheManager cacheManager;
 
     public void afterPropertiesSet() throws Exception {

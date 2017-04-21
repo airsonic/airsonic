@@ -21,13 +21,14 @@ package org.libresonic.player.security;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.controller.JAXBWriter;
 import org.libresonic.player.controller.RESTController;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.domain.Version;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -59,7 +60,7 @@ import java.io.IOException;
  */
 public class RESTRequestParameterProcessingFilter implements Filter {
 
-    private static final Logger LOG = Logger.getLogger(RESTRequestParameterProcessingFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RESTRequestParameterProcessingFilter.class);
 
     private final JAXBWriter jaxbWriter = new JAXBWriter();
     private AuthenticationManager authenticationManager;

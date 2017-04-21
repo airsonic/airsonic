@@ -19,9 +19,10 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ import java.util.List;
 @Transactional
 public class UserDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(UserDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
     private static final String USER_COLUMNS = "username, password, email, ldap_authenticated, bytes_streamed, bytes_downloaded, bytes_uploaded";
     private static final String USER_SETTINGS_COLUMNS = "username, locale, theme_id, final_version_notification, beta_version_notification, " +
             "song_notification, main_track_number, main_artist, main_album, main_genre, " +

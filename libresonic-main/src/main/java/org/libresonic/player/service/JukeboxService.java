@@ -20,10 +20,11 @@
 package org.libresonic.player.service;
 
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.jukebox.AudioPlayer;
 import org.libresonic.player.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
@@ -36,7 +37,7 @@ import static org.libresonic.player.service.jukebox.AudioPlayer.State.EOM;
  */
 public class JukeboxService implements AudioPlayer.Listener {
 
-    private static final Logger LOG = Logger.getLogger(JukeboxService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JukeboxService.class);
 
     private AudioPlayer audioPlayer;
     private TranscodingService transcodingService;

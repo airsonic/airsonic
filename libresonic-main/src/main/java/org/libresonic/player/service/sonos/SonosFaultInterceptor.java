@@ -24,7 +24,8 @@ import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.helpers.DOMUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -38,7 +39,7 @@ import javax.xml.namespace.QName;
  */
 public class SonosFaultInterceptor extends AbstractSoapInterceptor {
 
-    private static final Logger LOG = Logger.getLogger(SonosFaultInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SonosFaultInterceptor.class);
 
     /**
      * Constructor, setting the phase to Marshal.  This happens before the default Fault Interceptor

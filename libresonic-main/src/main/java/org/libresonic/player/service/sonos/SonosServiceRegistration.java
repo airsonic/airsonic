@@ -29,9 +29,10 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.libresonic.player.Logger;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import java.util.List;
  */
 public class SonosServiceRegistration {
 
-    private static final Logger LOG = Logger.getLogger(SonosServiceRegistration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SonosServiceRegistration.class);
 
     public void setEnabled(String libresonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName, int sonosServiceId) throws IOException {
         String localUrl = libresonicBaseUrl + "ws/Sonos";

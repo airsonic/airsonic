@@ -1,10 +1,11 @@
 package org.libresonic.player.controller;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.Playlist;
 import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -23,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ExportPlayListController {
 
 
-    private static final Logger LOG = Logger.getLogger(ExportPlayListController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ExportPlayListController.class);
 
     @Autowired
     private PlaylistService playlistService;

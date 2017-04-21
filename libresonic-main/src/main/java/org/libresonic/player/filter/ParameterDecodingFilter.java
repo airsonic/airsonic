@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.filter;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,7 @@ import java.util.Vector;
 public class ParameterDecodingFilter implements Filter {
 
     public static final String PARAM_SUFFIX = "Utf8Hex";
-    private static final Logger LOG = Logger.getLogger(ParameterDecodingFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ParameterDecodingFilter.class);
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

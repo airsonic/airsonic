@@ -32,10 +32,11 @@ import org.fourthline.cling.support.connectionmanager.ConnectionManagerService;
 import org.fourthline.cling.support.model.ProtocolInfos;
 import org.fourthline.cling.support.model.dlna.DLNAProfiles;
 import org.fourthline.cling.support.model.dlna.DLNAProtocolInfo;
-import org.libresonic.player.Logger;
 import org.libresonic.player.service.upnp.ApacheUpnpServiceConfiguration;
 import org.libresonic.player.service.upnp.FolderBasedContentDirectory;
 import org.libresonic.player.service.upnp.MSMediaReceiverRegistrarService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ import java.util.List;
  */
 public class UPnPService {
 
-    private static final Logger LOG = Logger.getLogger(UPnPService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UPnPService.class);
 
     private SettingsService settingsService;
     private UpnpService upnpService;

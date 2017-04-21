@@ -16,10 +16,11 @@
 
 package org.libresonic.player.security;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
@@ -39,7 +40,7 @@ public class LibresonicUserDetailsContextMapper implements UserDetailsContextMap
     // ~ Instance fields
     // ================================================================================================
 
-    private final Logger logger = Logger.getLogger(LibresonicUserDetailsContextMapper.class);
+    private final Logger logger = LoggerFactory.getLogger(LibresonicUserDetailsContextMapper.class);
     private String passwordAttributeName = "userPassword";
 
     @Autowired

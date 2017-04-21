@@ -25,7 +25,6 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.TransferStatus;
 import org.libresonic.player.domain.User;
 import org.libresonic.player.service.PlayerService;
@@ -35,6 +34,8 @@ import org.libresonic.player.service.StatusService;
 import org.libresonic.player.upload.MonitoredDiskFileItemFactory;
 import org.libresonic.player.upload.UploadListener;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -58,7 +59,7 @@ import java.util.*;
 @RequestMapping("/upload")
 public class UploadController {
 
-    private static final Logger LOG = Logger.getLogger(UploadController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UploadController.class);
 
     @Autowired
     private SecurityService securityService;

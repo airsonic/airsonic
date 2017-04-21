@@ -20,7 +20,8 @@
 package org.libresonic.player.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ public class NetworkService {
     private static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
     private static final String X_FORWARDED_HOST = "X-Forwarded-Host";
 
-    private final static Logger LOG = Logger.getLogger(NetworkService.class);
+    private final static Logger LOG = LoggerFactory.getLogger(NetworkService.class);
 
     public static String getBaseUrl(HttpServletRequest request) {
         try {

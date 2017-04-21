@@ -28,11 +28,12 @@ import org.fourthline.cling.support.model.container.PlaylistContainer;
 import org.fourthline.cling.support.model.container.StorageFolder;
 import org.fourthline.cling.support.model.item.Item;
 import org.fourthline.cling.support.model.item.MusicTrack;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.PlaylistService;
 import org.libresonic.player.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -46,7 +47,7 @@ import java.util.List;
  */
 public class FolderBasedContentDirectory extends LibresonicContentDirectory {
 
-    private static final Logger LOG = Logger.getLogger(FolderBasedContentDirectory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FolderBasedContentDirectory.class);
     private static final String CONTAINER_ID_PLAYLIST_ROOT = "playlists";
     private static final String CONTAINER_ID_PLAYLIST_PREFIX = "playlist-";
     private static final String CONTAINER_ID_FOLDER_PREFIX = "folder-";

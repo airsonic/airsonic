@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.filter;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.service.SettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class BootstrapVerificationFilter implements Filter {
 
-    private static final Logger LOG = Logger.getLogger(BootstrapVerificationFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BootstrapVerificationFilter.class);
     private boolean libresonicHomeVerified = false;
     private final AtomicBoolean serverInfoLogged = new AtomicBoolean();
 

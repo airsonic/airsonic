@@ -25,13 +25,14 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.LastFmCoverArt;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.LastFmService;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,7 +49,7 @@ import java.util.List;
  */
 public class CoverArtService {
 
-    private static final Logger LOG = Logger.getLogger(CoverArtService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CoverArtService.class);
 
     private SecurityService securityService;
     private MediaFileService mediaFileService;

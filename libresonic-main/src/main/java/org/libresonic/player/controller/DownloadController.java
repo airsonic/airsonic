@@ -21,13 +21,14 @@ package org.libresonic.player.controller;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.io.RangeOutputStream;
 import org.libresonic.player.service.*;
 import org.libresonic.player.util.FileUtil;
 import org.libresonic.player.util.HttpRange;
 import org.libresonic.player.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -60,7 +61,7 @@ import java.util.zip.ZipOutputStream;
 @RequestMapping("/download")
 public class DownloadController implements LastModified {
 
-    private static final Logger LOG = Logger.getLogger(DownloadController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DownloadController.class);
 
     @Autowired
     private PlayerService playerService;

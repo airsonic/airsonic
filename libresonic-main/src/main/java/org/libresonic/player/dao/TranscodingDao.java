@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.Transcoding;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +36,7 @@ import java.util.List;
  */
 public class TranscodingDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(TranscodingDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TranscodingDao.class);
     private static final String INSERT_COLUMNS = "name, source_formats, target_format, step1, step2, step3, default_active";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private TranscodingRowMapper rowMapper = new TranscodingRowMapper();

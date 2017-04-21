@@ -20,8 +20,9 @@
 package org.libresonic.player.service.jukebox;
 
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.service.JukeboxService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -45,7 +46,7 @@ import static org.libresonic.player.service.jukebox.AudioPlayer.State.*;
 public class AudioPlayer {
 
     public static final float DEFAULT_GAIN = 0.75f;
-    private static final Logger LOG = Logger.getLogger(JukeboxService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JukeboxService.class);
 
     private final InputStream in;
     private final Listener listener;

@@ -25,12 +25,13 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
-import org.libresonic.player.Logger;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.restapi.Error;
 import org.libresonic.restapi.ObjectFactory;
 import org.libresonic.restapi.Response;
 import org.libresonic.restapi.ResponseStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +53,7 @@ import static org.springframework.web.bind.ServletRequestUtils.getStringParamete
  */
 public class JAXBWriter {
 
-    private static final Logger LOG = Logger.getLogger(JAXBWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JAXBWriter.class);
 
     private final javax.xml.bind.JAXBContext jaxbContext;
     private final DatatypeFactory datatypeFactory;

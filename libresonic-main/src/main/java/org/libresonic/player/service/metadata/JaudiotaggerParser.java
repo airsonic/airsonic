@@ -28,8 +28,9 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
 import org.jaudiotagger.tag.reference.GenreTypes;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.SortedSet;
@@ -46,7 +47,7 @@ import java.util.regex.Pattern;
  */
 public class JaudiotaggerParser extends MetaDataParser {
 
-    private static final Logger LOG = Logger.getLogger(JaudiotaggerParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JaudiotaggerParser.class);
     private static final Pattern GENRE_PATTERN = Pattern.compile("\\((\\d+)\\).*");
     private static final Pattern TRACK_NUMBER_PATTERN = Pattern.compile("(\\d+)/\\d+");
     private static final Pattern YEAR_NUMBER_PATTERN = Pattern.compile("(\\d{4}).*");

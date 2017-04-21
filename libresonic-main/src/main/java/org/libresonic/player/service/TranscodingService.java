@@ -23,13 +23,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.controller.VideoPlayerController;
 import org.libresonic.player.dao.TranscodingDao;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.io.TranscodeInputStream;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,7 +50,7 @@ import java.util.List;
  */
 public class TranscodingService {
 
-    private static final Logger LOG = Logger.getLogger(TranscodingService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TranscodingService.class);
     public static final String FORMAT_RAW = "raw";
 
     private TranscodingDao transcodingDao;

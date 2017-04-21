@@ -31,10 +31,11 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.UserSettings;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -50,7 +51,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class AudioScrobblerService {
 
-    private static final Logger LOG = Logger.getLogger(AudioScrobblerService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AudioScrobblerService.class);
     private static final int MAX_PENDING_REGISTRATION = 2000;
 
     private RegistrationThread thread;

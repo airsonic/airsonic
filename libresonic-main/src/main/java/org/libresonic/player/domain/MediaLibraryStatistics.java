@@ -19,8 +19,9 @@
  */
 package org.libresonic.player.domain;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Contains media libaray statistics, including the number of artists, albums and songs.
@@ -30,7 +31,7 @@ import org.libresonic.player.util.StringUtil;
  */
 public class MediaLibraryStatistics {
 
-    private static final Logger LOG = Logger.getLogger(MediaLibraryStatistics.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MediaLibraryStatistics.class);
 
     private int artistCount;
     private int albumCount;

@@ -20,10 +20,11 @@
 package org.libresonic.player.io;
 
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PlayQueue;
 import org.libresonic.player.service.SettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,7 +40,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class ShoutCastOutputStream extends OutputStream {
 
-    private static final Logger LOG = Logger.getLogger(ShoutCastOutputStream.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShoutCastOutputStream.class);
 
     /**
      * Number of bytes between each SHOUTcast metadata block.

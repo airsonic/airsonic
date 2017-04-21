@@ -2,9 +2,10 @@ package org.libresonic.player.boot;
 
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.directwebremoting.servlet.DwrServlet;
-import org.libresonic.player.Logger;
 import org.libresonic.player.filter.*;
 import org.libresonic.player.spring.LibresonicPropertySourceConfigurer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -42,7 +43,7 @@ import java.lang.reflect.Method;
         "classpath:/libresonic-servlet.xml"})
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
-    private static final Logger LOG = Logger.getLogger(Application.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     /**
      * Registers the DWR servlet.

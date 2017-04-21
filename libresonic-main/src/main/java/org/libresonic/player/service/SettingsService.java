@@ -20,7 +20,6 @@
 package org.libresonic.player.service;
 
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.AvatarDao;
 import org.libresonic.player.dao.InternetRadioDao;
 import org.libresonic.player.dao.MusicFolderDao;
@@ -30,6 +29,8 @@ import org.libresonic.player.spring.DataSourceConfigType;
 import org.libresonic.player.util.FileUtil;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -205,7 +206,7 @@ public class SettingsService {
     private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
     private static final String THEMES_FILE = "/org/libresonic/player/theme/themes.txt";
 
-    private static final Logger LOG = Logger.getLogger(SettingsService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SettingsService.class);
 
     private List<Theme> themes;
     private List<Locale> locales;

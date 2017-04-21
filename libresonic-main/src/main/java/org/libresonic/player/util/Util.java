@@ -21,7 +21,8 @@ package org.libresonic.player.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.libresonic.player.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +38,7 @@ import java.util.List;
  */
 public final class Util {
 
-    private static final Logger LOG = Logger.getLogger(Util.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Util.class);
 
     /**
      * Disallow external instantiation.

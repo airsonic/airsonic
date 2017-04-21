@@ -22,10 +22,11 @@ package org.libresonic.player.ajax;
 import org.apache.commons.lang.StringUtils;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.*;
 import org.libresonic.player.service.*;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +42,7 @@ import java.util.List;
  */
 public class NowPlayingService {
 
-    private static final Logger LOG = Logger.getLogger(NowPlayingService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NowPlayingService.class);
 
     private PlayerService playerService;
     private StatusService statusService;

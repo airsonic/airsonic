@@ -37,7 +37,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.PodcastDao;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PodcastChannel;
@@ -47,6 +46,8 @@ import org.libresonic.player.service.metadata.MetaData;
 import org.libresonic.player.service.metadata.MetaDataParser;
 import org.libresonic.player.service.metadata.MetaDataParserFactory;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -64,7 +65,7 @@ import java.util.concurrent.*;
  */
 public class PodcastService {
 
-    private static final Logger LOG = Logger.getLogger(PodcastService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
     private static final DateFormat[] RSS_DATE_FORMATS = {new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
             new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
 

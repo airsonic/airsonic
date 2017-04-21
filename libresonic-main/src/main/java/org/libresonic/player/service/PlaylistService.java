@@ -27,7 +27,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.libresonic.player.Logger;
 import org.libresonic.player.dao.MediaFileDao;
 import org.libresonic.player.dao.PlaylistDao;
 import org.libresonic.player.domain.MediaFile;
@@ -37,6 +36,8 @@ import org.libresonic.player.domain.User;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.Charset;
@@ -52,7 +53,7 @@ import java.util.regex.Pattern;
  */
 public class PlaylistService {
 
-    private static final Logger LOG = Logger.getLogger(PlaylistService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlaylistService.class);
     private MediaFileService mediaFileService;
     private MediaFileDao mediaFileDao;
     private PlaylistDao playlistDao;

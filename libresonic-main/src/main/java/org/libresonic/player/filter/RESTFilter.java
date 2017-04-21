@@ -19,9 +19,10 @@
  */
 package org.libresonic.player.filter;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.controller.JAXBWriter;
 import org.libresonic.player.controller.RESTController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.util.NestedServletException;
 
@@ -44,7 +45,7 @@ import static org.libresonic.player.controller.RESTController.ErrorCode.MISSING_
  */
 public class RESTFilter implements Filter {
 
-    private static final Logger LOG = Logger.getLogger(RESTFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RESTFilter.class);
 
     private final JAXBWriter jaxbWriter = new JAXBWriter();
 

@@ -19,9 +19,10 @@
  */
 package org.libresonic.player.dao;
 
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.Artist;
 import org.libresonic.player.domain.MusicFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,7 @@ import java.util.*;
  */
 public class ArtistDao extends AbstractDao {
 
-    private static final Logger LOG = Logger.getLogger(ArtistDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArtistDao.class);
     private static final String INSERT_COLUMNS = "name, cover_art_path, album_count, last_scanned, present, folder_id";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 

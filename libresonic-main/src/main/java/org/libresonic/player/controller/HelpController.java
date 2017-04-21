@@ -20,10 +20,11 @@
 package org.libresonic.player.controller;
 
 import org.apache.commons.io.input.ReversedLinesFileReader;
-import org.libresonic.player.Logger;
 import org.libresonic.player.service.SecurityService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.VersionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +50,7 @@ import java.util.Map;
 @RequestMapping("/help")
 public class HelpController {
 
-    private static final Logger logger = Logger.getLogger(HelpController.class);
+    private static final Logger logger = LoggerFactory.getLogger(HelpController.class);
 
     private static final int LOG_LINES_TO_SHOW = 50;
 

@@ -22,12 +22,13 @@ package org.libresonic.player.ajax;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.service.metadata.MetaData;
 import org.libresonic.player.service.metadata.MetaDataParser;
 import org.libresonic.player.service.metadata.MetaDataParserFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides AJAX-enabled services for editing tags in music files.
@@ -37,7 +38,7 @@ import org.libresonic.player.service.metadata.MetaDataParserFactory;
  */
 public class TagService {
 
-    private static final Logger LOG = Logger.getLogger(TagService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TagService.class);
 
     private MetaDataParserFactory metaDataParserFactory;
     private MediaFileService mediaFileService;

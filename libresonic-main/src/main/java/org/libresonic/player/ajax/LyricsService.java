@@ -30,8 +30,9 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.libresonic.player.Logger;
 import org.libresonic.player.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -48,7 +49,7 @@ import java.net.SocketException;
  */
 public class LyricsService {
 
-    private static final Logger LOG = Logger.getLogger(LyricsService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LyricsService.class);
 
     /**
      * Returns lyrics for the given song and artist.
