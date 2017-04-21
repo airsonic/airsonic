@@ -20,10 +20,6 @@
 package org.libresonic.player.controller;
 
 import org.libresonic.player.command.DatabaseSettingsCommand;
-import org.libresonic.player.dao.AlbumDao;
-import org.libresonic.player.dao.ArtistDao;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.service.MediaScannerService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.spring.DataSourceConfigType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +38,6 @@ public class DatabaseSettingsController {
 
     @Autowired
     private SettingsService settingsService;
-    @Autowired
-    private MediaScannerService mediaScannerService;
-    @Autowired
-    private ArtistDao artistDao;
-    @Autowired
-    private AlbumDao albumDao;
-    @Autowired
-    private MediaFileDao mediaFileDao;
 
     @RequestMapping(method = RequestMethod.GET)
     protected String displayForm() throws Exception {

@@ -24,9 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Miscellaneous file utility methods.
@@ -107,27 +105,6 @@ public final class FileUtil {
         if (files == null) {
             LOG.warn("Failed to list children for " + dir.getPath());
             return new File[0];
-        }
-        return files;
-    }
-
-    /**
-     * Similar to {@link File#listFiles(FilenameFilter)}, but never returns null.
-     * Instead a warning is logged, and an empty array is returned.
-     */
-    public static File[] listFiles(final File dir, final FilenameFilter filter, boolean sort) {
-        File[] files = timed(new FileTask<File[]>("listFiles2", dir) {
-            @Override
-            public File[] execute() {
-                return dir.listFiles(filter);
-            }
-        });
-        if (files == null) {
-            LOG.warn("Failed to list children for " + dir.getPath());
-            return new File[0];
-        }
-        if (sort) {
-            Arrays.sort(files);
         }
         return files;
     }

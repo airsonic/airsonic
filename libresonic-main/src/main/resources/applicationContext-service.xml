@@ -179,10 +179,6 @@
         <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
     </bean>
 
-    <bean id="adService" class="org.libresonic.player.service.AdService">
-        <property name="adInterval" value="8"/>
-    </bean>
-
     <bean id="jukeboxService" class="org.libresonic.player.service.JukeboxService">
         <property name="statusService" ref="statusService"/>
         <property name="transcodingService" ref="transcodingService"/>

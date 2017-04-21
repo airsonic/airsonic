@@ -57,8 +57,6 @@ public class MainController  {
     private RatingService ratingService;
     @Autowired
     private MediaFileService mediaFileService;
-    @Autowired
-    private AdService adService;
 
     @RequestMapping(method = RequestMethod.GET)
     protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
