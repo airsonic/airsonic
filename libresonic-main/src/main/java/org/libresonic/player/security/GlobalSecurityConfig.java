@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -37,14 +38,13 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     private CsrfSecurityRequestMatcher csrfSecurityRequestMatcher;
 
     @Autowired
-    LoginFailureLogger loginFailureLogger;
-
-    @Autowired
     SettingsService settingsService;
 
     @Autowired
     LibresonicUserDetailsContextMapper libresonicUserDetailsContextMapper;
 
+    @Autowired
+    ApplicationEventPublisher eventPublisher;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -115,7 +115,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             RESTRequestParameterProcessingFilter restAuthenticationFilter = new RESTRequestParameterProcessingFilter();
             restAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
             restAuthenticationFilter.setSecurityService(securityService);
-            restAuthenticationFilter.setLoginFailureLogger(loginFailureLogger);
+            restAuthenticationFilter.setEventPublisher(eventPublisher);
             http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
             http
