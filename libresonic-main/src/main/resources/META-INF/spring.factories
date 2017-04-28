@@ -1,1 +1,3 @@
-org.springframework.context.ApplicationListener=org.libresonic.player.spring.LoggingFileOverrideListener
+org.springframework.context.ApplicationListener=\
+  org.libresonic.player.spring.LoggingFileOverrideListener,\
+  org.libresonic.player.security.LoginFailureListener

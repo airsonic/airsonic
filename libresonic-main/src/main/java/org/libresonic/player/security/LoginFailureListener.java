@@ -19,6 +19,8 @@
 
 package org.libresonic.player.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -29,9 +31,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class LibresonicApplicationEventListener implements ApplicationListener {
+public class LoginFailureListener implements ApplicationListener {
 
-    private LoginFailureLogger loginFailureLogger;
+    private static final Logger LOG = LoggerFactory.getLogger(LoginFailureListener.class);
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
@@ -40,14 +42,10 @@ public class LibresonicApplicationEventListener implements ApplicationListener {
                 AbstractAuthenticationToken token = (AbstractAuthenticationToken) event.getSource();
                 Object details = token.getDetails();
                 if (details instanceof WebAuthenticationDetails) {
-                    loginFailureLogger.log(((WebAuthenticationDetails) details).getRemoteAddress(), String.valueOf(token.getPrincipal()));
+                    LOG.info("Login failed from [" + ((WebAuthenticationDetails) details).getRemoteAddress() + "]");
                 }
             }
         }
 
-    }
-
-    public void setLoginFailureLogger(LoginFailureLogger loginFailureLogger) {
-        this.loginFailureLogger = loginFailureLogger;
     }
 }
