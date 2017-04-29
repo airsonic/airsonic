@@ -16,7 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema52_002" author="muff1nman">
-        <validCheckSum>7:e7e0f04cd4691ec2b5d955b449e0154b</validCheckSum>
+        <validCheckSum>7:8fde86035edbca443a54b1861ae70819</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="music_folder_user" />
