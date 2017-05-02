@@ -3,6 +3,12 @@
 # Libresonic/libresonic
 # -->
 
+v6.2
+----
+
+  * Small fixes
+  * Release only a month behind schedule! We're improving!
+
 v6.2.beta4
 ---------
 
