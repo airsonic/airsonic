@@ -19,6 +19,7 @@
 package org.libresonic.player.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.libresonic.player.service.NetworkService;
 import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.SonosService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,8 +81,8 @@ public class SonosSettingsController {
         settingsService.setSonosServiceName(sonosServiceName);
         settingsService.save();
 
-        sonosService.setMusicServiceEnabled(false);
-        sonosService.setMusicServiceEnabled(sonosEnabled);
+        sonosService.setMusicServiceEnabled(false, NetworkService.getBaseUrl(request));
+        sonosService.setMusicServiceEnabled(sonosEnabled, NetworkService.getBaseUrl(request));
     }
 
     public void setSettingsService(SettingsService settingsService) {
