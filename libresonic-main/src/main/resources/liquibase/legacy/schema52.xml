@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema52_002" author="muff1nman">
+        <validCheckSum>7:8fde86035edbca443a54b1861ae70819</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="music_folder_user" />
@@ -32,6 +33,13 @@
         <createIndex tableName="music_folder_user" indexName="idx_music_folder_user_username">
             <column name="username"/>
         </createIndex>
+        <sql>
+            insert into music_folder_user select music_folder.id, u.username
+            from music_folder, ${userTableQuote}user${userTableQuote} u
+        </sql>
+        <rollback>
+            <dropTable tableName="music_folder_user" />
+        </rollback>
     </changeSet>
     <changeSet id="schema52_003" author="muff1nman">
         <preConditions onFail="MARK_RAN">

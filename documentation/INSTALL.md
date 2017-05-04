@@ -45,7 +45,7 @@ You will need a running [Tomcat](http://tomcat.apache.org/) server. If you're un
 
 1.  Download the latest war file:
 
-		wget https://github.com/Libresonic/libresonic/releases/download/v6.2.beta1/libresonic-v6.2.beta1.war -O /var/lib/tomcat8/webapps/libresonic.war
+		wget https://github.com/Libresonic/libresonic/releases/download/v6.2/libresonic-v6.2.war -O /var/lib/tomcat8/webapps/libresonic.war
 
 	Note that this command copies the war file directly to the Tomcat webapps directory, and renames it to `libresonic.war`.
 

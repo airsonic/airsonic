@@ -242,8 +242,7 @@
     </p>
 </form:form>
 
-<form method="post" enctype="multipart/form-data" action="avatarUpload.view">
-    <sec:csrfInput />
+<form method="post" enctype="multipart/form-data" action="avatarUpload.view?${_csrf.parameterName}=${_csrf.token}">
     <table>
         <tr>
             <td style="padding-right:1em"><fmt:message key="personalsettings.avatar.changecustom"/></td>

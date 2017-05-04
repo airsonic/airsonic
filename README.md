@@ -27,7 +27,7 @@ The original [Subsonic](http://www.subsonic.org/) is developed by [Sindre Mehus]
 
 Libresonic is maintained by [Eugene E. Kashpureff Jr](mailto:eugene@kashpureff.org). It originated as an unofficial("Kang") of Subsonic which did not contain the Licensing code checks present in the official builds. With the announcement of Subsonic's closed-source future, a decision was made to make a full fork and rebrand to Libresonic.
 
-Libresonic will strive to maintain compatibility and stability for Subsonic users, including a clean upgrade path. New features and refactoring are welcomed as a Pull Request on Github.
+Libresonic will strive to maintain compatibility and stability for Subsonic users, including a clean upgrade path. New features and refactoring are welcomed as a Pull Request on GitHub.
 
 
 License
@@ -42,10 +42,10 @@ Usage
 -----
 
 Libresonic can be downloaded from
-[Github](https://github.com/Libresonic/libresonic/releases) for personal usage.
+[GitHub](https://github.com/Libresonic/libresonic/releases) for personal usage.
 Packagers can also reference the [release repository](https://libresonic.org/release/).
 
-Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/develop/INSTALL.md) for instructions on running Libresonic.
+Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/stable/documentation/INSTALL.md) for instructions on running Libresonic.
 
 
 Community

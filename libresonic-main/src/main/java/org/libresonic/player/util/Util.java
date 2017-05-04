@@ -19,12 +19,16 @@
  */
 package org.libresonic.player.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.libresonic.player.Logger;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Miscellaneous general utility methods.
@@ -101,5 +105,15 @@ public final class Util {
             result[i] = values.get(i);
         }
         return result;
+    }
+
+    static ObjectMapper objectMapper = new ObjectMapper();
+    public static String debugObject(Object object) {
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            LOG.warn("Cant output debug object", e);
+            return "";
+        }
     }
 }

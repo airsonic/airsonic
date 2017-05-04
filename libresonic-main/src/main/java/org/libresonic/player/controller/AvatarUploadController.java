@@ -24,7 +24,7 @@ import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libresonic.player.Logger;
 import org.libresonic.player.domain.Avatar;
 import org.libresonic.player.service.SecurityService;
@@ -38,7 +38,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -66,8 +65,8 @@ public class AvatarUploadController  {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping(method = RequestMethod.POST)
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         String username = securityService.getCurrentUsername(request);
 

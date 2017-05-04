@@ -106,7 +106,7 @@ public class SonosService implements SonosSoap {
     @Resource
     private WebServiceContext context;
 
-    public void setMusicServiceEnabled(boolean enabled) {
+    public void setMusicServiceEnabled(boolean enabled, String baseUrl) {
         List<String> sonosControllers = upnpService.getSonosControllerHosts();
         if (sonosControllers.isEmpty()) {
             LOG.info("No Sonos controller found");
@@ -116,11 +116,10 @@ public class SonosService implements SonosSoap {
 
         String sonosServiceName = settingsService.getSonosServiceName();
         int sonosServiceId = settingsService.getSonosServiceId();
-        String libresonicBaseUrl = NetworkService.getBaseUrl(getRequest());
 
         for (String sonosController : sonosControllers) {
             try {
-                new SonosServiceRegistration().setEnabled(libresonicBaseUrl, sonosController, enabled,
+                new SonosServiceRegistration().setEnabled(baseUrl, sonosController, enabled,
                                                           sonosServiceName, sonosServiceId);
                 break;
             } catch (IOException x) {

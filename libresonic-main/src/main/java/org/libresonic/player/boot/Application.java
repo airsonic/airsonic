@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
@@ -32,6 +33,7 @@ import java.lang.reflect.Method;
         JdbcTemplateAutoConfiguration.class,
         DataSourceAutoConfiguration.class,
         DataSourceTransactionManagerAutoConfiguration.class,
+        MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
 @Configuration
 @ImportResource(value = {"classpath:/applicationContext-service.xml",

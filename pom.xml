@@ -35,6 +35,10 @@
             <name>teleal</name>
             <url>http://teleal.org/m2</url>
         </repository>
+        <repository>
+            <id>jaudiotagger-repository</id>
+            <url>https://dl.bintray.com/ijabz/maven</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
