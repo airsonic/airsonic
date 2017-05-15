@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Sindre Mehus
@@ -53,24 +54,61 @@ public class UPnPService {
     private SettingsService settingsService;
     private UpnpService upnpService;
     private FolderBasedContentDirectory folderBasedContentDirectory;
+    private AtomicReference<Boolean> running = new AtomicReference<>(false);
 
     public void init() {
-        startService();
+        if(settingsService.isDlnaEnabled() || settingsService.isSonosEnabled()) {
+            ensureServiceStarted();
+            if(settingsService.isDlnaEnabled()) {
+                // Start DLNA media server?
+                setMediaServerEnabled(true);
+            }
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                ensureServiceStopped();
+            }
+        });
     }
 
-    public void startService() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                try {
-                    LOG.info("Starting UPnP service...");
-                    createService();
-                    LOG.info("Starting UPnP service - Done!");
-                } catch (Throwable x) {
-                    LOG.error("Failed to start UPnP service: " + x, x);
-                }
+    public void ensureServiceStarted() {
+        running.getAndUpdate(bo -> {
+            if(!bo) {
+                startService();
+                return true;
+            } else {
+                return true;
             }
-        };
-        new Thread(runnable).start();
+        });
+    }
+
+    public void ensureServiceStopped() {
+        running.getAndUpdate(bo -> {
+            if (bo) {
+                if (upnpService != null) {
+                    LOG.info("Disabling UPnP/DLNA media server");
+                    upnpService.getRegistry().removeAllLocalDevices();
+                    System.err.println("Shutting down UPnP service...");
+                    upnpService.shutdown();
+                    System.err.println("Shutting down UPnP service - Done!");
+                }
+                return false;
+            } else {
+                return false;
+            }
+        });
+
+    }
+
+    private void startService() {
+        try {
+            LOG.info("Starting UPnP service...");
+            createService();
+            LOG.info("Starting UPnP service - Done!");
+        } catch (Throwable x) {
+            LOG.error("Failed to start UPnP service: " + x, x);
+        }
     }
 
     private synchronized void createService() throws Exception {
@@ -79,21 +117,11 @@ public class UPnPService {
         // Asynch search for other devices (most importantly UPnP-enabled routers for port-mapping)
         upnpService.getControlPoint().search();
 
-        // Start DLNA media server?
-        setMediaServerEnabled(settingsService.isDlnaEnabled());
-
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                System.err.println("Shutting down UPnP service...");
-                upnpService.shutdown();
-                System.err.println("Shutting down UPnP service - Done!");
-            }
-        });
     }
 
     public void setMediaServerEnabled(boolean enabled) {
         if (enabled) {
+            ensureServiceStarted();
             try {
                 upnpService.getRegistry().addDevice(createMediaServerDevice());
                 LOG.info("Enabling UPnP/DLNA media server");
@@ -101,8 +129,7 @@ public class UPnPService {
                 LOG.error("Failed to start UPnP/DLNA media server: " + x, x);
             }
         } else {
-            upnpService.getRegistry().removeAllLocalDevices();
-            LOG.info("Disabling UPnP/DLNA media server");
+            ensureServiceStopped();
         }
     }
 
@@ -157,6 +184,7 @@ public class UPnPService {
     }
 
     public List<String> getSonosControllerHosts() {
+        ensureServiceStarted();
         List<String> result = new ArrayList<String>();
         for (Device device : upnpService.getRegistry().getDevices(new DeviceType("schemas-upnp-org", "ZonePlayer"))) {
             if (device instanceof RemoteDevice) {
