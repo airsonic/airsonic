@@ -159,6 +159,8 @@ public class SearchService {
         int count = criteria.getCount();
         result.setOffset(offset);
 
+        if (count <= 0) return result;
+
         IndexReader reader = null;
         try {
             reader = createIndexReader(indexType);
