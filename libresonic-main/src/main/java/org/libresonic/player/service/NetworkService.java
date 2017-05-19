@@ -61,8 +61,21 @@ public class NetworkService {
 
     private static URI calculateProxyUri(HttpServletRequest request) throws URISyntaxException {
         String xForardedHost = request.getHeader(X_FORWARDED_HOST);
+        // If the request has been through multiple reverse proxies,
+        // We need to return the original Host that the client used
+        if (xForardedHost != null) {
+            xForardedHost = xForardedHost.split(",")[0];
+        }
+
         if(!isValidXForwardedHost(xForardedHost)) {
             xForardedHost = request.getHeader(X_FORWARDED_SERVER);
+
+            // If the request has been through multiple reverse proxies,
+            // We need to return the original Host that the client used
+            if (xForardedHost != null) {
+                xForardedHost = xForardedHost.split(",")[0];
+            }
+
             if(!isValidXForwardedHost(xForardedHost)) {
                 throw new RuntimeException("Cannot calculate proxy uri without HTTP header " + X_FORWARDED_HOST);
             }
@@ -72,6 +85,9 @@ public class NetworkService {
         String host = proxyHost.getHost();
         int port = proxyHost.getPort();
         String scheme = request.getHeader(X_FORWARDED_PROTO);
+        if(StringUtils.isBlank(scheme)) {
+            throw new RuntimeException("Scheme not provided");
+        }
 
         return new URI(scheme, null, host, port, urlPathHelper.getContextPath(request), null, null);
     }

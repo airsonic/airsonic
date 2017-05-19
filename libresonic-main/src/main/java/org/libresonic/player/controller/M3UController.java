@@ -22,9 +22,9 @@ package org.libresonic.player.controller;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.domain.PlayQueue;
 import org.libresonic.player.domain.Player;
+import org.libresonic.player.service.JWTSecurityService;
 import org.libresonic.player.service.NetworkService;
 import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.SettingsService;
 import org.libresonic.player.service.TranscodingService;
 import org.libresonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,9 +53,9 @@ public class M3UController  {
     @Autowired
     private PlayerService playerService;
     @Autowired
-    private SettingsService settingsService;
-    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
+    private JWTSecurityService jwtSecurityService;
 
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -89,7 +90,12 @@ public class M3UController  {
                 duration = -1;
             }
             out.println("#EXTINF:" + duration + "," + mediaFile.getArtist() + " - " + mediaFile.getTitle());
-            out.println(url + "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." + transcodingService.getSuffix(player, mediaFile, null));
+
+            String urlNoAuth = url +  "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." +
+                    transcodingService.getSuffix(player, mediaFile, null);
+            String urlWithAuth = jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(urlNoAuth)).build().toUriString();
+            out.println(urlWithAuth);
+            out.println();
         }
     }
 

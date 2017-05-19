@@ -59,7 +59,7 @@ public class RatingDao extends AbstractDao {
 
         String sql = "select user_rating.path from user_rating, media_file " +
                      "where user_rating.path=media_file.path and media_file.present and media_file.type = :type and media_file.folder in (:folders) " +
-                     "group by path " +
+                     "group by user_rating.path " +
                      "order by avg(rating) desc limit :count offset :offset";
         return namedQueryForStrings(sql, args);
     }

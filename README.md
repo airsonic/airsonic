@@ -45,7 +45,7 @@ Libresonic can be downloaded from
 [GitHub](https://github.com/Libresonic/libresonic/releases) for personal usage.
 Packagers can also reference the [release repository](https://libresonic.org/release/).
 
-Please see the [INSTALL document](https://github.com/Libresonic/libresonic/blob/stable/documentation/INSTALL.md) for instructions on running Libresonic.
+Please see the [INSTALL document](https://github.com/Libresonic/documentation/blob/stable/install.md) for instructions on running Libresonic.
 
 
 Community
