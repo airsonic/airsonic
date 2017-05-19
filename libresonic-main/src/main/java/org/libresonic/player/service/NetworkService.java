@@ -84,6 +84,9 @@ public class NetworkService {
         String host = proxyHost.getHost();
         int port = proxyHost.getPort();
         String scheme = request.getHeader(X_FORWARDED_PROTO);
+        if(StringUtils.isBlank(scheme)) {
+            throw new RuntimeException("Scheme not provided");
+        }
 
         return new URI(scheme, null, host, port, urlPathHelper.getContextPath(request), null, null);
     }
