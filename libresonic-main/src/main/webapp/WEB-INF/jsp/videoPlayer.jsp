@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="<c:url value="/style/videoPlayer.css"/>">
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/jwplayer-5.10.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/cast_sender-v1.js"/>"></script>
     <%@ include file="videoPlayerCast.jsp" %>
 
@@ -31,7 +30,7 @@
         <div id="overlay">
             <div id="overlay_text">Playing on Chromecast</div>
         </div>
-        <div id="jwplayer"><a href="http://www.adobe.com/go/getflashplayer" target="_blank">Get Flash</a></div>
+        <video id="videoPlayer" width="640" height="360"></video>
         <div id="media_control">
             <div id="progress_slider"></div>
             <div id="play"></div>

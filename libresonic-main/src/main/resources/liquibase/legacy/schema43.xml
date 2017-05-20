@@ -23,97 +23,97 @@
             <column name="version" valueNumeric="17" />
         </insert>
         <delete tableName="transcoding">
-            <where>target_format = 'flv' and source_format in ('avi', 'mpg', 'mpeg', 'mp4', 'm4v', 'mkv', 'mov', 'wmv', 'ogv')</where>
+            <where>target_format = 'mp4' and source_format in ('avi', 'mpg', 'mpeg', 'mp4', 'm4v', 'mkv', 'mov', 'wmv', 'ogv')</where>
         </delete>
         <insert tableName="transcoding">
-            <column name="name" value="avi > flv"/>
+            <column name="name" value="avi > mp4"/>
             <column name="source_format" value="avi" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'avi > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'avi > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="mpg > flv"/>
+            <column name="name" value="mpg > mp4"/>
             <column name="source_format" value="mpg" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mpg > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mpg > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="mpeg > flv"/>
+            <column name="name" value="mpeg > mp4"/>
             <column name="source_format" value="mpeg" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mpeg > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mpeg > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="mp4 > flv"/>
-            <column name="source_format" value="mp4" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="name" value="flv > mp4"/>
+            <column name="source_format" value="flv" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mp4 > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'flv > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="m4v > flv"/>
+            <column name="name" value="m4v > mp4"/>
             <column name="source_format" value="m4v" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'm4v > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'm4v > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="mkv > flv"/>
+            <column name="name" value="mkv > mp4"/>
             <column name="source_format" value="mkv" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mkv > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mkv > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="mov > flv"/>
+            <column name="name" value="mov > mp4"/>
             <column name="source_format" value="mov" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mov > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'mov > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="wmv > flv"/>
+            <column name="name" value="wmv > mp4"/>
             <column name="source_format" value="wmv" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'wmv > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'wmv > mp4'
         </sql>
         <insert tableName="transcoding">
-            <column name="name" value="ogv > flv"/>
+            <column name="name" value="ogv > mp4"/>
             <column name="source_format" value="ogv" />
-            <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -" />
             <column name="enabled" valueBoolean="true" />
         </insert>
         <sql>
-            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'ogv > flv'
+            insert into player_transcoding(player_id, transcoding_id) select p.id as player_id, t.id as transaction_id from player p, transcoding t where t.name = 'ogv > mp4'
         </sql>
         <rollback/>
     </changeSet>

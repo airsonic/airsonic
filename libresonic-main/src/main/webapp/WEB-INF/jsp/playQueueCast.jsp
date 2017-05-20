@@ -119,8 +119,8 @@
         this.castSession = s;
 
         var position = -1;
-        if (jwplayer().getState() == "PLAYING") {
-            position = jwplayer().getPosition();
+        if (!$('#audioPlayer').get(0).paused) {
+            position = $('#audioPlayer').get(0).currentTime;
         }
 
         this.setCastControlsVisible(true);

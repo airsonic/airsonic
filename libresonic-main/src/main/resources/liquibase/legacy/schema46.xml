@@ -47,10 +47,10 @@
             <column name="step1" value="ffmpeg -i %s -ab %bk -v 0 -f mp3 -"/>
         </insert>
         <insert tableName="transcoding2">
-            <column name="name" value="flv/h264 video" />
-            <column name="source_formats" value="avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts" />
+            <column name="name" value="mp4/h264 video" />
+            <column name="source_formats" value="avi flv mpg mpeg m4v mkv mov wmv ogv divx m2ts" />
             <column name="target_format" value="flv" />
-            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f flv -vcodec libx264 -preset superfast -threads 0 -"/>
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -"/>
         </insert>
         <rollback>
             <dropTable tableName="transcoding2" />
