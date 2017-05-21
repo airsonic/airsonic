@@ -31,6 +31,7 @@ import java.util.List;
 public class PlayQueueInfo {
 
     private final List<Entry> entries;
+    private final int index;
     private final boolean stopEnabled;
     private final boolean repeatEnabled;
     private final boolean radioEnabled;
@@ -39,8 +40,9 @@ public class PlayQueueInfo {
     private int startPlayerAt = -1;
     private long startPlayerAtPosition; // millis
 
-    public PlayQueueInfo(List<Entry> entries, boolean stopEnabled, boolean repeatEnabled, boolean radioEnabled, boolean sendM3U, float gain) {
+    public PlayQueueInfo(List<Entry> entries, int index,boolean stopEnabled, boolean repeatEnabled, boolean radioEnabled, boolean sendM3U, float gain) {
         this.entries = entries;
+        this.index = index;
         this.stopEnabled = stopEnabled;
         this.repeatEnabled = repeatEnabled;
         this.radioEnabled = radioEnabled;
@@ -50,6 +52,10 @@ public class PlayQueueInfo {
 
     public List<Entry> getEntries() {
         return entries;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public String getDurationAsString() {

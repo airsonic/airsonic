@@ -87,80 +87,98 @@
             </table>
 
             <table class="indent" style="border-spacing:3pt;">
-
                 <tr>
                     <td><fmt:message key="playersettings.name"/></td>
                     <td><form:input path="name" size="16"/></td>
                     <td colspan="2"><c:import url="helpToolTip.jsp"><c:param name="topic" value="playername"/></c:import></td>
                 </tr>
 
-                <tr>
-                    <td><fmt:message key="playersettings.maxbitrate"/></td>
-                    <td>
-                        <form:select path="transcodeSchemeName" cssStyle="width:8em">
-                            <c:forEach items="${command.transcodeSchemeHolders}" var="transcodeSchemeHolder">
-                                <form:option value="${transcodeSchemeHolder.name}" label="${transcodeSchemeHolder.description}"/>
-                            </c:forEach>
-                        </form:select>
-                    </td>
-                    <td>
-                        <c:import url="helpToolTip.jsp"><c:param name="topic" value="transcode"/></c:import>
-                    </td>
-                    <td class="warning">
-                        <c:if test="${not command.transcodingSupported}">
-                            <fmt:message key="playersettings.notranscoder"/>
-                        </c:if>
-                    </td>
-                </tr>
+                <c:if test="${command.technologyName == 'JAVA_JUKEBOX'}">
+                    <tr>
+                        <td><fmt:message key="playersettings.javaJukeboxMixer"/></td>
+                        <td>
+                            <form:select path="javaJukeboxMixer">
+                                <c:forEach items="${command.javaJukeboxMixers}" var="javaJukeboxMixer">
+                                    <form:option value="${javaJukeboxMixer}" label="${javaJukeboxMixer}"/>
+                                </c:forEach>
+                            </form:select>
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                </c:if>
 
+
+                <%// Max bitrate %>
+                <c:if test="${command.technologyName != 'JAVA_JUKEBOX'}">
+                    <tr>
+                        <td><fmt:message key="playersettings.maxbitrate"/></td>
+                        <td>
+                            <form:select path="transcodeSchemeName" cssStyle="width:8em">
+                                <c:forEach items="${command.transcodeSchemeHolders}" var="transcodeSchemeHolder">
+                                    <form:option value="${transcodeSchemeHolder.name}" label="${transcodeSchemeHolder.description}"/>
+                                </c:forEach>
+                            </form:select>
+                        </td>
+                        <td>
+                            <c:import url="helpToolTip.jsp"><c:param name="topic" value="transcode"/></c:import>
+                        </td>
+                        <td class="warning">
+                            <c:if test="${not command.transcodingSupported}">
+                                <fmt:message key="playersettings.notranscoder"/>
+                            </c:if>
+                        </td>
+                    </tr>
+                </c:if>
             </table>
 
-            <table class="indent" style="border-spacing:3pt">
+            <c:if test="${command.technologyName != 'JAVA_JUKEBOX'}">
+                <table class="indent" style="border-spacing:3pt">
+                    <tr>
+                        <td>
+                            <form:checkbox path="dynamicIp" id="dynamicIp" cssClass="checkbox"/>
+                            <label for="dynamicIp"><fmt:message key="playersettings.dynamicip"/></label>
+                        </td>
+                        <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="dynamicip"/></c:import></td>
+                    </tr>
 
-        <tr>
-            <td>
-                <form:checkbox path="dynamicIp" id="dynamicIp" cssClass="checkbox"/>
-                <label for="dynamicIp"><fmt:message key="playersettings.dynamicip"/></label>
-            </td>
-            <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="dynamicip"/></c:import></td>
-        </tr>
+                    <tr>
+                        <td>
+                            <form:checkbox path="autoControlEnabled" id="autoControlEnabled" cssClass="checkbox"/>
+                            <label for="autoControlEnabled"><fmt:message key="playersettings.autocontrol"/></label>
+                        </td>
+                        <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="autocontrol"/></c:import></td>
+                    </tr>
 
-        <tr>
-            <td>
-                <form:checkbox path="autoControlEnabled" id="autoControlEnabled" cssClass="checkbox"/>
-                <label for="autoControlEnabled"><fmt:message key="playersettings.autocontrol"/></label>
-            </td>
-            <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="autocontrol"/></c:import></td>
-        </tr>
+                    <tr>
+                        <td>
+                            <form:checkbox path="m3uBomEnabled" id="m3uBomEnabled" cssClass="checkbox"/>
+                            <label for="m3uBomEnabled"><fmt:message key="playersettings.m3ubom"/></label>
+                        </td>
+                        <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="m3ubom"/></c:import></td>
+                    </tr>
+                </table>
+            </c:if>
 
-        <tr>
-            <td>
-                <form:checkbox path="m3uBomEnabled" id="m3uBomEnabled" cssClass="checkbox"/>
-                <label for="m3uBomEnabled"><fmt:message key="playersettings.m3ubom"/></label>
-            </td>
-            <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="m3ubom"/></c:import></td>
-        </tr>
-    </table>
+            <c:if test="${command.technologyName != 'JAVA_JUKEBOX'}">
+                <c:if test="${not empty command.allTranscodings}">
+                    <table class="indent">
+                        <tr><td><b><fmt:message key="playersettings.transcodings"/></b></td></tr>
+                        <c:forEach items="${command.allTranscodings}" var="transcoding" varStatus="loopStatus">
+                            <c:if test="${loopStatus.count % 3 == 1}"><tr></c:if>
+                            <td style="padding-right:2em">
+                                <form:checkbox path="activeTranscodingIds" id="transcoding${transcoding.id}" value="${transcoding.id}" cssClass="checkbox"/>
+                                <label for="transcoding${transcoding.id}">${transcoding.name}</label>
+                            </td>
+                            <c:if test="${loopStatus.count % 3 == 0 or loopStatus.count eq fn:length(command.allTranscodings)}"></tr></c:if>
+                        </c:forEach>
+                    </table>
+                </c:if>
+            </c:if>
 
-    <c:if test="${not empty command.allTranscodings}">
-        <table class="indent">
-            <tr><td><b><fmt:message key="playersettings.transcodings"/></b></td></tr>
-            <c:forEach items="${command.allTranscodings}" var="transcoding" varStatus="loopStatus">
-                <c:if test="${loopStatus.count % 3 == 1}"><tr></c:if>
-                <td style="padding-right:2em">
-                    <form:checkbox path="activeTranscodingIds" id="transcoding${transcoding.id}" value="${transcoding.id}" cssClass="checkbox"/>
-                    <label for="transcoding${transcoding.id}">${transcoding.name}</label>
-                </td>
-                <c:if test="${loopStatus.count % 3 == 0 or loopStatus.count eq fn:length(command.allTranscodings)}"></tr></c:if>
-            </c:forEach>
-        </table>
-    </c:if>
-
-    <input type="submit" value="<fmt:message key="common.save"/>" style="margin-top:1em;margin-right:0.3em">
-    <input type="button" value="<fmt:message key="common.cancel"/>" style="margin-top:1em" onclick="location.href='nowPlaying.view'">
-</form:form>
-
-</c:otherwise>
+            <input type="submit" value="<fmt:message key="common.save"/>" style="margin-top:1em;margin-right:0.3em">
+            <input type="button" value="<fmt:message key="common.cancel"/>" style="margin-top:1em" onclick="location.href='nowPlaying.view'">
+        </form:form>
+    </c:otherwise>
 </c:choose>
 
 <c:if test="${settings_reload}">
