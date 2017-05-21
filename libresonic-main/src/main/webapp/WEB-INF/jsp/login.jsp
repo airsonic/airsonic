@@ -10,48 +10,50 @@
     </script>
 
 </head>
-<body class="mainframe bgcolor1" onload="document.getElementById('j_username').focus()">
+<body style="min-width:550px" class="mainframe bgcolor1" onload="document.getElementById('j_username').focus()">
 
 <form action="<c:url value="/login"/>" method="POST">
 
     <sec:csrfInput />
     <div class="bgcolor2 shadow" align="center" style="padding:20px 50px 20px 50px; margin-top:100px;margin-left:50px;margin-right:50px">
 
-        <div style="margin-bottom:1em;max-width:50em;text-align:left;"><sub:wiki text="${model.loginMessage}"/></div>
+        <div style="margin-bottom:1em;max-width:50em;text-align:center;"><sub:wiki text="${model.loginMessage}"/></div>
 
         <table>
             <tr>
-                <td colspan="2" align="left" style="padding-bottom:10px">
+                <td colspan="2" align="center" style="padding-bottom:10px">
                     <img src="<spring:theme code="logoImage"/>" alt="">
                 </td>
             </tr>
+
             <tr>
-                <td align="left" style="padding-right:10px"><fmt:message key="login.username"/></td>
-                <td align="left"><input type="text" id="j_username" name="j_username" style="width:12em" tabindex="1"></td>
+                <td align="center"><input type="text" id="j_username" name="j_username" style="width:20rem" tabindex="1" placeholder="<fmt:message key="login.username"/>"></td>
             </tr>
 
             <tr>
-                <td align="left" style="padding-bottom:10px"><fmt:message key="login.password"/></td>
-                <td align="left" style="padding-bottom:10px"><input type="password" name="j_password" style="width:12em" tabindex="2"></td>
+                <td align="center" style="padding-bottom:10px"><input type="password" name="j_password" style="width:20rem" tabindex="2" placeholder="<fmt:message key="login.password"/>"></td>
             </tr>
 
             <tr>
-                <td align="left"><input name="submit" type="submit" value="<fmt:message key="login.login"/>" tabindex="4"></td>
-                <td align="left" class="detail">
-                    <input type="checkbox" name="remember-me" id="remember" class="checkbox" tabindex="3">
-                    <label for="remember"><fmt:message key="login.remember"/></label>
+                <td align="center" style="padding-bottom:10px"><input id="loginButton" name="submit" style="width:20rem" type="submit" value="<fmt:message key="login.login"/>" tabindex="4"></td>
+            </tr>
+
+            <tr>
+                <td align="center" class="detail" style="padding-bottom:10px">
+                    <div style="display:inline-flex;align-items:center;margin: 0 20%;">
+                        <input type="checkbox" name="remember-me" id="remember" class="checkbox" tabindex="3">
+                        <label for="remember"><fmt:message key="login.remember"/></label>
+                        <a style="margin-left:10px;" href="recover.view"><fmt:message key="login.recover"/></a>
+                    </div>
                 </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td align="left" class="detail"><a href="recover.view"><fmt:message key="login.recover"/></a></td>
             </tr>
 
             <c:if test="${model.logout}">
-                <tr><td colspan="2" style="padding-top:10px"><b><fmt:message key="login.logout"/></b></td></tr>
+                <tr align="center"><td colspan="2" style="padding-top:10px"><b><fmt:message key="login.logout"/></b></td></tr>
             </c:if>
+
             <c:if test="${model.error}">
-                <tr><td colspan="2" style="padding-top:10px"><span class="warning"><fmt:message key="login.error"/></span></td></tr>
+                <tr align="center"><td colspan="2" style="padding-top:10px"><span class="warning"><fmt:message key="login.error"/></span></td></tr>
             </c:if>
 
         </table>

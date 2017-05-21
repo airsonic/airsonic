@@ -106,6 +106,18 @@ h2, h2 a, .topHeader a {
     font-weight: normal;
 }
 
+#loginButton {
+    background: #2f7bd9;
+    color: #f2f2f2;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+#loginButton:hover {
+    background: #f2f2f2;
+    color: #2d2d2d;
+}
+
 /***************************************************************************************
  * The rest of the CSS is typically not changed in other themes (but not necessarily so).
  ***************************************************************************************/
