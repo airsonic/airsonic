@@ -104,10 +104,8 @@ public class PlayerSettingsController  {
         command.setPlayers(players.toArray(new Player[players.size()]));
         command.setAdmin(user.isAdminRole());
 
-        if (player.getTechnology().equals(PlayerTechnology.JAVA_JUKEBOX)) {
-            command.setJavaJukeboxMixers(Arrays.stream(AudioSystemUtils.listAllMixers()).map(info -> info.getName()).toArray(String[]::new));
-            command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
-        }
+        command.setJavaJukeboxMixers(Arrays.stream(AudioSystemUtils.listAllMixers()).map(info -> info.getName()).toArray(String[]::new));
+        command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
 
         model.addAttribute("command",command);
     }
