@@ -90,6 +90,7 @@
      */
     CastPlayer.prototype.launchCastApp = function () {
         this.log("launching app...");
+        $("#player").hide();
         chrome.cast.requestSession(this.onRequestSessionSuccess.bind(this), this.onLaunchError.bind(this));
     };
 
@@ -97,6 +98,7 @@
      * Stops the running receiver application associated with the session.
      */
     CastPlayer.prototype.stopCastApp = function () {
+        $("#player").show();
         this.castSession.stop(this.onStopAppSuccess.bind(this, 'Session stopped'),
                 this.onError.bind(this));
     };
