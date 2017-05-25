@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,8 +80,12 @@ public class PlayerDao extends AbstractDao {
      * @return The player with the given ID, or <code>null</code> if no such player exists.
      */
     public Player getPlayerById(String id) {
-        String sql = "select " + QUERY_COLUMNS + " from player where id=?";
-        return queryOne(sql, rowMapper, id);
+        if (StringUtils.isBlank(id)) {
+            return null;
+        } else {
+            String sql = "select " + QUERY_COLUMNS + " from player where id=?";
+            return queryOne(sql, rowMapper, id);
+        }
     }
 
     /**

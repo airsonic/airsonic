@@ -38,6 +38,13 @@ public class JukeboxJavaService {
     private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new Hashtable<>();
     private final static String DEFAULT_MIXER_ENTRY_KEY = "_default";
 
+    /**
+     * Finds the corresponding active audio player for a given libresonic player.
+     * The JukeboxJavaService references all active audio players in a map indexed by libresonic player id.
+     *
+     * @param libresonicPlayer a given libresonic player.
+     * @return the corresponding active audio player of null if none exists.
+     */
     private com.github.biconou.AudioPlayer.api.Player retrieveAudioPlayerForLibresonicPlayer(Player libresonicPlayer) {
         com.github.biconou.AudioPlayer.api.Player foundPlayer = activeAudioPlayers.get(libresonicPlayer.getId());
         if (foundPlayer == null) {
@@ -94,9 +101,11 @@ public class JukeboxJavaService {
 
             boolean sameFile = currentFileInPlayQueue != null && currentFileInPlayQueue.equals(getCurrentPlayingFileForPlayer(libresonicPlayer));
             boolean paused = audioPlayer.isPaused();
+            boolean stopped = audioPlayer.getState().equals(com.github.biconou.AudioPlayer.api.Player.State.STOPPED);
+            boolean closed = audioPlayer.getState().equals(com.github.biconou.AudioPlayer.api.Player.State.CLOSED);
 
-            if (sameFile && paused) {
-                log.debug("Same file and paused -> try to resume playing");
+            if (sameFile && (paused || stopped || closed)) {
+                log.debug("Same file -> try to resume playing");
                 audioPlayer.play();
             } else {
                 if (sameFile) {
@@ -165,12 +174,12 @@ public class JukeboxJavaService {
 
                 @Override
                 public void onFinished() {
-                    // Nothing to do here
+                    libresonicPlayer.getPlayQueue().setStatus(PlayQueue.Status.STOPPED);
                 }
 
                 @Override
                 public void onStop() {
-                    // Nothing to do here
+                    libresonicPlayer.getPlayQueue().setStatus(PlayQueue.Status.STOPPED);
                 }
 
                 @Override

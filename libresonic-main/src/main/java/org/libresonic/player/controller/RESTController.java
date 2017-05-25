@@ -904,8 +904,8 @@ public class RESTController {
 
         int currentIndex = controlsJukebox && !playQueue.isEmpty() ? playQueue.getIndex() : -1;
         boolean playing = controlsJukebox && !playQueue.isEmpty() && playQueue.getStatus() == PlayQueue.Status.PLAYING;
-        float gain = 0.0f;
-        int position = 0;
+        float gain;
+        int position;
         if (isJavaJukebox) {
             gain = jukeboxJavaService.getGain(player);
             position = controlsJukebox && !playQueue.isEmpty() ? jukeboxJavaService.getPosition(player) : 0;
