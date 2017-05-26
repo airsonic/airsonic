@@ -106,16 +106,55 @@ h2, h2 a, .topHeader a {
     font-weight: normal;
 }
 
-#loginButton {
+/* Login page */
+
+#loginframe {
+    padding: 20px 50px;
+    margin: 100px 50px;
+    display: list-item;
+    list-style: none;
+    text-align: center;
+}
+
+#loginframe > * {
+    margin: 0 auto;
+    display: block;
+}
+
+#loginframe .loginmessagetop {
+    margin-bottom: 1em;
+    max-width: 30rem;
+}
+
+#loginframe input[type=text],
+#loginframe input[type=submit],
+#loginframe input[type=password] {
+    width: 20rem;
+    margin-bottom: 0.5em;
+}
+
+#loginframe input[type=submit] {
+    margin: 1rem auto;
+    padding: 0.3rem;
     background: #2f7bd9;
     color: #f2f2f2;
-    cursor: pointer;
     transition: color 0.2s ease, background 0.2s ease;
 }
 
-#loginButton:hover {
+#loginframe input[type=submit]:hover {
     background: #f2f2f2;
     color: #2d2d2d;
+}
+
+#loginremember {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+#loginframe .loginmessagebottom {
+    margin-top: 1em;
+    max-width: 50em;
 }
 
 /***************************************************************************************
