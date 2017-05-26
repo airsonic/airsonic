@@ -57,6 +57,7 @@ public class PlayQueueService {
     private org.libresonic.player.service.PlaylistService playlistService;
     private MediaFileDao mediaFileDao;
     private PlayQueueDao playQueueDao;
+    private JWTSecurityService jwtSecurityService;
 
     /**
      * Returns the play queue for the player of the current user.
@@ -640,8 +641,8 @@ public class PlayQueueService {
             String streamUrl = url + "/stream?player=" + player.getId() + "&id=" + file.getId();
             String coverArtUrl = url + "/coverArt.view?id=" + file.getId();
 
-            String remoteStreamUrl = streamUrl;
-            String remoteCoverArtUrl = coverArtUrl;
+            String remoteStreamUrl = jwtSecurityService.addJWTToken(url + "/ext/stream?player=" + player.getId() + "&id=" + file.getId());
+            String remoteCoverArtUrl = jwtSecurityService.addJWTToken(url + "/ext/coverArt.view?id=" + file.getId());
 
             String format = formatFormat(player, file);
             String username = securityService.getCurrentUsername(request);
@@ -736,5 +737,9 @@ public class PlayQueueService {
 
     public void setPlaylistService(PlaylistService playlistService) {
         this.playlistService = playlistService;
+    }
+
+    public void setJwtSecurityService(JWTSecurityService jwtSecurityService) {
+        this.jwtSecurityService = jwtSecurityService;
     }
 }

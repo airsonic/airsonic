@@ -32,7 +32,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +64,7 @@ public class M3UController  {
         Player player = playerService.getPlayer(request, response);
 
         String url = NetworkService.getBaseUrl(request);
-        url = url + "stream?";
+        url = url + "ext/stream?";
 
         if (player.isExternalWithPlaylist()) {
             createClientSidePlaylist(response.getWriter(), player, url);
@@ -93,9 +92,8 @@ public class M3UController  {
 
             String urlNoAuth = url +  "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." +
                     transcodingService.getSuffix(player, mediaFile, null);
-            String urlWithAuth = jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(urlNoAuth)).build().toUriString();
+            String urlWithAuth = jwtSecurityService.addJWTToken(urlNoAuth);
             out.println(urlWithAuth);
-            out.println();
         }
     }
 
@@ -114,7 +112,7 @@ public class M3UController  {
         }
         out.println("#EXTM3U");
         out.println("#EXTINF:-1,Libresonic");
-        out.println(url);
+        out.println(jwtSecurityService.addJWTToken(url));
     }
 
     private String getSuffix(Player player) {
