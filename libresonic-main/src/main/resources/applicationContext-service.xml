@@ -266,6 +266,7 @@
         <property name="ratingService" ref="ratingService"/>
         <property name="securityService" ref="securityService"/>
         <property name="podcastService" ref="podcastService"/>
+        <property name="jwtSecurityService" ref="jwtSecurityService" />
     </bean>
 
     <bean id="ajaxPlaylistService" class="org.libresonic.player.ajax.PlaylistService">

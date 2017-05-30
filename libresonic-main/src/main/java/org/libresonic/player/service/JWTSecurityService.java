@@ -55,6 +55,10 @@ public class JWTSecurityService {
                 .sign(getAlgorithm(jwtKey));
     }
 
+    public String addJWTToken(String uri) {
+        return addJWTToken(UriComponentsBuilder.fromUriString(uri)).build().toString();
+    }
+
     public UriComponentsBuilder addJWTToken(UriComponentsBuilder builder) {
         return addJWTToken(builder, DateUtils.addDays(new Date(), DEFAULT_DAYS_VALID_FOR));
     }
