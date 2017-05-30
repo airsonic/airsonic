@@ -121,6 +121,7 @@
         var position = -1;
         if (!$('#audioPlayer').get(0).paused) {
             position = $('#audioPlayer').get(0).currentTime;
+            $('#audioPlayer').get(0).pause();
         }
 
         this.setCastControlsVisible(true);
