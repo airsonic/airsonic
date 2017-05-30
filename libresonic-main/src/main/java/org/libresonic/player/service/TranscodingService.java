@@ -22,7 +22,7 @@ package org.libresonic.player.service;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.libresonic.player.controller.VideoPlayerController;
 import org.libresonic.player.dao.TranscodingDao;
 import org.libresonic.player.domain.*;
@@ -393,7 +393,20 @@ public class TranscodingService {
         List<Transcoding> applicableTranscodings = new LinkedList<Transcoding>();
         String suffix = mediaFile.getFormat();
 
-        for (Transcoding transcoding : getTranscodingsForPlayer(player)) {
+        // This is what I'd like todo, but this will most likely break video transcoding as video transcoding is
+        // never expected to be null
+//        if(StringUtils.equalsIgnoreCase(preferredTargetFormat, suffix)) {
+//            LOG.debug("Target formats are the same, returning no transcoding");
+//            return null;
+//        }
+
+        List<Transcoding> transcodingsForPlayer = getTranscodingsForPlayer(player);
+        for (Transcoding transcoding : transcodingsForPlayer) {
+            // special case for now as video must have a transcoding
+            if(mediaFile.isVideo() && StringUtils.equalsIgnoreCase(preferredTargetFormat, transcoding.getTargetFormat())) {
+                LOG.debug("Detected source to target format match for video");
+                return transcoding;
+            }
             for (String sourceFormat : transcoding.getSourceFormatsAsArray()) {
                 if (sourceFormat.equalsIgnoreCase(suffix)) {
                     if (isTranscodingInstalled(transcoding)) {
