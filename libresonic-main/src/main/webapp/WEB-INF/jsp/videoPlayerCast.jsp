@@ -64,7 +64,7 @@
         // @type {PLAYER_STATE} A state for local media player
         this.localPlayerState = PLAYER_STATE.IDLE;
 
-        // @type {jwplayer} local player
+        // @type {video} local player
         this.localPlayer = null;
 
         /* Current media variables */
@@ -95,31 +95,17 @@
      * Initialize local media player
      */
     CastPlayer.prototype.initializeLocalPlayer = function () {
-        jwplayer("jwplayer").setup({
-            flashplayer: "<c:url value="/flash/jw-player-5.10.swf"/>",
-            height: 360,
-            width: 640,
-            skin: "<c:url value="/flash/jw-player-libresonic-skin.zip"/>",
-            screencolor: "000000",
-            controlbar: "over",
-            autostart: "false",
-            bufferlength: 3,
-            provider: "video",
-            events: {
-                onTime: this.updateLocalProgress.bind(this),
-                onPlay: this.updateLocalState.bind(this),
-                onPause: this.updateLocalState.bind(this),
-                onIdle: this.updateLocalState.bind(this)
-            }
-        });
-
-        this.localPlayer = jwplayer();
-        this.localPlayer.setMute(false);
-        this.localPlayer.setVolume(this.currentVolume);
+        this.localPlayer = $('#videoPlayer').get(0);
+        this.localPlayer.volume = this.currentVolume/100;
+        this.localPlayer.addEventListener("timeupdate", this.updateLocalProgress.bind(this));
+        this.localPlayer.addEventListener("play", this.updateLocalState.bind(this));
+        this.localPlayer.addEventListener("pause", this.updateLocalState.bind(this));
+        this.localPlayer.addEventListener("playing", this.updateLocalState.bind(this));
+        this.localPlayer.addEventListener("paused", this.updateLocalState.bind(this));
     };
 
-    CastPlayer.prototype.updateLocalProgress = function (event) {
-        var newTime = Math.round(event.position);
+    CastPlayer.prototype.updateLocalProgress = function () {
+        var newTime = Math.round(this.localPlayer.currentTime);
         if (newTime != this.currentMediaTime && !this.seekInProgress) {
             this.currentMediaTime = newTime;
             this.updateProgressBar();
@@ -127,12 +113,10 @@
     };
 
     CastPlayer.prototype.updateLocalState = function () {
-        if (this.localPlayer.getState() == "PLAYING" || this.localPlayer.getState() == "BUFFERING") {
-            this.localPlayerState = PLAYER_STATE.PLAYING;
-        } else if (this.localPlayer.getState() == "PAUSED") {
+        if (this.localPlayer.paused) {
             this.localPlayerState = PLAYER_STATE.PAUSED;
-        } else if (this.localPlayer.getState() == "IDLE") {
-            this.localPlayerState = PLAYER_STATE.IDLE;
+        } else {
+            this.localPlayerState = PLAYER_STATE.PLAYING;
         }
         this.updateMediaControlUI();
     };
@@ -456,6 +440,7 @@
      * @param {Number} offset A number for media current position
      */
     CastPlayer.prototype.playMediaLocally = function (offset) {
+        this.currentMediaDuration = this.localPlayer.duration;
 
         if (this.localPlayerState == PLAYER_STATE.PLAYING || this.localPlayerState == PLAYER_STATE.PAUSED) {
             this.localPlayer.play();
@@ -466,11 +451,7 @@
             var url = "${model.streamUrl}" + "&maxBitRate=" + this.getBitRate() + "&timeOffset=" + offset;
             console.log("playing local: " + url);
 
-            this.localPlayer.load({
-                file: url,
-                duration: this.currentMediaDuration,
-                provider: "video"
-            });
+            this.localPlayer.src = url;
             this.localPlayer.play();
             this.seekInProgress = false;
         }
@@ -534,7 +515,8 @@
      * Stop media playback in local player
      */
     CastPlayer.prototype.stopMediaLocally = function () {
-        this.localPlayer.stop();
+        this.localPlayer.pause();
+        this.localPlayer.currentTime = 0;
         this.updateMediaControlUI();
     };
 
@@ -546,9 +528,9 @@
         this.currentVolume = parseInt($("#volume_slider").slider("option", "value"));
 
         if (!this.currentMediaSession) {
-            this.localPlayer.setMute(mute);
+            this.localPlayer.muted = mute;
             if (!mute) {
-                this.localPlayer.setVolume(this.currentVolume);
+                this.localPlayer.volume = this.currentVolume / 100;
             }
             return;
         }
@@ -638,7 +620,10 @@
             $("#casticonactive").hide();
             $("#casticonidle").hide();
             $("#overlay_text").hide();
-            var loaded = this.localPlayer.getPlaylist().length > 0;
+            var loaded = false;
+            if(this.localPlayer.src) {
+                loaded = true;
+            }
             $("#overlay").toggle(!loaded);
         } else if (this.deviceState == DEVICE_STATE.ACTIVE) {
             $("#casticonactive").show();
@@ -650,7 +635,10 @@
             $("#casticonactive").hide();
             $("#casticonidle").show();
             $("#overlay_text").hide();
-            var loaded = this.localPlayer.getPlaylist().length > 0;
+            var loaded = false;
+            if(this.localPlayer.src) {
+                loaded = true;
+            }
             $("#overlay").toggle(!loaded);
         }
 

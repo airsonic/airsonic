@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="mediaelement_001" author="muff1nman">
+        <insert tableName="transcoding2">
+            <column name="name" value="mp4/h264 video" />
+            <column name="source_formats" value="avi flv mpg mpeg m4v mkv mov wmv ogv divx m2ts" />
+            <column name="target_format" value="mp4" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -async 1 -b %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mp4 -vcodec libx264 -preset superfast -threads 0 -movflags frag_keyframe+empty_moov -"/>
+        </insert>
+        <rollback>
+            <delete tableName="transcoding2" >
+                <where>name = 'mp4/h264 video'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -79,7 +79,7 @@
     };
 
     CastPlayer.prototype.setCastControlsVisible = function (visible) {
-        $("#flashPlayer").toggle(!visible);
+        $("#player").toggle(!visible);
         $("#castPlayer").toggle(visible);
         $("#castOff").toggle(visible);
         $("#castOn").toggle(!visible);
@@ -119,8 +119,9 @@
         this.castSession = s;
 
         var position = -1;
-        if (jwplayer().getState() == "PLAYING") {
-            position = jwplayer().getPosition();
+        if (!$('#audioPlayer').get(0).paused) {
+            position = $('#audioPlayer').get(0).currentTime;
+            $('#audioPlayer').get(0).pause();
         }
 
         this.setCastControlsVisible(true);

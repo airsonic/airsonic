@@ -68,7 +68,7 @@ public class VideoPlayerController {
         Integer duration = file.getDurationSeconds();
         String playerId = playerService.getPlayer(request, response).getId();
         String url = NetworkService.getBaseUrl(request);
-        String streamUrl = url + "/stream?id=" + file.getId() + "&player=" + playerId;
+        String streamUrl = url + "/stream?id=" + file.getId() + "&player=" + playerId + "&format=mp4";
         String coverArtUrl = url + "/coverArt.view?id=" + file.getId();
 
         map.put("video", file);
