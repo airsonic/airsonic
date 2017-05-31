@@ -10,9 +10,10 @@
     <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/jwplayer-5.10.min.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
     <%@ include file="playQueueCast.jsp" %>
     <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
+    <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/mediaelementplayer.min.css"/>">
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -143,17 +144,12 @@
         }
     }
 
-    function createPlayer() {
-        jwplayer("jwplayer").setup({
-            flashplayer: "<c:url value="/flash/jw-player-5.10.swf"/>",
-            height: 24,
-            width: 350,
-            controlbar: "bottom",
-            backcolor:"<spring:theme code="backgroundColor"/>",
-            frontcolor:"<spring:theme code="textColor"/>"
-        });
+    function onEnded() {
+        onNext(repeatEnabled);
+    }
 
-        jwplayer().onComplete(function() {onNext(repeatEnabled)});
+    function createPlayer() {
+        $('#audioPlayer').get(0).addEventListener("ended", onEnded);
     }
 
     function getPlayQueue() {
@@ -176,11 +172,10 @@
     function onStart() {
         if (CastPlayer.castSession) {
             CastPlayer.playCast();
-        } else if (jwplayer()) {
-            if (jwplayer().getState() == "IDLE") {
-                skip(0);
-            } else if (jwplayer().getState() == "PAUSED") {
-                jwplayer().play(true);
+        } else if ($('#audioPlayer')) {
+            var audioPlayer = $('#audioPlayer');
+            if(audioPlayer.paused) {
+                skip(0, audioPlayer.currentTime);
             }
         } else {
             playQueueService.start(playQueueCallback);
@@ -193,8 +188,8 @@
     function onStop() {
         if (CastPlayer.castSession) {
             CastPlayer.pauseCast();
-        } else if (jwplayer()) {
-            jwplayer().pause(true);
+        } else if ($('#audioPlayer')) {
+            $('#audioPlayer').get(0).pause();
         } else {
             playQueueService.stop(playQueueCallback);
         }
@@ -210,8 +205,8 @@
             var playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
             if (playing) onStop();
             else onStart();
-        } else if (jwplayer()) {
-            if (jwplayer().getState() == "PLAYING") onStop();
+        } else if ($('#audioPlayer')) {
+            if (!$('#audioPlayer').get(0).paused) onStop();
             else onStart();
         } else {
             playQueueService.toggleStartStop(playQueueCallback);
@@ -242,11 +237,11 @@
             if (volume < 0) volume = 0;
             CastPlayer.setCastVolume(volume / 100, false);
             $("#castVolume").slider("option", "value", volume); // Need to update UI
-        } else if (jwplayer()) {
-            var volume = parseInt(jwplayer().getVolume()) + gain;
+        } else if ($('#audioPlayer')) {
+            var volume = parseInt($('#audioPlayer').get(0).volume) + gain;
             if (volume > 100) volume = 100;
             if (volume < 0) volume = 0;
-            jwplayer().setVolume(volume);
+            $('#audioPlayer').get(0).volume = volume;
         } else {
             var volume = parseInt($("#jukeboxVolume").slider("option", "value")) + gain;
             if (volume > 100) volume = 100;
@@ -362,7 +357,7 @@
         playQueueService.sortByAlbum(playQueueCallback);
     }
     function onSavePlayQueue() {
-        var positionMillis = jwplayer() ? Math.round(1000.0 * jwplayer().getPosition()) : 0;
+        var positionMillis = $('#audioPlayer') ? Math.round(1000.0 * $('#audioPlayer').get(0).currentTime) : 0;
         playQueueService.savePlayQueue(getCurrentSongIndex(), positionMillis);
         $().toastmessage("showSuccessToast", "<fmt:message key="playlist.toast.saveplayqueue"/>");
     }
@@ -515,14 +510,13 @@
             if (songs.length > index) {
                 skip(index);
                 if (positionMillis != 0) {
-                    jwplayer().seek(positionMillis / 1000);
+                    $('#audioPlayer').get(0).currentTime = positionMillis / 1000;
                 }
             }
         }
         updateCurrentImage();
         if (songs.length == 0) {
-            jwplayer().stop();
-            jwplayer().load([]);
+            $('#audioPlayer').get(0).stop();
         }
     }
 
@@ -538,12 +532,9 @@
         if (CastPlayer.castSession) {
             CastPlayer.loadCastMedia(song, position);
         } else {
-            jwplayer().load({
-                file: song.streamUrl,
-                provider: song.format == "aac" || song.format == "m4a" ? "video" : "sound",
-                duration: song.duration
-            });
-            jwplayer().play();
+            $('#audioPlayer').get(0).src = song.streamUrl;
+            $('#audioPlayer').get(0).load();
+            $('#audioPlayer').get(0).play();
             console.log(song.streamUrl);
         }
 
@@ -668,7 +659,7 @@
 
 </script>
 
-<div class="bgcolor2" style="position:fixed; bottom:0; width:100%;padding-top:10px;padding-bottom: 5px">
+<div class="bgcolor2" style="position:fixed; bottom:0; width:100%;padding-top:10px;">
     <table style="white-space:nowrap;">
         <tr style="white-space:nowrap;">
             <c:if test="${model.user.settingsRole and fn:length(model.players) gt 1}">
@@ -680,8 +671,8 @@
             </c:if>
             <c:if test="${model.player.web}">
                 <td>
-                    <div id="flashPlayer" style="width:340px; height:24px;padding-right:10px">
-                        <div id="jwplayer"><a href="http://www.adobe.com/go/getflashplayer" target="_blank"><fmt:message key="playlist.getflash"/></a></div>
+                    <div id="player" style="width:340px; height:40px;padding-right:10px">
+                        <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": "true"}' width="340px" height"40px"/>
                     </div>
                     <div id="castPlayer" style="display: none">
                         <div style="float:left">
