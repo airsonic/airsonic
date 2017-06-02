@@ -78,7 +78,7 @@ public class JukeboxJavaService {
         currentPlayingFileMap.put(libresonicPlayer.getId(),mediaFile);
     }
 
-    public synchronized void updateJukebox(Player libresonicPlayer, int offset) throws Exception {
+    public void updateJukebox(Player libresonicPlayer, int offset) throws Exception {
 
         log.debug("begin updateJukebox : player = id:{};name:{}",libresonicPlayer.getId(),libresonicPlayer.getName());
 
@@ -94,9 +94,7 @@ public class JukeboxJavaService {
         log.debug("PlayQueue.Status is {}",libresonicPlayer.getPlayQueue().getStatus());
         if (libresonicPlayer.getPlayQueue().getStatus() == PlayQueue.Status.PLAYING) {
             MediaFile currentFileInPlayQueue;
-            synchronized (libresonicPlayer.getPlayQueue()) {
-                currentFileInPlayQueue = libresonicPlayer.getPlayQueue().getCurrentFile();
-            }
+            currentFileInPlayQueue = libresonicPlayer.getPlayQueue().getCurrentFile();
             log.debug("Current file in play queue is {}",currentFileInPlayQueue.getName());
 
             boolean sameFile = currentFileInPlayQueue != null && currentFileInPlayQueue.equals(getCurrentPlayingFileForPlayer(libresonicPlayer));
@@ -232,7 +230,7 @@ public class JukeboxJavaService {
         return 0.5f;
     }
 
-    public synchronized void setGain(final Player libresonicPlayer, final float gain) {
+    public void setGain(final Player libresonicPlayer, final float gain) {
         if (!libresonicPlayer.getTechnology().equals(PlayerTechnology.JAVA_JUKEBOX)) {
             throw new RuntimeException("The player "+libresonicPlayer.getName()+" is not a java jukebox player");
         }
