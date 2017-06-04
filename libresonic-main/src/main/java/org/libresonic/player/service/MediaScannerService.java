@@ -220,8 +220,6 @@ public class MediaScannerService {
             LOG.info("Scanned media library with " + scanCount + " entries.");
         }
 
-        LOG.trace("Scanning file {}", file.getPath());
-
         searchService.index(file);
 
         // Update the root folder if it has changed.
