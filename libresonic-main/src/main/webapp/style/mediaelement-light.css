@@ -1,0 +1,93 @@
+
+.mejs__overlay-loading-bg-img {
+    background-image: url("mejs-controls-dark.svg");
+}
+
+.mejs__button > button {
+    background-image: url("mejs-controls-dark.svg");
+}
+
+.mejs__overlay-button {
+    background-image: url("mejs-controls-dark.svg");
+}
+
+.mejs__container {
+    background: #F1F1F1;
+}
+
+.mejs__container .me_cannotplay a {
+    color: #F1F1F1;
+}
+
+.mejs__controls:not([style*="display: none"]) {
+    background: #F1F1F1;
+}
+
+.mejs__time {
+    color: black;
+}
+
+.mejs__time-total {
+    background: rgba(190, 190, 190, 0.7);
+}
+
+.mejs__time-buffering {
+    background: linear-gradient(-45deg, rgba(0, 0, 0, 0.15) 75%, transparent 75%, transparent 50%, rgba(0, 0, 0, 0.85) 50%, rgba(0, 0, 0, 0.85) 75%, transparent 75%, transparent);
+}
+
+.mejs__time-loaded {
+    background: rgba(0, 0, 0, .7);
+}
+
+.mejs__time-current, .mejs__time-handle-content {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.mejs__time-hovered {
+    background: rgba(0, 0, 0, .4);
+}
+
+.mejs__time-hovered.negative {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.mejs__volume-button > .mejs__volume-slider {
+    background: rgba(50, 50, 50, 0.3);
+}
+
+.mejs__volume-current {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.mejs__volume-handle {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.mejs__horizontal-volume-total {
+    background: rgba(50, 50, 50, 0.2);
+}
+
+.mejs__horizontal-volume-current {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.mejs__captions-button > .mejs__captions-selector, .mejs__chapters-button > .mejs__chapters-selector {
+    background: rgba(50, 50, 50, 0.3);
+}
+
+.mejs__captions-selector-list-item, .mejs__chapters-selector-list-item {
+    color: #000;
+}
+
+.mejs__captions-selector-list-item:hover, .mejs__chapters-selector-list-item:hover {
+    background-color: rgb(100, 100, 100) !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.mejs__captions-layer {
+    color: #000;
+}
+
+.mejs__captions-layer a {
+    color: #000;
+}

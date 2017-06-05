@@ -13,7 +13,6 @@
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
     <%@ include file="playQueueCast.jsp" %>
     <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/mediaelementplayer.min.css"/>">
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
