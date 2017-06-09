@@ -20,6 +20,7 @@
 package org.libresonic.player.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.libresonic.player.ajax.LyricsInfo;
 import org.libresonic.player.ajax.LyricsService;
 import org.libresonic.player.ajax.PlayQueueService;
@@ -41,17 +42,17 @@ import org.libresonic.player.service.*;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
-import org.libresonic.restapi.*;
-import org.libresonic.restapi.Genres;
-import org.libresonic.restapi.PodcastStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.subsonic.restapi.*;
+import org.subsonic.restapi.PodcastStatus;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -137,9 +138,14 @@ public class RESTController {
     private BookmarkDao bookmarkDao;
     @Autowired
     private PlayQueueDao playQueueDao;
+    @Autowired
+    private MediaScannerService mediaScannerService;
 
     private final Map<BookmarkKey, Bookmark> bookmarkCache = new ConcurrentHashMap<BookmarkKey, Bookmark>();
     private final JAXBWriter jaxbWriter = new JAXBWriter();
+
+    private static final String NOT_YET_IMPLEMENTED = "Not yet implemented";
+    private static final String NO_LONGER_SUPPORTED = "No longer supported";
 
     @PostConstruct
     public void init() {
@@ -192,7 +198,7 @@ public class RESTController {
         MusicFolders musicFolders = new MusicFolders();
         String username = securityService.getCurrentUsername(request);
         for (MusicFolder musicFolder : settingsService.getMusicFoldersForUser(username)) {
-            org.libresonic.restapi.MusicFolder mf = new org.libresonic.restapi.MusicFolder();
+            org.subsonic.restapi.MusicFolder mf = new org.subsonic.restapi.MusicFolder();
             mf.setId(musicFolder.getId());
             mf.setName(musicFolder.getName());
             musicFolders.getMusicFolder().add(mf);
@@ -246,7 +252,7 @@ public class RESTController {
                 for (MediaFile mediaFile : artist.getMediaFiles()) {
                     if (mediaFile.isDirectory()) {
                         Date starredDate = mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username);
-                        org.libresonic.restapi.Artist a = new org.libresonic.restapi.Artist();
+                        org.subsonic.restapi.Artist a = new org.subsonic.restapi.Artist();
                         index.getArtist().add(a);
                         a.setId(String.valueOf(mediaFile.getId()));
                         a.setName(artist.getName());
@@ -275,10 +281,10 @@ public class RESTController {
     @RequestMapping(value = "/getGenres", method = {RequestMethod.GET, RequestMethod.POST})
     public void getGenres(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
-        Genres genres = new Genres();
+        org.subsonic.restapi.Genres genres = new org.subsonic.restapi.Genres();
 
         for (Genre genre : mediaFileDao.getGenres(false)) {
-            org.libresonic.restapi.Genre g = new org.libresonic.restapi.Genre();
+            org.subsonic.restapi.Genre g = new org.subsonic.restapi.Genre();
             genres.getGenre().add(g);
             g.setContent(genre.getName());
             g.setAlbumCount(genre.getAlbumCount());
@@ -498,8 +504,8 @@ public class RESTController {
         return jaxbArtist;
     }
 
-    private org.libresonic.restapi.Artist createJaxbArtist(MediaFile artist, String username) {
-        org.libresonic.restapi.Artist result = new org.libresonic.restapi.Artist();
+    private org.subsonic.restapi.Artist createJaxbArtist(MediaFile artist, String username) {
+        org.subsonic.restapi.Artist result = new org.subsonic.restapi.Artist();
         result.setId(String.valueOf(artist.getId()));
         result.setName(artist.getArtist());
         Date starred = mediaFileDao.getMediaFileStarredDate(artist.getId(), username);
@@ -552,7 +558,7 @@ public class RESTController {
         return jaxbAlbum;
     }
 
-    private <T extends org.libresonic.restapi.Playlist> T createJaxbPlaylist(T jaxbPlaylist, Playlist playlist) {
+    private <T extends org.subsonic.restapi.Playlist> T createJaxbPlaylist(T jaxbPlaylist, Playlist playlist) {
         jaxbPlaylist.setId(String.valueOf(playlist.getId()));
         jaxbPlaylist.setName(playlist.getName());
         jaxbPlaylist.setComment(playlist.getComment());
@@ -644,6 +650,7 @@ public class RESTController {
         }
         directory.setName(dir.getName());
         directory.setStarred(jaxbWriter.convertDate(mediaFileDao.getMediaFileStarredDate(id, username)));
+        directory.setPlayCount((long) dir.getPlayCount());
 
         if (dir.isAlbum()) {
             directory.setAverageRating(ratingService.getAverageRating(dir));
@@ -691,7 +698,7 @@ public class RESTController {
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
 
         SearchResult result = searchService.search(criteria, musicFolders, SearchService.IndexType.SONG);
-        org.libresonic.restapi.SearchResult searchResult = new org.libresonic.restapi.SearchResult();
+        org.subsonic.restapi.SearchResult searchResult = new org.subsonic.restapi.SearchResult();
         searchResult.setOffset(result.getOffset());
         searchResult.setTotalHits(result.getTotalHits());
 
@@ -799,7 +806,7 @@ public class RESTController {
         Playlists result = new Playlists();
 
         for (Playlist playlist : playlistService.getReadablePlaylistsForUser(requestedUsername)) {
-            result.getPlaylist().add(createJaxbPlaylist(new org.libresonic.restapi.Playlist(), playlist));
+            result.getPlaylist().add(createJaxbPlaylist(new org.subsonic.restapi.Playlist(), playlist));
         }
 
         Response res = createResponse();
@@ -1246,6 +1253,7 @@ public class RESTController {
         child.setStarred(jaxbWriter.convertDate(mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username)));
         child.setUserRating(ratingService.getRatingForUser(username, mediaFile));
         child.setAverageRating(ratingService.getAverageRating(mediaFile));
+        child.setPlayCount((long) mediaFile.getPlayCount());
 
         if (mediaFile.isFile()) {
             child.setDuration(mediaFile.getDurationSeconds());
@@ -1544,7 +1552,7 @@ public class RESTController {
         for (PodcastChannel channel : podcastService.getAllChannels()) {
             if (channelId == null || channelId.equals(channel.getId())) {
 
-                org.libresonic.restapi.PodcastChannel c = new org.libresonic.restapi.PodcastChannel();
+                org.subsonic.restapi.PodcastChannel c = new org.subsonic.restapi.PodcastChannel();
                 result.getChannel().add(c);
 
                 c.setId(String.valueOf(channel.getId()));
@@ -1587,13 +1595,13 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    private org.libresonic.restapi.PodcastEpisode createJaxbPodcastEpisode(Player player, String username, PodcastEpisode episode) {
-        org.libresonic.restapi.PodcastEpisode e = new org.libresonic.restapi.PodcastEpisode();
+    private org.subsonic.restapi.PodcastEpisode createJaxbPodcastEpisode(Player player, String username, PodcastEpisode episode) {
+        org.subsonic.restapi.PodcastEpisode e = new org.subsonic.restapi.PodcastEpisode();
 
         String path = episode.getPath();
         if (path != null) {
             MediaFile mediaFile = mediaFileService.getMediaFile(path);
-            e = createJaxbChild(new org.libresonic.restapi.PodcastEpisode(), player, mediaFile, username);
+            e = createJaxbChild(new org.subsonic.restapi.PodcastEpisode(), player, mediaFile, username);
             e.setStreamId(String.valueOf(mediaFile.getId()));
         }
 
@@ -1706,7 +1714,7 @@ public class RESTController {
 
         Bookmarks result = new Bookmarks();
         for (Bookmark bookmark : bookmarkDao.getBookmarks(username)) {
-            org.libresonic.restapi.Bookmark b = new org.libresonic.restapi.Bookmark();
+            org.subsonic.restapi.Bookmark b = new org.subsonic.restapi.Bookmark();
             result.getBookmark().add(b);
             b.setPosition(bookmark.getPositionMillis());
             b.setUsername(bookmark.getUsername());
@@ -1762,7 +1770,7 @@ public class RESTController {
             return;
         }
 
-        org.libresonic.restapi.PlayQueue restPlayQueue = new org.libresonic.restapi.PlayQueue();
+        org.subsonic.restapi.PlayQueue restPlayQueue = new org.subsonic.restapi.PlayQueue();
         restPlayQueue.setUsername(playQueue.getUsername());
         restPlayQueue.setCurrent(playQueue.getCurrentMediaFileId());
         restPlayQueue.setPosition(playQueue.getPositionMillis());
@@ -1811,7 +1819,7 @@ public class RESTController {
 
         Shares result = new Shares();
         for (Share share : shareService.getSharesForUser(user)) {
-            org.libresonic.restapi.Share s = createJaxbShare(request, share);
+            org.subsonic.restapi.Share s = createJaxbShare(request, share);
             result.getShare().add(s);
 
             for (MediaFile mediaFile : shareService.getSharedFiles(share.getId(), musicFolders)) {
@@ -1849,7 +1857,7 @@ public class RESTController {
         shareService.updateShare(share);
 
         Shares result = new Shares();
-        org.libresonic.restapi.Share s = createJaxbShare(request, share);
+        org.subsonic.restapi.Share s = createJaxbShare(request, share);
         result.getShare().add(s);
 
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
@@ -1909,8 +1917,8 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    private org.libresonic.restapi.Share createJaxbShare(HttpServletRequest request, Share share) {
-        org.libresonic.restapi.Share result = new org.libresonic.restapi.Share();
+    private org.subsonic.restapi.Share createJaxbShare(HttpServletRequest request, Share share) {
+        org.subsonic.restapi.Share result = new org.subsonic.restapi.Share();
         result.setId(String.valueOf(share.getId()));
         result.setUrl(shareService.getShareUrl(request, share));
         result.setUsername(share.getUsername());
@@ -2035,10 +2043,10 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    private org.libresonic.restapi.User createJaxbUser(User user) {
+    private org.subsonic.restapi.User createJaxbUser(User user) {
         UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
 
-        org.libresonic.restapi.User result = new org.libresonic.restapi.User();
+        org.subsonic.restapi.User result = new org.subsonic.restapi.User();
         result.setUsername(user.getUsername());
         result.setEmail(user.getEmail());
         result.setScrobblingEnabled(userSettings.isLastFmEnabled());
@@ -2053,6 +2061,10 @@ public class RESTController {
         result.setStreamRole(user.isStreamRole());
         result.setJukeboxRole(user.isJukeboxRole());
         result.setShareRole(user.isShareRole());
+        // currently this role isn't supported by libresonic
+        result.setVideoConversionRole(false);
+        // Useless
+        result.setAvatarLastChanged(null);
 
         TranscodeScheme transcodeScheme = userSettings.getTranscodeScheme();
         if (transcodeScheme != null && transcodeScheme != TranscodeScheme.OFF) {
@@ -2180,6 +2192,16 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
+    @RequestMapping(value = "/getChatMessages", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<String> getChatMessages(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.status(HttpStatus.SC_GONE).body(NO_LONGER_SUPPORTED);
+    }
+
+    @RequestMapping(value = "/addChatMessage", method = {RequestMethod.GET, RequestMethod.POST})
+    public ResponseEntity<String> addChatMessage(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.status(HttpStatus.SC_GONE).body(NO_LONGER_SUPPORTED);
+    }
+
     @RequestMapping(value = "/getLyrics", method = {RequestMethod.GET, RequestMethod.POST})
     public void getLyrics(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
@@ -2216,6 +2238,87 @@ public class RESTController {
         ratingService.setRatingForUser(username, mediaFile, rating);
 
         writeEmptyResponse(request, response);
+    }
+
+    @RequestMapping(path = "/getAlbumInfo", method = RequestMethod.GET)
+    public void getAlbumInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request = wrapRequest(request);
+
+        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
+
+        MediaFile mediaFile = this.mediaFileService.getMediaFile(id);
+        if (mediaFile == null) {
+            error(request, response, RESTController.ErrorCode.NOT_FOUND, "Media file not found.");
+            return;
+        }
+        AlbumNotes albumNotes = this.lastFmService.getAlbumNotes(mediaFile);
+
+        AlbumInfo result = getAlbumInfoInternal(albumNotes);
+        Response res = createResponse();
+        res.setAlbumInfo(result);
+        this.jaxbWriter.writeResponse(request, response, res);
+    }
+
+    @RequestMapping(path = "/getAlbumInfo2", method = RequestMethod.GET)
+    public void getAlbumInfo2(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request = wrapRequest(request);
+
+        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
+
+        Album album = this.albumDao.getAlbum(id);
+        if (album == null) {
+            error(request, response, RESTController.ErrorCode.NOT_FOUND, "Album not found.");
+            return;
+        }
+        AlbumNotes albumNotes = this.lastFmService.getAlbumNotes(album);
+
+        AlbumInfo result = getAlbumInfoInternal(albumNotes);
+        Response res = createResponse();
+        res.setAlbumInfo(result);
+        this.jaxbWriter.writeResponse(request, response, res);
+    }
+
+    private AlbumInfo getAlbumInfoInternal(AlbumNotes albumNotes) {
+        AlbumInfo result = new AlbumInfo();
+        if (albumNotes != null)
+        {
+            result.setNotes(albumNotes.getNotes());
+            result.setMusicBrainzId(albumNotes.getMusicBrainzId());
+            result.setLastFmUrl(albumNotes.getLastFmUrl());
+            result.setSmallImageUrl(albumNotes.getSmallImageUrl());
+            result.setMediumImageUrl(albumNotes.getMediumImageUrl());
+            result.setLargeImageUrl(albumNotes.getLargeImageUrl());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/getVideoInfo", method = RequestMethod.GET)
+    public ResponseEntity<String> getVideoInfo() throws Exception {
+        return ResponseEntity.status(HttpStatus.SC_NOT_IMPLEMENTED).body(NOT_YET_IMPLEMENTED);
+    }
+
+    @RequestMapping(value = "/getCaptions", method = RequestMethod.GET)
+    public ResponseEntity<String> getCaptions() {
+        return ResponseEntity.status(HttpStatus.SC_NOT_IMPLEMENTED).body(NOT_YET_IMPLEMENTED);
+    }
+
+    @RequestMapping(value = "/startScan", method = {RequestMethod.PUT})
+    public void startScan(HttpServletRequest request, HttpServletResponse response) {
+        request = wrapRequest(request);
+        mediaScannerService.scanLibrary();
+        getScanStatus(request, response);
+    }
+
+    @RequestMapping(value = "/getScanStatus", method = {RequestMethod.GET})
+    public void getScanStatus(HttpServletRequest request, HttpServletResponse response) {
+        request = wrapRequest(request);
+        ScanStatus scanStatus = new ScanStatus();
+        scanStatus.setScanning(this.mediaScannerService.isScanning());
+        scanStatus.setCount((long) this.mediaScannerService.getScanCount());
+
+        Response res = createResponse();
+        res.setScanStatus(scanStatus);
+        this.jaxbWriter.writeResponse(request, response, res);
     }
 
     private HttpServletRequest wrapRequest(HttpServletRequest request) {
