@@ -33,7 +33,7 @@ import org.fourthline.cling.support.model.ProtocolInfos;
 import org.fourthline.cling.support.model.dlna.DLNAProfiles;
 import org.fourthline.cling.support.model.dlna.DLNAProtocolInfo;
 import org.libresonic.player.service.upnp.ApacheUpnpServiceConfiguration;
-import org.libresonic.player.service.upnp.FolderBasedContentDirectory;
+import org.libresonic.player.service.upnp.LibresonicContentDirectory;
 import org.libresonic.player.service.upnp.MSMediaReceiverRegistrarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class UPnPService {
 
     private SettingsService settingsService;
     private UpnpService upnpService;
-    private FolderBasedContentDirectory folderBasedContentDirectory;
+    private LibresonicContentDirectory libresonicContentDirectory;
     private AtomicReference<Boolean> running = new AtomicReference<>(false);
 
     public void init() {
@@ -147,12 +147,12 @@ public class UPnPService {
 
         Icon icon = new Icon("image/png", 512, 512, 32, "logo-512", getClass().getResourceAsStream("logo-512.png"));
 
-        LocalService<FolderBasedContentDirectory> contentDirectoryservice = new AnnotationLocalServiceBinder().read(FolderBasedContentDirectory.class);
-        contentDirectoryservice.setManager(new DefaultServiceManager<FolderBasedContentDirectory>(contentDirectoryservice) {
+        LocalService<LibresonicContentDirectory> contentDirectoryservice = new AnnotationLocalServiceBinder().read(LibresonicContentDirectory.class);
+        contentDirectoryservice.setManager(new DefaultServiceManager<LibresonicContentDirectory>(contentDirectoryservice) {
 
             @Override
-            protected FolderBasedContentDirectory createServiceInstance() throws Exception {
-                return folderBasedContentDirectory;
+            protected LibresonicContentDirectory createServiceInstance() throws Exception {
+                return libresonicContentDirectory;
             }
         });
 
@@ -205,7 +205,7 @@ public class UPnPService {
         this.settingsService = settingsService;
     }
 
-    public void setFolderBasedContentDirectory(FolderBasedContentDirectory folderBasedContentDirectory) {
-        this.folderBasedContentDirectory = folderBasedContentDirectory;
+    public void setLibresonicContentDirectory(LibresonicContentDirectory libresonicContentDirectory) {
+        this.libresonicContentDirectory = libresonicContentDirectory;
     }
 }

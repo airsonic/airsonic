@@ -194,9 +194,28 @@
         <property name="jwtSecurityService" ref="jwtSecurityService" />
     </bean>
 
+    <bean id="dispatchingContentDirectory" class="org.libresonic.player.service.upnp.DispatchingContentDirectory">
+        <property name="settingsService" ref="settingsService"/>
+        <property name="playlistService" ref="playlistService"/>
+        <property name="playerService" ref="playerService"/>
+        <property name="transcodingService" ref="transcodingService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="jwtSecurityService" ref="jwtSecurityService" />
+        <property name="albumProcessor" ref="albumUpnpProcessor" />
+        <property name="recentAlbumProcessor" ref="recentAlbumUpnpProcessor" />
+    </bean>
+
+    <bean id="mediaFileUpnpProcessor" class="org.libresonic.player.service.upnp.MediaFileUpnpProcessor"/>
+    <bean id="playlistUpnpProcessor" class="org.libresonic.player.service.upnp.PlaylistUpnpProcessor"/>
+    <bean id="rootUpnpProcessor" class="org.libresonic.player.service.upnp.RootUpnpProcessor"/>
+    <bean id="artistUpnpProcessor" class="org.libresonic.player.service.upnp.ArtistUpnpProcessor"/>
+    <bean id="albumUpnpProcessor" class="org.libresonic.player.service.upnp.AlbumUpnpProcessor"/>
+    <bean id="recentAlbumUpnpProcessor" class="org.libresonic.player.service.upnp.RecentAlbumUpnpProcessor"/>
+    <bean id="genreUpnpProcessor" class="org.libresonic.player.service.upnp.GenreUpnpProcessor"/>
+
     <bean id="upnpService" class="org.libresonic.player.service.UPnPService" init-method="init">
         <property name="settingsService" ref="settingsService"/>
-        <property name="folderBasedContentDirectory" ref="folderBasedContentDirectory"/>
+        <property name="libresonicContentDirectory" ref="dispatchingContentDirectory"/>
     </bean>
 
     <bean id="lastFmService" class="org.libresonic.player.service.LastFmService" init-method="init">

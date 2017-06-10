@@ -32,6 +32,7 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.spans.SpanOrQuery;
 import org.apache.lucene.search.spans.SpanQuery;
@@ -366,6 +367,70 @@ public class SearchService {
 
         } catch (Throwable x) {
             LOG.error("Failed to search for random albums.", x);
+        } finally {
+            FileUtil.closeQuietly(reader);
+        }
+        return result;
+    }
+
+    public <T> ParamSearchResult<T> searchByName(String name, int offset, int count, List<MusicFolder> folderList, Class<T> clazz) {
+        IndexType indexType = null;
+        String field = null;
+        if (clazz.isAssignableFrom(Album.class)) {
+            indexType = IndexType.ALBUM_ID3;
+            field = FIELD_ALBUM;
+        } else if (clazz.isAssignableFrom(Artist.class)) {
+            indexType = IndexType.ARTIST_ID3;
+            field = FIELD_ARTIST;
+        } else if (clazz.isAssignableFrom(MediaFile.class)) {
+            indexType = IndexType.SONG;
+            field = FIELD_TITLE;
+        }
+        ParamSearchResult<T> result = new ParamSearchResult<T>();
+        // we only support album, artist, and song for now
+        if (indexType == null || field == null) {
+            return result;
+        }
+
+        result.setOffset(offset);
+
+        IndexReader reader = null;
+
+        try {
+            reader = createIndexReader(indexType);
+            Searcher searcher = new IndexSearcher(reader);
+            Analyzer analyzer = new LibresonicAnalyzer();
+            QueryParser queryParser = new QueryParser(LUCENE_VERSION, field, analyzer);
+
+            Query q = queryParser.parse(name + "*");
+
+            Sort sort = new Sort(new SortField(field, SortField.STRING));
+            TopDocs topDocs = searcher.search(q, null, offset + count, sort);
+            result.setTotalHits(topDocs.totalHits);
+
+            int start = Math.min(offset, topDocs.totalHits);
+            int end = Math.min(start + count, topDocs.totalHits);
+            for (int i = start; i < end; i++) {
+                Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+                switch (indexType) {
+                case SONG:
+                    MediaFile mediaFile = mediaFileService.getMediaFile(Integer.valueOf(doc.get(FIELD_ID)));
+                    addIfNotNull(clazz.cast(mediaFile), result.getItems());
+                    break;
+                case ARTIST_ID3:
+                    Artist artist = artistDao.getArtist(Integer.valueOf(doc.get(FIELD_ID)));
+                    addIfNotNull(clazz.cast(artist), result.getItems());
+                    break;
+                case ALBUM_ID3:
+                    Album album = albumDao.getAlbum(Integer.valueOf(doc.get(FIELD_ID)));
+                    addIfNotNull(clazz.cast(album), result.getItems());
+                    break;
+                default:
+                    break;
+                }
+            }
+        } catch (Throwable x) {
+            LOG.error("Failed to execute Lucene search.", x);
         } finally {
             FileUtil.closeQuietly(reader);
         }
