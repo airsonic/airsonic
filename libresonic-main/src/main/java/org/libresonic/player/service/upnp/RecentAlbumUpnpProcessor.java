@@ -39,6 +39,8 @@ public class RecentAlbumUpnpProcessor extends AlbumUpnpProcessor {
         List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
         List<Album> recentAlbums = getAlbumDao().getNewestAlbums(0, RECENT_COUNT, allFolders);
         if (recentAlbums.size() > 1) {
+            // if there is more than one recent album, add in an option to
+            // view the tracks in all the recent albums together
             Album viewAll = new Album();
             viewAll.setName("- All Albums -");
             viewAll.setId(-1);

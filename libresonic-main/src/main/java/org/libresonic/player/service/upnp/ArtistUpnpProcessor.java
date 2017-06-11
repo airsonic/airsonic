@@ -73,6 +73,8 @@ public class ArtistUpnpProcessor extends UpnpContentProcessor <Artist, Album> {
         List<MusicFolder> allFolders = getDispatcher().getSettingsService().getAllMusicFolders();
         List<Album> allAlbums = getAlbumProcessor().getAlbumDao().getAlbumsForArtist(artist.getName(), allFolders);
         if (allAlbums.size() > 1) {
+            // if the artist has more than one album, add in an option to
+            // view the tracks in all the albums together
             Album viewAll = new Album();
             viewAll.setName("- All Albums -");
             viewAll.setId(-1);

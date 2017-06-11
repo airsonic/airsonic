@@ -51,7 +51,7 @@ import java.util.Arrays;
  */
 public class DispatchingContentDirectory extends LibresonicContentDirectory {
 
-    public static final Logger LOG = LoggerFactory.getLogger(FolderBasedContentDirectory.class);
+    public static final Logger LOG = LoggerFactory.getLogger(DispatchingContentDirectory.class);
 
     public static final String CONTAINER_ID_ROOT = "0";
     public static final String CONTAINER_ID_PLAYLIST_PREFIX = "playlist";
@@ -118,7 +118,6 @@ public class DispatchingContentDirectory extends LibresonicContentDirectory {
                 // if it's null then assume it's a file, and that the id
                 // is all that's there.
                 itemId = browseRoot;
-                browseRoot = "folder";
                 processor = getMediaFileProcessor();
             }
 

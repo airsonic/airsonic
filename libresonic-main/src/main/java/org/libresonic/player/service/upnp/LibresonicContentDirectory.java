@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.service.upnp;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fourthline.cling.support.contentdirectory.AbstractContentDirectoryService;
@@ -50,6 +51,10 @@ public abstract class LibresonicContentDirectory extends AbstractContentDirector
     private PlayerService playerService;
     private TranscodingService transcodingService;
     protected JWTSecurityService jwtSecurityService;
+
+    public LibresonicContentDirectory() {
+        super(Lists.newArrayList("*"), Lists.newArrayList());
+    }
 
     protected Res createResourceForSong(MediaFile song) {
         Player player = playerService.getGuestPlayer(null);
