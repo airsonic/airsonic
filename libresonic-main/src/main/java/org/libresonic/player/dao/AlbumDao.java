@@ -153,7 +153,22 @@ public class AlbumDao extends AbstractDao {
      * @param musicFolders Only return albums from these folders.
      * @return Albums in alphabetical order.
      */
+    @Deprecated
     public List<Album> getAlphabetialAlbums(final int offset, final int count, boolean byArtist, final List<MusicFolder> musicFolders) {
+        return getAlphabeticalAlbums(offset, count, byArtist, false, musicFolders);
+    }
+
+    /**
+     * Returns albums in alphabetical order.
+     *
+     * @param offset       Number of albums to skip.
+     * @param count        Maximum number of albums to return.
+     * @param byArtist     Whether to sort by artist name
+     * @param musicFolders Only return albums from these folders.
+     * @param ignoreCase   Use case insensitive sorting
+     * @return Albums in alphabetical order.
+     */
+    public List<Album> getAlphabeticalAlbums(final int offset, final int count, boolean byArtist, boolean ignoreCase, final List<MusicFolder> musicFolders) {
         if (musicFolders.isEmpty()) {
             return Collections.emptyList();
         }
@@ -162,9 +177,32 @@ public class AlbumDao extends AbstractDao {
             put("count", count);
             put("offset", offset);
         }};
-        String orderBy = byArtist ? "artist, name" : "name";
+        String orderBy;
+        if (ignoreCase) {
+            orderBy = byArtist ? "LOWER(artist),  LOWER(name)" : "LOWER(name)";
+        } else {
+            orderBy = byArtist ? "artist, name" : "name";
+        }
+
         return namedQuery("select " + QUERY_COLUMNS + " from album where present and folder_id in (:folders) " +
                           "order by " + orderBy + " limit :count offset :offset", rowMapper, args);
+    }
+
+    /**
+     * Returns the count of albums in the given folders
+     *
+     * @param musicFolders Only return albums from these folders.
+     * @return the count of present albums
+     */
+    public int getAlbumCount(final List<MusicFolder> musicFolders) {
+        if (musicFolders.isEmpty()) {
+            return 0;
+        }
+        Map<String, Object> args = new HashMap<String, Object>();
+        args.put("folders", MusicFolder.toIdList(musicFolders));
+
+        return getNamedParameterJdbcTemplate().queryForObject("select count(*) from album where present and folder_id in (:folders)", args, Integer.class);
+
     }
 
     /**

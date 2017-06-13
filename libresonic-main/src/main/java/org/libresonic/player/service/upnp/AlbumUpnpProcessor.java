@@ -18,8 +18,10 @@
   Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
 */
 package org.libresonic.player.service.upnp;
+import org.fourthline.cling.support.model.BrowseResult;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.PersonWithRole;
+import org.fourthline.cling.support.model.SortCriterion;
 import org.fourthline.cling.support.model.container.Container;
 import org.fourthline.cling.support.model.container.MusicAlbum;
 import org.libresonic.player.dao.AlbumDao;
@@ -53,6 +55,20 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
         setRootTitle("Albums");
     }
 
+    /**
+     * Browses the top-level content of a type.
+     */
+    public BrowseResult browseRoot(String filter, long firstResult, long maxResults, SortCriterion[] orderBy) throws Exception {
+        DIDLContent didl = new DIDLContent();
+
+        List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
+        List<Album> selectedItems = getAlbumDao().getAlphabeticalAlbums((int) firstResult, (int) maxResults, false, true, allFolders);
+        for (Album item : selectedItems) {
+            addItem(didl, item);
+        }
+
+        return createBrowseResult(didl, (int) didl.getCount(), getAllItemsSize());
+    }
     public Container createContainer(Album album) throws Exception {
         MusicAlbum container = new MusicAlbum();
 
@@ -74,7 +90,7 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
 
     public List<Album> getAllItems() {
         List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
-        return getAlbumDao().getAlphabetialAlbums(0, 0, false, allFolders);
+        return getAlbumDao().getAlphabeticalAlbums(0, Integer.MAX_VALUE, false, true, allFolders);
     }
 
     public Album getItemById(String id) throws Exception {
@@ -109,6 +125,13 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
         }
         return allFiles;
     }
+
+    @Override
+    public int getAllItemsSize() throws Exception {
+        List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
+        return getAlbumDao().getAlbumCount(allFolders);
+    }
+
 
     public void addChild(DIDLContent didl, MediaFile child) throws Exception {
         didl.addItem(getDispatcher().getMediaFileProcessor().createItem(child));
