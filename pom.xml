@@ -75,7 +75,7 @@
     </developers>
 
     <modules>
-        <module>libresonic-rest-api</module>
+        <module>subsonic-rest-api</module>
         <module>libresonic-sonos-api</module>
         <module>libresonic-main</module>
     </modules>

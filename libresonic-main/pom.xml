@@ -21,7 +21,7 @@
 
         <dependency>
             <groupId>org.libresonic.player</groupId>
-            <artifactId>libresonic-rest-api</artifactId>
+            <artifactId>subsonic-rest-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

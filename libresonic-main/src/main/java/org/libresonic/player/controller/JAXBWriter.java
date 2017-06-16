@@ -99,7 +99,7 @@ public class JAXBWriter {
     private String getRESTProtocolVersion() throws Exception {
         InputStream in = null;
         try {
-            in = StringUtil.class.getResourceAsStream("/libresonic-rest-api.xsd");
+            in = StringUtil.class.getResourceAsStream("/subsonic-rest-api.xsd");
             Document document = new SAXBuilder().build(in);
             Attribute version = document.getRootElement().getAttribute("version");
             return version.getValue();
