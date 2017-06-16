@@ -19,6 +19,9 @@
     </script>
 </head>
 <body class="mainframe bgcolor1" onload="init()">
+<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
+
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="musicFolder"/>
@@ -89,7 +92,12 @@
         </span>
     </div>
 
-    <p class="forward"><a href="musicFolderSettings.view?scanNow"><fmt:message key="musicfoldersettings.scannow"/></a></p>
+    <table>
+        <tr>
+            <td><div class="forward"><a href="musicFolderSettings.view?scanNow"><fmt:message key="musicfoldersettings.scannow"/></a></div></td>
+            <td><c:import url="helpToolTip.jsp"><c:param name="topic" value="scanMediaFolders"/></c:import></td>
+        </tr>
+    </table>
 
     <c:if test="${command.scanning}">
         <p style="width:60%"><b><fmt:message key="musicfoldersettings.nowscanning"/></b></p>
