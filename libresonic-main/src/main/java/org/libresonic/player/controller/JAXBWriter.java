@@ -26,12 +26,12 @@ import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 import org.libresonic.player.util.StringUtil;
-import org.libresonic.restapi.Error;
-import org.libresonic.restapi.ObjectFactory;
-import org.libresonic.restapi.Response;
-import org.libresonic.restapi.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.subsonic.restapi.Error;
+import org.subsonic.restapi.ObjectFactory;
+import org.subsonic.restapi.Response;
+import org.subsonic.restapi.ResponseStatus;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +40,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Date;
@@ -69,20 +70,30 @@ public class JAXBWriter {
         }
     }
 
-    private Marshaller createXmlMarshaller() throws JAXBException {
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_ENCODING, StringUtil.ENCODING_UTF8);
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        return marshaller;
+    private Marshaller createXmlMarshaller() {
+        Marshaller marshaller = null;
+        try {
+            marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, StringUtil.ENCODING_UTF8);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            return marshaller;
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private Marshaller createJsonMarshaller() throws JAXBException {
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_ENCODING, StringUtil.ENCODING_UTF8);
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
-        marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
-        return marshaller;
+    private Marshaller createJsonMarshaller() {
+        try {
+            Marshaller marshaller;
+            marshaller = jaxbContext.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, StringUtil.ENCODING_UTF8);
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
+            marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, true);
+            return marshaller;
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getRESTProtocolVersion() throws Exception {
@@ -105,11 +116,10 @@ public class JAXBWriter {
         Response response = new ObjectFactory().createResponse();
         response.setStatus(ok ? ResponseStatus.OK : ResponseStatus.FAILED);
         response.setVersion(restProtocolVersion);
-        response.setType("Libresonic");
         return response;
     }
 
-    public void writeResponse(HttpServletRequest request, HttpServletResponse httpResponse, Response jaxbResponse) throws Exception {
+    public void writeResponse(HttpServletRequest request, HttpServletResponse httpResponse, Response jaxbResponse) {
 
         String format = getStringParameter(request, "f", "xml");
         String jsonpCallback = request.getParameter("callback");
@@ -140,9 +150,9 @@ public class JAXBWriter {
                 writer.append(");");
             }
             httpResponse.getWriter().append(writer.getBuffer());
-        } catch (Exception x) {
+        } catch (JAXBException | IOException x) {
             LOG.error("Failed to marshal JAXB", x);
-            throw x;
+            throw new RuntimeException(x);
         }
     }
 

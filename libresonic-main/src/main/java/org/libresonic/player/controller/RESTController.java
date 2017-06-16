@@ -20,6 +20,7 @@
 package org.libresonic.player.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.libresonic.player.ajax.LyricsInfo;
 import org.libresonic.player.ajax.LyricsService;
 import org.libresonic.player.ajax.PlayQueueService;
@@ -41,17 +42,17 @@ import org.libresonic.player.service.*;
 import org.libresonic.player.util.Pair;
 import org.libresonic.player.util.StringUtil;
 import org.libresonic.player.util.Util;
-import org.libresonic.restapi.*;
-import org.libresonic.restapi.Genres;
-import org.libresonic.restapi.PodcastStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.subsonic.restapi.*;
+import org.subsonic.restapi.PodcastStatus;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +75,7 @@ import static org.springframework.web.bind.ServletRequestUtils.*;
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping("/rest")
+@RequestMapping(value = "/rest", method = {RequestMethod.GET, RequestMethod.POST})
 public class RESTController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RESTController.class);
@@ -137,9 +138,14 @@ public class RESTController {
     private BookmarkDao bookmarkDao;
     @Autowired
     private PlayQueueDao playQueueDao;
+    @Autowired
+    private MediaScannerService mediaScannerService;
 
     private final Map<BookmarkKey, Bookmark> bookmarkCache = new ConcurrentHashMap<BookmarkKey, Bookmark>();
     private final JAXBWriter jaxbWriter = new JAXBWriter();
+
+    private static final String NOT_YET_IMPLEMENTED = "Not yet implemented";
+    private static final String NO_LONGER_SUPPORTED = "No longer supported";
 
     @PostConstruct
     public void init() {
@@ -153,7 +159,7 @@ public class RESTController {
         }
     }
 
-    @RequestMapping(value = "/ping", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/ping")
     public void ping(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Response res = createResponse();
         jaxbWriter.writeResponse(request, response, res);
@@ -167,7 +173,7 @@ public class RESTController {
      * @param response
      * @throws Exception
      */
-    @RequestMapping(value = "/getLicense", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getLicense")
     public void getLicense(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         License license = new License();
@@ -185,14 +191,14 @@ public class RESTController {
     }
 
 
-    @RequestMapping(value = "/getMusicFolders", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getMusicFolders")
     public void getMusicFolders(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
         MusicFolders musicFolders = new MusicFolders();
         String username = securityService.getCurrentUsername(request);
         for (MusicFolder musicFolder : settingsService.getMusicFoldersForUser(username)) {
-            org.libresonic.restapi.MusicFolder mf = new org.libresonic.restapi.MusicFolder();
+            org.subsonic.restapi.MusicFolder mf = new org.subsonic.restapi.MusicFolder();
             mf.setId(musicFolder.getId());
             mf.setName(musicFolder.getName());
             musicFolders.getMusicFolder().add(mf);
@@ -202,7 +208,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getIndexes", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getIndexes")
     public void getIndexes(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Response res = createResponse();
@@ -246,7 +252,7 @@ public class RESTController {
                 for (MediaFile mediaFile : artist.getMediaFiles()) {
                     if (mediaFile.isDirectory()) {
                         Date starredDate = mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username);
-                        org.libresonic.restapi.Artist a = new org.libresonic.restapi.Artist();
+                        org.subsonic.restapi.Artist a = new org.subsonic.restapi.Artist();
                         index.getArtist().add(a);
                         a.setId(String.valueOf(mediaFile.getId()));
                         a.setName(artist.getName());
@@ -272,13 +278,13 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getGenres", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getGenres")
     public void getGenres(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
-        Genres genres = new Genres();
+        org.subsonic.restapi.Genres genres = new org.subsonic.restapi.Genres();
 
         for (Genre genre : mediaFileDao.getGenres(false)) {
-            org.libresonic.restapi.Genre g = new org.libresonic.restapi.Genre();
+            org.subsonic.restapi.Genre g = new org.subsonic.restapi.Genre();
             genres.getGenre().add(g);
             g.setContent(genre.getName());
             g.setAlbumCount(genre.getAlbumCount());
@@ -289,7 +295,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getSongsByGenre", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getSongsByGenre")
     public void getSongsByGenre(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -312,7 +318,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getArtists", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getArtists")
     public void getArtists(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -337,7 +343,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getSimilarSongs", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getSimilarSongs")
     public void getSimilarSongs(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -364,7 +370,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getSimilarSongs2", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getSimilarSongs2")
     public void getSimilarSongs2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -392,7 +398,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getTopSongs", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getTopSongs")
     public void getTopSongs(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -414,7 +420,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getArtistInfo", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getArtistInfo")
     public void getArtistInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -450,7 +456,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getArtistInfo2", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getArtistInfo2")
     public void getArtistInfo2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -498,8 +504,8 @@ public class RESTController {
         return jaxbArtist;
     }
 
-    private org.libresonic.restapi.Artist createJaxbArtist(MediaFile artist, String username) {
-        org.libresonic.restapi.Artist result = new org.libresonic.restapi.Artist();
+    private org.subsonic.restapi.Artist createJaxbArtist(MediaFile artist, String username) {
+        org.subsonic.restapi.Artist result = new org.subsonic.restapi.Artist();
         result.setId(String.valueOf(artist.getId()));
         result.setName(artist.getArtist());
         Date starred = mediaFileDao.getMediaFileStarredDate(artist.getId(), username);
@@ -507,7 +513,7 @@ public class RESTController {
         return result;
     }
 
-    @RequestMapping(value = "/getArtist", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getArtist")
     public void getArtist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -552,7 +558,7 @@ public class RESTController {
         return jaxbAlbum;
     }
 
-    private <T extends org.libresonic.restapi.Playlist> T createJaxbPlaylist(T jaxbPlaylist, Playlist playlist) {
+    private <T extends org.subsonic.restapi.Playlist> T createJaxbPlaylist(T jaxbPlaylist, Playlist playlist) {
         jaxbPlaylist.setId(String.valueOf(playlist.getId()));
         jaxbPlaylist.setName(playlist.getName());
         jaxbPlaylist.setComment(playlist.getComment());
@@ -570,7 +576,7 @@ public class RESTController {
         return jaxbPlaylist;
     }
 
-    @RequestMapping(value = "/getAlbum", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getAlbum")
     public void getAlbum(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -593,7 +599,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getSong", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getSong")
     public void getSong(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -615,7 +621,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getMusicDirectory", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getMusicDirectory")
     public void getMusicDirectory(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -644,6 +650,7 @@ public class RESTController {
         }
         directory.setName(dir.getName());
         directory.setStarred(jaxbWriter.convertDate(mediaFileDao.getMediaFileStarredDate(id, username)));
+        directory.setPlayCount((long) dir.getPlayCount());
 
         if (dir.isAlbum()) {
             directory.setAverageRating(ratingService.getAverageRating(dir));
@@ -659,7 +666,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/search")
     public void search(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -691,7 +698,7 @@ public class RESTController {
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
 
         SearchResult result = searchService.search(criteria, musicFolders, SearchService.IndexType.SONG);
-        org.libresonic.restapi.SearchResult searchResult = new org.libresonic.restapi.SearchResult();
+        org.subsonic.restapi.SearchResult searchResult = new org.subsonic.restapi.SearchResult();
         searchResult.setOffset(result.getOffset());
         searchResult.setTotalHits(result.getTotalHits());
 
@@ -703,7 +710,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/search2", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/search2")
     public void search2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -742,7 +749,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/search3", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/search3")
     public void search3(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -781,7 +788,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getPlaylists", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getPlaylists")
     public void getPlaylists(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -799,7 +806,7 @@ public class RESTController {
         Playlists result = new Playlists();
 
         for (Playlist playlist : playlistService.getReadablePlaylistsForUser(requestedUsername)) {
-            result.getPlaylist().add(createJaxbPlaylist(new org.libresonic.restapi.Playlist(), playlist));
+            result.getPlaylist().add(createJaxbPlaylist(new org.subsonic.restapi.Playlist(), playlist));
         }
 
         Response res = createResponse();
@@ -807,7 +814,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getPlaylist", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getPlaylist")
     public void getPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -836,7 +843,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/jukeboxControl", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/jukeboxControl")
     public void jukeboxControl(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
 
@@ -915,7 +922,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/createPlaylist", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/createPlaylist")
     public void createPlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
         String username = securityService.getCurrentUsername(request);
@@ -960,7 +967,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/updatePlaylist", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/updatePlaylist")
     public void updatePlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
         String username = securityService.getCurrentUsername(request);
@@ -1028,7 +1035,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/deletePlaylist", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/deletePlaylist")
     public void deletePlaylist(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request, true);
         String username = securityService.getCurrentUsername(request);
@@ -1048,7 +1055,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getAlbumList", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getAlbumList")
     public void getAlbumList(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1099,7 +1106,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getAlbumList2", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getAlbumList2")
     public void getAlbumList2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1143,7 +1150,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getRandomSongs", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getRandomSongs")
     public void getRandomSongs(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1167,7 +1174,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getVideos", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getVideos")
     public void getVideos(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1186,7 +1193,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getNowPlaying", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getNowPlaying")
     public void getNowPlaying(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         NowPlaying result = new NowPlaying();
@@ -1246,6 +1253,7 @@ public class RESTController {
         child.setStarred(jaxbWriter.convertDate(mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username)));
         child.setUserRating(ratingService.getRatingForUser(username, mediaFile));
         child.setAverageRating(ratingService.getAverageRating(mediaFile));
+        child.setPlayCount((long) mediaFile.getPlayCount());
 
         if (mediaFile.isFile()) {
             child.setDuration(mediaFile.getDurationSeconds());
@@ -1339,7 +1347,7 @@ public class RESTController {
         return null;
     }
 
-    @RequestMapping(value = "/download", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/download")
     public ModelAndView download(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1363,7 +1371,7 @@ public class RESTController {
         return downloadController.handleRequest(request, response);
     }
 
-    @RequestMapping(value = "/stream", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/stream")
     public ModelAndView stream(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1376,7 +1384,7 @@ public class RESTController {
         return null;
     }
 
-    @RequestMapping(value = "/hls", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/hls")
     public ModelAndView hls(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1398,7 +1406,7 @@ public class RESTController {
         return null;
     }
 
-    @RequestMapping(value = "/scrobble", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/scrobble")
     public void scrobble(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1431,12 +1439,12 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/star", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/star")
     public void star(HttpServletRequest request, HttpServletResponse response) throws Exception {
         starOrUnstar(request, response, true);
     }
 
-    @RequestMapping(value = "/unstar", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/unstar")
     public void unstar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         starOrUnstar(request, response, false);
     }
@@ -1485,7 +1493,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getStarred", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getStarred")
     public void getStarred(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1508,7 +1516,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getStarred2", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getStarred2")
     public void getStarred2(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1531,7 +1539,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getPodcasts", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getPodcasts")
     public void getPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1544,7 +1552,7 @@ public class RESTController {
         for (PodcastChannel channel : podcastService.getAllChannels()) {
             if (channelId == null || channelId.equals(channel.getId())) {
 
-                org.libresonic.restapi.PodcastChannel c = new org.libresonic.restapi.PodcastChannel();
+                org.subsonic.restapi.PodcastChannel c = new org.subsonic.restapi.PodcastChannel();
                 result.getChannel().add(c);
 
                 c.setId(String.valueOf(channel.getId()));
@@ -1569,7 +1577,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getNewestPodcasts", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getNewestPodcasts")
     public void getNewestPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1587,13 +1595,13 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    private org.libresonic.restapi.PodcastEpisode createJaxbPodcastEpisode(Player player, String username, PodcastEpisode episode) {
-        org.libresonic.restapi.PodcastEpisode e = new org.libresonic.restapi.PodcastEpisode();
+    private org.subsonic.restapi.PodcastEpisode createJaxbPodcastEpisode(Player player, String username, PodcastEpisode episode) {
+        org.subsonic.restapi.PodcastEpisode e = new org.subsonic.restapi.PodcastEpisode();
 
         String path = episode.getPath();
         if (path != null) {
             MediaFile mediaFile = mediaFileService.getMediaFile(path);
-            e = createJaxbChild(new org.libresonic.restapi.PodcastEpisode(), player, mediaFile, username);
+            e = createJaxbChild(new org.subsonic.restapi.PodcastEpisode(), player, mediaFile, username);
             e.setStreamId(String.valueOf(mediaFile.getId()));
         }
 
@@ -1606,7 +1614,7 @@ public class RESTController {
         return e;
     }
 
-    @RequestMapping(value = "/refreshPodcasts", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/refreshPodcasts")
     public void refreshPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1618,7 +1626,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/createPodcastChannel", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/createPodcastChannel")
     public void createPodcastChannel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1632,7 +1640,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/deletePodcastChannel", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/deletePodcastChannel")
     public void deletePodcastChannel(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1646,7 +1654,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/deletePodcastEpisode", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/deletePodcastEpisode")
     public void deletePodcastEpisode(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1660,7 +1668,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/downloadPodcastEpisode", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/downloadPodcastEpisode")
     public void downloadPodcastEpisode(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1680,7 +1688,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getInternetRadioStations", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getInternetRadioStations")
     public void getInternetRadioStations(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1698,7 +1706,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getBookmarks", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getBookmarks")
     public void getBookmarks(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1706,7 +1714,7 @@ public class RESTController {
 
         Bookmarks result = new Bookmarks();
         for (Bookmark bookmark : bookmarkDao.getBookmarks(username)) {
-            org.libresonic.restapi.Bookmark b = new org.libresonic.restapi.Bookmark();
+            org.subsonic.restapi.Bookmark b = new org.subsonic.restapi.Bookmark();
             result.getBookmark().add(b);
             b.setPosition(bookmark.getPositionMillis());
             b.setUsername(bookmark.getUsername());
@@ -1723,7 +1731,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/createBookmark", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/createBookmark")
     public void createBookmark(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -1738,7 +1746,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/deleteBookmark", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/deleteBookmark")
     public void deleteBookmark(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1750,7 +1758,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getPlayQueue", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getPlayQueue")
     public void getPlayQueue(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -1762,7 +1770,7 @@ public class RESTController {
             return;
         }
 
-        org.libresonic.restapi.PlayQueue restPlayQueue = new org.libresonic.restapi.PlayQueue();
+        org.subsonic.restapi.PlayQueue restPlayQueue = new org.subsonic.restapi.PlayQueue();
         restPlayQueue.setUsername(playQueue.getUsername());
         restPlayQueue.setCurrent(playQueue.getCurrentMediaFileId());
         restPlayQueue.setPosition(playQueue.getPositionMillis());
@@ -1781,7 +1789,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/savePlayQueue", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/savePlayQueue")
     public void savePlayQueue(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
@@ -1801,7 +1809,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getShares", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getShares")
     public void getShares(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1811,7 +1819,7 @@ public class RESTController {
 
         Shares result = new Shares();
         for (Share share : shareService.getSharesForUser(user)) {
-            org.libresonic.restapi.Share s = createJaxbShare(request, share);
+            org.subsonic.restapi.Share s = createJaxbShare(request, share);
             result.getShare().add(s);
 
             for (MediaFile mediaFile : shareService.getSharedFiles(share.getId(), musicFolders)) {
@@ -1823,7 +1831,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/createShare", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/createShare")
     public void createShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Player player = playerService.getPlayer(request, response);
@@ -1849,7 +1857,7 @@ public class RESTController {
         shareService.updateShare(share);
 
         Shares result = new Shares();
-        org.libresonic.restapi.Share s = createJaxbShare(request, share);
+        org.subsonic.restapi.Share s = createJaxbShare(request, share);
         result.getShare().add(s);
 
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
@@ -1863,7 +1871,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/deleteShare", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/deleteShare")
     public void deleteShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1883,7 +1891,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/updateShare", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/updateShare")
     public void updateShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -1909,8 +1917,8 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    private org.libresonic.restapi.Share createJaxbShare(HttpServletRequest request, Share share) {
-        org.libresonic.restapi.Share result = new org.libresonic.restapi.Share();
+    private org.subsonic.restapi.Share createJaxbShare(HttpServletRequest request, Share share) {
+        org.subsonic.restapi.Share result = new org.subsonic.restapi.Share();
         result.setId(String.valueOf(share.getId()));
         result.setUrl(shareService.getShareUrl(request, share));
         result.setUsername(share.getUsername());
@@ -1956,19 +1964,19 @@ public class RESTController {
         return result;
     }
 
-    @RequestMapping(value = "/getCoverArt", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getCoverArt")
     public ModelAndView getCoverArt(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         return coverArtController.handleRequest(request, response);
     }
 
-    @RequestMapping(value = "/getAvatar", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getAvatar")
     public ModelAndView getAvatar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         return avatarController.handleRequest(request, response);
     }
 
-    @RequestMapping(value = "/changePassword", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/changePassword")
     public void changePassword(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -1992,7 +2000,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getUser", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getUser")
     public void getUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -2015,7 +2023,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/getUsers", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getUsers")
     public void getUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
 
@@ -2035,10 +2043,10 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    private org.libresonic.restapi.User createJaxbUser(User user) {
+    private org.subsonic.restapi.User createJaxbUser(User user) {
         UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
 
-        org.libresonic.restapi.User result = new org.libresonic.restapi.User();
+        org.subsonic.restapi.User result = new org.subsonic.restapi.User();
         result.setUsername(user.getUsername());
         result.setEmail(user.getEmail());
         result.setScrobblingEnabled(userSettings.isLastFmEnabled());
@@ -2053,6 +2061,10 @@ public class RESTController {
         result.setStreamRole(user.isStreamRole());
         result.setJukeboxRole(user.isJukeboxRole());
         result.setShareRole(user.isShareRole());
+        // currently this role isn't supported by libresonic
+        result.setVideoConversionRole(false);
+        // Useless
+        result.setAvatarLastChanged(null);
 
         TranscodeScheme transcodeScheme = userSettings.getTranscodeScheme();
         if (transcodeScheme != null && transcodeScheme != TranscodeScheme.OFF) {
@@ -2066,7 +2078,7 @@ public class RESTController {
         return result;
     }
 
-    @RequestMapping(value = "/createUser", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/createUser")
     public void createUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -2102,7 +2114,7 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/updateUser", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/updateUser")
     public void updateUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -2160,7 +2172,7 @@ public class RESTController {
         return request.getParameter(name) != null;
     }
 
-    @RequestMapping(value = "/deleteUser", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/deleteUser")
     public void deleteUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         User user = securityService.getCurrentUser(request);
@@ -2180,7 +2192,17 @@ public class RESTController {
         writeEmptyResponse(request, response);
     }
 
-    @RequestMapping(value = "/getLyrics", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getChatMessages")
+    public ResponseEntity<String> getChatMessages(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.status(HttpStatus.SC_GONE).body(NO_LONGER_SUPPORTED);
+    }
+
+    @RequestMapping(value = "/addChatMessage")
+    public ResponseEntity<String> addChatMessage(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.status(HttpStatus.SC_GONE).body(NO_LONGER_SUPPORTED);
+    }
+
+    @RequestMapping(value = "/getLyrics")
     public void getLyrics(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         String artist = request.getParameter("artist");
@@ -2197,7 +2219,7 @@ public class RESTController {
         jaxbWriter.writeResponse(request, response, res);
     }
 
-    @RequestMapping(value = "/setRating", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/setRating")
     public void setRating(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         Integer rating = getRequiredIntParameter(request, "rating");
@@ -2216,6 +2238,87 @@ public class RESTController {
         ratingService.setRatingForUser(username, mediaFile, rating);
 
         writeEmptyResponse(request, response);
+    }
+
+    @RequestMapping(path = "/getAlbumInfo")
+    public void getAlbumInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request = wrapRequest(request);
+
+        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
+
+        MediaFile mediaFile = this.mediaFileService.getMediaFile(id);
+        if (mediaFile == null) {
+            error(request, response, RESTController.ErrorCode.NOT_FOUND, "Media file not found.");
+            return;
+        }
+        AlbumNotes albumNotes = this.lastFmService.getAlbumNotes(mediaFile);
+
+        AlbumInfo result = getAlbumInfoInternal(albumNotes);
+        Response res = createResponse();
+        res.setAlbumInfo(result);
+        this.jaxbWriter.writeResponse(request, response, res);
+    }
+
+    @RequestMapping(path = "/getAlbumInfo2")
+    public void getAlbumInfo2(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        request = wrapRequest(request);
+
+        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
+
+        Album album = this.albumDao.getAlbum(id);
+        if (album == null) {
+            error(request, response, RESTController.ErrorCode.NOT_FOUND, "Album not found.");
+            return;
+        }
+        AlbumNotes albumNotes = this.lastFmService.getAlbumNotes(album);
+
+        AlbumInfo result = getAlbumInfoInternal(albumNotes);
+        Response res = createResponse();
+        res.setAlbumInfo(result);
+        this.jaxbWriter.writeResponse(request, response, res);
+    }
+
+    private AlbumInfo getAlbumInfoInternal(AlbumNotes albumNotes) {
+        AlbumInfo result = new AlbumInfo();
+        if (albumNotes != null)
+        {
+            result.setNotes(albumNotes.getNotes());
+            result.setMusicBrainzId(albumNotes.getMusicBrainzId());
+            result.setLastFmUrl(albumNotes.getLastFmUrl());
+            result.setSmallImageUrl(albumNotes.getSmallImageUrl());
+            result.setMediumImageUrl(albumNotes.getMediumImageUrl());
+            result.setLargeImageUrl(albumNotes.getLargeImageUrl());
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/getVideoInfo")
+    public ResponseEntity<String> getVideoInfo() throws Exception {
+        return ResponseEntity.status(HttpStatus.SC_NOT_IMPLEMENTED).body(NOT_YET_IMPLEMENTED);
+    }
+
+    @RequestMapping(value = "/getCaptions")
+    public ResponseEntity<String> getCaptions() {
+        return ResponseEntity.status(HttpStatus.SC_NOT_IMPLEMENTED).body(NOT_YET_IMPLEMENTED);
+    }
+
+    @RequestMapping(value = "/startScan")
+    public void startScan(HttpServletRequest request, HttpServletResponse response) {
+        request = wrapRequest(request);
+        mediaScannerService.scanLibrary();
+        getScanStatus(request, response);
+    }
+
+    @RequestMapping(value = "/getScanStatus")
+    public void getScanStatus(HttpServletRequest request, HttpServletResponse response) {
+        request = wrapRequest(request);
+        ScanStatus scanStatus = new ScanStatus();
+        scanStatus.setScanning(this.mediaScannerService.isScanning());
+        scanStatus.setCount((long) this.mediaScannerService.getScanCount());
+
+        Response res = createResponse();
+        res.setScanStatus(scanStatus);
+        this.jaxbWriter.writeResponse(request, response, res);
     }
 
     private HttpServletRequest wrapRequest(HttpServletRequest request) {
