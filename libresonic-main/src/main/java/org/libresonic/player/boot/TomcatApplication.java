@@ -33,7 +33,6 @@ public class TomcatApplication {
                 // See http://stackoverflow.com/questions/29653326/spring-boot-application-slow-because-of-jsp-compilation
                 Container jsp = context.findChild("jsp");
                 if (jsp instanceof Wrapper) {
-                    if (development)
                     ((Wrapper) jsp).addInitParameter("development", Boolean.toString(development));
                 }
             });
