@@ -12,14 +12,20 @@ public class TomcatApplication {
 
             tomcatFactory.addContextCustomizers((TomcatContextCustomizer) context -> {
 
+                boolean development = (System.getProperty("libresonic.development") != null);
+
                 // Increase the size and time before eviction of the Tomcat
                 // cache so that resources aren't uncompressed too often.
                 // See https://github.com/jhipster/generator-jhipster/issues/3995
 
                 StandardRoot resources = new StandardRoot();
-                resources.setCacheMaxSize(100000);
-                resources.setCacheObjectMaxSize(4000);
-                resources.setCacheTtl(24 * 3600 * 1000);  // 1 day, in milliseconds
+                if (development) {
+                    resources.setCachingAllowed(false);
+                } else {
+                    resources.setCacheMaxSize(100000);
+                    resources.setCacheObjectMaxSize(4000);
+                    resources.setCacheTtl(24 * 3600 * 1000);  // 1 day, in milliseconds
+                }
                 context.setResources(resources);
 
                 // Put Jasper in production mode so that JSP aren't recompiled
@@ -27,7 +33,7 @@ public class TomcatApplication {
                 // See http://stackoverflow.com/questions/29653326/spring-boot-application-slow-because-of-jsp-compilation
                 Container jsp = context.findChild("jsp");
                 if (jsp instanceof Wrapper) {
-                    ((Wrapper) jsp).addInitParameter("development", "false");
+                    ((Wrapper) jsp).addInitParameter("development", Boolean.toString(development));
                 }
             });
     }
