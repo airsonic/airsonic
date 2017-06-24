@@ -114,7 +114,7 @@
     }
 
     function playAll() {
-        top.playQueue.onPlay(${model.dir.id});
+        top.playQueue.libresonic.playQueue.onPlay(${model.dir.id});
     }
 
     function playRandom() {

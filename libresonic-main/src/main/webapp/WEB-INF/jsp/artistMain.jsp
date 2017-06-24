@@ -129,7 +129,7 @@
         }
     }
     function playAll() {
-        top.playQueue.onPlay(${model.dir.id});
+        top.playQueue.libresonic.playQueue.onPlay(${model.dir.id});
     }
     function playRandom() {
         top.playQueue.onPlayRandom(${model.dir.id}, 40);
@@ -144,7 +144,7 @@
         top.playQueue.onPlayTopSong(${model.dir.id});
     }
     function playTopSong(index) {
-        top.playQueue.onPlayTopSong(${model.dir.id}, index);
+        top.playQueue.libresonic.playQueue.onPlayTopSong(${model.dir.id}, index);
     }
     function addTopSong(index) {
         top.playQueue.onAdd(topSongs[index].id);
