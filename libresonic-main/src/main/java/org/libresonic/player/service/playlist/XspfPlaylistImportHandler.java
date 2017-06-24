@@ -4,10 +4,11 @@ import chameleon.playlist.SpecificPlaylist;
 import chameleon.playlist.xspf.Location;
 import chameleon.playlist.xspf.Playlist;
 import chameleon.playlist.xspf.StringContainer;
-import org.libresonic.player.Logger;
 import org.libresonic.player.domain.MediaFile;
 import org.libresonic.player.service.MediaFileService;
 import org.libresonic.player.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class XspfPlaylistImportHandler implements PlaylistImportHandler {
 
-    private static final Logger LOG = Logger.getLogger(XspfPlaylistImportHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(XspfPlaylistImportHandler.class);
 
     @Autowired
     MediaFileService mediaFileService;
