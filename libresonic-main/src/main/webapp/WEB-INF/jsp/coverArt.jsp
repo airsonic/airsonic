@@ -130,7 +130,7 @@ PARAMETERS
     });
     $("#${playId}").click(function () {
         <c:if test="${not empty param.albumId}">
-        top.playQueue.onPlay(${param.albumId});
+        top.playQueue.libresonic.playQueue.onPlay(${param.albumId});
         </c:if>
         <c:if test="${not empty param.playlistId}">
         top.playQueue.onPlayPlaylist(${param.playlistId});

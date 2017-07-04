@@ -46,7 +46,7 @@ PARAMETERS
         </c:when>
         <c:otherwise>
             <img src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" style="cursor:pointer"
-                 onclick="top.playQueue.onPlay(${param.id}); return false;" title="<fmt:message key="common.play"/>">
+                 onclick="top.playQueue.libresonic.playQueue.onPlay(${param.id}); return false;" title="<fmt:message key="common.play"/>">
         </c:otherwise>
     </c:choose>
 </c:if>
