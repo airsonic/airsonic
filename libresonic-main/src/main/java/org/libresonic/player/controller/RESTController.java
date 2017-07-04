@@ -121,6 +121,8 @@ public class RESTController {
     @Autowired
     private JukeboxService jukeboxService;
     @Autowired
+    private JukeboxJavaService jukeboxJavaService;
+    @Autowired
     private AudioScrobblerService audioScrobblerService;
     @Autowired
     private PodcastService podcastService;
@@ -853,6 +855,10 @@ public class RESTController {
             return;
         }
 
+        Player player = playerService.getPlayer(request, response);
+        boolean isJavaJukebox = player.getTechnology().equals(PlayerTechnology.JAVA_JUKEBOX);
+
+
         boolean returnPlaylist = false;
         String action = getRequiredStringParameter(request, "action");
         if ("start".equals(action)) {
@@ -878,7 +884,11 @@ public class RESTController {
             playQueueService.doShuffle(request, response);
         } else if ("setGain".equals(action)) {
             float gain = getRequiredFloatParameter(request, "gain");
-            jukeboxService.setGain(gain);
+            if (isJavaJukebox) {
+                jukeboxJavaService.setGain(player,gain);
+            } else {
+                jukeboxService.setGain(gain);
+            }
         } else if ("get".equals(action)) {
             returnPlaylist = true;
         } else if ("status".equals(action)) {
@@ -887,17 +897,29 @@ public class RESTController {
             throw new Exception("Unknown jukebox action: '" + action + "'.");
         }
 
-        Player player = playerService.getPlayer(request, response);
         String username = securityService.getCurrentUsername(request);
-        Player jukeboxPlayer = jukeboxService.getPlayer();
-        boolean controlsJukebox = jukeboxPlayer != null && jukeboxPlayer.getId().equals(player.getId());
         PlayQueue playQueue = player.getPlayQueue();
+
+        boolean controlsJukebox=false;
+        if (isJavaJukebox) {
+            controlsJukebox = true;
+        }  else {
+            Player jukeboxPlayer = jukeboxService.getPlayer();
+            controlsJukebox = jukeboxPlayer != null && jukeboxPlayer.getId().equals(player.getId());
+        }
 
 
         int currentIndex = controlsJukebox && !playQueue.isEmpty() ? playQueue.getIndex() : -1;
         boolean playing = controlsJukebox && !playQueue.isEmpty() && playQueue.getStatus() == PlayQueue.Status.PLAYING;
-        float gain = jukeboxService.getGain();
-        int position = controlsJukebox && !playQueue.isEmpty() ? jukeboxService.getPosition() : 0;
+        float gain;
+        int position;
+        if (isJavaJukebox) {
+            gain = jukeboxJavaService.getGain(player);
+            position = controlsJukebox && !playQueue.isEmpty() ? jukeboxJavaService.getPosition(player) : 0;
+        } else {
+            gain = jukeboxService.getGain();
+            position = controlsJukebox && !playQueue.isEmpty() ? jukeboxService.getPosition() : 0;
+        }
 
         Response res = createResponse();
         if (returnPlaylist) {

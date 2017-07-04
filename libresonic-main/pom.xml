@@ -31,6 +31,21 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- Java Audio Player and needed dependencies
+         -->
+        <dependency>
+            <groupId>com.github.biconou</groupId>
+            <artifactId>AudioPlayer</artifactId>
+            <version>0.2.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- -->
+
         <!-- Metrics
              Metrics is a cool framework used here
              to compute musures and statistics during automated testing
@@ -327,7 +342,7 @@
             <version>${cxf.version}</version>
             <exclusions>
                 <exclusion>
-                    <groupId> org.springframework</groupId>
+                    <groupId>org.springframework</groupId>
                     <artifactId>spring-web</artifactId>
                 </exclusion>
             </exclusions>

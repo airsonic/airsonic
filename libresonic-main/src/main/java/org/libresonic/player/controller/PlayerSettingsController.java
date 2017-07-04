@@ -19,6 +19,7 @@
  */
 package org.libresonic.player.controller;
 
+import com.github.biconou.AudioPlayer.AudioSystemUtils;
 import org.apache.commons.lang.StringUtils;
 import org.libresonic.player.command.PlayerSettingsCommand;
 import org.libresonic.player.domain.*;
@@ -36,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -102,6 +104,9 @@ public class PlayerSettingsController  {
         command.setPlayers(players.toArray(new Player[players.size()]));
         command.setAdmin(user.isAdminRole());
 
+        command.setJavaJukeboxMixers(Arrays.stream(AudioSystemUtils.listAllMixers()).map(info -> info.getName()).toArray(String[]::new));
+        command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
+
         model.addAttribute("command",command);
     }
 
@@ -115,6 +120,7 @@ public class PlayerSettingsController  {
         player.setName(StringUtils.trimToNull(command.getName()));
         player.setTranscodeScheme(TranscodeScheme.valueOf(command.getTranscodeSchemeName()));
         player.setTechnology(PlayerTechnology.valueOf(command.getTechnologyName()));
+        player.setJavaJukeboxMixer(command.getJavaJukeboxMixer());
 
         playerService.updatePlayer(player);
         transcodingService.setTranscodingsForPlayer(player, command.getActiveTranscodingIds());

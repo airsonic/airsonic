@@ -46,6 +46,7 @@ public class PlayQueueService {
 
     private PlayerService playerService;
     private JukeboxService jukeboxService;
+    private JukeboxJavaService jukeboxJavaService;
     private TranscodingService transcodingService;
     private SettingsService settingsService;
     private MediaFileService mediaFileService;
@@ -613,18 +614,42 @@ public class PlayQueueService {
     }
 
     public void setGain(float gain) {
-        jukeboxService.setGain(gain);
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        Player player = getCurrentPlayer(request, response);
+        if (player != null) {
+            if (player.getTechnology().equals(PlayerTechnology.JAVA_JUKEBOX)) {
+                jukeboxJavaService.setGain(player,gain);
+            } else if (player.getTechnology().equals(PlayerTechnology.JUKEBOX)) {
+                jukeboxService.setGain(gain);
+            }
+        }
+    }
+
+    public void setJavaJukeboxPosition(int positionInSeconds) {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        Player player = getCurrentPlayer(request, response);
+        jukeboxJavaService.setPosition(player,positionInSeconds);
     }
 
     private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist) throws Exception {
         return convert(request, player, serverSidePlaylist, 0);
     }
 
+    private void updateJukebox(Player player, int offset) throws Exception {
+        if (player.getTechnology() == PlayerTechnology.JUKEBOX) {
+            jukeboxService.updateJukebox(player, offset);
+        } else if (player.getTechnology() == PlayerTechnology.JAVA_JUKEBOX) {
+            jukeboxJavaService.updateJukebox(player, offset);
+        }
+    }
+
     private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) throws Exception {
         String url = NetworkService.getBaseUrl(request);
 
         if (serverSidePlaylist && player.isJukebox()) {
-            jukeboxService.updateJukebox(player, offset);
+            updateJukebox(player, offset);
         }
         boolean isCurrentPlayer = player.getIpAddress() != null && player.getIpAddress().equals(request.getRemoteAddr());
 
@@ -654,7 +679,14 @@ public class PlayQueueService {
                     coverArtUrl, remoteCoverArtUrl));
         }
         boolean isStopEnabled = playQueue.getStatus() == PlayQueue.Status.PLAYING && !player.isExternalWithPlaylist();
-        float gain = jukeboxService.getGain();
+
+        float gain = 0.0f;
+        if (player.getTechnology() == PlayerTechnology.JUKEBOX) {
+            gain = jukeboxService.getGain();
+        } else if (player.getTechnology() == PlayerTechnology.JAVA_JUKEBOX) {
+            gain = jukeboxJavaService.getGain(player);
+        }
+
         return new PlayQueueInfo(entries, isStopEnabled, playQueue.isRepeatEnabled(), playQueue.isRadioEnabled(), serverSidePlaylist, gain);
     }
 
@@ -701,6 +733,10 @@ public class PlayQueueService {
 
     public void setJukeboxService(JukeboxService jukeboxService) {
         this.jukeboxService = jukeboxService;
+    }
+
+    public void setJukeboxJavaService(JukeboxJavaService jukeboxJavaService) {
+        this.jukeboxJavaService = jukeboxJavaService;
     }
 
     public void setTranscodingService(TranscodingService transcodingService) {
