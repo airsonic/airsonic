@@ -1,0 +1,79 @@
+/*
+ * CSS styleshet for the "High Contast" theme.
+ *
+ * Author: Jeebs (Fisher Evans)
+ */
+
+@import "default.css";
+
+table {
+	color: #5c5c5c;
+}
+
+/* The primary background color. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: white;
+}
+
+/* The secondary background color. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: white;
+}
+
+body.bgcolor2 {
+    border-bottom: 1px solid #5c5c5c;
+}
+
+/* The primary foreground color. */
+body {
+    color: #5c5c5c;
+}
+
+/* The secondary foreground color used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #5c5c5c;
+}
+
+/* Foreground color used for h2, bold and tr. */
+h2, b, tr {
+    color: #5c5c5c;
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: black
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #5c5c5c;
+}
+
+/* Color for warning messages. */
+.warning {
+    color: red;
+}
+
+/* Simple border. */
+.border1, .ruleTableHeader, .ruleTableCell, .log {
+    border: 1px solid #5c5c5c;
+}
+
+/* Scrollbar colors (supported on IE and Opera) */
+body {
+    scrollbar-face-color: white;
+    scrollbar-highlight-color: #5c5c5c;
+    scrollbar-shadow-color: white;
+    scrollbar-3dlight-color: white;
+    scrollbar-arrow-color: #5c5c5c;
+    scrollbar-track-color: #5c5c5c;
+    scrollbar-darkshadow-color: #5c5c5c;
+}
+
+.back {
+    background-image:url("../icons/default_dark/back.png");background-position: 0px 3px; background-repeat:no-repeat; padding-left: 16px; line-height: 16px;
+}
+.forward {
+    background-image:url("../icons/default_dark/forward.png");background-position: 0px 3px; background-repeat:no-repeat; padding-left: 16px; line-height: 16px;
+}

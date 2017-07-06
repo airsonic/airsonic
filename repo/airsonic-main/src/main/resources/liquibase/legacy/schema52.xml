@@ -1,0 +1,105 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema52_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 24</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="24" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 24</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema52_002" author="muff1nman">
+        <validCheckSum>7:8fde86035edbca443a54b1861ae70819</validCheckSum>
+        <validCheckSum>7:e7e0f04cd4691ec2b5d955b449e0154b</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="music_folder_user" />
+            </not>
+        </preConditions>
+        <createTable tableName="music_folder_user">
+            <column name="music_folder_id" type="int">
+                <constraints nullable="false" foreignKeyName="mfu_fm_fk" referencedTableName="music_folder" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="mfu_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+        </createTable>
+        <createIndex tableName="music_folder_user" indexName="idx_music_folder_user_username">
+            <column name="username"/>
+        </createIndex>
+        <sql>
+            insert into music_folder_user select music_folder.id, u.username
+            from music_folder, ${userTableQuote}user${userTableQuote} u
+        </sql>
+        <rollback>
+            <dropTable tableName="music_folder_user" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema52_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="album" columnName="folder_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="album">
+            <column name="folder_id" type="int"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema52_004" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="play_queue" />
+            </not>
+        </preConditions>
+        <createTable tableName="play_queue">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="pq_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+            <column name="current" type="int" />
+            <column name="position_millis" type="bigint" />
+            <column name="changed" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="changed_by" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="play_queue" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema52_005" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="play_queue_file" />
+            </not>
+        </preConditions>
+        <createTable tableName="play_queue_file">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="play_queue_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pqf_pq_fk" referencedTableName="play_queue" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="media_file_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pqf_mf_fk" referencedTableName="media_file" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+        </createTable>
+        <sql dbms="hsql">
+            set table play_queue_file type cached
+        </sql>
+        <rollback>
+            <dropTable tableName="play_queue_file" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

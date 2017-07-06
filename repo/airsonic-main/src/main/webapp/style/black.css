@@ -1,0 +1,17 @@
+/*
+ * CSS styleshet for the "Back In Black" theme.
+ *
+ * Author: Sindre Mehus
+ */
+
+@import "midnight.css";
+
+/* The primary background color. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #333333
+}
+
+/* The secondary background color. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd)  {
+    background-color: black
+}

@@ -1,0 +1,32 @@
+/*
+ * CSS styleshet for the "Groove (Simple)" theme.
+ *
+ * Author: Thomas Bruce Dyrud (thomasbrucedyrud[at]gmail.com)
+ *
+ * Moified version of the "Cool and Clean" and "Monochrome Black" themes.
+ * (Cool and Clean created by: Dan Eriksen - dan.o.eriksen[at]gmail.com )
+ * (Monochrome Black created by: David D - ddavis1[at]gmail.com )
+ *
+ *
+ * Icons used are released under Creative Commons.
+ * Heading icons: (http://toffeenut.deviantart.com/art/Black-Neon-Agua-iPhone-Theme-85452072)
+ * Main theme icon part of itunes icon pack created by Michael Flarup (http://pixelresort.com)
+ */
+
+@import "groove.css";
+
+/* Main frame image */
+.mainframe {
+    background-image:url( "../icons/groove_simple/background_main_blank.png" );
+}
+
+
+/* Back image */
+.back {
+    background-image:url( "../icons/groove/back.png" );
+}
+
+/* Forward image */
+.forward {
+    background-image:url( "../icons/groove/forward.png" );
+}

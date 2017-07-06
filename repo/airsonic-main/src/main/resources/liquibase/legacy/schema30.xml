@@ -1,0 +1,44 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema30_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 6</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="6" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 6</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema30_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="last_fm_enabled" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="last_fm_enabled" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_fm_username" type="${varchar_type}" />
+            <column name="last_fm_password" type="${varchar_type}" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema30_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="transcode_scheme" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="transcode_scheme" type="${varchar_type}" defaultValue="OFF">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

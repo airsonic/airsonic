@@ -1,0 +1,64 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema50_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 22</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="22" />
+        </insert>
+        <insert tableName="transcoding2">
+            <column name="name" value="mkv video"/>
+            <column name="source_formats" value="avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts" />
+            <column name="target_format" value="mkv" />
+            <column name="step1" value="ffmpeg -ss %o -i %s -c:v libx264 -preset superfast -b:v %bk -c:a libvorbis -f matroska -threads 0 -" />
+            <column name="default_active" valueBoolean="true" />
+        </insert>
+        <sql>
+            insert into player_transcoding2(player_id, transcoding_id)
+            select distinct p.id, t.id from player p, transcoding2 t where t.name='mkv video'
+        </sql>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 22</where>
+            </delete>
+            <delete tableName="player_transcoding" >
+                <where>transcoding_id in (select id from transcoding_2 where name = 'mkv video')</where>
+            </delete>
+            <delete tableName="transcoding2" >
+                <where>name = 'mkv video'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema50_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="song_notification" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="song_notification" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema50_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 23</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="23" />
+        </insert>
+        <update tableName="transcoding2">
+            <column name="step1" value="ffmpeg -i %s -map 0:0 -b:a %bk -v 0 -f mp3 -" />
+            <where>name='mp3 audio'</where>
+        </update>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 23</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

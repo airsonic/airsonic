@@ -1,0 +1,90 @@
+/*
+ * CSS styleshet for the "Denim" theme.
+ *
+ * Author: Thomas Bruce Dyrud (thomasbrucedyrud[at]gmail.com)
+ *
+ */
+
+@import "default.css";
+
+/* The primary background colour. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #456993;
+}
+
+/* The secondary background colour, light blue, primary theme colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #456993;
+    color: #EFE9D9;
+}
+
+/* Background colour for selected header, log etc. */
+.headerSelected {
+    color: #EFE9D9;
+    background-color: #456993;
+    border: 1px solid #EFE9D9;
+}
+
+
+/* The secondary foreground colour used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #EFE9D9;
+}
+
+/* Foreground colour used for h2, bold and tr. */
+h2, b, tr {
+    color: #EFE9D9;
+}
+
+/* Table sizing */
+table {
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe {
+    background-color: #456993;
+    background-position:right;
+}
+
+
+/* Back image */
+.back {
+    background-image:url( "../icons/denim/back.png" );
+}
+
+/* Forward image */
+.forward {
+    background-image:url( "../icons/denim/forward.png" );
+}
+
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #B6BEC2;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #B6BEC2;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #990099;
+}
+
+/* The primary foreground colour. */
+body {
+    color: #EFE9D9;
+    background-color: #DDDDDD;
+}
+
+html {
+    background-color: transparent;
+}
+
+label, p {
+	color: #CCC;
+}

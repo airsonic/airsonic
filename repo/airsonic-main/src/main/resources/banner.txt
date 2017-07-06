@@ -1,0 +1,8 @@
+${AnsiColor.BLUE}           _      ${AnsiColor.BRIGHT_BLACK}                 _       ______
+${AnsiColor.BLUE}     /\   (_)     ${AnsiColor.BRIGHT_BLACK}                (_)      \ \ \ \
+${AnsiColor.BLUE}    /  \   _ _ __ ${AnsiColor.BRIGHT_BLACK} ___  ___  _ __  _  ___   | | | |
+${AnsiColor.BLUE}   / /\ \ | | '__|${AnsiColor.BRIGHT_BLACK}/ __|/ _ \| '_ \| |/ __|  | | | |
+${AnsiColor.BLUE}  / ____ \| | |   ${AnsiColor.BRIGHT_BLACK}\__ \ (_) | | | | | (__   | | | |
+${AnsiColor.BLUE} /_/    \_\_|_|   ${AnsiColor.BRIGHT_BLACK}|___/\___/|_| |_|_|\___|  | | | |
+${AnsiColor.BLUE}                  ${AnsiColor.BRIGHT_BLACK}                         /_/_/_/
+${AnsiColor.BLUE}                  ${AnsiColor.BRIGHT_BLACK}      ${application.version}

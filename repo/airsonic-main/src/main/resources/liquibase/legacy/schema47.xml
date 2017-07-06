@@ -1,0 +1,472 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema47_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 20</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="20" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 20</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="media_file" />
+            </not>
+        </preConditions>
+        <createTable tableName="media_file">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="path" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="folder" type="${varchar_type}" />
+            <column name="type" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="format" type="${varchar_type}" />
+            <column name="title" type="${varchar_type}" />
+            <column name="album" type="${varchar_type}" />
+            <column name="artist" type="${varchar_type}" />
+            <column name="album_artist" type="${varchar_type}" />
+            <column name="disc_number" type="int" />
+            <column name="track_number" type="int" />
+            <column name="year" type="int" />
+            <column name="genre" type="${varchar_type}" />
+            <column name="bit_rate" type="int" />
+            <column name="variable_bit_rate" type="boolean" >
+                <constraints nullable="false" />
+            </column>
+            <column name="duration_seconds" type="int" />
+            <column name="file_size" type="bigint" />
+            <column name="width" type="int" />
+            <column name="height" type="int" />
+            <column name="cover_art_path" type="${varchar_type}" />
+            <column name="parent_path" type="${varchar_type}" />
+            <column name="play_count" type="int" >
+                <constraints nullable="false" />
+            </column>
+            <column name="last_played" type="datetime" />
+            <column name="comment" type="${varchar_type}" />
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="changed" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="last_scanned" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="children_last_updated" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="present" type="boolean" >
+                <constraints nullable="false" />
+            </column>
+            <column name="version" type="int" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex unique="true" tableName="media_file" indexName="idx_media_file_path">
+            <column name="path"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_parent_path">
+            <column name="parent_path"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_type">
+            <column name="type"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_album">
+            <column name="album"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_artist">
+            <column name="artist"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_album_artist">
+            <column name="album_artist"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_present">
+            <column name="present"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_genre">
+            <column name="genre"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_play_count">
+            <column name="play_count"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_created">
+            <column name="created"/>
+        </createIndex>
+        <createIndex tableName="media_file" indexName="idx_media_file_last_played">
+            <column name="last_played"/>
+        </createIndex>
+        <sql dbms="hsql">
+            set table media_file type cached
+        </sql>
+        <rollback>
+            <dropTable tableName="media_file" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="artist" />
+            </not>
+        </preConditions>
+        <createTable tableName="artist">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="cover_art_path" type="${varchar_type}" />
+            <column name="album_count" type="int" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_scanned" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="present" type="boolean" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="artist" indexName="idx_artist_name" unique="true">
+            <column name="name"/>
+        </createIndex>
+        <createIndex tableName="artist" indexName="idx_artist_present" >
+            <column name="present"/>
+        </createIndex>
+        <sql dbms="hsql">
+            set table artist type cached
+        </sql>
+        <rollback>
+            <dropTable tableName="artist" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_004" author="muff1nman">
+        <validCheckSum>7:a3a788d87fd58508ecb4acac39e255c6</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="album" />
+            </not>
+        </preConditions>
+        <createTable tableName="album">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="path" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="artist" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="song_count" type="int" defaultValueNumeric="0" >
+                <constraints nullable="false" />
+            </column>
+            <column name="duration_seconds" type="int" defaultValueNumeric="0" >
+                <constraints nullable="false" />
+            </column>
+            <column name="cover_art_path" type="${varchar_type}" />
+            <column name="play_count" type="int" defaultValueNumeric="0" >
+                <constraints nullable="false" />
+            </column>
+            <column name="last_played" type="datetime" />
+            <column name="comment" type="${varchar_type}" />
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="last_scanned" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="present" type="boolean" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="album" indexName="idx_album_artist_name" unique="true">
+            <column name="artist" />
+            <column name="name"/>
+        </createIndex>
+        <createIndex tableName="album" indexName="idx_album_play_count" >
+            <column name="play_count"/>
+        </createIndex>
+        <createIndex tableName="album" indexName="idx_album_last_played" >
+            <column name="last_played"/>
+        </createIndex>
+        <createIndex tableName="album" indexName="idx_album_present" >
+            <column name="present"/>
+        </createIndex>
+        <sql dbms="hsql">
+            set table album type cached
+        </sql>
+        <rollback>
+            <dropTable tableName="album" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_005" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <dbms type="hsqldb" />
+                <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
+                    <param name="major" value="1" />
+                </customPrecondition>
+            </not>
+            <not>
+                <indexExists indexName="idx_album_name" />
+            </not>
+        </preConditions>
+        <createIndex tableName="album" indexName="idx_album_name">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="schema47_005_2" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="hsqldb" />
+            <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
+                <param name="major" value="1" />
+            </customPrecondition>
+            <sqlCheck expectedResult="0">
+                select count(*) from INFORMATION_SCHEMA.SYSTEM_INDEXINFO where
+                lower(TABLE_NAME) = 'album' and lower(INDEX_NAME) = 'idx_album_name';
+            </sqlCheck>
+        </preConditions>
+        <createIndex tableName="album" indexName="idx_album_name">
+            <column name="name"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="schema47_006" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="starred_media_file" />
+            </not>
+        </preConditions>
+        <createTable tableName="starred_media_file">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="media_file_id" type="int" >
+                <constraints nullable="false" foreignKeyName="smf_mf_fk" referencedTableName="media_file" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="smf_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="starred_media_file" indexName="idx_starred_media_file_media_file_id">
+            <column name="media_file_id"/>
+        </createIndex>
+        <createIndex tableName="starred_media_file" indexName="idx_starred_media_file_username">
+            <column name="username"/>
+        </createIndex>
+        <addUniqueConstraint tableName="starred_media_file" columnNames="media_file_id,username" />
+        <rollback>
+            <dropTable tableName="starred_media_file" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_007" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="starred_album" />
+            </not>
+        </preConditions>
+        <createTable tableName="starred_album">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="album_id" type="int" >
+                <constraints nullable="false" foreignKeyName="sa_a_fk" referencedTableName="album" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="sa_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="starred_album" indexName="idx_starred_album_album_id">
+            <column name="album_id"/>
+        </createIndex>
+        <createIndex tableName="starred_album" indexName="idx_starred_album_username">
+            <column name="username"/>
+        </createIndex>
+        <addUniqueConstraint tableName="starred_album" columnNames="album_id,username" />
+        <rollback>
+            <dropTable tableName="starred_album" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_008" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="starred_artist" />
+            </not>
+        </preConditions>
+        <createTable tableName="starred_artist">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="artist_id" type="int">
+                <constraints nullable="false" foreignKeyName="sar_a_fk" referencedTableName="artist" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="sar_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="starred_artist" indexName="idx_starred_artist_artist_id">
+            <column name="artist_id"/>
+        </createIndex>
+        <createIndex tableName="starred_artist" indexName="idx_starred_artist_username">
+            <column name="username"/>
+        </createIndex>
+        <addUniqueConstraint tableName="starred_artist" columnNames="artist_id,username" />
+        <rollback>
+            <dropTable tableName="starred_artist" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_009" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="playlist" />
+            </not>
+        </preConditions>
+        <createTable tableName="playlist">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="p_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+            <column name="is_public" type="boolean" >
+                <constraints nullable="false" />
+            </column>
+            <column name="name" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="comment" type="${varchar_type}" />
+            <column name="file_count" type="int" defaultValueNumeric="0">
+                <constraints nullable="false" />
+            </column>
+            <column name="duration_seconds" type="int" defaultValueNumeric="0" >
+                <constraints nullable="false" />
+            </column>
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="changed" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="playlist" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_010" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="playlist" columnName="imported_from" />
+            </not>
+        </preConditions>
+        <addColumn tableName="playlist">
+            <column name="imported_from" type="${varchar_type}"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema47_011" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="playlist_file" />
+            </not>
+        </preConditions>
+        <createTable tableName="playlist_file">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="playlist_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pf_p_fk" referencedTableName="playlist" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="media_file_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pf_mf_fk" referencedTableName="media_file" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+        </createTable>
+        <sql dbms="hsql">
+            set table playlist_file type cached
+        </sql>
+        <rollback>
+            <dropTable tableName="playlist_file" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_012" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="playlist_user" />
+            </not>
+        </preConditions>
+        <createTable tableName="playlist_user">
+            <column name="id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" />
+            </column>
+            <column name="playlist_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pu_p_fk" referencedTableName="playlist" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="pu_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+        </createTable>
+        <addUniqueConstraint tableName="playlist_user" columnNames="playlist_id,username" />
+        <rollback>
+            <dropTable tableName="playlist_user" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema47_013" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bookmark" />
+            </not>
+        </preConditions>
+        <createTable tableName="bookmark">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="media_file_id" type="int" >
+                <constraints nullable="false" foreignKeyName="b_mf_fk" referencedTableName="media_file" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="position_millis" type="bigint" >
+                <constraints nullable="false" />
+            </column>
+            <column name="username" type="${varchar_type}" >
+                <constraints nullable="false" foreignKeyName="b_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true" />
+            </column>
+            <column name="comment" type="${varchar_type}" />
+            <column name="created" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+            <column name="changed" type="datetime" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="bookmark" indexName="idx_bookmark_media_file_id">
+            <column name="media_file_id"/>
+        </createIndex>
+        <createIndex tableName="bookmark" indexName="idx_bookmark_username">
+            <column name="username"/>
+        </createIndex>
+        <addUniqueConstraint columnNames="media_file_id,username" tableName="bookmark" />
+        <rollback>
+            <dropTable tableName="bookmark" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

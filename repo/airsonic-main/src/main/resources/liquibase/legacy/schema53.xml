@@ -1,0 +1,105 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema53_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 25</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="25" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 25</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema53_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <dbms type="hsqldb" />
+                <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
+                    <param name="major" value="1" />
+                </customPrecondition>
+            </not>
+            <not>
+                <indexExists indexName="idx_podcast_episode_url" />
+            </not>
+        </preConditions>
+        <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
+            <column name="url"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="schema53_002_1" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <dbms type="hsqldb" />
+            <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
+                <param name="major" value="1" />
+            </customPrecondition>
+            <sqlCheck expectedResult="0">
+                select count(*) from INFORMATION_SCHEMA.SYSTEM_INDEXINFO where
+                lower(TABLE_NAME) = 'podcast_episode' and lower(INDEX_NAME) = 'idx_podcast_episode_url';
+            </sqlCheck>
+        </preConditions>
+        <createIndex tableName="podcast_episode" indexName="idx_podcast_episode_url">
+            <column name="url"/>
+        </createIndex>
+    </changeSet>
+    <changeSet id="schema53_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="default_album_list" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="default_album_list" type="${varchar_type}" defaultValue="random">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema53_004" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="queue_following_songs" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="queue_following_songs" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema53_005" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="podcast_channel" columnName="image_url" />
+            </not>
+        </preConditions>
+        <addColumn tableName="podcast_channel">
+            <column name="image_url" type="${varchar_type}" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema53_006" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="show_side_bar" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="show_side_bar" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema53_007" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="artist" columnName="folder_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="artist">
+            <column name="folder_id" type="int"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,149 @@
+/*
+ * CSS styleshet for the http://www.midnightfun.co.uk "MidnightFun" theme.
+ *
+ * Author: Don Pearson
+ */
+
+@import "default.css";
+
+/* The primary background colour. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-image:url('../icons/midnightfun/midnightfun_text_back.jpg');
+    background-repeat:repeat;
+    background-color: #AAAAAA;
+}
+
+/* The secondary background colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-image:url('../icons/midnightfun/midnightfun_background.gif');
+    background-repeat:repeat;
+    background-attachment:fixed;
+    background-color: #C0C0C0;
+}
+
+/* The secondary foreground colour used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #333333;
+}
+
+/* Foreground colour used for h2, bold and tr. */
+h2, b, tr {
+    color: #000000;
+}
+
+/* Table sizing */
+table {
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe, .rightframe {
+    background-image:url('../icons/midnightfun/midnightfun_background.gif');
+    background-repeat:repeat;
+    background-attachment:fixed;
+    background-color: #C0C0C0;
+}
+
+/* Back image */
+.back {
+    background-image:url("../icons/midnightfun/midnightfun_back.png");
+}
+
+/* Forward image */
+.forward {
+    background-image:url("../icons/midnightfun/midnightfun_forward.png");
+}
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #656569;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #000000;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #990099;
+}
+
+/* Background colour for form controls. */
+input, select {
+    background-image:url('../icons/midnightfun/midnightfun_form_controls.jpg');
+    background-repeat:repeat;
+    color: #FFFFFF;
+    background-color: #AAAAAA;
+}
+
+/* Hover colour for form controls. */
+input:hover, select:hover {
+    background-image:url('../icons/midnightfun/midnightfun_form_controls_hover.jpg');
+    background-repeat:repeat;
+    color: #000000;
+    background-color: #C0C0C0;
+}
+
+/* Background colour for option controls. */
+option {
+    font-weight: bold;
+    background-color: #666666;
+    color: #FFFFFF;
+}
+
+/* Background colour for option comments. */
+textarea {
+    background-image:url('../icons/midnightfun/midnightfun_form_controls.jpg');
+    background-repeat:repeat;
+    background-color: #AAAAAA;
+    color: #FFFFFF;
+}
+
+/* The primary foreground colour. */
+body {
+    background-color: #C0C0C0;
+    scrollbar-face-color: #CCCCCC;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-shadow-color: #CCCCCC;
+    scrollbar-3dlight-color: #D1D7DC;
+    scrollbar-arrow-color: #000000;
+    scrollbar-track-color: #C0C0C0;
+    scrollbar-darkshadow-color: #98AAB1;
+}
+
+/* The album comments. */
+.albumComment {
+    width: 50em;
+    font-size: 8pt;
+    line-height: 1.4em;
+    padding-top: 0.25em;
+    color: #000000;
+}
+
+/* The log. */
+.log {
+    font-weight: bold;
+    white-space: nowrap;
+    font-size: 8pt;
+    line-height: 1em;
+    background-image:url('../icons/midnightfun/midnightfun_table.jpg');
+    background-repeat:repeat;
+    color: #000000;
+    background-color: #C0C0C0;
+}
+
+/* The help, status & web payer settings tables. */
+.ruleTableHeader, .ruleTableCell {
+    margin: 5px;
+    padding: 5px;
+    background-image:url('../icons/midnightfun/midnightfun_table.jpg');
+    background-repeat:repeat;
+    background-attachment:fixed;
+    color: #FFFFFF;
+    background-color: #C0C0C0;
+}
+
+
+/* MidnightFun http://www.midnightfun.co.uk */

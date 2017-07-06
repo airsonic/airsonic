@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+      Presentation Map schema for Sonos controllers.
+      Copyright (c) 2007 - 2014 Sonos, Inc. All rights reserved worldwide.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:element name="Presentation">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        We do not use a default/target namespace here. Everything is
+        assumed to be global as we have legacy services that have implemented
+        Presentation Maps without declaring the namespace in the XML.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="BrowseOptions">
+          <xs:complexType>
+            <xs:attribute type="xs:unsignedInt" name="PageSize"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element maxOccurs="unbounded" name="PresentationMap">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Match">
+                <xs:complexType>
+                  <xs:choice minOccurs="1">
+                    <xs:element minOccurs="0" ref="Ratings" />
+                    <xs:element minOccurs="0" ref="Overlay" />
+                    <xs:element minOccurs="0" ref="MenuItemOverrides" />
+                    <xs:element minOccurs="0" ref="imageSizeMap" />
+                    <xs:element minOccurs="0" ref="browseIconSizeMap" />
+                    <xs:element minOccurs="0" ref="SearchCategories" />
+                  </xs:choice>
+                  <xs:attribute name="propname" type="xs:string" use="optional" />
+                  <xs:attribute name="value" type="xs:unsignedByte" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="type" type="PresentationMaps" use="required" />
+            <xs:attribute name="trackEnabled" type="xs:boolean" use="optional" />
+            <xs:attribute name="programEnabled" type="xs:boolean" use="optional" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Presentation -->
+
+  <xs:simpleType name="PresentationMaps">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Defines unique identifiers for known Presentation Map types
+        within the Sonos firmware.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NowPlayingRatings" />
+      <xs:enumeration value="ListOverlays" />
+      <xs:enumeration value="InfoView" />
+      <xs:enumeration value="ArtWorkSizeMap" />
+      <xs:enumeration value="BrowseIconSizeMap" />
+      <xs:enumeration value="Search" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Ratings -->
+
+  <xs:element name="Ratings">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Ratings define the UI implementation on the Now Playing screen
+        for a SMAPI service that supports the ratings feature for tracks
+        and streams (programs).
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Rating" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Rating">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Defines the customization of a Rating exposed within the Now
+        Playing screen .
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Icon" />
+      </xs:sequence>
+      <xs:attribute name="AutoSkip" type="xs:string" use="required" />
+      <xs:attribute name="Id" type="xs:unsignedInt" use="required" />
+      <xs:attribute name="OnSuccessStringId" type="xs:string" use="required" />
+      <xs:attribute name="StringId" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Icon">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Defines an icon for use in Sonos controllers. Currently exposed
+        on the Now Playing screen as it implements Track Ratings.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="Controller" type="xs:string" use="required" />
+      <xs:attribute name="LastModified" type="xs:string" use="required" />
+      <xs:attribute name="Uri" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Overlays -->
+
+  <xs:element name="Overlay">
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="Icon" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- MenuItemOverrides -->
+
+  <xs:element name="MenuItemOverrides">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        MenuItemOverrides allow a SMAPI Service to customize the default
+        actions available within the Infoview on Sonos firmware,
+        particularly around adding and removing items from a Listener's
+        "favorites."
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="MenuItem" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="MenuItem">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Defines a customization of a Menu Item exposed in the Infoview.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="FailureStringId" type="xs:string" use="required" />
+      <xs:attribute name="InProgressStringId" type="xs:string" use="optional" />
+      <xs:attribute name="MenuItem" type="xs:string" use="required" />
+      <xs:attribute name="StringId" type="xs:string" use="required" />
+      <xs:attribute name="SuccessStringId" type="xs:string" use="required" />
+      <xs:attribute name="PromptStringId" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <!-- imageSizeMap -->
+
+  <xs:element name="imageSizeMap">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        The imageSizeMap defines the substitution rules that allow Sonos
+        firmware to utilize the albumArtUri returned in a SMAPI response
+        envelope as a default URL and apply the rules to request higher
+        or lower resolution album art as needed in the UI.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="sizeEntry" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- browseIconSizeMap -->
+
+  <xs:element name="browseIconSizeMap">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        The browseIconSizeMap defines the substitution rules that allow Sonos
+        firmware to utilize a static image as supplied in the albumArtUri returned
+        in a SMAPI response envelope as a default URL and apply the rules to request
+        higher or lower resolution album art as needed in the UI.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element ref="sizeEntry" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- sizeEntry, used by both imageSizeMap and browseIconSizeMap -->
+
+  <xs:element name="sizeEntry">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Maps a known "size" string within a SMAPI albumArtUri with it's
+        substitution string.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="size" type="xs:unsignedShort" use="required" />
+      <xs:attribute name="substitution" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <!-- SearchCategories -->
+
+  <xs:element name="SearchCategories">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        SearchCategories define the searchable types of a SMAPI Service.
+        A Category maps a known CanonicalSearchId to a SMAPI Id defined
+        by a SMAPI service for the given type. A CustomCategory defines
+        a searchable type that is now explicitly known by Sonos firmware,
+        configures the SMAPI Id for the searchable type, and identifies
+        a node in the strings.xml stringtables in which the display name
+        can be found.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="Category" type="Category" />
+          <xs:element name="CustomCategory" type="CustomCategory" />
+        </xs:choice>
+      </xs:sequence>
+  </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="Category">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Maps a CanonicalSearchId (Category.id) to an actual SMAPI
+        identifier (Category.mappedId) utilized by the service in the
+        SMAPI search() method.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="id" type="CanonicalSearchIds" use="required" />
+    <xs:attribute name="mappedId" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="CustomCategory">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Defines a SearchCategory that lies outside the scope of known
+        CanonicalSearchIds. CustomCategory.mappedId identifies the SMAPI
+        search identifier with a string entry (CustomCategory.stringId)
+        in strings.xml. Sonos firmware will use the string entry for the
+        UI and will pass CustomCategory.mappedId to the SMAPI search()
+        method when the listener attempts to search for it.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="mappedId" type="xs:string" use="required" />
+    <xs:attribute name="stringId" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <xs:simpleType name="CanonicalSearchIds">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Defines unique identifiers for known categories of searchable
+        items across SMAPI services.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="artists" />
+      <xs:enumeration value="albums" />
+      <xs:enumeration value="composers" />
+      <xs:enumeration value="date" />
+      <xs:enumeration value="genres" />
+      <xs:enumeration value="hosts" />
+      <xs:enumeration value="location" />
+      <xs:enumeration value="podcasts" />
+      <xs:enumeration value="people" />
+      <xs:enumeration value="playlists" />
+      <xs:enumeration value="shows" />
+      <xs:enumeration value="stations" />
+      <xs:enumeration value="tags" />
+      <xs:enumeration value="tracks" />
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Presentation>
+
+    <PresentationMap type="Search">
+        <Match>
+            <SearchCategories>
+                <Category mappedId="search-artists" id="artists"/>
+                <Category mappedId="search-albums" id="albums"/>
+                <Category mappedId="search-songs" id="tracks"/>
+            </SearchCategories>
+        </Match>
+    </PresentationMap>
+
+    <PresentationMap type="ArtWorkSizeMap">
+        <Match>
+            <imageSizeMap>
+                <sizeEntry size="180" substitution="size=180"/>
+                <sizeEntry size="300" substitution="size=300"/>
+                <sizeEntry size="600" substitution="size=600"/>
+                <sizeEntry size="1000" substitution="size=1000"/>
+            </imageSizeMap>
+        </Match>
+    </PresentationMap>
+
+</Presentation>

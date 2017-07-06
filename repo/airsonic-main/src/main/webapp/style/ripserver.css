@@ -1,0 +1,44 @@
+/*
+ * CSS styleshet for the "Ripserver" theme.
+ *
+ * Author: Ralph Hill
+ */
+
+@import "default.css";
+
+/* The primary background color (light blue). */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #FFFFFF;
+}
+
+/* The secondary background color (darker blue). */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #EBEFF9
+}
+
+.mainframe {
+    background-image:url('../icons/ripserver/background.png');
+    background-repeat:no-repeat;
+	background-attachment:fixed;
+    background-color: #FFFFFF
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #0076B6
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    color: orange
+}
+
+body {
+    scrollbar-face-color: #DEE3E7;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-shadow-color: #DEE3E7;
+    scrollbar-3dlight-color: #D1D7DC;
+    scrollbar-arrow-color: #006699;
+    scrollbar-track-color: #EFEFEF;
+    scrollbar-darkshadow-color: #98AAB1;
+}

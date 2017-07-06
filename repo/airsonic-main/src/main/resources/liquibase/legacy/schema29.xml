@@ -1,0 +1,44 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema29_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 5</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="5" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 5</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema29_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_rating" />
+            </not>
+        </preConditions>
+        <createTable tableName="user_rating">
+            <column name="username" type="${varchar_type}">
+                <constraints nullable="false" foreignKeyName="ura_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true"/>
+            </column>
+            <column name="path" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="rating" type="double" >
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="user_rating" columnNames="username,path" />
+        <sql>
+            insert into user_rating select 'admin', path, rating from music_file_info
+            where rating is not null and rating > 0
+        </sql>
+        <rollback>
+            <dropTable tableName="user_rating" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

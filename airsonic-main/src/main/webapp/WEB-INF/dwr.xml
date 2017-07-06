@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN" "http://getahead.org/dwr/dwr30.dtd">
+
+<dwr>
+    <allow>
+
+        <create creator="spring" javascript="multiService">
+            <param name="beanName" value="ajaxMultiService"/>
+        </create>
+
+        <create creator="spring" javascript="nowPlayingService">
+            <param name="beanName" value="ajaxNowPlayingService"/>
+        </create>
+
+        <create creator="spring" javascript="playQueueService">
+            <param name="beanName" value="ajaxPlayQueueService"/>
+        </create>
+
+        <create creator="spring" javascript="playlistService">
+            <param name="beanName" value="ajaxPlaylistService"/>
+        </create>
+
+        <create creator="spring" javascript="lyricsService">
+            <param name="beanName" value="ajaxLyricsService"/>
+        </create>
+
+        <create creator="spring" javascript="coverArtService">
+            <param name="beanName" value="ajaxCoverArtService"/>
+        </create>
+
+        <create creator="spring" javascript="starService">
+            <param name="beanName" value="ajaxStarService"/>
+        </create>
+
+        <create creator="spring" javascript="tagService">
+            <param name="beanName" value="ajaxTagService"/>
+        </create>
+
+        <create creator="spring" javascript="transferService">
+            <param name="beanName" value="ajaxTransferService"/>
+        </create>
+
+        <convert converter="bean" match="org.airsonic.player.ajax.NowPlayingInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.ScanInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.PlayQueueInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.PlayQueueInfo$Entry"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.PlaylistInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.PlaylistInfo$Entry"/>
+        <convert converter="bean" match="org.airsonic.player.domain.Playlist"/>
+        <convert converter="bean" match="org.airsonic.player.domain.ArtistBio"/>
+        <convert converter="bean" match="org.airsonic.player.domain.LastFmCoverArt"/>
+
+        <convert converter="bean" match="org.airsonic.player.ajax.UploadInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.LyricsInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.CoverArtInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.SimilarArtist"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.ArtistInfo"/>
+        <convert converter="bean" match="org.airsonic.player.ajax.TopSong"/>
+
+    </allow>
+</dwr>
