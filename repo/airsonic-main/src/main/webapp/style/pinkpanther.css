@@ -1,0 +1,91 @@
+/*
+ * CSS styleshet for the "PinkPanther" theme.
+ *
+ * Author: Thomas Bruce Dyrud (thomasbrucedyrud[at]gmail.com)
+ *
+ */
+
+@import "default.css";
+
+/* The primary background colour. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #402c31;
+}
+
+/* The secondary background colour, light blue, primary theme colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #402c31;
+    color: #EFE9D9;
+}
+
+/* Background colour for selected header, log etc. */
+.headerSelected {
+    color: #EFE9D9;
+    background-color: #402c31;
+    border: 1px solid #EFE9D9;
+}
+
+
+/* The secondary foreground colour used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #EFE9D9;
+}
+
+/* Foreground colour used for h2, bold and tr. */
+h2, b, tr {
+    color: #EFE9D9;
+}
+
+/* Table sizing */
+table {
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe {
+    background-color: #402c31;
+    background-position:right;
+}
+
+
+/* Back image */
+.back {
+    background-image:url( "../icons/pinkpanther/back.png" );
+}
+
+/* Forward image */
+.forward {
+    background-image:url( "../icons/pinkpanther/forward.png" );
+}
+
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #11bdcb;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #11bdcb;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #990099;
+}
+
+
+/* The primary foreground colour. */
+body {
+    color: #EFE9D9;
+    background-color: #DDDDDD;
+}
+
+html {
+    background-color: transparent;
+}
+
+label, p {
+	color: #CCC;
+}

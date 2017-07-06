@@ -1,0 +1,88 @@
+/*
+ * CSS styleshet for the "Sonic" theme.
+ *
+ * Author: Thomas Bruce Dyrud (thomasbrucedyrud[at]gmail.com)
+ *
+ */
+
+@import "default.css";
+
+/* The primary background colour. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #e7e7e7;
+}
+
+/* The secondary background colour, light blue, primary theme colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #e7e7e7;
+    color: #696969;
+}
+
+/* Background colour for selected header, log etc. */
+.headerSelected {
+    color: #696969;
+    background-color: #e7e7e7;
+    border: 1px solid #696969;
+}
+
+
+/* The primary foreground color (black). */
+body {
+    color: #696969;
+    background-color: #DDDDDD;
+}
+
+/* The secondary foreground colour used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #696969;
+}
+
+/* Foreground colour used for h2, bold and tr. */
+h2, b, tr {
+    color: #696969;
+}
+
+/* Table sizing */
+table {
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe {
+    background-color: #e7e7e7;
+}
+
+/* Back image */
+.back {
+    background-image:url( "../icons/sonic/back.png" );
+}
+
+/* Forward image */
+.forward {
+    background-image:url( "../icons/sonic/forward.png" );
+}
+
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #333333;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #696969;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #e7238b;
+}
+
+html {
+    background-color: transparent;
+}
+
+label, p {
+	color: #696969;
+}

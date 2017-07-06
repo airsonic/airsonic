@@ -1,0 +1,121 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="schema32_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from version where version = 8</sqlCheck>
+        </preConditions>
+        <insert tableName="version">
+            <column name="version" valueNumeric="8" />
+        </insert>
+        <rollback>
+            <delete tableName="version" >
+                <where>version = 8</where>
+            </delete>
+        </rollback>
+    </changeSet>
+    <changeSet id="schema32_002" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="show_now_playing" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="show_now_playing" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema32_003" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="user_settings" columnName="selected_music_folder_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="user_settings">
+            <column name="selected_music_folder_id" type="int" defaultValueNumeric="-1">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="schema32_004" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="podcast_channel" />
+            </not>
+        </preConditions>
+        <createTable tableName="podcast_channel">
+            <column name="id" type="int" autoIncrement="true" >
+                <constraints primaryKey="true" />
+            </column>
+            <column name="url" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="title" type="${varchar_type}" />
+            <column name="description" type="${varchar_type}" />
+            <column name="status" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="error_message" type="${varchar_type}" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="podcast_channel" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema32_005" author="muff1nman">
+        <validCheckSum>7:0d4fbe2adcca829c14d12a5b1a8229c5</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="podcast_episode"/>
+            </not>
+        </preConditions>
+        <createTable tableName="podcast_episode">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="channel_id" type="int" >
+                <constraints nullable="false" foreignKeyName="pe_pc_fk" referencedTableName="podcast_channel" referencedColumnNames="id" deleteCascade="true" />
+            </column>
+            <column name="url" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="path" type="${varchar_type}" />
+            <column name="title" type="${varchar_type}" />
+            <column name="description" type="${varchar_type}" />
+            <column name="publish_date" type="datetime" />
+            <column name="duration" type="${varchar_type}" />
+            <column name="bytes_total" type="bigint" />
+            <column name="bytes_downloaded" type="bigint" />
+            <column name="status" type="${varchar_type}" >
+                <constraints nullable="false" />
+            </column>
+            <column name="error_message" type="${varchar_type}" />
+        </createTable>
+        <rollback>
+            <dropTable tableName="podcast_episode" />
+        </rollback>
+    </changeSet>
+    <changeSet id="schema32_006" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where id = 7</sqlCheck>
+        </preConditions>
+        <insert tableName="role">
+            <column name="id" valueNumeric="7"/>
+            <column name="name" value="podcast" />
+        </insert>
+        <sql>
+            insert into user_role(username, role_id)
+            select distinct u.username, 7 from ${userTableQuote}user${userTableQuote} u, user_role ur
+            where u.username = ur.username and ur.role_id = 1
+        </sql>
+        <rollback>
+            <delete tableName="user_role">
+                <where>role_id = 7</where>
+            </delete>
+            <delete tableName="role">
+                <where>id = 7</where>
+            </delete>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

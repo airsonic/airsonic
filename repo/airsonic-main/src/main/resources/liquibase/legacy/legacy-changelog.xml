@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <include file="schema25.xml" relativeToChangelogFile="true"/>
+    <include file="schema26.xml" relativeToChangelogFile="true"/>
+    <include file="schema27.xml" relativeToChangelogFile="true"/>
+    <include file="schema28.xml" relativeToChangelogFile="true"/>
+    <include file="schema29.xml" relativeToChangelogFile="true"/>
+    <include file="schema30.xml" relativeToChangelogFile="true"/>
+    <include file="schema31.xml" relativeToChangelogFile="true"/>
+    <include file="schema32.xml" relativeToChangelogFile="true"/>
+    <include file="schema33.xml" relativeToChangelogFile="true"/>
+    <include file="schema34.xml" relativeToChangelogFile="true"/>
+    <include file="schema35.xml" relativeToChangelogFile="true"/>
+    <include file="schema36.xml" relativeToChangelogFile="true"/>
+    <include file="schema37.xml" relativeToChangelogFile="true"/>
+    <include file="schema38.xml" relativeToChangelogFile="true"/>
+    <include file="schema40.xml" relativeToChangelogFile="true"/>
+    <include file="schema43.xml" relativeToChangelogFile="true"/>
+    <include file="schema45.xml" relativeToChangelogFile="true"/>
+    <include file="schema46.xml" relativeToChangelogFile="true"/>
+    <include file="schema47.xml" relativeToChangelogFile="true"/>
+    <include file="schema49.xml" relativeToChangelogFile="true"/>
+    <include file="schema50.xml" relativeToChangelogFile="true"/>
+    <include file="schema51.xml" relativeToChangelogFile="true"/>
+    <include file="schema52.xml" relativeToChangelogFile="true"/>
+    <include file="schema53.xml" relativeToChangelogFile="true"/>
+    <include file="schema61.xml" relativeToChangelogFile="true"/>
+    <include file="schema62.xml" relativeToChangelogFile="true"/>
+    <include file="schema100.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

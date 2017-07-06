@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <import resource="applicationContext-db-jndi.xml" />
+    <import resource="applicationContext-db-embed.xml" />
+    <import resource="applicationContext-db-legacy.xml" />
+
+    <tx:annotation-driven/>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="daoHelper" class="org.airsonic.player.dao.GenericDaoHelper">
+        <constructor-arg name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="rollbackFile" class="java.io.File">
+        <constructor-arg type="java.io.File" index="0" value="#{T(org.airsonic.player.service.SettingsService).airsonicHome}" />
+        <constructor-arg type="java.lang.String" index="1" value="rollback.sql" />
+    </bean>
+
+    <bean id="userTableQuote" class="java.lang.String">
+        <constructor-arg value="${DatabaseUsertableQuote:}" />
+    </bean>
+
+    <bean id="liquibase" class="org.airsonic.player.spring.SpringLiquibase">
+        <property name="dataSource" ref="dataSource" />
+        <property name="changeLog" value="classpath:liquibase/db-changelog.xml" />
+        <property name="rollbackFile" ref="rollbackFile" />
+        <property name="changeLogParameters">
+            <map>
+                <entry key="defaultMusicFolder" value="#{T(org.airsonic.player.util.Util).getDefaultMusicFolder()}" />
+                <entry key="mysqlVarcharLimit" value="${DatabaseMysqlMaxlength:512}" />
+                <entry key="userTableQuote" value-ref="userTableQuote" />
+            </map>
+        </property>
+    </bean>
+</beans>

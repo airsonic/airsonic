@@ -1,0 +1,90 @@
+/*
+ * CSS styleshet for the "Simplify" theme.
+ *
+ * Author: Thomas Bruce Dyrud (thomasbrucedyrud[at]gmail.com)
+ *
+ */
+
+@import "default.css";
+
+/* The primary background colour. */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #1b1b1b;
+}
+
+/* The secondary background colour, light blue, primary theme colour. */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #1b1b1b;
+    color: #FFFFFF;
+}
+
+/* Background colour for selected header, log etc. */
+.headerSelected {
+    color: #FFFFFF;
+    background-color: #1b1b1b;
+    border: 1px solid #FFFFFF;
+}
+
+
+/* The secondary foreground colour used for h1, details etc. */
+h1, .detail, .albumComment {
+    color: #FFFFFF;
+}
+
+/* Foreground colour used for h2, bold and tr. */
+h2, b, tr {
+    color: #FFFFFF;
+}
+
+/* Table sizing */
+table {
+    margin: 0 0 0 0;
+}
+
+/* Main frame image & colour */
+.mainframe {
+    background-color: #1b1b1b;
+    background-position:right;
+}
+
+
+/* Back image */
+.back {
+    background-image:url( "../icons/simplify/back.png" );
+}
+
+/* Forward image */
+.forward {
+    background-image:url( "../icons/simplify/forward.png" );
+}
+
+
+/* Link colour */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #FFFFFF;
+}
+
+/* Link hover colour */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #FFFFFF;
+}
+
+/* Colour for warning messages. */
+.warning {
+    color: #e7238b;
+}
+
+/* The primary foreground colour. */
+body {
+    color: #FFFFFF;
+    background-color: #DDDDDD;
+}
+
+html {
+    background-color: transparent;
+}
+
+label, p {
+	color: #CCC;
+}

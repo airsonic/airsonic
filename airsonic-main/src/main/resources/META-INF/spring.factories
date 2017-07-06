@@ -1,0 +1,3 @@
+org.springframework.context.ApplicationListener=\
+  org.airsonic.player.spring.LoggingFileOverrideListener,\
+  org.airsonic.player.security.LoginFailureListener

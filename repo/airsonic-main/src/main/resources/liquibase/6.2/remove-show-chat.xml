@@ -1,0 +1,12 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="remove-show-chat_001" author="muff1nman">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="user_settings" columnName="show_chat" />
+        </preConditions>
+        <dropColumn tableName="user_settings" columnName="show_chat" />
+        <rollback changeSetId="schema38_003" changeSetPath="classpath:liquibase/legacy/schema38.xml" changeSetAuthor="muff1nman"/>
+    </changeSet>
+</databaseChangeLog>

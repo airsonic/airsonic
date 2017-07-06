@@ -1,0 +1,21 @@
+# First one, as it is a binary format that can easily be recognized.
+chameleon.playlist.pla.PLAProvider
+chameleon.playlist.asx.AsxProvider
+chameleon.playlist.b4s.B4sProvider
+# BEFORE SMIL (same root element).
+chameleon.playlist.wpl.WplProvider
+chameleon.playlist.smil.SmilProvider
+chameleon.playlist.rss.RSSProvider
+chameleon.playlist.atom.AtomProvider
+# Before XSPF, because this format is very close to XSPF,
+# but its XML format is strictly checked (and XSPF's format is not)
+chameleon.playlist.hypetape.HypetapeProvider
+chameleon.playlist.xspf.XspfProvider
+chameleon.playlist.rmp.RmpProvider
+chameleon.playlist.plist.PlistProvider
+chameleon.playlist.kpl.KplProvider
+chameleon.playlist.pls.PLSProvider
+chameleon.playlist.mpcpl.MPCPLProvider
+chameleon.playlist.plp.PLPProvider
+# Shall be last, as the M3U format can match almost everything.
+chameleon.playlist.m3u.M3UProvider
