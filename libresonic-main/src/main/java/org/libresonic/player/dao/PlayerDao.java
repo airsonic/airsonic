@@ -106,7 +106,7 @@ public class PlayerDao extends AbstractDao {
                player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), CoverArtScheme.MEDIUM.name(),
                player.getTranscodeScheme().name(), player.isDynamicIp(),
-               player.getTechnology().name(), player.getClientId());
+               player.getTechnology().name(), player.getClientId(), player.getJavaJukeboxMixer());
         addPlaylist(player);
 
         LOG.info("Created player " + id + '.');

@@ -9,7 +9,7 @@
             </not>
         </preConditions>
         <addColumn tableName="player">
-            <column name="mixer" type="${varchar_type}" defaultValue="">
+            <column name="mixer" type="${varchar_type}">
                 <constraints nullable="true" />
             </column>
         </addColumn>
