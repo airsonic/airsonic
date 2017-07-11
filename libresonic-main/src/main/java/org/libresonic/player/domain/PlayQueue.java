@@ -19,8 +19,10 @@
  */
 package org.libresonic.player.domain;
 
+import com.github.biconou.AudioPlayer.api.PlayList;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -29,7 +31,7 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
-public class PlayQueue {
+public class PlayQueue implements PlayList {
 
     private List<MediaFile> files = new ArrayList<MediaFile>();
     private boolean repeatEnabled;
@@ -48,6 +50,29 @@ public class PlayQueue {
      */
     private List<MediaFile> filesBackup = new ArrayList<MediaFile>();
     private int indexBackup = 0;
+
+    /* Begin : implementation of com.github.biconou.AudioPlayer.PlayList */
+    @Override
+    public File getNextAudioFile() throws IOException {
+        next();
+        return getCurrentAudioFile();
+    }
+
+    @Override
+    public File getCurrentAudioFile() {
+        MediaFile current = getCurrentFile();
+        if (current != null) {
+            return getCurrentFile().getFile();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public int getSize() {
+        return size();
+    }
+    /* End : implementation of com.github.biconou.AudioPlayer.PlayList */
 
     /**
      * Returns the user-defined name of the playlist.

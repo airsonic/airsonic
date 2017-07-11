@@ -45,6 +45,11 @@ public enum PlayerTechnology {
     /**
      * Plays music directly on the audio device of the Libresonic server.
      */
-    JUKEBOX
+    JUKEBOX,
+
+    /**
+     * Jukebox player that uses the Java Sound API.
+     */
+    JAVA_JUKEBOX
 
 }
