@@ -1,35 +1,35 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.ajax;
+package org.airsonic.player.ajax;
 
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.domain.Playlist;
+import org.airsonic.player.i18n.LocaleResolver;
+import org.airsonic.player.service.MediaFileService;
+import org.airsonic.player.service.PlayerService;
+import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.WebContextFactory;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.i18n.LibresonicLocaleResolver;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,11 +47,11 @@ public class PlaylistService {
 
     private MediaFileService mediaFileService;
     private SecurityService securityService;
-    private org.libresonic.player.service.PlaylistService playlistService;
+    private org.airsonic.player.service.PlaylistService playlistService;
     private MediaFileDao mediaFileDao;
     private SettingsService settingsService;
     private PlayerService playerService;
-    private LibresonicLocaleResolver localeResolver;
+    private LocaleResolver localeResolver;
 
     public List<Playlist> getReadablePlaylists() {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
@@ -136,7 +136,7 @@ public class PlaylistService {
         playlist.setChanged(now);
         playlist.setShared(false);
 
-        ResourceBundle bundle = ResourceBundle.getBundle("org.libresonic.player.i18n.ResourceBundle", locale);
+        ResourceBundle bundle = ResourceBundle.getBundle("org.airsonic.player.i18n.ResourceBundle", locale);
         playlist.setName(bundle.getString("top.starred") + " " + dateFormat.format(now));
 
         playlistService.createPlaylist(playlist);
@@ -233,7 +233,7 @@ public class PlaylistService {
         return getPlaylist(id);
     }
 
-    public void setPlaylistService(org.libresonic.player.service.PlaylistService playlistService) {
+    public void setPlaylistService(org.airsonic.player.service.PlaylistService playlistService) {
         this.playlistService = playlistService;
     }
 
@@ -257,7 +257,7 @@ public class PlaylistService {
         this.playerService = playerService;
     }
 
-    public void setLocaleResolver(LibresonicLocaleResolver localeResolver) {
+    public void setLocaleResolver(LocaleResolver localeResolver) {
         this.localeResolver = localeResolver;
     }
 }

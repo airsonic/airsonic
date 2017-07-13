@@ -1,4 +1,4 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

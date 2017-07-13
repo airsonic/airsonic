@@ -1,24 +1,26 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.controller;
+package org.airsonic.player.controller;
 
+import org.airsonic.player.domain.TransferStatus;
+import org.airsonic.player.service.StatusService;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -28,8 +30,6 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.Range;
 import org.jfree.data.time.*;
-import org.libresonic.player.domain.TransferStatus;
-import org.libresonic.player.service.StatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,24 +1,27 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.UserSettings;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -31,9 +34,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

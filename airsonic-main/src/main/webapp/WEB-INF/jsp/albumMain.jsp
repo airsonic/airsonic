@@ -300,7 +300,7 @@
         <td style="vertical-align:top;padding-bottom: 1em">
             <table class="music" style="width: 100%">
                 <c:forEach items="${model.files}" var="song" varStatus="loopStatus">
-                    <%--@elvariable id="song" type="org.libresonic.player.domain.MediaFile"--%>
+                    <%--@elvariable id="song" type="org.airsonic.player.domain.MediaFile"--%>
                     <tr style="margin:0;padding:0;border:0">
                         <c:import url="playButtons.jsp">
                             <c:param name="id" value="${song.id}"/>
@@ -401,13 +401,13 @@
                     Upgrade to Subsonic Premium and get:
                 </p>
                 <div style="font-size: 90%;padding-bottom: 1em">
-                    <p><a href="http://libresonic.org/pages/apps.jsp" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
+                    <p><a href="http://airsonic.org/pages/apps.jsp" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
                     <p>Video streaming.</p>
                     <p>Chromecast and Sonos support.</p>
                     <p>DLNA/UPnP support</p>
                     <p>Share on Facebook, Twitter, Google+</p>
                     <p>No ads.</p>
-                    <p>Your personal server address: <em>you</em>.libresonic.org</p>
+                    <p>Your personal server address: <em>you</em>.airsonic.org</p>
                     <p>Podcast receiver.</p>
                 </div>
             </td>

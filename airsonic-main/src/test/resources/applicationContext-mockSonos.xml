@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
 
     <bean id="sonosHelper" class="org.mockito.Mockito" factory-method="mock">
-        <constructor-arg value="org.libresonic.player.service.sonos.SonosHelper" />
+        <constructor-arg value="org.airsonic.player.service.sonos.SonosHelper" />
     </bean>
 
 </beans>

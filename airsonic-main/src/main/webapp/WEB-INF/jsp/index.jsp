@@ -3,7 +3,7 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
-    <link rel="alternate" type="application/rss+xml" title="Libresonic Podcast" href="podcast.view?suffix=.rss">
+    <link rel="alternate" type="application/rss+xml" title="Airsonic Podcast" href="podcast.view?suffix=.rss">
 </head>
 
 <frameset rows="80,*,0" border="0" framespacing="0" frameborder="0">

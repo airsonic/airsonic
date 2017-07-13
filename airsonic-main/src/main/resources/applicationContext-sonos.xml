@@ -9,11 +9,11 @@
 
     <jaxws:endpoint id="sonosEndpoint" implementor="#sonosService" address="/Sonos">
         <jaxws:outFaultInterceptors>
-            <bean class="org.libresonic.player.service.sonos.SonosFaultInterceptor"/>
+            <bean class="org.airsonic.player.service.sonos.SonosFaultInterceptor"/>
         </jaxws:outFaultInterceptors>
     </jaxws:endpoint>
 
-    <bean id="sonosHelper" class="org.libresonic.player.service.sonos.SonosHelper">
+    <bean id="sonosHelper" class="org.airsonic.player.service.sonos.SonosHelper">
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="settingsService" ref="settingsService"/>
         <property name="playlistService" ref="playlistService"/>

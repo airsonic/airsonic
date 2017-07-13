@@ -2,13 +2,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>libresonic-main</artifactId>
+    <artifactId>airsonic-main</artifactId>
     <packaging>war</packaging>
-    <name>Libresonic Main</name>
+    <name>Airsonic Main</name>
 
     <parent>
-        <groupId>org.libresonic.player</groupId>
-        <artifactId>libresonic</artifactId>
+        <groupId>org.airsonic.player</groupId>
+        <artifactId>airsonic</artifactId>
         <version>6.3-SNAPSHOT</version>
     </parent>
 
@@ -20,14 +20,14 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.libresonic.player</groupId>
+            <groupId>org.airsonic.player</groupId>
             <artifactId>subsonic-rest-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.libresonic.player</groupId>
-            <artifactId>libresonic-sonos-api</artifactId>
+            <groupId>org.airsonic.player</groupId>
+            <artifactId>airsonic-sonos-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -465,7 +465,7 @@
     </dependencies>
 
     <build>
-        <finalName>libresonic</finalName>
+        <finalName>airsonic</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -476,7 +476,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.5.2.RELEASE</version>
                 <configuration>
-                    <mainClass>org.libresonic.player.boot.Application</mainClass>
+                    <mainClass>org.airsonic.player.boot.Application</mainClass>
                     <layout>WAR</layout>
                     <excludeGroupIds>${boot.group.excludes}</excludeGroupIds>
                     <excludeArtifactIds>${boot.artifact.excludes}</excludeArtifactIds>
@@ -522,8 +522,8 @@
                         <configuration>
                             <target>
                                 <tstamp/>
-                                <copy file="${basedir}/src/main/resources/org/libresonic/player/i18n/ResourceBundle_en.properties"
-                                      tofile="${project.build.directory}/classes/org/libresonic/player/i18n/ResourceBundle.properties"/>
+                                <copy file="${basedir}/src/main/resources/org/airsonic/player/i18n/ResourceBundle_en.properties"
+                                      tofile="${project.build.directory}/classes/org/airsonic/player/i18n/ResourceBundle.properties"/>
                                 <echo file="${project.build.directory}/classes/build_number.txt">${buildNumber}</echo>
                                 <echo file="${project.build.directory}/classes/build_date.txt">${DSTAMP}</echo>
                                 <echo file="${project.build.directory}/classes/version.txt">${project.version}</echo>

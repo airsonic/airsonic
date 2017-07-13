@@ -1,4 +1,4 @@
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

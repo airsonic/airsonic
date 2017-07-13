@@ -1,23 +1,23 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.util;
+package org.airsonic.player.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,17 +48,17 @@ public final class Util {
 
     public static String getDefaultMusicFolder() {
         String def = isWindows() ? "c:\\music" : "/var/music";
-        return System.getProperty("libresonic.defaultMusicFolder", def);
+        return System.getProperty("airsonic.defaultMusicFolder", def);
     }
 
     public static String getDefaultPodcastFolder() {
         String def = isWindows() ? "c:\\music\\Podcast" : "/var/music/Podcast";
-        return System.getProperty("libresonic.defaultPodcastFolder", def);
+        return System.getProperty("airsonic.defaultPodcastFolder", def);
     }
 
     public static String getDefaultPlaylistFolder() {
         String def = isWindows() ? "c:\\playlists" : "/var/playlists";
-        return System.getProperty("libresonic.defaultPlaylistFolder", def);
+        return System.getProperty("airsonic.defaultPlaylistFolder", def);
     }
 
     public static boolean isWindows() {

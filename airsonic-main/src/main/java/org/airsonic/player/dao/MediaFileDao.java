@@ -1,30 +1,30 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
+import org.airsonic.player.domain.Genre;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.domain.RandomSearchCriteria;
+import org.airsonic.player.util.Util;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.domain.Genre;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.domain.RandomSearchCriteria;
-import org.libresonic.player.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,9 +33,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-
-import static org.libresonic.player.domain.MediaFile.MediaType;
-import static org.libresonic.player.domain.MediaFile.MediaType.*;
 
 /**
  * Provides database services for media files.
@@ -97,7 +94,7 @@ public class MediaFileDao extends AbstractDao {
     public List<MediaFile> getSongsForAlbum(String artist, String album) {
         return query("select " + QUERY_COLUMNS + " from media_file where album_artist=? and album=? and present " +
                      "and type in (?,?,?) order by disc_number, track_number", rowMapper,
-                     artist, album, MUSIC.name(), AUDIOBOOK.name(), PODCAST.name());
+                     artist, album, MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.AUDIOBOOK.name(), MediaFile.MediaType.PODCAST.name());
     }
 
     public List<MediaFile> getVideos(final int count, final int offset, final List<MusicFolder> musicFolders) {
@@ -105,7 +102,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", VIDEO.name());
+            put("type", MediaFile.MediaType.VIDEO.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
@@ -120,7 +117,7 @@ public class MediaFileDao extends AbstractDao {
             return null;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", DIRECTORY.name());
+            put("type", MediaFile.MediaType.DIRECTORY.name());
             put("name", name);
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
@@ -232,7 +229,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
@@ -256,7 +253,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
@@ -279,7 +276,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
@@ -304,7 +301,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
@@ -332,7 +329,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("fromYear", fromYear);
             put("toYear", toYear);
@@ -368,7 +365,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("genre", genre);
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
@@ -383,7 +380,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("types", Arrays.asList(MUSIC.name(), PODCAST.name(), AUDIOBOOK.name()));
+            put("types", Arrays.asList(MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(), MediaFile.MediaType.AUDIOBOOK.name()));
             put("genre", genre);
             put("count", count);
             put("offset", offset);
@@ -397,7 +394,7 @@ public class MediaFileDao extends AbstractDao {
     public List<MediaFile> getSongsByArtist(String artist, int offset, int count) {
         return query("select " + QUERY_COLUMNS
                      + " from media_file where type in (?,?,?) and artist=? and present limit ? offset ?",
-                     rowMapper, MUSIC.name(), PODCAST.name(), AUDIOBOOK.name(), artist, count, offset);
+                     rowMapper, MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(), MediaFile.MediaType.AUDIOBOOK.name(), artist, count, offset);
     }
 
     public MediaFile getSongByArtistAndTitle(final String artist, final String title, final List<MusicFolder> musicFolders) {
@@ -407,7 +404,7 @@ public class MediaFileDao extends AbstractDao {
         Map<String, Object> args = new HashMap<String, Object>() {{
             put("artist", artist);
             put("title", title);
-            put("type", MUSIC.name());
+            put("type", MediaFile.MediaType.MUSIC.name());
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
         return namedQueryOne("select " + QUERY_COLUMNS + " from media_file where artist = :artist " +
@@ -430,7 +427,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
             put("count", count);
@@ -457,7 +454,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", DIRECTORY.name());
+            put("type", MediaFile.MediaType.DIRECTORY.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
             put("count", count);
@@ -486,7 +483,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("types", Arrays.asList(MUSIC.name(), PODCAST.name(), AUDIOBOOK.name(), VIDEO.name()));
+            put("types", Arrays.asList(MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(), MediaFile.MediaType.AUDIOBOOK.name(), MediaFile.MediaType.VIDEO.name()));
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
             put("count", count);
@@ -611,7 +608,7 @@ public class MediaFileDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
         return namedQueryForInt("select count(*) from media_file where type = :type and folder in (:folders) and present", 0, args);
@@ -622,7 +619,7 @@ public class MediaFileDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
         return namedQueryForInt("select count(*) from media_file where type = :type " +
@@ -634,7 +631,7 @@ public class MediaFileDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", ALBUM.name());
+            put("type", MediaFile.MediaType.ALBUM.name());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
         }};
@@ -692,7 +689,7 @@ public class MediaFileDao extends AbstractDao {
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
-                    MediaType.valueOf(rs.getString(4)),
+                    MediaFile.MediaType.valueOf(rs.getString(4)),
                     rs.getString(5),
                     rs.getString(6),
                     rs.getString(7),

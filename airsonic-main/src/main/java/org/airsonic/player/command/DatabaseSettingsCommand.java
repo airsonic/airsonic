@@ -1,6 +1,6 @@
-package org.libresonic.player.command;
+package org.airsonic.player.command;
 
-import org.libresonic.player.spring.DataSourceConfigType;
+import org.airsonic.player.spring.DataSourceConfigType;
 
 import javax.validation.constraints.NotNull;
 

@@ -1,12 +1,12 @@
-package org.libresonic.player.service.playlist;
+package org.airsonic.player.service.playlist;
 
 import chameleon.playlist.SpecificPlaylist;
 import chameleon.playlist.xspf.Location;
 import chameleon.playlist.xspf.Playlist;
 import chameleon.playlist.xspf.StringContainer;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.service.MediaFileService;
-import org.libresonic.player.util.Pair;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.service.MediaFileService;
+import org.airsonic.player.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

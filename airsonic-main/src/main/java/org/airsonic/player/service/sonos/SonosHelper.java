@@ -1,40 +1,40 @@
 /*
- * This file is part of Libresonic.
+ * This file is part of Airsonic.
  *
- *  Libresonic is free software: you can redistribute it and/or modify
+ *  Airsonic is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Libresonic is distributed in the hope that it will be useful,
+ *  Airsonic is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright 2015 (C) Sindre Mehus
  */
 
-package org.libresonic.player.service.sonos;
+package org.airsonic.player.service.sonos;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sonos.services._1.*;
-import org.libresonic.player.controller.CoverArtController;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.service.*;
-import org.libresonic.player.util.StringUtil;
-import org.libresonic.player.util.Util;
+import org.airsonic.player.controller.CoverArtController;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.service.*;
+import org.airsonic.player.util.StringUtil;
+import org.airsonic.player.util.Util;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.*;
 
-import static org.libresonic.player.service.NetworkService.getBaseUrl;
+import static org.airsonic.player.service.NetworkService.getBaseUrl;
 
 /**
  * @author Sindre Mehus
@@ -42,7 +42,7 @@ import static org.libresonic.player.service.NetworkService.getBaseUrl;
  */
 public class SonosHelper {
 
-    public static final String LIBRESONIC_CLIENT_ID = "sonos";
+    public static final String AIRSONIC_CLIENT_ID = "sonos";
 
     private MediaFileService mediaFileService;
     private PlaylistService playlistService;
@@ -638,17 +638,17 @@ public class SonosHelper {
     }
 
     private Player createPlayerIfNecessary(String username) {
-        List<Player> players = playerService.getPlayersForUserAndClientId(username, LIBRESONIC_CLIENT_ID);
+        List<Player> players = playerService.getPlayersForUserAndClientId(username, AIRSONIC_CLIENT_ID);
 
         // If not found, create it.
         if (players.isEmpty()) {
             Player player = new Player();
             player.setUsername(username);
-            player.setClientId(LIBRESONIC_CLIENT_ID);
+            player.setClientId(AIRSONIC_CLIENT_ID);
             player.setName("Sonos");
             player.setTechnology(PlayerTechnology.EXTERNAL_WITH_PLAYLIST);
             playerService.createPlayer(player);
-            players = playerService.getPlayersForUserAndClientId(username, LIBRESONIC_CLIENT_ID);
+            players = playerService.getPlayersForUserAndClientId(username, AIRSONIC_CLIENT_ID);
         }
 
         return players.get(0);

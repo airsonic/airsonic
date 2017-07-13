@@ -1,12 +1,12 @@
-package org.libresonic.player.service.playlist;
+package org.airsonic.player.service.playlist;
 
 import chameleon.content.Content;
 import chameleon.playlist.Media;
 import chameleon.playlist.Playlist;
 import chameleon.playlist.SpecificPlaylist;
 import chameleon.playlist.SpecificPlaylistProvider;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.MediaFile;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.MediaFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;

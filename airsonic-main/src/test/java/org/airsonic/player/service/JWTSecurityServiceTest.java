@@ -1,4 +1,4 @@
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -28,8 +28,8 @@ public class JWTSecurityServiceTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-                { "http://localhost:8080/libresonic/stream?id=4", "/libresonic/stream?id=4" },
-                { "/libresonic/stream?id=4", "/libresonic/stream?id=4" },
+                { "http://localhost:8080/airsonic/stream?id=4", "/airsonic/stream?id=4" },
+                { "/airsonic/stream?id=4", "/airsonic/stream?id=4" },
         });
     }
 

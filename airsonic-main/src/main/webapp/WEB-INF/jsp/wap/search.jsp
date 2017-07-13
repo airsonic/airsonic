@@ -5,7 +5,7 @@
 
 <wml>
     <%@ include file="head.jsp" %>
-    <card id="main" title="Libresonic" newcontext="false">
+    <card id="main" title="Airsonic" newcontext="false">
         <p>
             <input name="query" value="" size="10"/>
             <anchor><fmt:message key="wap.search.title"/>

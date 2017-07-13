@@ -1,23 +1,23 @@
 /*
- * This file is part of Libresonic.
+ * This file is part of Airsonic.
  *
- *  Libresonic is free software: you can redistribute it and/or modify
+ *  Airsonic is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Libresonic is distributed in the hope that it will be useful,
+ *  Airsonic is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright 2014 (C) Sindre Mehus
  */
 
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicates;
@@ -26,10 +26,10 @@ import com.google.common.collect.Lists;
 import de.umass.lastfm.*;
 import de.umass.lastfm.Album;
 import de.umass.lastfm.Artist;
+import org.airsonic.player.dao.ArtistDao;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.*;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.dao.ArtistDao;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +57,9 @@ public class LastFmService {
 
     public void init() {
         Caller caller = Caller.getInstance();
-        caller.setUserAgent("Libresonic");
+        caller.setUserAgent("Airsonic");
 
-        File cacheDir = new File(SettingsService.getLibresonicHome(), "lastfmcache");
+        File cacheDir = new File(SettingsService.getAirsonicHome(), "lastfmcache");
         caller.setCache(new LastFmCache(cacheDir, CACHE_TIME_TO_LIVE_MILLIS));
     }
 
@@ -124,16 +124,16 @@ public class LastFmService {
      * @param musicFolders      Only return songs from artists in these folders.
      * @return Similar artists, ordered by presence then similarity.
      */
-    public List<org.libresonic.player.domain.Artist> getSimilarArtists(org.libresonic.player.domain.Artist artist,
-                                                                          int count, boolean includeNotPresent, List<MusicFolder> musicFolders) {
-        List<org.libresonic.player.domain.Artist> result = new ArrayList<org.libresonic.player.domain.Artist>();
+    public List<org.airsonic.player.domain.Artist> getSimilarArtists(org.airsonic.player.domain.Artist artist,
+                                                                     int count, boolean includeNotPresent, List<MusicFolder> musicFolders) {
+        List<org.airsonic.player.domain.Artist> result = new ArrayList<org.airsonic.player.domain.Artist>();
 
         try {
 
             // First select artists that are present.
             Collection<Artist> similarArtists = Artist.getSimilar(getCanonicalArtistName(artist.getName()), LAST_FM_KEY);
             for (Artist lastFmArtist : similarArtists) {
-                org.libresonic.player.domain.Artist similarArtist = artistDao.getArtist(lastFmArtist.getName(), musicFolders);
+                org.airsonic.player.domain.Artist similarArtist = artistDao.getArtist(lastFmArtist.getName(), musicFolders);
                 if (similarArtist != null) {
                     result.add(similarArtist);
                     if (result.size() == count) {
@@ -145,9 +145,9 @@ public class LastFmService {
             // Then fill up with non-present artists
             if (includeNotPresent) {
                 for (Artist lastFmArtist : similarArtists) {
-                    org.libresonic.player.domain.Artist similarArtist = artistDao.getArtist(lastFmArtist.getName());
+                    org.airsonic.player.domain.Artist similarArtist = artistDao.getArtist(lastFmArtist.getName());
                     if (similarArtist == null) {
-                        org.libresonic.player.domain.Artist notPresentArtist = new org.libresonic.player.domain.Artist();
+                        org.airsonic.player.domain.Artist notPresentArtist = new org.airsonic.player.domain.Artist();
                         notPresentArtist.setId(-1);
                         notPresentArtist.setName(lastFmArtist.getName());
                         result.add(notPresentArtist);
@@ -172,12 +172,12 @@ public class LastFmService {
      * @param musicFolders Only return songs from artists in these folders.
      * @return Songs from similar artists;
      */
-    public List<MediaFile> getSimilarSongs(org.libresonic.player.domain.Artist artist, int count,
+    public List<MediaFile> getSimilarSongs(org.airsonic.player.domain.Artist artist, int count,
                                            List<MusicFolder> musicFolders) throws IOException {
         List<MediaFile> similarSongs = new ArrayList<MediaFile>();
 
         similarSongs.addAll(mediaFileDao.getSongsByArtist(artist.getName(), 0, 1000));
-        for (org.libresonic.player.domain.Artist similarArtist : getSimilarArtists(artist, 100, false, musicFolders)) {
+        for (org.airsonic.player.domain.Artist similarArtist : getSimilarArtists(artist, 100, false, musicFolders)) {
             similarSongs.addAll(mediaFileDao.getSongsByArtist(similarArtist.getName(), 0, 1000));
         }
         Collections.shuffle(similarSongs);
@@ -224,7 +224,7 @@ public class LastFmService {
      * @param artist The artist.
      * @return Artist bio.
      */
-    public ArtistBio getArtistBio(org.libresonic.player.domain.Artist artist) {
+    public ArtistBio getArtistBio(org.airsonic.player.domain.Artist artist) {
         return getArtistBio(getCanonicalArtistName(artist.getName()));
     }
 
@@ -287,7 +287,7 @@ public class LastFmService {
      * @param album The album.
      * @return Album notes.
      */
-    public AlbumNotes getAlbumNotes(org.libresonic.player.domain.Album album) {
+    public AlbumNotes getAlbumNotes(org.airsonic.player.domain.Album album) {
         return getAlbumNotes(getCanonicalArtistName(album.getArtist()), album.getName());
     }
 

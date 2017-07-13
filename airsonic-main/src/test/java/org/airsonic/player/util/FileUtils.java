@@ -1,4 +1,4 @@
-package org.libresonic.player.util;
+package org.airsonic.player.util;
 
 import org.apache.commons.lang.StringUtils;
 

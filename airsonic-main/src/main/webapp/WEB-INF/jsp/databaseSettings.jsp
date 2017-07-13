@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1" %>
-<%--@elvariable id="command" type="org.libresonic.player.command.DatabaseSettingsCommand"--%>
+<%--@elvariable id="command" type="org.airsonic.player.command.DatabaseSettingsCommand"--%>
 
 <html>
 <head>

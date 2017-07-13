@@ -1,14 +1,14 @@
-package org.libresonic.player.util;
+package org.airsonic.player.util;
 
 import org.junit.rules.ExternalResource;
-import org.libresonic.player.TestCaseUtils;
+import org.airsonic.player.TestCaseUtils;
 
-public class LibresonicHomeRule extends ExternalResource {
+public class HomeRule extends ExternalResource {
     @Override
     protected void before() throws Throwable {
         super.before();
-        System.setProperty("libresonic.home", TestCaseUtils.libresonicHomePathForTest());
+        System.setProperty("airsonic.home", TestCaseUtils.airsonicHomePathForTest());
 
-        TestCaseUtils.cleanLibresonicHomeForTest();
+        TestCaseUtils.cleanAirsonicHomeForTest();
     }
 }

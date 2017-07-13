@@ -1,9 +1,9 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.domain.Transcoding;
 import org.junit.Before;
 import org.junit.Test;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.Transcoding;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

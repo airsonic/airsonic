@@ -7,7 +7,7 @@
 
     <%@ include file="head.jsp" %>
 
-    <card id="main" title="Libresonic" newcontext="false">
+    <card id="main" title="Airsonic" newcontext="false">
 
         <p><small><b>
 

@@ -6,14 +6,14 @@
 <wml>
 
     <%@ include file="head.jsp" %>
-    <card id="main" title="Libresonic" newcontext="false">
+    <card id="main" title="Airsonic" newcontext="false">
         <p><small>
             <b><a href="<c:url value="/wap/index.view"/>">[<fmt:message key="common.home"/>]</a><br/></b>
             <b><a href="#player">[<fmt:message key="wap.settings.selectplayer"/>]</a></b>
         </small></p>
     </card>
 
-    <card id="player" title="Libresonic" newcontext="false">
+    <card id="player" title="Airsonic" newcontext="false">
         <p><small>
 
             <b><a href="<c:url value="/wap/index.view"/>">[<fmt:message key="common.home"/>]</a><br/></b>

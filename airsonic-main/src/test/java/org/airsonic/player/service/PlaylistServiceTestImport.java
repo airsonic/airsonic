@@ -1,6 +1,11 @@
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.google.common.collect.Lists;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.dao.PlaylistDao;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.Playlist;
+import org.airsonic.player.service.playlist.DefaultPlaylistImportHandler;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -9,12 +14,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.dao.PlaylistDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.service.playlist.DefaultPlaylistExportHandler;
-import org.libresonic.player.service.playlist.DefaultPlaylistImportHandler;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;

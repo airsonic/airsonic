@@ -1,9 +1,9 @@
-package org.libresonic.player.boot;
+package org.airsonic.player.boot;
 
 import net.sf.ehcache.constructs.web.ShutdownListener;
+import org.airsonic.player.filter.*;
+import org.airsonic.player.spring.CustomPropertySourceConfigurer;
 import org.directwebremoting.servlet.DwrServlet;
-import org.libresonic.player.filter.*;
-import org.libresonic.player.spring.LibresonicPropertySourceConfigurer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,7 +40,7 @@ import java.lang.reflect.Method;
 @ImportResource(value = {"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
-        "classpath:/libresonic-servlet.xml"})
+        "classpath:/servlet.xml"})
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
@@ -180,7 +180,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
         // Customize the application or call application.sources(...) to add sources
         // Since our example is itself a @Configuration class (via @SpringBootApplication)
         // we actually don't need to override this method.
-        return application.sources(Application.class).web(true).initializers(new LibresonicPropertySourceConfigurer());
+        return application.sources(Application.class).web(true).initializers(new CustomPropertySourceConfigurer());
     }
 
     @Override
@@ -200,7 +200,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
             if(tomcatESCF.isInstance(container)) {
                 LOG.debug("Attempting to optimize tomcat");
                 Object tomcatESCFInstance = tomcatESCF.cast(container);
-                Class<?> tomcatApplicationClass = Class.forName("org.libresonic.player.boot.TomcatApplication");
+                Class<?> tomcatApplicationClass = Class.forName("TomcatApplication");
                 Method configure = ReflectionUtils.findMethod(tomcatApplicationClass, "configure", tomcatESCF);
                 configure.invoke(null, tomcatESCFInstance);
                 LOG.debug("Tomcat optimizations complete");

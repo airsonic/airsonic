@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.libresonic.player.security;
+package org.airsonic.player.security;
 
-import org.libresonic.player.domain.User;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
+import org.airsonic.player.domain.User;
+import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +36,11 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 @Component
-public class LibresonicUserDetailsContextMapper implements UserDetailsContextMapper {
+public class CustomUserDetailsContextMapper implements UserDetailsContextMapper {
     // ~ Instance fields
     // ================================================================================================
 
-    private final Logger logger = LoggerFactory.getLogger(LibresonicUserDetailsContextMapper.class);
+    private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsContextMapper.class);
     private String passwordAttributeName = "userPassword";
 
     @Autowired
@@ -58,7 +58,7 @@ public class LibresonicUserDetailsContextMapper implements UserDetailsContextMap
 
         logger.debug("Mapping user details from context with DN: " + dn);
 
-        // User must be defined in Libresonic, unless auto-shadowing is enabled.
+        // User must be defined in Airsonic, unless auto-shadowing is enabled.
         User user = securityService.getUserByName(username, false);
         if (user == null && !settingsService.isLdapAutoShadowing()) {
             throw new BadCredentialsException("User does not exist.");

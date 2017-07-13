@@ -1,4 +1,4 @@
-package org.libresonic.player.spring;
+package org.airsonic.player.spring;
 
 import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.springframework.core.env.PropertySource;

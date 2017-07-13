@@ -1,6 +1,6 @@
-package org.libresonic.player.filter;
+package org.airsonic.player.filter;
 
-import org.libresonic.player.monitor.MetricsManager;
+import org.airsonic.player.monitor.MetricsManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.*;

@@ -1,11 +1,11 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
+import org.airsonic.player.domain.PlayQueue;
+import org.airsonic.player.domain.PlayerTechnology;
 import org.junit.Before;
 import org.junit.Test;
-import org.libresonic.player.domain.PlayQueue;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.PlayerTechnology;
-import org.libresonic.player.domain.TranscodeScheme;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.domain.TranscodeScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;

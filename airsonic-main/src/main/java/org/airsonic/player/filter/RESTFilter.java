@@ -1,26 +1,26 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.filter;
+package org.airsonic.player.filter;
 
-import org.libresonic.player.controller.JAXBWriter;
-import org.libresonic.player.controller.RESTController;
+import org.airsonic.player.controller.JAXBWriter;
+import org.airsonic.player.controller.RESTController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -31,9 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-
-import static org.libresonic.player.controller.RESTController.ErrorCode.GENERIC;
-import static org.libresonic.player.controller.RESTController.ErrorCode.MISSING_PARAMETER;
 
 /**
  * Intercepts exceptions thrown by RESTController.
@@ -64,7 +61,7 @@ public class RESTFilter implements Filter {
             x = x.getCause();
         }
 
-        RESTController.ErrorCode code = (x instanceof ServletRequestBindingException) ? MISSING_PARAMETER : GENERIC;
+        RESTController.ErrorCode code = (x instanceof ServletRequestBindingException) ? RESTController.ErrorCode.MISSING_PARAMETER : RESTController.ErrorCode.GENERIC;
         String msg = getErrorMessage(x);
         LOG.warn("Error in REST API: " + msg, x);
 

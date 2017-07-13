@@ -1,10 +1,10 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
+import org.airsonic.player.domain.PodcastStatus;
 import org.junit.Before;
 import org.junit.Test;
-import org.libresonic.player.domain.PodcastChannel;
-import org.libresonic.player.domain.PodcastEpisode;
-import org.libresonic.player.domain.PodcastStatus;
+import org.airsonic.player.domain.PodcastChannel;
+import org.airsonic.player.domain.PodcastEpisode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;

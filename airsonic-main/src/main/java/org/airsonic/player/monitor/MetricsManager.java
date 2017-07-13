@@ -1,8 +1,8 @@
-package org.libresonic.player.monitor;
+package org.airsonic.player.monitor;
 
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
-import org.libresonic.player.service.ApacheCommonsConfigurationService;
+import org.airsonic.player.service.ApacheCommonsConfigurationService;
 
 import java.util.concurrent.TimeUnit;
 

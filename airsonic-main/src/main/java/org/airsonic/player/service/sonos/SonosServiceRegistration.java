@@ -1,24 +1,26 @@
 /*
- * This file is part of Libresonic.
+ * This file is part of Airsonic.
  *
- *  Libresonic is free software: you can redistribute it and/or modify
+ *  Airsonic is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Libresonic is distributed in the hope that it will be useful,
+ *  Airsonic is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright 2015 (C) Sindre Mehus
  */
 
-package org.libresonic.player.service.sonos;
+package org.airsonic.player.service.sonos;
 
+import org.airsonic.player.util.Pair;
+import org.airsonic.player.util.StringUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -29,8 +31,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.libresonic.player.util.Pair;
-import org.libresonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +46,12 @@ public class SonosServiceRegistration {
 
     private static final Logger LOG = LoggerFactory.getLogger(SonosServiceRegistration.class);
 
-    public void setEnabled(String libresonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName, int sonosServiceId) throws IOException {
-        String localUrl = libresonicBaseUrl + "ws/Sonos";
+    public void setEnabled(String airsonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName, int sonosServiceId) throws IOException {
+        String localUrl = airsonicBaseUrl + "ws/Sonos";
         String controllerUrl = String.format("http://%s:1400/customsd", sonosControllerIp);
 
         LOG.info((enabled ? "Enabling" : "Disabling") + " Sonos music service, using Sonos controller IP " + sonosControllerIp +
-                 ", SID " + sonosServiceId + ", and Libresonic URL " + localUrl);
+                 ", SID " + sonosServiceId + ", and Airsonic URL " + localUrl);
 
         List<Pair<String, String>> params = new ArrayList<Pair<String, String>>();
         params.add(Pair.create("sid", String.valueOf(sonosServiceId)));
@@ -68,9 +68,9 @@ public class SonosServiceRegistration {
             params.add(Pair.create("caps", "ucPlaylists"));
             params.add(Pair.create("caps", "extendedMD"));
             params.add(Pair.create("presentationMapVersion", "1"));
-            params.add(Pair.create("presentationMapUri", libresonicBaseUrl + "sonos/presentationMap.xml"));
+            params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
             params.add(Pair.create("stringsVersion", "5"));
-            params.add(Pair.create("stringsUri", libresonicBaseUrl + "sonos/strings.xml"));
+            params.add(Pair.create("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
         }
 
         String result = execute(controllerUrl, params);

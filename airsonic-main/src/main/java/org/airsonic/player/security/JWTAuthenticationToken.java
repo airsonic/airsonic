@@ -1,4 +1,4 @@
-package org.libresonic.player.security;
+package org.airsonic.player.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

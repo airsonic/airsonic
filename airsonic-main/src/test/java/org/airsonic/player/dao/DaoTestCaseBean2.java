@@ -1,10 +1,10 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.libresonic.player.util.LibresonicHomeRule;
+import org.airsonic.player.util.HomeRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,10 +19,10 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 public class DaoTestCaseBean2 {
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        LibresonicHomeRule libresonicRule = new LibresonicHomeRule();
+        HomeRule airsonicRule = new HomeRule();
         @Override
         public Statement apply(Statement base, Description description) {
-            Statement newBase = libresonicRule.apply(base, description);
+            Statement newBase = airsonicRule.apply(base, description);
             return super.apply(newBase, description);
         }
     };

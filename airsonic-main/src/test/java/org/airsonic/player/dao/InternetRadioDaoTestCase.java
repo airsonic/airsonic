@@ -1,8 +1,8 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.libresonic.player.domain.InternetRadio;
+import org.airsonic.player.domain.InternetRadio;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;

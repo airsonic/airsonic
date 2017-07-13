@@ -1,25 +1,25 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.filter;
+package org.airsonic.player.filter;
 
-import org.libresonic.player.service.SettingsService;
+import org.airsonic.player.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,10 +32,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This filter is executed very early in the filter chain. It verifies that
- * the Libresonic home directory (c:\libresonic or /var/libresonic) exists and
+ * the Airsonic home directory (c:\airsonic or /var/airsonic) exists and
  * is writable. If not, a proper error message is given to the user.
  * <p/>
- * (The Libresonic home directory is usually created automatically, but a common
+ * (The Airsonic home directory is usually created automatically, but a common
  * problem on Linux is that the Tomcat user does not have the necessary
  * privileges).
  *
@@ -44,33 +44,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BootstrapVerificationFilter implements Filter {
 
     private static final Logger LOG = LoggerFactory.getLogger(BootstrapVerificationFilter.class);
-    private boolean libresonicHomeVerified = false;
+    private boolean airsonicHomeVerified = false;
     private final AtomicBoolean serverInfoLogged = new AtomicBoolean();
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
 
         // Already verified?
-        if (libresonicHomeVerified) {
+        if (airsonicHomeVerified) {
             chain.doFilter(req, res);
             return;
         }
 
-        File home = SettingsService.getLibresonicHome();
+        File home = SettingsService.getAirsonicHome();
         if (!directoryExists(home)) {
             error(res, "<p>The directory <b>" + home + "</b> does not exist. Please create it and make it writable, " +
                        "then restart the servlet container.</p>" +
-                       "<p>(You can override the directory location by specifying -Dlibresonic.home=... when " +
+                       "<p>(You can override the directory location by specifying -Dairsonic.home=... when " +
                        "starting the servlet container.)</p>");
 
         } else if (!directoryWritable(home)) {
             error(res, "<p>The directory <b>" + home + "</b> is not writable. Please change file permissions, " +
                        "then restart the servlet container.</p>" +
-                       "<p>(You can override the directory location by specifying -Dlibresonic.home=... when " +
+                       "<p>(You can override the directory location by specifying -Dairsonic.home=... when " +
                        "starting the servlet container.)</p>");
 
         } else {
-            libresonicHomeVerified = true;
+            airsonicHomeVerified = true;
             logServerInfo(req);
             chain.doFilter(req, res);
         }
@@ -100,9 +100,9 @@ public class BootstrapVerificationFilter implements Filter {
     private void error(ServletResponse res, String error) throws IOException {
         ServletOutputStream out = res.getOutputStream();
         out.println("<html>" +
-                    "<head><title>Libresonic Error</title></head>" +
+                    "<head><title>Airsonic Error</title></head>" +
                     "<body>" +
-                    "<h2>Libresonic Error</h2>" +
+                    "<h2>Airsonic Error</h2>" +
                     error +
                     "</body>" +
                     "</html>");

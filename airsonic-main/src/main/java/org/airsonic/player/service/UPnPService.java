@@ -1,24 +1,27 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.service.upnp.ApacheUpnpServiceConfiguration;
+import org.airsonic.player.service.upnp.CustomContentDirectory;
+import org.airsonic.player.service.upnp.MSMediaReceiverRegistrarService;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.binding.annotations.AnnotationLocalServiceBinder;
@@ -32,9 +35,6 @@ import org.fourthline.cling.support.connectionmanager.ConnectionManagerService;
 import org.fourthline.cling.support.model.ProtocolInfos;
 import org.fourthline.cling.support.model.dlna.DLNAProfiles;
 import org.fourthline.cling.support.model.dlna.DLNAProtocolInfo;
-import org.libresonic.player.service.upnp.ApacheUpnpServiceConfiguration;
-import org.libresonic.player.service.upnp.LibresonicContentDirectory;
-import org.libresonic.player.service.upnp.MSMediaReceiverRegistrarService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class UPnPService {
 
     private SettingsService settingsService;
     private UpnpService upnpService;
-    private LibresonicContentDirectory libresonicContentDirectory;
+    private CustomContentDirectory customContentDirectory;
     private AtomicReference<Boolean> running = new AtomicReference<>(false);
 
     public void init() {
@@ -147,12 +147,12 @@ public class UPnPService {
 
         Icon icon = new Icon("image/png", 512, 512, 32, "logo-512", getClass().getResourceAsStream("logo-512.png"));
 
-        LocalService<LibresonicContentDirectory> contentDirectoryservice = new AnnotationLocalServiceBinder().read(LibresonicContentDirectory.class);
-        contentDirectoryservice.setManager(new DefaultServiceManager<LibresonicContentDirectory>(contentDirectoryservice) {
+        LocalService<CustomContentDirectory> contentDirectoryservice = new AnnotationLocalServiceBinder().read(CustomContentDirectory.class);
+        contentDirectoryservice.setManager(new DefaultServiceManager<CustomContentDirectory>(contentDirectoryservice) {
 
             @Override
-            protected LibresonicContentDirectory createServiceInstance() throws Exception {
-                return libresonicContentDirectory;
+            protected CustomContentDirectory createServiceInstance() throws Exception {
+                return customContentDirectory;
             }
         });
 
@@ -205,7 +205,7 @@ public class UPnPService {
         this.settingsService = settingsService;
     }
 
-    public void setLibresonicContentDirectory(LibresonicContentDirectory libresonicContentDirectory) {
-        this.libresonicContentDirectory = libresonicContentDirectory;
+    public void setCustomContentDirectory(CustomContentDirectory customContentDirectory) {
+        this.customContentDirectory = customContentDirectory;
     }
 }

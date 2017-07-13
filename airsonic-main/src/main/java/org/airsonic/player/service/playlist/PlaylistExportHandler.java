@@ -1,4 +1,4 @@
-package org.libresonic.player.service.playlist;
+package org.airsonic.player.service.playlist;
 
 import chameleon.playlist.SpecificPlaylist;
 import chameleon.playlist.SpecificPlaylistProvider;

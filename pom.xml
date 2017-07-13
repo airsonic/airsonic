@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.libresonic.player</groupId>
-    <artifactId>libresonic</artifactId>
+    <groupId>org.airsonic.player</groupId>
+    <artifactId>airsonic</artifactId>
     <version>6.3-SNAPSHOT</version>
-    <name>Libresonic</name>
+    <name>Airsonic</name>
     <packaging>pom</packaging>
     <organization>
-        <name>Libresonic</name>
-        <url>https://libresonic.org/</url>
+        <name>Airsonic</name>
+        <url>https://airsonic.org/</url>
     </organization>
     <inceptionYear>2016</inceptionYear>
 
@@ -50,9 +50,9 @@
     </pluginRepositories>
 
     <scm>
-        <connection>scm:git:git://github.com/Libresonic/libresonic.git</connection>
-        <developerConnection>scm:git:git@github.com:Libresonic/libresonic.git</developerConnection>
-        <url>https://github.com/Libresonic/libresonic.git</url>
+        <connection>scm:git:git://github.com/airsonic/airsonic.git</connection>
+        <developerConnection>scm:git:git@github.com:airsonic/airsonic.git</developerConnection>
+        <url>https://github.com/airsonic/airsonic.git</url>
     </scm>
 
 <!--    <ciManagement>
@@ -76,8 +76,8 @@
 
     <modules>
         <module>subsonic-rest-api</module>
-        <module>libresonic-sonos-api</module>
-        <module>libresonic-main</module>
+        <module>airsonic-sonos-api</module>
+        <module>airsonic-main</module>
     </modules>
 
     <dependencyManagement>
@@ -211,7 +211,7 @@
                                 <ignoredUnusedDeclaredDependency>org.seamless:seamless-http*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>taglibs:string:jar*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.seamless:seamless-http*</ignoredUnusedDeclaredDependency>
-                                <!-- Needed for libresonic-booter to load Libresonic correctly -->
+                                <!-- Needed for airsonic-booter to load Airsonic correctly -->
                                 <ignoredUnusedDeclaredDependency>org.springframework.security:*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot*</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>

@@ -1,11 +1,11 @@
-package org.libresonic.player.security;
+package org.airsonic.player.security;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import org.airsonic.player.service.JWTSecurityService;
 import org.apache.commons.lang3.StringUtils;
-import org.libresonic.player.service.JWTSecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;

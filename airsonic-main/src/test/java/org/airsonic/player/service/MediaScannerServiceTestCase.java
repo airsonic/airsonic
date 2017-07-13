@@ -1,8 +1,11 @@
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.airsonic.player.dao.*;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.MusicFolder;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -11,13 +14,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.libresonic.player.TestCaseUtils;
-import org.libresonic.player.dao.*;
-import org.libresonic.player.domain.Album;
-import org.libresonic.player.domain.Artist;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.MusicFolder;
-import org.libresonic.player.util.LibresonicHomeRule;
+import org.airsonic.player.TestCaseUtils;
+import org.airsonic.player.domain.Album;
+import org.airsonic.player.domain.Artist;
+import org.airsonic.player.util.HomeRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -40,12 +40,12 @@ import static org.junit.Assert.assertNotNull;
  * A unit test class to test the MediaScannerService.
  * <p>
  * This class uses the Spring application context configuration present in the
- * /org/libresonic/player/service/mediaScannerServiceTestCase/ directory.
+ * /org/airsonic/player/service/mediaScannerServiceTestCase/ directory.
  * <p>
  * The media library is found in the /MEDIAS directory.
  * It is composed of 2 musicFolders (Music and Music2) and several little weight audio files.
  * <p>
- * At runtime, the subsonic_home dir is set to target/test-classes/org/libresonic/player/service/mediaScannerServiceTestCase.
+ * At runtime, the subsonic_home dir is set to target/test-classes/org/airsonic/player/service/mediaScannerServiceTestCase.
  * An empty database is created on the fly.
  */
 @ContextConfiguration(locations = {
@@ -58,12 +58,12 @@ public class MediaScannerServiceTestCase {
 
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        LibresonicHomeRule libresonicRule = new LibresonicHomeRule();
+        HomeRule airsonicRule = new HomeRule();
 
         @Override
         public Statement apply(Statement base, Description description) {
             Statement spring = super.apply(base, description);
-            return libresonicRule.apply(spring, description);
+            return airsonicRule.apply(spring, description);
         }
     };
 

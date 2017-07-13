@@ -1,25 +1,29 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.google.common.collect.Lists;
+import org.airsonic.player.dao.AlbumDao;
+import org.airsonic.player.dao.ArtistDao;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.util.FileUtil;
 import org.apache.lucene.analysis.*;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
@@ -41,10 +45,6 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.util.Version;
-import org.libresonic.player.dao.AlbumDao;
-import org.libresonic.player.dao.ArtistDao;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
 
-import static org.libresonic.player.service.SearchService.IndexType.*;
+import static org.airsonic.player.service.SearchService.IndexType.*;
 
 /**
  * Performs Lucene-based searching and indexing.
@@ -166,7 +166,7 @@ public class SearchService {
         try {
             reader = createIndexReader(indexType);
             Searcher searcher = new IndexSearcher(reader);
-            Analyzer analyzer = new LibresonicAnalyzer();
+            Analyzer analyzer = new CustomAnalyzer();
 
             MultiFieldQueryParser queryParser = new MultiFieldQueryParser(LUCENE_VERSION, indexType.getFields(), analyzer, indexType.getBoosts());
 
@@ -399,7 +399,7 @@ public class SearchService {
         try {
             reader = createIndexReader(indexType);
             Searcher searcher = new IndexSearcher(reader);
-            Analyzer analyzer = new LibresonicAnalyzer();
+            Analyzer analyzer = new CustomAnalyzer();
             QueryParser queryParser = new QueryParser(LUCENE_VERSION, field, analyzer);
 
             Query q = queryParser.parse(name + "*");
@@ -445,7 +445,7 @@ public class SearchService {
 
     private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
         File dir = getIndexDirectory(indexType);
-        return new IndexWriter(FSDirectory.open(dir), new LibresonicAnalyzer(), true, new IndexWriter.MaxFieldLength(10));
+        return new IndexWriter(FSDirectory.open(dir), new CustomAnalyzer(), true, new IndexWriter.MaxFieldLength(10));
     }
 
     private IndexReader createIndexReader(IndexType indexType) throws IOException {
@@ -454,7 +454,7 @@ public class SearchService {
     }
 
     private File getIndexRootDirectory() {
-        return new File(SettingsService.getLibresonicHome(), LUCENE_DIR);
+        return new File(SettingsService.getAirsonicHome(), LUCENE_DIR);
     }
 
     private File getIndexDirectory(IndexType indexType) {
@@ -620,8 +620,8 @@ public class SearchService {
         }
     }
 
-    private class LibresonicAnalyzer extends StandardAnalyzer {
-        private LibresonicAnalyzer() {
+    private class CustomAnalyzer extends StandardAnalyzer {
+        private CustomAnalyzer() {
             super(LUCENE_VERSION);
         }
 

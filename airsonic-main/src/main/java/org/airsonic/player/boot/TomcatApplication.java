@@ -1,4 +1,4 @@
-package org.libresonic.player.boot;
+package org.airsonic.player.boot;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.Wrapper;
@@ -12,7 +12,7 @@ public class TomcatApplication {
 
             tomcatFactory.addContextCustomizers((TomcatContextCustomizer) context -> {
 
-                boolean development = (System.getProperty("libresonic.development") != null);
+                boolean development = (System.getProperty("airsonic.development") != null);
 
                 // Increase the size and time before eviction of the Tomcat
                 // cache so that resources aren't uncompressed too often.

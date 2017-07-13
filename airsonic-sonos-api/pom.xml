@@ -2,12 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>libresonic-sonos-api</artifactId>
+    <artifactId>airsonic-sonos-api</artifactId>
     <name>Sonos API</name>
 
     <parent>
-        <groupId>org.libresonic.player</groupId>
-        <artifactId>libresonic</artifactId>
+        <groupId>org.airsonic.player</groupId>
+        <artifactId>airsonic</artifactId>
         <version>6.3-SNAPSHOT</version>
     </parent>
 

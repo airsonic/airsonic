@@ -6,8 +6,8 @@
     <name>Subsonic REST API</name>
 
     <parent>
-        <groupId>org.libresonic.player</groupId>
-        <artifactId>libresonic</artifactId>
+        <groupId>org.airsonic.player</groupId>
+        <artifactId>airsonic</artifactId>
         <version>6.3-SNAPSHOT</version>
     </parent>
 

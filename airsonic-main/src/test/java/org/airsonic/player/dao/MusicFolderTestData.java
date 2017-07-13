@@ -1,6 +1,6 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
-import org.libresonic.player.domain.MusicFolder;
+import org.airsonic.player.domain.MusicFolder;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
-package org.libresonic.player.controller;
+package org.airsonic.player.controller;
 
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.service.PlaylistService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.util.StringUtil;
+import org.airsonic.player.domain.Playlist;
+import org.airsonic.player.service.PlaylistService;
+import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

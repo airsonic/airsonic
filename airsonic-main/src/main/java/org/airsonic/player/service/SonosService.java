@@ -1,26 +1,33 @@
 /*
- * This file is part of Libresonic.
+ * This file is part of Airsonic.
  *
- *  Libresonic is free software: you can redistribute it and/or modify
+ *  Airsonic is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Libresonic is distributed in the hope that it will be useful,
+ *  Airsonic is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright 2015 (C) Sindre Mehus
  */
 
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.sonos.services._1.*;
 import com.sonos.services._1_1.SonosSoap;
+import org.airsonic.player.domain.AlbumListType;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.Playlist;
+import org.airsonic.player.domain.User;
+import org.airsonic.player.service.sonos.SonosHelper;
+import org.airsonic.player.service.sonos.SonosServiceRegistration;
+import org.airsonic.player.service.sonos.SonosSoapFault;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.headers.Header;
@@ -28,13 +35,6 @@ import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.jaxb.JAXBDataBinding;
 import org.apache.cxf.jaxws.context.WrappedMessageContext;
 import org.apache.cxf.message.Message;
-import org.libresonic.player.domain.AlbumListType;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.service.sonos.SonosHelper;
-import org.libresonic.player.service.sonos.SonosServiceRegistration;
-import org.libresonic.player.service.sonos.SonosSoapFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;

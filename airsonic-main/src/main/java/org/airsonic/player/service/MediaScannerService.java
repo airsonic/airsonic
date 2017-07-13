@@ -1,31 +1,31 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.dao.AlbumDao;
+import org.airsonic.player.dao.ArtistDao;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.libresonic.player.dao.AlbumDao;
-import org.libresonic.player.dao.ArtistDao;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -391,8 +391,8 @@ public class MediaScannerService {
      * @return The index file for the given index version.
      */
     private File getIndexFile(int version) {
-        File home = SettingsService.getLibresonicHome();
-        return new File(home, "libresonic" + version + ".index");
+        File home = SettingsService.getAirsonicHome();
+        return new File(home, "airsonic" + version + ".index");
     }
 
     public void setSettingsService(SettingsService settingsService) {

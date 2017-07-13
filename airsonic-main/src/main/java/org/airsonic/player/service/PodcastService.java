@@ -1,27 +1,36 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import org.airsonic.player.dao.PodcastDao;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.PodcastChannel;
+import org.airsonic.player.domain.PodcastEpisode;
+import org.airsonic.player.domain.PodcastStatus;
+import org.airsonic.player.service.metadata.MetaData;
+import org.airsonic.player.service.metadata.MetaDataParser;
+import org.airsonic.player.service.metadata.MetaDataParserFactory;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -37,15 +46,6 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
-import org.libresonic.player.dao.PodcastDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.PodcastChannel;
-import org.libresonic.player.domain.PodcastEpisode;
-import org.libresonic.player.domain.PodcastStatus;
-import org.libresonic.player.service.metadata.MetaData;
-import org.libresonic.player.service.metadata.MetaDataParser;
-import org.libresonic.player.service.metadata.MetaDataParserFactory;
-import org.libresonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

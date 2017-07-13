@@ -1,13 +1,13 @@
-package org.libresonic.player.controller;
+package org.airsonic.player.controller;
 
 import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.airsonic.player.domain.User;
+import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.SettingsService;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,14 +132,14 @@ public class RecoverController {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(settingsService.getSmtpFrom()));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-            message.setSubject("Libresonic Password");
+            message.setSubject("Airsonic Password");
             message.setText("Hi there!\n\n" +
-                    "You have requested to reset your Libresonic password.  Please find your new login details below.\n\n" +
+                    "You have requested to reset your Airsonic password.  Please find your new login details below.\n\n" +
                     "Username: " + username + "\n" +
                     "Password: " + password + "\n\n" +
                     "--\n" +
-                    "Your Libresonic server\n" +
-                    "libresonic.org");
+                    "Your Airsonic server\n" +
+                    "airsonic.org");
             message.setSentDate(new Date());
 
             Transport trans = session.getTransport(prot);

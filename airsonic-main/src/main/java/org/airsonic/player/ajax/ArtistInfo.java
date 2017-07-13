@@ -1,25 +1,25 @@
 /*
- * This file is part of Libresonic.
+ * This file is part of Airsonic.
  *
- *  Libresonic is free software: you can redistribute it and/or modify
+ *  Airsonic is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  Libresonic is distributed in the hope that it will be useful,
+ *  Airsonic is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  Copyright 2014 (C) Sindre Mehus
  */
 
-package org.libresonic.player.ajax;
+package org.airsonic.player.ajax;
 
-import org.libresonic.player.domain.ArtistBio;
+import org.airsonic.player.domain.ArtistBio;
 
 import java.util.List;
 

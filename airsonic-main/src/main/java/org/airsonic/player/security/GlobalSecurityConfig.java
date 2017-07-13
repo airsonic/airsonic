@@ -1,9 +1,9 @@
-package org.libresonic.player.security;
+package org.airsonic.player.security;
 
+import org.airsonic.player.service.JWTSecurityService;
+import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.SettingsService;
 import org.apache.commons.lang3.StringUtils;
-import org.libresonic.player.service.JWTSecurityService;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +41,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     SettingsService settingsService;
 
     @Autowired
-    LibresonicUserDetailsContextMapper libresonicUserDetailsContextMapper;
+    CustomUserDetailsContextMapper customUserDetailsContextMapper;
 
     @Autowired
     ApplicationEventPublisher eventPublisher;
@@ -56,7 +56,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                         .url(settingsService.getLdapUrl())
                     .and()
                     .userSearchFilter(settingsService.getLdapSearchFilter())
-                    .userDetailsContextMapper(libresonicUserDetailsContextMapper);
+                    .userDetailsContextMapper(customUserDetailsContextMapper);
         }
         auth.userDetailsService(securityService);
         String jwtKey = settingsService.getJWTKey();
@@ -162,7 +162,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(
                     "/login?logout")
-                    .and().rememberMe().key("libresonic");
+                    .and().rememberMe().key("airsonic");
         }
 
     }

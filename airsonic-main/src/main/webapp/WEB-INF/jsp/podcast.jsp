@@ -3,20 +3,20 @@
 
 <rss version="2.0">
     <channel>
-        <title>Libresonic Podcast</title>
+        <title>Airsonic Podcast</title>
         <link>${model.url}</link>
-        <description>Libresonic Podcast</description>
+        <description>Airsonic Podcast</description>
         <language>en-us</language>
         <image>
-            <url>http://www.libresonic.org/pages/inc/img/libresonic_logo.png</url>
-            <title>Libresonic Podcast</title>
+            <url>http://www.airsonic.org/pages/inc/img/airsonic_logo.png</url>
+            <title>Airsonic Podcast</title>
         </image>
 
         <c:forEach var="podcast" items="${model.podcasts}">
             <item>
                 <title>${fn:escapeXml(podcast.name)}</title>
                 <link>${model.url}</link>
-                <description>Libresonic playlist "${fn:escapeXml(podcast.name)}"</description>
+                <description>Airsonic playlist "${fn:escapeXml(podcast.name)}"</description>
                 <pubDate>${podcast.publishDate}</pubDate>
                 <enclosure url="${podcast.enclosureUrl}" length="${podcast.length}" type="${podcast.type}"/>
             </item>

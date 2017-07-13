@@ -1,4 +1,4 @@
-package org.libresonic.player.spring;
+package org.airsonic.player.spring;
 
 public enum DataSourceConfigType {
     JNDI,

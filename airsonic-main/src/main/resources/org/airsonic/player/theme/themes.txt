@@ -5,8 +5,8 @@
 #
 # Author: Sindre Mehus
 
-# The original Libresonic theme.
-default "Libresonic Default" default_light
+# The original Airsonic theme.
+default "Airsonic Default" default_light
 
 # Theme with dark colors.
 midnight "2 Minutes To Midnight" default_dark

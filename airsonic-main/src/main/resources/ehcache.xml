@@ -69,7 +69,7 @@ used with JMX monitors.
     Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 
     -->
-    <!-- NOTE: The path is overridden in org.libresonic.player.cache.CacheFactory -->
+    <!-- NOTE: The path is overridden in CacheFactory -->
     <diskStore path="java.io.tmpdir"/>
 
 

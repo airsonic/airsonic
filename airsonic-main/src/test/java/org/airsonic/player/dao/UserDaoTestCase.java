@@ -1,11 +1,11 @@
-package org.libresonic.player.dao;
+package org.airsonic.player.dao;
 
+import org.airsonic.player.domain.AvatarScheme;
+import org.airsonic.player.domain.User;
+import org.airsonic.player.domain.UserSettings;
 import org.junit.Before;
 import org.junit.Test;
-import org.libresonic.player.domain.AvatarScheme;
-import org.libresonic.player.domain.TranscodeScheme;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.domain.UserSettings;
+import org.airsonic.player.domain.TranscodeScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 

@@ -1,25 +1,32 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service.upnp;
+package org.airsonic.player.service.upnp;
 
 import com.google.common.collect.Lists;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.service.JWTSecurityService;
+import org.airsonic.player.service.PlayerService;
+import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.service.TranscodingService;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fourthline.cling.support.contentdirectory.AbstractContentDirectoryService;
@@ -29,13 +36,6 @@ import org.fourthline.cling.support.model.BrowseResult;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.Res;
 import org.fourthline.cling.support.model.SortCriterion;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.service.JWTSecurityService;
-import org.libresonic.player.service.PlayerService;
-import org.libresonic.player.service.SettingsService;
-import org.libresonic.player.service.TranscodingService;
-import org.libresonic.player.util.StringUtil;
 import org.seamless.util.MimeType;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -43,7 +43,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Sindre Mehus
  * @version $Id: TagBasedContentDirectory.java 3739 2013-12-03 11:55:01Z sindre_mehus $
  */
-public abstract class LibresonicContentDirectory extends AbstractContentDirectoryService {
+public abstract class CustomContentDirectory extends AbstractContentDirectoryService {
 
     protected static final String CONTAINER_ID_ROOT = "0";
 
@@ -52,7 +52,7 @@ public abstract class LibresonicContentDirectory extends AbstractContentDirector
     private TranscodingService transcodingService;
     protected JWTSecurityService jwtSecurityService;
 
-    public LibresonicContentDirectory() {
+    public CustomContentDirectory() {
         super(Lists.newArrayList("*"), Lists.newArrayList());
     }
 

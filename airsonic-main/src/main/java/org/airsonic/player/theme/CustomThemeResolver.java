@@ -1,28 +1,28 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.theme;
+package org.airsonic.player.theme;
 
-import org.libresonic.player.domain.Theme;
-import org.libresonic.player.domain.UserSettings;
-import org.libresonic.player.service.SecurityService;
-import org.libresonic.player.service.SettingsService;
+import org.airsonic.player.domain.Theme;
+import org.airsonic.player.domain.UserSettings;
+import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.SettingsService;
 import org.springframework.web.servlet.ThemeResolver;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ import java.util.Set;
  *
  * @author Sindre Mehus
  */
-public class LibresonicThemeResolver implements ThemeResolver {
+public class CustomThemeResolver implements ThemeResolver {
 
     private SecurityService securityService;
     private SettingsService settingsService;
@@ -49,14 +49,14 @@ public class LibresonicThemeResolver implements ThemeResolver {
     * @return The current theme name
     */
     public String resolveThemeName(HttpServletRequest request) {
-        String themeId = (String) request.getAttribute("libresonic.theme");
+        String themeId = (String) request.getAttribute("airsonic.theme");
         if (themeId != null) {
             return themeId;
         }
 
         // Optimization: Cache theme in the request.
         themeId = doResolveThemeName(request);
-        request.setAttribute("libresonic.theme", themeId);
+        request.setAttribute("airsonic.theme", themeId);
 
         return themeId;
     }

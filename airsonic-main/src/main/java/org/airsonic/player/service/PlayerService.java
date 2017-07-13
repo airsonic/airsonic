@@ -1,32 +1,32 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.dao.PlayerDao;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.domain.Transcoding;
+import org.airsonic.player.domain.TransferStatus;
+import org.airsonic.player.domain.User;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.dao.PlayerDao;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.domain.Transcoding;
-import org.libresonic.player.domain.TransferStatus;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.util.StringUtil;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -238,7 +238,7 @@ public class PlayerService {
      *
      * @param username The name of the user.
      * @param clientId The third-party client ID (used if this player is managed over the
-     *                 Libresonic REST API). May be <code>null</code>.
+     *                 Airsonic REST API). May be <code>null</code>.
      * @return All relevant players.
      */
     public List<Player> getPlayersForUserAndClientId(String username, String clientId) {

@@ -1,4 +1,4 @@
-package org.libresonic.player.controller;
+package org.airsonic.player.controller;
 
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;

@@ -1,44 +1,42 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import org.airsonic.player.dao.AlbumDao;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.service.metadata.JaudiotaggerParser;
+import org.airsonic.player.service.metadata.MetaData;
+import org.airsonic.player.service.metadata.MetaDataParser;
+import org.airsonic.player.service.metadata.MetaDataParserFactory;
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.dao.AlbumDao;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.service.metadata.JaudiotaggerParser;
-import org.libresonic.player.service.metadata.MetaData;
-import org.libresonic.player.service.metadata.MetaDataParser;
-import org.libresonic.player.service.metadata.MetaDataParserFactory;
-import org.libresonic.player.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static org.libresonic.player.domain.MediaFile.MediaType.*;
 
 /**
  * Provides services for instantiating and caching media files and cover art.
@@ -464,7 +462,7 @@ public class MediaFileService {
         mediaFile.setComment(existingFile == null ? null : existingFile.getComment());
         mediaFile.setChildrenLastUpdated(new Date(0));
         mediaFile.setCreated(lastModified);
-        mediaFile.setMediaType(DIRECTORY);
+        mediaFile.setMediaType(MediaFile.MediaType.DIRECTORY);
         mediaFile.setPresent(true);
 
         if (file.isFile()) {
@@ -505,7 +503,7 @@ public class MediaFileService {
                 }
 
                 if (firstChild != null) {
-                    mediaFile.setMediaType(ALBUM);
+                    mediaFile.setMediaType(MediaFile.MediaType.ALBUM);
 
                     // Guess artist/album name, year and genre.
                     MetaDataParser parser = metaDataParserFactory.getParser(firstChild);
@@ -538,17 +536,17 @@ public class MediaFileService {
 
     private MediaFile.MediaType getMediaType(MediaFile mediaFile) {
         if (isVideoFile(mediaFile.getFormat())) {
-            return VIDEO;
+            return MediaFile.MediaType.VIDEO;
         }
         String path = mediaFile.getPath().toLowerCase();
         String genre = StringUtils.trimToEmpty(mediaFile.getGenre()).toLowerCase();
         if (path.contains("podcast") || genre.contains("podcast")) {
-            return PODCAST;
+            return MediaFile.MediaType.PODCAST;
         }
         if (path.contains("audiobook") || genre.contains("audiobook") || path.contains("audio book") || genre.contains("audio book")) {
-            return AUDIOBOOK;
+            return MediaFile.MediaType.AUDIOBOOK;
         }
-        return MUSIC;
+        return MediaFile.MediaType.MUSIC;
     }
 
     public void refreshMediaFile(MediaFile mediaFile) {

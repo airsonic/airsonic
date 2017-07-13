@@ -1,4 +1,4 @@
-package org.libresonic.player.security;
+package org.airsonic.player.security;
 
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;

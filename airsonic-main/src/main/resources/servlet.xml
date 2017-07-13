@@ -13,9 +13,9 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <mvc:annotation-driven />
-    <context:component-scan base-package="org.libresonic.player.controller,
-        org.libresonic.player.validator,
-        org.libresonic.player.security"/>
+    <context:component-scan base-package="org.airsonic.player.controller,
+        org.airsonic.player.validator,
+        org.airsonic.player.security"/>
 
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -28,15 +28,15 @@
     </bean>
 
     <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-        <property name="basename" value="org.libresonic.player.i18n.ResourceBundle"/>
+        <property name="basename" value="org.airsonic.player.i18n.ResourceBundle"/>
     </bean>
 
-    <bean id="themeSource" class="org.libresonic.player.theme.LibresonicThemeSource">
-        <property name="basenamePrefix" value="org.libresonic.player.theme."/>
+    <bean id="themeSource" class="org.airsonic.player.theme.CustomThemeSource">
+        <property name="basenamePrefix" value="org.airsonic.player.theme."/>
         <property name="settingsService" ref="settingsService"/>
     </bean>
 
-    <bean id="themeResolver" class="org.libresonic.player.theme.LibresonicThemeResolver">
+    <bean id="themeResolver" class="org.airsonic.player.theme.CustomThemeResolver">
         <property name="securityService" ref="securityService"/>
         <property name="settingsService" ref="settingsService"/>
     </bean>
@@ -47,6 +47,6 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <bean class="org.libresonic.player.spring.LoggingExceptionResolver" />
+    <bean class="org.airsonic.player.spring.LoggingExceptionResolver" />
 
 </beans>

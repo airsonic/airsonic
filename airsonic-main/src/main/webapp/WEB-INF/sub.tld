@@ -5,11 +5,11 @@
         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
         version="2.0">
 
-    <description>Libresonic tag library</description>
-    <display-name>Libresonic tag library</display-name>
+    <description>Airsonic tag library</description>
+    <display-name>Airsonic tag library</display-name>
     <tlib-version>1.1</tlib-version>
     <short-name>sub</short-name>
-    <uri>http://libresonic.org/taglib/sub</uri>
+    <uri>http://airsonic.org/taglib/sub</uri>
 
     <tag>
         <description>
@@ -20,7 +20,7 @@
             b) Parameter names are prepended with the suffix "Utf8Hex"
         </description>
         <name>url</name>
-        <tag-class>org.libresonic.player.taglib.UrlTag</tag-class>
+        <tag-class>org.airsonic.player.taglib.UrlTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>
@@ -49,7 +49,7 @@
     <tag>
         <description>Adds a parameter to a containing 'url' tag.</description>
         <name>param</name>
-        <tag-class>org.libresonic.player.taglib.ParamTag</tag-class>
+        <tag-class>org.airsonic.player.taglib.ParamTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>Name of the query string parameter.</description>
@@ -71,7 +71,7 @@
             to the current locale.
         </description>
         <name>formatBytes</name>
-        <tag-class>org.libresonic.player.taglib.FormatBytesTag</tag-class>
+        <tag-class>org.airsonic.player.taglib.FormatBytesTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>The byte count.</description>
@@ -86,7 +86,7 @@
             Renders a Wiki text with markup to HTML, using the Radeox render engine.
         </description>
         <name>wiki</name>
-        <tag-class>org.libresonic.player.taglib.WikiTag</tag-class>
+        <tag-class>org.airsonic.player.taglib.WikiTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>The Wiki markup text.</description>
@@ -101,7 +101,7 @@
             Escapes the characters in a string using JavaScript rules.
         </description>
         <name>escapeJavaScript</name>
-        <tag-class>org.libresonic.player.taglib.EscapeJavaScriptTag</tag-class>
+        <tag-class>org.airsonic.player.taglib.EscapeJavaScriptTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>The string to escape.</description>

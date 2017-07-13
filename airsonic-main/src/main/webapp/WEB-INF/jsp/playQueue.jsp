@@ -546,7 +546,7 @@
     }
 
     function updateWindowTitle(song) {
-        top.document.title = song.title + " - " + song.artist + " - Libresonic";
+        top.document.title = song.title + " - " + song.artist + " - Airsonic";
     }
 
     function showNotification(song) {
@@ -568,7 +568,7 @@
 
     function createNotification(song) {
         var n = new Notification(song.title, {
-            tag: "libresonic",
+            tag: "airsonic",
             body: song.artist + " - " + song.album,
             icon: "coverArt.view?id=" + song.id + "&size=110"
         });

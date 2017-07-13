@@ -1,4 +1,4 @@
-package org.libresonic.player.domain;
+package org.airsonic.player.domain;
 
 import com.google.common.base.Function;
 

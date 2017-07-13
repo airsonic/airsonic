@@ -19,7 +19,7 @@
         <preConditions onFail="MARK_RAN">
             <not>
                 <dbms type="hsqldb" />
-                <customPrecondition className="org.libresonic.player.spring.DbmsVersionPrecondition" >
+                <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
                     <param name="major" value="1" />
                 </customPrecondition>
             </not>
@@ -34,7 +34,7 @@
     <changeSet id="schema53_002_1" author="muff1nman">
         <preConditions onFail="MARK_RAN">
             <dbms type="hsqldb" />
-            <customPrecondition className="org.libresonic.player.spring.DbmsVersionPrecondition" >
+            <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
                 <param name="major" value="1" />
             </customPrecondition>
             <sqlCheck expectedResult="0">

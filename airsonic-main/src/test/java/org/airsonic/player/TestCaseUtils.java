@@ -1,8 +1,8 @@
-package org.libresonic.player;
+package org.airsonic.player;
 
+import org.airsonic.player.dao.DaoHelper;
+import org.airsonic.player.service.MediaScannerService;
 import org.apache.commons.io.FileUtils;
-import org.libresonic.player.dao.DaoHelper;
-import org.libresonic.player.service.MediaScannerService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,43 +15,43 @@ import java.util.stream.Collectors;
 
 public class TestCaseUtils {
 
-  private static File libresonicHomeDirForTest = null;
+  private static File airsonicHomeDirForTest = null;
 
   /**
-   * Returns the path of the LIBRESONIC_HOME directory to use for tests.
+   * Returns the path of the AIRSONIC_HOME directory to use for tests.
    * This will create a temporary directory.
    *
-   * @return LIBRESONIC_HOME directory path.
+   * @return AIRSONIC_HOME directory path.
    * @throws RuntimeException if it fails to create the temp directory.
    */
-  public static String libresonicHomePathForTest() {
+  public static String airsonicHomePathForTest() {
 
-    if (libresonicHomeDirForTest == null) {
+    if (airsonicHomeDirForTest == null) {
       try {
-        libresonicHomeDirForTest = Files.createTempDirectory("libresonic_test_").toFile();
+        airsonicHomeDirForTest = Files.createTempDirectory("airsonic_test_").toFile();
       } catch (IOException e) {
-        throw new RuntimeException("Error while creating temporary LIBRESONIC_HOME directory for tests");
+        throw new RuntimeException("Error while creating temporary AIRSONIC_HOME directory for tests");
       }
-      System.out.println("LIBRESONIC_HOME directory will be "+libresonicHomeDirForTest.getAbsolutePath());
+      System.out.println("AIRSONIC_HOME directory will be "+airsonicHomeDirForTest.getAbsolutePath());
     }
-    return libresonicHomeDirForTest.getAbsolutePath();
+    return airsonicHomeDirForTest.getAbsolutePath();
   }
 
 
   /**
-   * Cleans the LIBRESONIC_HOME directory used for tests.
+   * Cleans the AIRSONIC_HOME directory used for tests.
    *
    * @throws IOException
      */
-  public static void cleanLibresonicHomeForTest() throws IOException {
+  public static void cleanAirsonicHomeForTest() throws IOException {
 
-    File libresonicHomeDir = new File(libresonicHomePathForTest());
-    if (libresonicHomeDir.exists() && libresonicHomeDir.isDirectory()) {
-      System.out.println("Delete libresonic home (ie. "+libresonicHomeDir.getAbsolutePath()+").");
+    File airsonicHomeDir = new File(airsonicHomePathForTest());
+    if (airsonicHomeDir.exists() && airsonicHomeDir.isDirectory()) {
+      System.out.println("Delete airsonic home (ie. "+airsonicHomeDir.getAbsolutePath()+").");
       try {
-        FileUtils.deleteDirectory(libresonicHomeDir);
+        FileUtils.deleteDirectory(airsonicHomeDir);
       } catch (IOException e) {
-        System.out.println("Error while deleting libresonic home.");
+        System.out.println("Error while deleting airsonic home.");
         e.printStackTrace();
         throw e;
       }

@@ -1,4 +1,4 @@
-package org.libresonic.player.service.jukebox;
+package org.airsonic.player.service.jukebox;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

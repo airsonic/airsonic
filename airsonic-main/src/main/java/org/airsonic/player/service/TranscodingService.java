@@ -1,34 +1,34 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.controller.VideoPlayerController;
+import org.airsonic.player.dao.TranscodingDao;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.io.TranscodeInputStream;
+import org.airsonic.player.util.StringUtil;
+import org.airsonic.player.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
-import org.libresonic.player.controller.VideoPlayerController;
-import org.libresonic.player.dao.TranscodingDao;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.io.TranscodeInputStream;
-import org.libresonic.player.util.StringUtil;
-import org.libresonic.player.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -361,7 +361,7 @@ public class TranscodingService {
                 // Create temporary file, and feed this to the transcoder.
                 String path = mediaFile.getFile().getAbsolutePath();
                 if (Util.isWindows() && !mediaFile.isVideo() && !StringUtils.isAsciiPrintable(path)) {
-                    tmpFile = File.createTempFile("libresonic", "." + FilenameUtils.getExtension(path));
+                    tmpFile = File.createTempFile("airsonic", "." + FilenameUtils.getExtension(path));
                     tmpFile.deleteOnExit();
                     FileUtils.copyFile(new File(path), tmpFile);
                     LOG.debug("Created tmp file: " + tmpFile);
@@ -479,7 +479,7 @@ public class TranscodingService {
      * Returns the directory in which all transcoders are installed.
      */
     public File getTranscodeDirectory() {
-        File dir = new File(SettingsService.getLibresonicHome(), "transcode");
+        File dir = new File(SettingsService.getAirsonicHome(), "transcode");
         if (!dir.exists()) {
             boolean ok = dir.mkdir();
             if (ok) {

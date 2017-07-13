@@ -1,8 +1,8 @@
-package org.libresonic.player.service.playlist;
+package org.airsonic.player.service.playlist;
 
 import chameleon.playlist.SpecificPlaylist;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.util.Pair;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.util.Pair;
 import org.springframework.core.Ordered;
 
 import java.util.List;

@@ -1,38 +1,39 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import chameleon.playlist.SpecificPlaylist;
 import chameleon.playlist.SpecificPlaylistFactory;
 import chameleon.playlist.SpecificPlaylistProvider;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.dao.PlaylistDao;
+import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.PlayQueue;
+import org.airsonic.player.domain.Playlist;
+import org.airsonic.player.domain.User;
+import org.airsonic.player.service.playlist.PlaylistExportHandler;
+import org.airsonic.player.service.playlist.PlaylistImportHandler;
+import org.airsonic.player.util.Pair;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.libresonic.player.dao.MediaFileDao;
-import org.libresonic.player.dao.PlaylistDao;
-import org.libresonic.player.domain.MediaFile;
-import org.libresonic.player.domain.Playlist;
-import org.libresonic.player.domain.User;
-import org.libresonic.player.service.playlist.PlaylistExportHandler;
-import org.libresonic.player.service.playlist.PlaylistImportHandler;
-import org.libresonic.player.util.Pair;
-import org.libresonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
@@ -47,7 +48,7 @@ import java.util.*;
  * Provides services for loading and saving playlists to and from persistent storage.
  *
  * @author Sindre Mehus
- * @see org.libresonic.player.domain.PlayQueue
+ * @see PlayQueue
  */
 public class PlaylistService {
 

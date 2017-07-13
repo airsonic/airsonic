@@ -262,7 +262,7 @@
     </form>
 </c:if>
 
-<a href="http://libresonic.org/pages/apps.jsp" target="_blank"><img alt="Apps" src="<c:url value="/icons/default_light/apps.png"/>" style="float: right;margin-left: 3em; margin-right: 3em"/></a>
+<a href="http://airsonic.org/pages/apps.jsp" target="_blank"><img alt="Apps" src="<c:url value="/icons/default_light/apps.png"/>" style="float: right;margin-left: 3em; margin-right: 3em"/></a>
 
 <h2>
     <img src="<spring:theme code="androidImage"/>" alt=""/>

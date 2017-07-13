@@ -1,34 +1,34 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.dao.AvatarDao;
+import org.airsonic.player.dao.InternetRadioDao;
+import org.airsonic.player.dao.MusicFolderDao;
+import org.airsonic.player.dao.UserDao;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.spring.DataSourceConfigType;
+import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.util.StringUtil;
+import org.airsonic.player.util.Util;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.dao.AvatarDao;
-import org.libresonic.player.dao.InternetRadioDao;
-import org.libresonic.player.dao.MusicFolderDao;
-import org.libresonic.player.dao.UserDao;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.spring.DataSourceConfigType;
-import org.libresonic.player.util.FileUtil;
-import org.libresonic.player.util.StringUtil;
-import org.libresonic.player.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +46,9 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class SettingsService {
 
-    // Libresonic home directory.
-    private static final File LIBRESONIC_HOME_WINDOWS = new File("c:/libresonic");
-    private static final File LIBRESONIC_HOME_OTHER = new File("/var/libresonic");
+    // Airsonic home directory.
+    private static final File AIRSONIC_HOME_WINDOWS = new File("c:/airsonic");
+    private static final File AIRSONIC_HOME_OTHER = new File("/var/airsonic");
 
     // Global settings.
     private static final String KEY_INDEX_STRING = "IndexString";
@@ -129,11 +129,11 @@ public class SettingsService {
     private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts";
     private static final String DEFAULT_COVER_ART_FILE_TYPES = "cover.jpg cover.png cover.gif folder.jpg jpg jpeg gif png";
     private static final int DEFAULT_COVER_ART_CONCURRENCY = 4;
-    private static final String DEFAULT_WELCOME_TITLE = "Welcome to Libresonic!";
+    private static final String DEFAULT_WELCOME_TITLE = "Welcome to Airsonic!";
     private static final String DEFAULT_WELCOME_SUBTITLE = null;
-    private static final String DEFAULT_WELCOME_MESSAGE = "__Welcome to Libresonic!__\n" +
+    private static final String DEFAULT_WELCOME_MESSAGE = "__Welcome to Airsonic!__\n" +
             "\\\\ \\\\\n" +
-            "Libresonic is a free, web-based media streamer, providing ubiquitous access to your music. \n" +
+            "Airsonic is a free, web-based media streamer, providing ubiquitous access to your music. \n" +
             "\\\\ \\\\\n" +
             "Use it to share your music with friends, or to listen to your own music while at work. You can stream to multiple " +
             "players simultaneously, for instance to one player in your kitchen and another in your living room.\n" +
@@ -170,10 +170,10 @@ public class SettingsService {
     private static final boolean DEFAULT_SORT_ALBUMS_BY_YEAR = true;
     private static final String DEFAULT_MEDIA_LIBRARY_STATISTICS = "0 0 0 0 0";
     private static final boolean DEFAULT_DLNA_ENABLED = false;
-    private static final String DEFAULT_DLNA_SERVER_NAME = "Libresonic";
+    private static final String DEFAULT_DLNA_SERVER_NAME = "Airsonic";
     private static final String DEFAULT_DLNA_BASE_LAN_URL = null;
     private static final boolean DEFAULT_SONOS_ENABLED = false;
-    private static final String DEFAULT_SONOS_SERVICE_NAME = "Libresonic";
+    private static final String DEFAULT_SONOS_SERVICE_NAME = "Airsonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
     private static final String DEFAULT_EXPORT_PLAYLIST_FORMAT = "m3u";
 
@@ -182,7 +182,7 @@ public class SettingsService {
     private static final String DEFAULT_SMTP_PORT = "25";
     private static final String DEFAULT_SMTP_USER = null;
     private static final String DEFAULT_SMTP_PASSWORD = null;
-    private static final String DEFAULT_SMTP_FROM = "libresonic@libresonic.org";
+    private static final String DEFAULT_SMTP_FROM = "airsonic@airsonic.org";
 
     private static final DataSourceConfigType DEFAULT_DATABASE_CONFIG_TYPE = DataSourceConfigType.LEGACY;
     private static final String DEFAULT_DATABASE_CONFIG_EMBED_DRIVER = null;
@@ -205,8 +205,8 @@ public class SettingsService {
             "database.config.embed.url", "database.config.embed.username", "database.config.embed.password",
             "database.config.jndi.name", "database.usertable.quote");
 
-    private static final String LOCALES_FILE = "/org/libresonic/player/i18n/locales.txt";
-    private static final String THEMES_FILE = "/org/libresonic/player/theme/themes.txt";
+    private static final String LOCALES_FILE = "/org/airsonic/player/i18n/locales.txt";
+    private static final String THEMES_FILE = "/org/airsonic/player/theme/themes.txt";
 
     private static final Logger LOG = LoggerFactory.getLogger(SettingsService.class);
 
@@ -235,16 +235,16 @@ public class SettingsService {
 
     }
 
-    public static synchronized File getLibresonicHome() {
+    public static synchronized File getAirsonicHome() {
 
         File home;
 
-        String overrideHome = System.getProperty("libresonic.home");
+        String overrideHome = System.getProperty("airsonic.home");
         if (overrideHome != null) {
             home = new File(overrideHome);
         } else {
             boolean isWindows = System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
-            home = isWindows ? LIBRESONIC_HOME_WINDOWS : LIBRESONIC_HOME_OTHER;
+            home = isWindows ? AIRSONIC_HOME_WINDOWS : AIRSONIC_HOME_OTHER;
         }
         ensureDirectoryPresent(home);
 
@@ -252,8 +252,8 @@ public class SettingsService {
     }
 
     public static File getLogFile() {
-        File libresonicHome = SettingsService.getLibresonicHome();
-        return new File(libresonicHome, "libresonic.log");
+        File airsonicHome = SettingsService.getAirsonicHome();
+        return new File(airsonicHome, "airsonic.log");
     }
 
 
@@ -289,7 +289,7 @@ public class SettingsService {
             boolean success = home.mkdirs();
             if (!success) {
                 String message = "The directory " + home + " does not exist. Please create it and make it writable. " +
-                        "(You can override the directory location by specifying -Dlibresonic.home=... when " +
+                        "(You can override the directory location by specifying -Dairsonic.home=... when " +
                         "starting the servlet container.)";
                 throw new RuntimeException(message);
             }
@@ -297,8 +297,8 @@ public class SettingsService {
     }
 
     public static File getPropertyFile() {
-        File propertyFile = getLibresonicHome();
-        return new File(propertyFile, "libresonic.properties");
+        File propertyFile = getAirsonicHome();
+        return new File(propertyFile, "airsonic.properties");
     }
 
     private int getInt(String key, int defaultValue) {
@@ -789,7 +789,7 @@ public class SettingsService {
                 }
             } catch (IOException x) {
                 LOG.error("Failed to resolve list of themes.", x);
-                themes.add(new Theme("default", "Libresonic default"));
+                themes.add(new Theme("default", "Airsonic default"));
             }
         }
         return themes.toArray(new Theme[themes.size()]);
@@ -835,12 +835,12 @@ public class SettingsService {
     }
 
     /**
-     * Returns the "brand" name. Normally, this is just "Libresonic".
+     * Returns the "brand" name. Normally, this is just "Airsonic".
      *
      * @return The brand name.
      */
     public String getBrand() {
-        return "Libresonic";
+        return "Airsonic";
     }
 
     /**

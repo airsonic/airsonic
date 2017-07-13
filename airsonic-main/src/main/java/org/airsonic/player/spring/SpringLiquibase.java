@@ -1,4 +1,4 @@
-package org.libresonic.player.spring;
+package org.airsonic.player.spring;
 
 import liquibase.database.Database;
 import liquibase.database.DatabaseConnection;

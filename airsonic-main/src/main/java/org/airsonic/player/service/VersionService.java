@@ -1,24 +1,25 @@
 /*
- This file is part of Libresonic.
+ This file is part of Airsonic.
 
- Libresonic is free software: you can redistribute it and/or modify
+ Airsonic is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
 
- Libresonic is distributed in the hope that it will be useful,
+ Airsonic is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
- along with Libresonic.  If not, see <http://www.gnu.org/licenses/>.
+ along with Airsonic.  If not, see <http://www.gnu.org/licenses/>.
 
- Copyright 2016 (C) Libresonic Authors
+ Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
+import org.airsonic.player.domain.Version;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -26,7 +27,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.libresonic.player.domain.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 
 /**
  * Provides version-related services, including functionality for determining whether a newer
- * version of Libresonic is available.
+ * version of Airsonic is available.
  *
  * @author Sindre Mehus
  */
@@ -67,29 +67,29 @@ public class VersionService {
     /**
      * URL from which to fetch latest versions.
      */
-    private static final String VERSION_URL = "http://libresonic.org/release/version.txt";
+    private static final String VERSION_URL = "http://airsonic.org/release/version.txt";
 
     /**
-     * Returns the version number for the locally installed Libresonic version.
+     * Returns the version number for the locally installed Airsonic version.
      *
-     * @return The version number for the locally installed Libresonic version.
+     * @return The version number for the locally installed Airsonic version.
      */
     public synchronized Version getLocalVersion() {
         if (localVersion == null) {
             try {
                 localVersion = new Version(readLineFromResource("/version.txt"));
-                LOG.info("Resolved local Libresonic version to: " + localVersion);
+                LOG.info("Resolved local Airsonic version to: " + localVersion);
             } catch (Exception x) {
-                LOG.warn("Failed to resolve local Libresonic version.", x);
+                LOG.warn("Failed to resolve local Airsonic version.", x);
             }
         }
         return localVersion;
     }
 
     /**
-     * Returns the version number for the latest available Libresonic final version.
+     * Returns the version number for the latest available Airsonic final version.
      *
-     * @return The version number for the latest available Libresonic final version, or <code>null</code>
+     * @return The version number for the latest available Airsonic final version, or <code>null</code>
      *         if the version number can't be resolved.
      */
     public synchronized Version getLatestFinalVersion() {
@@ -98,9 +98,9 @@ public class VersionService {
     }
 
     /**
-     * Returns the version number for the latest available Libresonic beta version.
+     * Returns the version number for the latest available Airsonic beta version.
      *
-     * @return The version number for the latest available Libresonic beta version, or <code>null</code>
+     * @return The version number for the latest available Airsonic beta version, or <code>null</code>
      *         if the version number can't be resolved.
      */
     public synchronized Version getLatestBetaVersion() {
@@ -109,9 +109,9 @@ public class VersionService {
     }
 
     /**
-     * Returns the build date for the locally installed Libresonic version.
+     * Returns the build date for the locally installed Airsonic version.
      *
-     * @return The build date for the locally installed Libresonic version, or <code>null</code>
+     * @return The build date for the locally installed Airsonic version, or <code>null</code>
      *         if the build date can't be resolved.
      */
     public synchronized Date getLocalBuildDate() {
@@ -120,16 +120,16 @@ public class VersionService {
                 String date = readLineFromResource("/build_date.txt");
                 localBuildDate = DATE_FORMAT.parse(date);
             } catch (Exception x) {
-                LOG.warn("Failed to resolve local Libresonic build date.", x);
+                LOG.warn("Failed to resolve local Airsonic build date.", x);
             }
         }
         return localBuildDate;
     }
 
     /**
-     * Returns the build number for the locally installed Libresonic version.
+     * Returns the build number for the locally installed Airsonic version.
      *
-     * @return The build number for the locally installed Libresonic version, or <code>null</code>
+     * @return The build number for the locally installed Airsonic version, or <code>null</code>
      *         if the build number can't be resolved.
      */
     public synchronized String getLocalBuildNumber() {
@@ -137,16 +137,16 @@ public class VersionService {
             try {
                 localBuildNumber = readLineFromResource("/build_number.txt");
             } catch (Exception x) {
-                LOG.warn("Failed to resolve local Libresonic build number.", x);
+                LOG.warn("Failed to resolve local Airsonic build number.", x);
             }
         }
         return localBuildNumber;
     }
 
     /**
-     * Returns whether a new final version of Libresonic is available.
+     * Returns whether a new final version of Airsonic is available.
      *
-     * @return Whether a new final version of Libresonic is available.
+     * @return Whether a new final version of Airsonic is available.
      */
     public boolean isNewFinalVersionAvailable() {
         Version latest = getLatestFinalVersion();
@@ -160,9 +160,9 @@ public class VersionService {
     }
 
     /**
-     * Returns whether a new beta version of Libresonic is available.
+     * Returns whether a new beta version of Airsonic is available.
      *
-     * @return Whether a new beta version of Libresonic is available.
+     * @return Whether a new beta version of Airsonic is available.
      */
     public boolean isNewBetaVersionAvailable() {
         Version latest = getLatestBetaVersion();
@@ -212,13 +212,13 @@ public class VersionService {
                 lastVersionFetched = now;
                 readLatestVersion();
             } catch (Exception x) {
-                LOG.warn("Failed to resolve latest Libresonic version.", x);
+                LOG.warn("Failed to resolve latest Airsonic version.", x);
             }
         }
     }
 
     /**
-     * Resolves the latest available Libresonic version by screen-scraping a web page.
+     * Resolves the latest available Airsonic version by screen-scraping a web page.
      *
      * @throws IOException If an I/O error occurs.
      */
@@ -236,8 +236,8 @@ public class VersionService {
             content = client.execute(method, responseHandler);
         }
 
-        Pattern finalPattern = Pattern.compile("LIBRESONIC_FULL_VERSION_BEGIN(.*)LIBRESONIC_FULL_VERSION_END");
-        Pattern betaPattern = Pattern.compile("LIBRESONIC_BETA_VERSION_BEGIN(.*)LIBRESONIC_BETA_VERSION_END");
+        Pattern finalPattern = Pattern.compile("AIRSONIC_FULL_VERSION_BEGIN(.*)AIRSONIC_FULL_VERSION_END");
+        Pattern betaPattern = Pattern.compile("AIRSONIC_BETA_VERSION_BEGIN(.*)AIRSONIC_BETA_VERSION_END");
 
         try (BufferedReader reader = new BufferedReader(new StringReader(content))) {
             String line = reader.readLine();
@@ -245,12 +245,12 @@ public class VersionService {
                 Matcher finalMatcher = finalPattern.matcher(line);
                 if (finalMatcher.find()) {
                     latestFinalVersion = new Version(finalMatcher.group(1));
-                    LOG.info("Resolved latest Libresonic final version to: " + latestFinalVersion);
+                    LOG.info("Resolved latest Airsonic final version to: " + latestFinalVersion);
                 }
                 Matcher betaMatcher = betaPattern.matcher(line);
                 if (betaMatcher.find()) {
                     latestBetaVersion = new Version(betaMatcher.group(1));
-                    LOG.info("Resolved latest Libresonic beta version to: " + latestBetaVersion);
+                    LOG.info("Resolved latest Airsonic beta version to: " + latestBetaVersion);
                 }
                 line = reader.readLine();
             }
