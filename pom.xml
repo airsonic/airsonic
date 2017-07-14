@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.libresonic.player</groupId>
     <artifactId>libresonic</artifactId>
-    <version>6.2</version>
+    <version>6.2.1</version>
     <name>Libresonic</name>
     <packaging>pom</packaging>
     <organization>
