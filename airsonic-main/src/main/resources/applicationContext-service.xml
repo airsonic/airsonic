@@ -185,7 +185,7 @@
         <property name="securityService" ref="securityService"/>
     </bean>
 
-    <bean id="jukeboxJavaService" class="org.libresonic.player.service.JukeboxJavaService">
+    <bean id="jukeboxJavaService" class="org.airsonic.player.service.JukeboxJavaService">
         <property name="statusService" ref="statusService"/>
         <property name="audioScrobblerService" ref="audioScrobblerService"/>
         <property name="mediaFileService" ref="mediaFileService"/>

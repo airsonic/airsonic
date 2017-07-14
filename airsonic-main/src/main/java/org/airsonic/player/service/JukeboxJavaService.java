@@ -1,11 +1,11 @@
-package org.libresonic.player.service;
+package org.airsonic.player.service;
 
 import com.github.biconou.AudioPlayer.JavaPlayer;
 import com.github.biconou.AudioPlayer.api.*;
+import org.airsonic.player.domain.*;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
-import org.libresonic.player.domain.*;
-import org.libresonic.player.domain.Player;
-import org.libresonic.player.util.FileUtil;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;

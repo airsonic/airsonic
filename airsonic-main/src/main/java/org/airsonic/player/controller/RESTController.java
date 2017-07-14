@@ -25,6 +25,7 @@ import org.airsonic.player.ajax.PlayQueueService;
 import org.airsonic.player.command.UserSettingsCommand;
 import org.airsonic.player.dao.*;
 import org.airsonic.player.domain.*;
+import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.service.*;
 import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
