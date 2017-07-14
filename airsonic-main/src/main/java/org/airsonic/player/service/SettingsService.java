@@ -240,8 +240,11 @@ public class SettingsService {
         File home;
 
         String overrideHome = System.getProperty("airsonic.home");
+        String oldHome = System.getProperty("libresonic.home");
         if (overrideHome != null) {
             home = new File(overrideHome);
+        } else if(oldHome != null) {
+            home = new File(oldHome);
         } else {
             boolean isWindows = System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
             home = isWindows ? AIRSONIC_HOME_WINDOWS : AIRSONIC_HOME_OTHER;
@@ -251,9 +254,18 @@ public class SettingsService {
         return home;
     }
 
+    public static String getFileSystemAppName() {
+        String home = getAirsonicHome().getPath();
+        return home.contains("libresonic") ? "libresonic" : "airsonic";
+    }
+
+    public static String getDefaultJDBCUrl() {
+        return "jdbc:hsqldb:file:" + getAirsonicHome().getPath() + "/db/" + getFileSystemAppName();
+    }
+
     public static File getLogFile() {
         File airsonicHome = SettingsService.getAirsonicHome();
-        return new File(airsonicHome, "airsonic.log");
+        return new File(airsonicHome, getFileSystemAppName() + ".log");
     }
 
 
@@ -298,7 +310,7 @@ public class SettingsService {
 
     public static File getPropertyFile() {
         File propertyFile = getAirsonicHome();
-        return new File(propertyFile, "airsonic.properties");
+        return new File(propertyFile, getFileSystemAppName() + ".properties");
     }
 
     private int getInt(String key, int defaultValue) {
