@@ -1,10 +1,10 @@
 <!--
 # DOCUMENTATION.md
-# Libresonic/player
+# Airsonic/player
 -->
 
 Documentation
 =============
 
-Documentation is stored in a [dedicated repository](https://github.com/Libresonic/documentation).
+Documentation is stored in a [dedicated repository](https://github.com/Airsonic/documentation).
 

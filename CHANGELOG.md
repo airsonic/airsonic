@@ -1,6 +1,6 @@
 <!--
 # CHANGELOG.md
-# Libresonic/libresonic
+# airsonic/airsonic
 # -->
 
 v6.2
@@ -62,7 +62,7 @@ v6.1.beta1
 v6.1-alpha1
 -----------
 
-  * Search+replace subsonic-->libresonic
+  * Search+replace subsonic-->airsonic
   * Move out of org.sourceforge.subsonic namespace
   * Develop becomes horribly unstable, you shouldn't be using this.
 
@@ -76,5 +76,5 @@ v6.0.1
 v6.0
 ----
 
-  * First release as Libresonic
+  * First release as Airsonic
   * Based upon Subsonic 5.3(stable)
