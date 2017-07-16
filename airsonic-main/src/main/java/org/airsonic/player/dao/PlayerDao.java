@@ -19,8 +19,8 @@
  */
 package org.airsonic.player.dao;
 
-import org.apache.commons.lang.StringUtils;
 import org.airsonic.player.domain.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
