@@ -401,7 +401,7 @@
                     Upgrade to Subsonic Premium and get:
                 </p>
                 <div style="font-size: 90%;padding-bottom: 1em">
-                    <p><a href="http://airsonic.org/pages/apps.jsp" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
+                    <p><a href="https://airsonic.github.io/docs/apps/" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
                     <p>Video streaming.</p>
                     <p>Chromecast and Sonos support.</p>
                     <p>DLNA/UPnP support</p>

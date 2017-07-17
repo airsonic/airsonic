@@ -52,7 +52,7 @@ Usage
 -----
 
 Airsonic can be downloaded from
-[GitHub](https://github.com/airsonic/airsonic/releases) for personal usage.
+[GitHub](https://github.com/airsonic/airsonic/releases).
 
 Please use the [Airsonic documentation](https://airsonic.github.io/docs/) for instructions on running Airsonic.
 
