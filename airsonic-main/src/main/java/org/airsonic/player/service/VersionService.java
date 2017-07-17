@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.service;
 
+import com.jayway.jsonpath.JsonPath;
 import org.airsonic.player.domain.Version;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.ResponseHandler;
@@ -30,10 +31,18 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -63,11 +72,6 @@ public class VersionService {
      * Only fetch last version this often (in milliseconds.).
      */
     private static final long LAST_VERSION_FETCH_INTERVAL = 7L * 24L * 3600L * 1000L; // One week
-
-    /**
-     * URL from which to fetch latest versions.
-     */
-    private static final String VERSION_URL = "http://airsonic.org/release/version.txt";
 
     /**
      * Returns the version number for the locally installed Airsonic version.
@@ -217,13 +221,16 @@ public class VersionService {
         }
     }
 
+    private final String JSON_PATH = "$..tag_name";
+    private final Pattern VERSION_REGEX = Pattern.compile("^v(.*)");
+    private static final String VERSION_URL = "https://api.github.com/repos/airsonic/airsonic/releases";
+
     /**
-     * Resolves the latest available Airsonic version by screen-scraping a web page.
-     *
-     * @throws IOException If an I/O error occurs.
+     * Resolves the latest available Airsonic version by inspecting github.
      */
     private void readLatestVersion() throws IOException {
 
+        LOG.debug("Starting to read latest version");
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(10000)
                 .setSocketTimeout(10000)
@@ -236,25 +243,25 @@ public class VersionService {
             content = client.execute(method, responseHandler);
         }
 
-        Pattern finalPattern = Pattern.compile("AIRSONIC_FULL_VERSION_BEGIN(.*)AIRSONIC_FULL_VERSION_END");
-        Pattern betaPattern = Pattern.compile("AIRSONIC_BETA_VERSION_BEGIN(.*)AIRSONIC_BETA_VERSION_END");
+        List<String> unsortedTags = JsonPath.read(content, JSON_PATH);
 
-        try (BufferedReader reader = new BufferedReader(new StringReader(content))) {
-            String line = reader.readLine();
-            while (line != null) {
-                Matcher finalMatcher = finalPattern.matcher(line);
-                if (finalMatcher.find()) {
-                    latestFinalVersion = new Version(finalMatcher.group(1));
-                    LOG.info("Resolved latest Airsonic final version to: " + latestFinalVersion);
-                }
-                Matcher betaMatcher = betaPattern.matcher(line);
-                if (betaMatcher.find()) {
-                    latestBetaVersion = new Version(betaMatcher.group(1));
-                    LOG.info("Resolved latest Airsonic beta version to: " + latestBetaVersion);
-                }
-                line = reader.readLine();
+        Function<String, Version> convertToVersion = s -> {
+            Matcher match = VERSION_REGEX.matcher(s);
+            if(!match.matches()) {
+                throw new RuntimeException("Unexpected tag format " + s);
             }
+            return new Version(match.group(1));
+        };
 
-        }
+        Predicate<Version> finalVersionPredicate = version -> !version.isPreview();
+
+        Optional<Version> betaV = unsortedTags.stream().map(convertToVersion).sorted(Comparator.reverseOrder()).findFirst();
+        Optional<Version> finalV = unsortedTags.stream().map(convertToVersion).sorted(Comparator.reverseOrder()).filter(finalVersionPredicate).findFirst();
+
+        LOG.debug("Got {} for beta version", betaV);
+        LOG.debug("Got {} for final version", finalV);
+
+        latestBetaVersion = betaV.get();
+        latestFinalVersion = finalV.get();
     }
 }
