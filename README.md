@@ -59,6 +59,10 @@ Please use the [Airsonic documentation](https://airsonic.github.io/docs/) for in
 
 Community
 ---------
-Please see [Reddit](https://www.reddit.com/r/airsonic) or
-[IRC](http://webchat.freenode.net?channels=%23airsonic) for community
-discussion.
+We have several places outside of github for community discussion, questions, etc:
+
+- #airsonic on Matrix - There are several clients, one of which is [riot](https://riot.im/app/#/room/#airsonic:matrix.org).
+- [#airsonic on IRC](http://webchat.freenode.net?channels=%23airsonic)
+- [airsonic subreddit](https://www.reddit.com/r/airsonic)
+
+*Note that the Matrix room and IRC channel are bridged together.*
