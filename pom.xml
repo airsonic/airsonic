@@ -169,6 +169,16 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>1.3.4</version>
+                    <inherited>false</inherited>
+                    <configuration>
+                        <repository>airsonic/airsonic</repository>
+                        <tag>${project.version}</tag>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 

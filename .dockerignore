@@ -1,0 +1,15 @@
+*.md
+*.xml
+*.yml
+*.txt
+*.html
+
+.gitignore
+.git/
+contrib/
+airsonic-main/
+!airsonic-main/target/airsonic.war
+subsonic-rest-api/
+airsonic-sonos-api/
+repo/
+target/
