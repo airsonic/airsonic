@@ -139,7 +139,7 @@ public class RecoverController {
                     "Password: " + password + "\n\n" +
                     "--\n" +
                     "Your Airsonic server\n" +
-                    "airsonic.org");
+                    "airsonic.github.io/");
             message.setSentDate(new Date());
 
             Transport trans = session.getTransport(prot);
