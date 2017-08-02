@@ -6,5 +6,5 @@
 Documentation
 =============
 
-Documentation is stored in a [dedicated repository](https://github.com/airsonic/documentation) and can be used using [our website](https://airsonic.github.io/docs)
+Documentation is stored in a [dedicated repository](https://github.com/airsonic/documentation) and can be browsed using [our website](https://airsonic.github.io/docs)
 
