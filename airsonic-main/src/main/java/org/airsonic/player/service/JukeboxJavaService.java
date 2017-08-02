@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -112,7 +113,34 @@ public class JukeboxJavaService {
                 } else {
                     log.debug("Different file to play -> start a new play list");
                     if (currentFileInPlayQueue != null) {
-                        audioPlayer.setPlayList(libresonicPlayer.getPlayQueue());
+                        audioPlayer.setPlayList(new PlayList() {
+
+                            @Override
+                            public File getNextAudioFile() throws IOException {
+                                libresonicPlayer.getPlayQueue().next();
+                                return getCurrentAudioFile();
+                            }
+
+                            @Override
+                            public File getCurrentAudioFile() {
+                                MediaFile current = libresonicPlayer.getPlayQueue().getCurrentFile();
+                                if (current != null) {
+                                    return libresonicPlayer.getPlayQueue().getCurrentFile().getFile();
+                                } else {
+                                    return null;
+                                }
+                            }
+
+                            @Override
+                            public int getSize() {
+                                return libresonicPlayer.getPlayQueue().size();
+                            }
+
+                            @Override
+                            public int getIndex() {
+                                return libresonicPlayer.getPlayQueue().getIndex();
+                            }
+                        });
                         // Close any other player using the same mixer.
                         String mixer = libresonicPlayer.getJavaJukeboxMixer();
                         if (StringUtils.isBlank(mixer)) {
