@@ -25,10 +25,20 @@ History
 
 The original [Subsonic](http://www.subsonic.org/) is developed by [Sindre Mehus](mailto:sindre@activeobjects.no). Subsonic was open source through version 6.0-beta1, and closed-source from then onwards.
 
-Airsonic is maintained by [Eugene E. Kashpureff Jr](mailto:eugene@kashpureff.org). It originated as an unofficial("Kang") of Subsonic which did not contain the Licensing code checks present in the official builds. With the announcement of Subsonic's closed-source future, a decision was made to make a full fork and rebrand to Airsonic.
+Libresonic was created and maintained by [Eugene E. Kashpureff Jr](mailto:eugene@kashpureff.org). It originated as an unofficial("Kang") of Subsonic which did not contain the Licensing code checks present in the official builds. With the announcement of Subsonic's closed-source future, a decision was made to make a full fork and rebrand to Libresonic.
 
-Airsonic will strive to maintain compatibility and stability for Subsonic users, including a clean upgrade path. New features and refactoring are welcomed as a Pull Request on GitHub.
+Around July 2017, it was discovered that Eugene had different intentions/goals
+for the project than some contributors had.  Although the developers were
+hesitant to create a fork as it would fracture/confuse the community even
+further, it was deemed necessary in order to preserve a community-focused fork.
+To reiterate this more clearly:
 
+Airsonic's goal is to provide a full-featured, stable, self-hosted media server
+based on the Subsonic codebase that is free, open source, and community driven.
+
+Pull Requests are always welcome. Keep in mind that we strive to balance
+stability with new features. As such, all Pull Requests are reviewed before
+being merged to ensure we continue to meet our goals.
 
 License
 -------
@@ -42,14 +52,17 @@ Usage
 -----
 
 Airsonic can be downloaded from
-[GitHub](https://github.com/airsonic/airsonic/releases) for personal usage.
-Packagers can also reference the [release repository](https://airsonic.org/release/).
+[GitHub](https://github.com/airsonic/airsonic/releases).
 
 Please use the [Airsonic documentation](https://airsonic.github.io/docs/) for instructions on running Airsonic.
 
 
 Community
 ---------
-Please see [Reddit](https://www.reddit.com/r/airsonic) or
-[IRC](http://webchat.freenode.net?channels=%23airsonic) for community
-discussion.
+We have several places outside of github for community discussion, questions, etc:
+
+- #airsonic on Matrix - There are several clients, one of which is [riot](https://riot.im/app/#/room/#airsonic:matrix.org).
+- [#airsonic on IRC](http://webchat.freenode.net?channels=%23airsonic)
+- [airsonic subreddit](https://www.reddit.com/r/airsonic)
+
+*Note that the Matrix room and IRC channel are bridged together.*

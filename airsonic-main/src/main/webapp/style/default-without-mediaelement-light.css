@@ -1,0 +1,445 @@
+/* The primary background color (light gray). */
+.bgcolor1, table.music tr:nth-of-type(even) {
+    background-color: #F9F9F9;
+}
+
+/* The secondary background color (darker gray). */
+.bgcolor2, .ruleTableHeader, .log, table.music tr:nth-of-type(odd) {
+    background-color: #F1F1F1
+}
+
+.headerSelected {
+    border-bottom: 3px solid darkorange;
+}
+
+/* Put stuff here if you need to customize any of the frames. */
+.mainframe {
+    padding-left:1em
+}
+.topframe {
+}
+.leftframe {
+}
+.rightframe {
+}
+.playlistframe {
+}
+
+.topframe::-webkit-scrollbar:vertical {
+    display:none
+}
+.leftframe::-webkit-scrollbar:horizontal {
+    display:none
+}
+
+/* Background color for form controls (use default). */
+input, select {
+}
+
+/* The primary foreground color (black). */
+body {
+    color: black;
+}
+
+/* The secondary foreground color used for h1, h2, details etc (gray). */
+h1, h2, .detail, .albumComment {
+    color: #696969;
+}
+
+/* Foreground color used for bold and tr. */
+b, tr {
+    color: #333333;
+}
+
+/* Link color */
+a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
+    color: #006699
+}
+
+/* Link hover color */
+a:hover, a:hover * {
+    text-decoration: underline;
+    color: #DD6900
+}
+
+/* Color for warning messages. */
+.warning {
+    color: red;
+}
+
+/* Simple dark border. */
+.border1, .ruleTableHeader, .ruleTableCell, .log {
+    border: 1px solid black;
+}
+
+/* Scrollbar colors (supported on IE and Opera) */
+body {
+    scrollbar-face-color: #DEE3E7;
+    scrollbar-highlight-color: #FFFFFF;
+    scrollbar-shadow-color: #DEE3E7;
+    scrollbar-3dlight-color: #D1D7DC;
+    scrollbar-arrow-color: #006699;
+    scrollbar-track-color: #EFEFEF;
+    scrollbar-darkshadow-color: #98AAB1;
+}
+
+body, form, label, table, a {
+    font-family: 'Roboto', arial, sans-serif;
+}
+
+h1, h1 a {
+    font-family: 'Ubuntu', arial, sans-serif;
+    font-weight: normal;
+}
+
+h2, h2 a, .topHeader a {
+    font-family: 'Roboto', arial, sans-serif;
+    font-weight: normal;
+}
+
+/* Login page */
+
+#loginframe {
+    padding: 20px 50px;
+    margin: 100px 50px;
+    display: list-item;
+    list-style: none;
+    text-align: center;
+}
+
+#loginframe > * {
+    margin: 0 auto;
+    display: block;
+}
+
+#loginframe .loginmessagetop {
+    margin-bottom: 1em;
+    max-width: 30rem;
+}
+
+#loginframe input[type=text],
+#loginframe input[type=submit],
+#loginframe input[type=password] {
+    width: 20rem;
+    margin-bottom: 0.5em;
+}
+
+#loginframe input[type=submit] {
+    margin: 1rem auto;
+    padding: 0.3rem;
+    background: #2f7bd9;
+    color: #f2f2f2;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+
+#loginframe input[type=submit]:hover {
+    background: #f2f2f2;
+    color: #2d2d2d;
+}
+
+#loginremember {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+#loginframe .loginmessagebottom {
+    margin-top: 1em;
+    max-width: 50em;
+}
+
+/***************************************************************************************
+ * The rest of the CSS is typically not changed in other themes (but not necessarily so).
+ ***************************************************************************************/
+
+body {
+    padding:0;
+    border:0;
+    margin:0.75em;
+    font-size: 10.5pt;
+    line-height: 1.5em;
+}
+
+p {
+    padding:0;
+    border:0;
+    margin:0 0 1em 0;
+}
+
+.dense {
+    white-space: nowrap;
+    margin: 0;
+    line-height: 1.5em
+}
+
+h1 {
+    white-space: nowrap;
+    font-size: 150%;
+    padding: 0;
+    border: 0;
+    margin: 0;
+}
+
+h2 {
+    white-space: nowrap;
+    font-size: 108%;
+    margin: 0.8em 0 0.2em 0;
+}
+
+form {
+    font-size: 100%;
+    line-height: 140%;
+    padding: 0;
+    border: 0;
+    margin: 0;
+}
+
+input, textarea, select {
+    font-size: 90%;
+    padding: 3px;
+    border-radius: 3px;
+    border: 1px solid lightgray;
+}
+
+input[type=submit], input[type=button] {
+    background: white;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+input[type=submit]:active, input[type=button]:active {
+    background: #e9e9e9;
+}
+
+input:hover, textarea:hover, select:hover {
+    border: 1px solid darkgray;
+}
+
+label {
+    font-size: 100%;
+    line-height: 140%;
+}
+
+table {
+    font-size: 100%;
+    line-height: 140%;
+    padding: 0;
+    border: 0;
+    margin: 0 0 0.4em 0;
+}
+
+
+/* Table with some white space above it.*/
+table.indent {
+    margin: 1em 0 0.4em 0;
+}
+
+table.music {
+    line-height: 190%;
+    border-collapse:collapse;
+    white-space:nowrap;
+    width: 100%;
+}
+
+td.fit {
+    width:1px;
+    padding-left:4px;
+    padding-right:4px;
+}
+
+td.truncate {
+    max-width:50px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    padding-left:10px;
+    padding-right:10px;
+}
+
+td.rightalign {
+    text-align:right;
+    padding-right: 20px;
+}
+
+a {
+    font-size: 100%;
+    text-decoration: none
+}
+
+img {
+    border-style: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+.dropshadow {
+    box-shadow: 2px 2px 10px #333333;
+}
+
+.shadow {
+    box-shadow: 0 0 20px 3px #555555;
+}
+
+.coverart {
+    background-color: white;
+    color: #323232;
+    border-radius:2px;
+}
+
+.coverart .caption1 {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding:6px 8px 4px 8px;
+    line-height: 100%;
+    font-weight: 300;
+}
+
+.coverart .caption1 a:link, .coverart .caption1 a:visited  {
+    color: #323232;
+}
+
+.coverart .caption2 {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding:0px 8px 5px 8px;
+    font-size: 90%;
+    color: #aaaaaa;
+    line-height: 100%;
+    font-weight: 300;
+}
+
+.coverart .caption3 {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    padding:0px 8px 5px 8px;
+    font-size: 90%;
+    color: #aaaaaa;
+    line-height: 100%;
+    font-weight: 300;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.5);
+    border-radius: 6px;
+}
+
+.header, .headerSelected {
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    vertical-align: middle;
+}
+
+.similar-artist-divider {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+.detail {
+    white-space: nowrap;
+    font-size: 90%;
+    line-height: 1.25em;
+}
+
+.songTitle {
+    font-style: italic;
+}
+
+.topHeader, .topHeader a {
+    font-size: 102%;
+    padding: 0.15em 0 0 0;
+    margin: 0;
+    border: 0;
+    white-space: nowrap;
+}
+
+.back, .forward {
+    background-position:center left;
+    background-repeat:no-repeat;
+    padding-left: 12px;
+    line-height: 16px;
+}
+
+.back {
+    background-image:url("../icons/default_light/back.png");
+}
+
+.forward {
+    background-image:url("../icons/default_light/forward.png");
+}
+
+.albumComment {
+    width: 50em;
+    font-size: 90%;
+    line-height: 1.4em;
+    padding-top: 0.25em;
+}
+
+.albumThumb {
+    display:inline-block;
+    vertical-align: top;
+    padding-bottom: 20px;
+    padding-right: 20px;
+}
+
+.albumOverflowButton {
+    display:inline-block;
+    cursor:pointer;
+    vertical-align:bottom;
+    margin-left:15px;
+    margin-bottom:20px
+}
+
+.log {
+    white-space: nowrap;
+    font-size: 90%;
+    line-height: 1em;
+}
+
+.checkbox {
+    border: 0
+}
+
+/* Table with simple lines between the cells. */
+.ruleTable {
+    border-collapse: collapse;
+}
+
+.ruleTableHeader, .ruleTableCell {
+    margin: 5px;
+    padding: 5px;
+}
+
+.ruleTableHeader {
+    font-weight: bold;
+}
+
+.context-menu-item {
+    color: black;
+}
+
+/*
+ * Styles related to java jukebox controls
+ */
+
+.javaJukeBoxPlayerControlBarSongTime {
+    width : 50px;
+    font-size: 80%;
+    text-align: right;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#javaJukeboxSongPositionSlider {
+    width : 200px;
+    height : 4px;
+}
