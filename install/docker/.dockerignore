@@ -1,0 +1,4 @@
+!target/airsonic.war
+.gitignore
+pom.xml
+target/

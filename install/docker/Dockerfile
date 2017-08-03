@@ -8,7 +8,7 @@ ENV UID=1001 GID=1001 AIRSONIC_PORT=4040 AIRSONIC_DIR=/airsonic
 WORKDIR $AIRSONIC_DIR
 
 COPY dockerfiles/run.sh /usr/local/bin/run.sh
-COPY airsonic-main/target/airsonic.war airsonic.war
+COPY target/dependency/airsonic-main-6.3-SNAPSHOT.war airsonic.war
 
 RUN apk --no-cache add \
     ffmpeg \
