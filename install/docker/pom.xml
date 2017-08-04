@@ -39,6 +39,7 @@
                 <configuration>
                     <repository>airsonic/airsonic</repository>
                     <tag>${project.version}</tag>
+                    <retryCount>0</retryCount>
                 </configuration>
             </plugin>
             <plugin>

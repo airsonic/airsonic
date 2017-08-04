@@ -1,4 +1,4 @@
-!target/airsonic.war
 .gitignore
 pom.xml
 target/
+!target/dependency/*
