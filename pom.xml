@@ -221,4 +221,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <modules>
+                <module>subsonic-rest-api</module>
+                <module>airsonic-sonos-api</module>
+                <module>airsonic-main</module>
+                <module>install/docker</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>
