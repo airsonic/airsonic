@@ -18,7 +18,7 @@ In addition to being a streaming media server, Airsonic works very well as a loc
 
 Based on Java technology, Airsonic runs on most platforms, including Windows, Mac, Linux and Unix variants.
 
-![Screenshot](contrib/assets/screenshot.jpg)
+![Screenshot](contrib/assets/screenshot.png)
 
 History
 -----
