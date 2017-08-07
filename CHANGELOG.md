@@ -3,6 +3,21 @@
 # airsonic/airsonic
 # -->
 
+v10.0.0
+-------
+
+  * Rebranded to Airsonic
+  * Replaced JWplayer with MediaElement.js (HTML5 player)
+  * Upgraded to Subsonic API version 1.15
+  * Added official Docker image
+  * Added Airsonic to a Translation service (Weblate)
+  * Some translations updates (English, French, German, and Russian)
+  * New login page
+  * Added additional war with builtin support for external databases
+  * Improved playlist handling
+  * DLNA browsing improvments
+  * Small fixes and improvements
+
 v6.2
 ----
 
