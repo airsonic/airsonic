@@ -15,7 +15,7 @@ if [[ $# -lt 1 ]] || [[ ! "$1" == "java"* ]]; then
     exec java -Xmx256m \
      -Dserver.host=0.0.0.0 \
      -Dserver.port=$AIRSONIC_PORT \
-     -Dserver.contextPath=/ \
+     -Dserver.contextPath=$CONTEXT_PATH \
      -Dairsonic.home=$AIRSONIC_DIR/data \
      -Dairsonic.defaultMusicFolder=$AIRSONIC_DIR/musics \
      -Dairsonic.defaultPodcastFolder=$AIRSONIC_DIR/podcasts \
