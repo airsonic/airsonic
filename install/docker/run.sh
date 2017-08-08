@@ -17,7 +17,7 @@ if [[ $# -lt 1 ]] || [[ ! "$1" == "java"* ]]; then
      -Dserver.port=$AIRSONIC_PORT \
      -Dserver.contextPath=/ \
      -Dairsonic.home=$AIRSONIC_DIR/data \
-     -Dairsonic.defaultMusicFolder=$AIRSONIC_DIR/musics \
+     -Dairsonic.defaultMusicFolder=$AIRSONIC_DIR/music \
      -Dairsonic.defaultPodcastFolder=$AIRSONIC_DIR/podcasts \
      -Dairsonic.defaultPlaylistFolder=$AIRSONIC_DIR/playlists \
      -Djava.awt.headless=true \
