@@ -21,7 +21,6 @@ package org.airsonic.player.service.metadata;
 
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
-import org.airsonic.player.service.ServiceLocator;
 import org.airsonic.player.service.SettingsService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -108,7 +107,7 @@ public abstract class MetaDataParser {
     /**
      * Guesses the artist for the given file.
      */
-    public String guessArtist(File file) {
+    String guessArtist(File file) {
         File parent = file.getParentFile();
         if (isRoot(parent)) {
             return null;
@@ -120,7 +119,7 @@ public abstract class MetaDataParser {
     /**
      * Guesses the album for the given file.
      */
-    public String guessAlbum(File file, String artist) {
+    String guessAlbum(File file, String artist) {
         File parent = file.getParentFile();
         String album = isRoot(parent) ? null : parent.getName();
         if (artist != null && album != null) {
@@ -137,7 +136,7 @@ public abstract class MetaDataParser {
     }
 
     private boolean isRoot(File file) {
-        SettingsService settings = ServiceLocator.getSettingsService();
+        SettingsService settings = getSettingsService();
         List<MusicFolder> folders = settings.getAllMusicFolders(false, true);
         for (MusicFolder folder : folders) {
             if (file.equals(folder.getPath())) {
@@ -146,6 +145,8 @@ public abstract class MetaDataParser {
         }
         return false;
     }
+
+    abstract SettingsService getSettingsService();
 
     /**
      * Removes any prefixed track number from the given title string.

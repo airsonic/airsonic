@@ -52,6 +52,7 @@ public class MediaFileService {
     private SettingsService settingsService;
     private MediaFileDao mediaFileDao;
     private AlbumDao albumDao;
+    private JaudiotaggerParser parser;
     private MetaDataParserFactory metaDataParserFactory;
     private boolean memoryCacheEnabled = true;
 
@@ -600,7 +601,6 @@ public class MediaFileService {
         }
 
         // Look for embedded images in audiofiles. (Only check first audio file encountered).
-        JaudiotaggerParser parser = new JaudiotaggerParser();
         for (File candidate : candidates) {
             if (parser.isApplicable(candidate)) {
                 if (parser.isImageAvailable(getMediaFile(candidate))) {
@@ -705,5 +705,9 @@ public class MediaFileService {
 
     public void setAlbumDao(AlbumDao albumDao) {
         this.albumDao = albumDao;
+    }
+
+    public void setParser(JaudiotaggerParser parser) {
+        this.parser = parser;
     }
 }

@@ -87,7 +87,6 @@ public class SettingsService {
     private static final String KEY_LDAP_SEARCH_FILTER = "LdapSearchFilter";
     private static final String KEY_LDAP_AUTO_SHADOWING = "LdapAutoShadowing";
     private static final String KEY_GETTING_STARTED_ENABLED = "GettingStartedEnabled";
-    private static final String KEY_SERVER_ID = "ServerId";
     private static final String KEY_SETTINGS_CHANGED = "SettingsChanged";
     private static final String KEY_LAST_SCANNED = "LastScanned";
     private static final String KEY_ORGANIZE_BY_FOLDER_STRUCTURE = "OrganizeByFolderStructure";
@@ -164,7 +163,6 @@ public class SettingsService {
     private static final String DEFAULT_LDAP_SEARCH_FILTER = "(sAMAccountName={0})";
     private static final boolean DEFAULT_LDAP_AUTO_SHADOWING = false;
     private static final boolean DEFAULT_GETTING_STARTED_ENABLED = true;
-    private static final String DEFAULT_SERVER_ID = null;
     private static final long DEFAULT_SETTINGS_CHANGED = 0L;
     private static final boolean DEFAULT_ORGANIZE_BY_FOLDER_STRUCTURE = true;
     private static final boolean DEFAULT_SORT_ALBUMS_BY_YEAR = true;
@@ -222,9 +220,9 @@ public class SettingsService {
     private String[] cachedMusicFileTypesArray;
     private String[] cachedVideoFileTypesArray;
     private List<MusicFolder> cachedMusicFolders;
-    private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<String, List<MusicFolder>>();
+    private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
 
-    private void removeObseleteProperties() {
+    private void removeObsoleteProperties() {
 
         OBSOLETE_KEYS.forEach( oKey -> {
             if(configurationService.containsKey(oKey)) {
@@ -254,7 +252,7 @@ public class SettingsService {
         return home;
     }
 
-    public static String getFileSystemAppName() {
+    private static String getFileSystemAppName() {
         String home = getAirsonicHome().getPath();
         return home.contains("libresonic") ? "libresonic" : "airsonic";
     }
@@ -275,7 +273,6 @@ public class SettingsService {
      */
     public void init() {
         logServerInfo();
-        ServiceLocator.setSettingsService(this);
     }
 
     private void logServerInfo() {
@@ -289,7 +286,7 @@ public class SettingsService {
 
     public void save(boolean updateSettingsChanged) {
         if(updateSettingsChanged) {
-            removeObseleteProperties();
+            removeObsoleteProperties();
             this.setLong(KEY_SETTINGS_CHANGED, System.currentTimeMillis());
         }
         configurationService.save();
@@ -308,7 +305,7 @@ public class SettingsService {
         }
     }
 
-    public static File getPropertyFile() {
+    static File getPropertyFile() {
         File propertyFile = getAirsonicHome();
         return new File(propertyFile, getFileSystemAppName() + ".properties");
     }
@@ -361,7 +358,7 @@ public class SettingsService {
         return getProperty(KEY_IGNORED_ARTICLES, DEFAULT_IGNORED_ARTICLES);
     }
 
-    public String[] getIgnoredArticlesAsArray() {
+    String[] getIgnoredArticlesAsArray() {
         return getIgnoredArticles().split("\\s+");
     }
 
@@ -373,7 +370,7 @@ public class SettingsService {
         return getProperty(KEY_SHORTCUTS, DEFAULT_SHORTCUTS);
     }
 
-    public String[] getShortcutsAsArray() {
+    String[] getShortcutsAsArray() {
         return StringUtil.split(getShortcuts());
     }
 
@@ -398,7 +395,7 @@ public class SettingsService {
         cachedMusicFileTypesArray = null;
     }
 
-    public synchronized String[] getMusicFileTypesAsArray() {
+    synchronized String[] getMusicFileTypesAsArray() {
         if (cachedMusicFileTypesArray == null) {
             cachedMusicFileTypesArray = toStringArray(getMusicFileTypes());
         }
@@ -430,7 +427,7 @@ public class SettingsService {
         cachedCoverArtFileTypesArray = null;
     }
 
-    public synchronized String[] getCoverArtFileTypesAsArray() {
+    synchronized String[] getCoverArtFileTypesAsArray() {
         if (cachedCoverArtFileTypesArray == null) {
             cachedCoverArtFileTypesArray = toStringArray(getCoverArtFileTypes());
         }
@@ -613,7 +610,7 @@ public class SettingsService {
         setProperty(KEY_HLS_COMMAND, command);
     }
 
-    public String getJukeboxCommand() {
+    String getJukeboxCommand() {
         return getProperty(KEY_JUKEBOX_COMMAND, DEFAULT_JUKEBOX_COMMAND);
     }
     public String getVideoImageCommand() {
@@ -687,14 +684,6 @@ public class SettingsService {
         setBoolean(KEY_GETTING_STARTED_ENABLED, isGettingStartedEnabled);
     }
 
-    public String getServerId() {
-        return getProperty(KEY_SERVER_ID, DEFAULT_SERVER_ID);
-    }
-
-    public void setServerId(String serverId) {
-        setProperty(KEY_SERVER_ID, serverId);
-    }
-
     public long getSettingsChanged() {
         return getLong(KEY_SETTINGS_CHANGED, DEFAULT_SETTINGS_CHANGED);
     }
@@ -704,7 +693,7 @@ public class SettingsService {
         return lastScanned == null ? null : new Date(Long.parseLong(lastScanned));
     }
 
-    public void setLastScanned(Date date) {
+    void setLastScanned(Date date) {
         if (date == null) {
             setProperty(KEY_LAST_SCANNED, null);
         } else {
@@ -732,7 +721,7 @@ public class SettingsService {
         return MediaLibraryStatistics.parse(getString(KEY_MEDIA_LIBRARY_STATISTICS, DEFAULT_MEDIA_LIBRARY_STATISTICS));
     }
 
-    public void setMediaLibraryStatistics(MediaLibraryStatistics statistics) {
+    void setMediaLibraryStatistics(MediaLibraryStatistics statistics) {
         setString(KEY_MEDIA_LIBRARY_STATISTICS, statistics.format());
     }
 
@@ -785,7 +774,7 @@ public class SettingsService {
      */
     public synchronized Theme[] getAvailableThemes() {
         if (themes == null) {
-            themes = new ArrayList<Theme>();
+            themes = new ArrayList<>();
             try {
                 InputStream in = SettingsService.class.getResourceAsStream(THEMES_FILE);
                 String[] lines = StringUtil.readLines(in);
@@ -814,7 +803,7 @@ public class SettingsService {
      */
     public synchronized Locale[] getAvailableLocales() {
         if (locales == null) {
-            locales = new ArrayList<Locale>();
+            locales = new ArrayList<>();
             try {
                 InputStream in = SettingsService.class.getResourceAsStream(LOCALES_FILE);
                 String[] lines = StringUtil.readLines(in);
@@ -876,7 +865,7 @@ public class SettingsService {
             cachedMusicFolders = musicFolderDao.getAllMusicFolders();
         }
 
-        List<MusicFolder> result = new ArrayList<MusicFolder>(cachedMusicFolders.size());
+        List<MusicFolder> result = new ArrayList<>(cachedMusicFolders.size());
         for (MusicFolder folder : cachedMusicFolders) {
             if ((includeDisabled || folder.isEnabled()) && (includeNonExisting || FileUtil.exists(folder.getPath()))) {
                 result.add(folder);
@@ -913,7 +902,7 @@ public class SettingsService {
             return allowed;
         }
         MusicFolder selected = getMusicFolderById(selectedMusicFolderId);
-        return allowed.contains(selected) ? Arrays.asList(selected) : Collections.<MusicFolder>emptyList();
+        return allowed.contains(selected) ? Collections.singletonList(selected) : Collections.emptyList();
     }
 
     /**
@@ -994,21 +983,6 @@ public class SettingsService {
     }
 
     /**
-     * Returns the internet radio station with the given ID.
-     *
-     * @param id The ID.
-     * @return The internet radio station with the given ID, or <code>null</code> if not found.
-     */
-    public InternetRadio getInternetRadioById(Integer id) {
-        for (InternetRadio radio : getAllInternetRadios()) {
-            if (id.equals(radio.getId())) {
-                return radio;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Returns all internet radio stations.
      *
      * @param includeAll Whether disabled stations should be included.
@@ -1016,7 +990,7 @@ public class SettingsService {
      */
     public List<InternetRadio> getAllInternetRadios(boolean includeAll) {
         List<InternetRadio> all = internetRadioDao.getAllInternetRadios();
-        List<InternetRadio> result = new ArrayList<InternetRadio>(all.size());
+        List<InternetRadio> result = new ArrayList<>(all.size());
         for (InternetRadio folder : all) {
             if (includeAll || folder.isEnabled()) {
                 result.add(folder);
@@ -1190,12 +1164,8 @@ public class SettingsService {
         setString(KEY_SONOS_SERVICE_NAME, sonosServiceName);
     }
 
-    public int getSonosServiceId() {
+    int getSonosServiceId() {
         return getInt(KEY_SONOS_SERVICE_ID, DEFAULT_SONOS_SERVICE_ID);
-    }
-
-    public void setSonosServiceId(int sonosServiceid) {
-        setInt(KEY_SONOS_SERVICE_ID, sonosServiceid);
     }
 
     private void setProperty(String key, Object value) {
@@ -1207,7 +1177,7 @@ public class SettingsService {
     }
 
     private String[] toStringArray(String s) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(s, " ");
         while (tokenizer.hasMoreTokens()) {
             result.add(tokenizer.nextToken());
@@ -1378,7 +1348,7 @@ public class SettingsService {
         setDatabaseConfigType(DEFAULT_DATABASE_CONFIG_TYPE);
     }
 
-    public String getPlaylistExportFormat() {
+    String getPlaylistExportFormat() {
         return getProperty(KEY_EXPORT_PLAYLIST_FORMAT, DEFAULT_EXPORT_PLAYLIST_FORMAT);
     }
 }
