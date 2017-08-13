@@ -3,7 +3,7 @@ FROM alpine:3.6
 LABEL description="Airsonic is a free, web-based media streamer, providing ubiquitious access to your music." \
       url="https://github.com/airsonic/airsonic"
 
-ENV AIRSONIC_PORT=4040 AIRSONIC_DIR=/airsonic
+ENV AIRSONIC_PORT=4040 AIRSONIC_DIR=/airsonic CONTEXT_PATH=/
 
 WORKDIR $AIRSONIC_DIR
 
