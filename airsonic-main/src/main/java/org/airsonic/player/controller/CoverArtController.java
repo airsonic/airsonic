@@ -82,6 +82,8 @@ public class CoverArtController implements LastModified {
     private ArtistDao artistDao;
     @Autowired
     private AlbumDao albumDao;
+    @Autowired
+    private JaudiotaggerParser jaudiotaggerParser;
     private Semaphore semaphore;
 
     @PostConstruct
@@ -217,8 +219,7 @@ public class CoverArtController implements LastModified {
 
     private void sendUnscaled(CoverArtRequest coverArtRequest, HttpServletResponse response) throws IOException {
         File file = coverArtRequest.getCoverArt();
-        JaudiotaggerParser parser = new JaudiotaggerParser();
-        if (!parser.isApplicable(file)) {
+        if (!jaudiotaggerParser.isApplicable(file)) {
             response.setContentType(StringUtil.getMimeType(FilenameUtils.getExtension(file.getName())));
         }
         InputStream in = null;
@@ -274,10 +275,9 @@ public class CoverArtController implements LastModified {
      * the embedded album art is returned.
      */
     private InputStream getImageInputStream(File file) throws IOException {
-        JaudiotaggerParser parser = new JaudiotaggerParser();
-        if (parser.isApplicable(file)) {
+        if (jaudiotaggerParser.isApplicable(file)) {
             MediaFile mediaFile = mediaFileService.getMediaFile(file);
-            return new ByteArrayInputStream(parser.getImageData(mediaFile));
+            return new ByteArrayInputStream(jaudiotaggerParser.getImageData(mediaFile));
         } else {
             return new FileInputStream(file);
         }

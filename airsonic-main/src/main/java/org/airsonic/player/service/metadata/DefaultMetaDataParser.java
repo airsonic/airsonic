@@ -20,6 +20,7 @@
 package org.airsonic.player.service.metadata;
 
 import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.service.SettingsService;
 
 import java.io.File;
 
@@ -30,6 +31,11 @@ import java.io.File;
  */
 public class DefaultMetaDataParser extends MetaDataParser {
 
+    private final SettingsService settingsService;
+
+    public DefaultMetaDataParser(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
     /**
      * Parses meta data for the given file.
      *
@@ -63,6 +69,11 @@ public class DefaultMetaDataParser extends MetaDataParser {
      */
     public boolean isEditingSupported() {
         return false;
+    }
+
+    @Override
+    SettingsService getSettingsService() {
+        return settingsService;
     }
 
     /**
