@@ -82,6 +82,7 @@
         <property name="mediaFileDao" ref="mediaFileDao"/>
         <property name="albumDao" ref="albumDao"/>
         <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
+        <property name="parser" ref="jaudiotaggerParser" />
     </bean>
 
     <bean id="securityService" class="org.airsonic.player.service.SecurityService">
@@ -233,14 +234,23 @@
         <property name="upnpService" ref="upnpService"/>
     </bean>
 
+    <bean id="jaudiotaggerParser" class="org.airsonic.player.service.metadata.JaudiotaggerParser">
+        <constructor-arg name="settingsService" ref="settingsService" />
+    </bean>
+
     <bean id="metaDataParserFactory" class="org.airsonic.player.service.metadata.MetaDataParserFactory">
         <property name="parsers">
             <list>
-                <bean class="org.airsonic.player.service.metadata.JaudiotaggerParser"/>
+                <bean class="org.airsonic.player.service.metadata.JaudiotaggerParser">
+                    <constructor-arg name="settingsService" ref="settingsService" />
+                </bean>
                 <bean class="org.airsonic.player.service.metadata.FFmpegParser">
                     <property name="transcodingService" ref="transcodingService"/>
+                    <property name="settingsService" ref="settingsService" />
                 </bean>
-                <bean class="org.airsonic.player.service.metadata.DefaultMetaDataParser"/>
+                <bean class="org.airsonic.player.service.metadata.DefaultMetaDataParser">
+                    <constructor-arg name="settingsService" ref="settingsService" />
+                </bean>
             </list>
         </property>
     </bean>

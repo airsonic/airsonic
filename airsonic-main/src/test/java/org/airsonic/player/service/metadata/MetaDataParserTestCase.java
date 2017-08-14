@@ -21,6 +21,7 @@ package org.airsonic.player.service.metadata;
 
 import junit.framework.TestCase;
 import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.service.SettingsService;
 
 import java.io.File;
 
@@ -43,6 +44,11 @@ public class MetaDataParserTestCase extends TestCase {
 
             public boolean isEditingSupported() {
                 return false;
+            }
+
+            @Override
+            SettingsService getSettingsService() {
+                return null;
             }
 
             public boolean isApplicable(File file) {

@@ -20,6 +20,7 @@
 package org.airsonic.player.service.metadata;
 
 import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.service.SettingsService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jaudiotagger.audio.AudioFile;
@@ -51,6 +52,11 @@ public class JaudiotaggerParser extends MetaDataParser {
     private static final Pattern GENRE_PATTERN = Pattern.compile("\\((\\d+)\\).*");
     private static final Pattern TRACK_NUMBER_PATTERN = Pattern.compile("(\\d+)/\\d+");
     private static final Pattern YEAR_NUMBER_PATTERN = Pattern.compile("(\\d{4}).*");
+    private final SettingsService settingsService;
+
+    public JaudiotaggerParser(SettingsService settingsService) {
+        this.settingsService = settingsService;
+    }
 
     static {
         try {
@@ -263,6 +269,11 @@ public class JaudiotaggerParser extends MetaDataParser {
     @Override
     public boolean isEditingSupported() {
         return true;
+    }
+
+    @Override
+    SettingsService getSettingsService() {
+        return settingsService;
     }
 
     /**

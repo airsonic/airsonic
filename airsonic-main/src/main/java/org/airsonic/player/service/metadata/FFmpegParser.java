@@ -21,7 +21,7 @@ package org.airsonic.player.service.metadata;
 
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.io.InputStreamReaderThread;
-import org.airsonic.player.service.ServiceLocator;
+import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.TranscodingService;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
@@ -49,6 +49,7 @@ public class FFmpegParser extends MetaDataParser {
     private static final Pattern PAR_PATTERN = Pattern.compile("PAR (\\d+):(\\d+)");
 
     private TranscodingService transcodingService;
+    private SettingsService settingsService;
 
     /**
      * Parses meta data for the given music file. No guessing or reformatting is done.
@@ -148,6 +149,11 @@ public class FFmpegParser extends MetaDataParser {
         return false;
     }
 
+    @Override
+    SettingsService getSettingsService() {
+        return settingsService;
+    }
+
     /**
      * Returns whether this parser is applicable to the given file.
      *
@@ -158,7 +164,7 @@ public class FFmpegParser extends MetaDataParser {
     public boolean isApplicable(File file) {
         String format = FilenameUtils.getExtension(file.getName()).toLowerCase();
 
-        for (String s : ServiceLocator.getSettingsService().getVideoFileTypesAsArray()) {
+        for (String s : settingsService.getVideoFileTypesAsArray()) {
             if (format.equals(s)) {
                 return true;
             }
@@ -168,5 +174,9 @@ public class FFmpegParser extends MetaDataParser {
 
     public void setTranscodingService(TranscodingService transcodingService) {
         this.transcodingService = transcodingService;
+    }
+
+    public void setSettingsService(SettingsService settingsService) {
+        this.settingsService = settingsService;
     }
 }
