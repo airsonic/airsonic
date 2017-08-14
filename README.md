@@ -61,7 +61,7 @@ Community
 ---------
 We have several places outside of github for community discussion, questions, etc:
 
-- #airsonic on Matrix - There are several clients, one of which is [riot](https://riot.im/app/#/room/#airsonic:matrix.org).
+- [#airsonic:matrix.org](https://matrix.to/#/#airsonic:matrix.org) on Matrix
 - [#airsonic on IRC](http://webchat.freenode.net?channels=%23airsonic)
 - [airsonic subreddit](https://www.reddit.com/r/airsonic)
 
