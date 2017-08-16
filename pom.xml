@@ -232,6 +232,8 @@
                                 <!-- Needed for airsonic-booter to load Airsonic correctly -->
                                 <ignoredUnusedDeclaredDependency>org.springframework.security:*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot*</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.jetbrains.kotlin:kotlin-stdlib-jre8</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.jetbrains.kotlin:kotlin-reflect</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
