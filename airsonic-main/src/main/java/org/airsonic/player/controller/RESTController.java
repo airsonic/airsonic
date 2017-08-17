@@ -19,9 +19,6 @@
  */
 package org.airsonic.player.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.airsonic.player.ajax.LyricsInfo;
 import org.airsonic.player.ajax.LyricsService;
 import org.airsonic.player.ajax.PlayQueueService;
@@ -134,17 +131,11 @@ public class RESTController {
     @Autowired
     private BookmarkService bookmarkService;
 
-    @ApiResponses({
-            @ApiResponse(code = 204, message = "Successful ping")
-    })
     @RequestMapping(value = "/ping", method = RequestMethod.GET)
     public ResponseEntity<Void> ping() {
         return ResponseEntity.noContent().build();
     }
 
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Returns all configured top-level music folders")
-    })
     @RequestMapping(value = "/getMusicFolders", method = RequestMethod.GET)
     public ResponseEntity<MusicFolders> getMusicFolders(HttpServletRequest request) throws Exception {
         MusicFolders musicFolders = new MusicFolders();
@@ -158,11 +149,6 @@ public class RESTController {
         return ResponseEntity.ok(musicFolders);
     }
 
-    @ApiOperation(value = "Get Indexes", notes = "Returns indexed data")
-    @ApiResponses({
-            @ApiResponse(code = 304, message = "Not Modified"),
-            @ApiResponse(code = 200, message = "OK")
-    })
     @RequestMapping(value = "/getIndexes", method = RequestMethod.GET)
     public ResponseEntity<Indexes> getIndexes(
             @RequestParam(name = "ifModifiedSince", required = false, defaultValue = "0") Long ifModifiedSince,

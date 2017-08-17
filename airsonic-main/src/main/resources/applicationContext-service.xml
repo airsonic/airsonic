@@ -134,7 +134,6 @@
     </bean>
 
     <context:component-scan base-package="org.airsonic.player.service.playlist" />
-    <context:component-scan base-package="org.airsonic.player.spring.scanned" />
 
     <!--suppress SpringBeanConstructorArgInspection, AutowiredDependenciesInspection -->
     <bean id="playlistService" class="org.airsonic.player.service.PlaylistService" autowire="constructor"/>
