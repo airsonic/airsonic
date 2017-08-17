@@ -21,6 +21,12 @@
 
         <dependency>
             <groupId>org.airsonic.player</groupId>
+            <artifactId>airsonic-rest-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.airsonic.player</groupId>
             <artifactId>subsonic-rest-api</artifactId>
             <version>${project.version}</version>
         </dependency>

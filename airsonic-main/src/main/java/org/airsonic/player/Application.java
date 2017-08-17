@@ -21,12 +21,20 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 @SpringBootApplication(exclude = {
         JmxAutoConfiguration.class,
@@ -40,6 +48,7 @@ import java.lang.reflect.Method;
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
         "classpath:/servlet.xml"})
+@EnableSwagger2
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
@@ -211,6 +220,28 @@ public class Application extends SpringBootServletInitializer implements Embedde
         } catch (Exception e) {
             LOG.warn("An error happened while trying to optimize tomcat", e);
         }
+    }
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .paths(PathSelectors.regex("/api/.*"))
+                .build()
+                .pathMapping("/")
+                .apiInfo(new ApiInfo(
+                        "Airsonic API",
+                        "Airsonic RESTful API",
+                        "1.0",
+                        "urn:tos",
+                        new Contact(null, "https://github.com/airsonic/airsonic", null),
+                        "GPL v3",
+                        "https://www.gnu.org/licenses/gpl-3.0.en.html",
+                        Collections.emptyList())
+                )
+                .genericModelSubstitutes(ResponseEntity.class)
+                .useDefaultResponseMessages(false)
+                ;
     }
 
     public static void main(String[] args) {
