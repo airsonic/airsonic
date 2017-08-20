@@ -43,11 +43,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@ContextConfiguration(locations = {
-//        "/applicationContext-service.xml",
-//        "/applicationContext-cache.xml",
-//        "/applicationContext-testdb.xml",
-//        "/applicationContext-mockSonos.xml"})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RESTControllerTestCase {
