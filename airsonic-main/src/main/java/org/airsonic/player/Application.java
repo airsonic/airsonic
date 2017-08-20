@@ -1,8 +1,7 @@
-package org.airsonic.player.boot;
+package org.airsonic.player;
 
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
-import org.airsonic.player.spring.CustomPropertySourceConfigurer;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,7 +179,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
         // Customize the application or call application.sources(...) to add sources
         // Since our example is itself a @Configuration class (via @SpringBootApplication)
         // we actually don't need to override this method.
-        return application.sources(Application.class).web(true).initializers(new CustomPropertySourceConfigurer());
+        return application.sources(Application.class).web(true);
     }
 
     @Override
