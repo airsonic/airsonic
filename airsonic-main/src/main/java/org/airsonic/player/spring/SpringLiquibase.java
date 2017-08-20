@@ -21,6 +21,7 @@ public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibas
 
     @Override
     public void afterPropertiesSet() throws LiquibaseException {
+        logger.trace("Starting Liquibase Update");
         try {
             super.afterPropertiesSet();
         } catch(Exception e) {

@@ -123,7 +123,10 @@
 
     <bean id="networkService" class="org.airsonic.player.service.NetworkService" />
 
-    <bean id="playerService" class="org.airsonic.player.service.PlayerService" init-method="init">
+    <bean id="playerService"
+          class="org.airsonic.player.service.PlayerService"
+          init-method="init"
+          depends-on="liquibase">
         <property name="playerDao" ref="playerDao"/>
         <property name="statusService" ref="statusService"/>
         <property name="securityService" ref="securityService"/>
