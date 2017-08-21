@@ -1,5 +1,4 @@
-= RESTful Notes API Guide
-Andy Wilkinson;
+= Airsonic REST API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -44,14 +43,14 @@ use of HTTP status codes.
 | Status code | Usage
 
 | `200 OK`
-| The request completed successfully
+| The request completed successfully with response data
 
 | `201 Created`
 | A new resource has been created successfully. The resource's URI is available from the response's
 `Location` header
 
 | `204 No Content`
-| An update to an existing resource has been applied successfully
+| The request completed successfully with no response data
 
 | `400 Bad Request`
 | The request was malformed. The response body will include an error providing further information
@@ -64,14 +63,18 @@ use of HTTP status codes.
 == Errors
 
 Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
-that describes the problem. The error object has the following structure:
+that describes the problem. The error object will contain more information about the failure.
 
-include::{snippets}/error-example/response-fields.adoc[]
+Here are some examples:
 
-For example, a request that attempts to apply a non-existent tag to a note will produce a
-`400 Bad Request` response:
+=== A Generic 404 Error
+For a request sent to a non existing endpoint will produce the following response:
 
-include::{snippets}/error-example/http-response.adoc[]
+include::{snippets}/404-example/http-response.adoc[]
+
+with the following fields
+
+include::{snippets}/404-example/response-fields.adoc[]
 
 [[overview-hypermedia]]
 == Hypermedia
@@ -86,10 +89,10 @@ not create URIs themselves, instead they should use the above-described links to
 = Resources
 
 
-
 [[resources-index]]
 == Index
 
-The index provides the entry point into the service.
+The index provides the entry point into the service and also allows testing
+api availability.
 
 

@@ -67,7 +67,7 @@ import static org.springframework.web.bind.ServletRequestUtils.*;
 
 @SuppressWarnings("Duplicates")
 @Controller
-@RequestMapping(value = "/api", consumes = {"application/json"}, produces = {"application/json"})
+@RequestMapping(value = "/api")
 public class RESTController {
 
     private static final Logger LOG = LoggerFactory.getLogger(RESTController.class);
@@ -131,8 +131,8 @@ public class RESTController {
     @Autowired
     private BookmarkService bookmarkService;
 
-    @RequestMapping(value = "/ping", method = RequestMethod.GET)
-    public ResponseEntity<Void> ping() {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<Void> index() {
         return ResponseEntity.noContent().build();
     }
 

@@ -21,30 +21,26 @@ package org.airsonic.player.controller;
 
 import org.airsonic.player.Application;
 import org.airsonic.player.util.HomeRule;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RESTControllerTestCase {
 
     @ClassRule
@@ -76,10 +72,35 @@ public class RESTControllerTestCase {
                 .build();
     }
 
+    /*
+
+    {
+      "timestamp": 1503277076677,
+      "status": 404,
+      "error": "Not Found",
+      "message": "No message available",
+      "path": "/airsonic/api/nosdjfl"
+    }
+
+     */
+    @Ignore
     @Test
-    public void testPing() throws Exception {
-        this.mockMvc.perform(get("/api/").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+    public void test404() throws Exception {
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/nonexistant").accept(APPLICATION_JSON))
+                .andExpect(status().is(404))
+//                .andExpect(jsonPath("error", is("Not Found")))
+//                .andExpect(jsonPath("status", is(404)))
+//                .andExpect(jsonPath("message", is("No message available")))
+//                .andExpect(jsonPath("timestamp", isA(Long.class)))
+//                .andExpect(jsonPath("path", is("/airsonic/api/nonexistant")))
+                .andDo(document("404-example")).andReturn();
+        System.out.println("test here");
+    }
+
+    @Test
+    public void testIndex() throws Exception {
+        this.mockMvc.perform(get("/api/").accept(APPLICATION_JSON))
+                .andExpect(status().is(204))
                 .andDo(document("index"));
     }
 
