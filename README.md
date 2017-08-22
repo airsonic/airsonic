@@ -18,7 +18,7 @@ In addition to being a streaming media server, Airsonic works very well as a loc
 
 Based on Java technology, Airsonic runs on most platforms, including Windows, Mac, Linux and Unix variants.
 
-![Screenshot](contrib/assets/screenshot.jpg)
+![Screenshot](contrib/assets/screenshot.png)
 
 History
 -----
@@ -61,7 +61,7 @@ Community
 ---------
 We have several places outside of github for community discussion, questions, etc:
 
-- #airsonic on Matrix - There are several clients, one of which is [riot](https://riot.im/app/#/room/#airsonic:matrix.org).
+- [#airsonic:matrix.org on Matrix](https://matrix.to/#/#airsonic:matrix.org)
 - [#airsonic on IRC](http://webchat.freenode.net?channels=%23airsonic)
 - [airsonic subreddit](https://www.reddit.com/r/airsonic)
 

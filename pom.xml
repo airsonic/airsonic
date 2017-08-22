@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.airsonic.player</groupId>
     <artifactId>airsonic</artifactId>
-    <version>6.3-SNAPSHOT</version>
+    <version>10.1.0-SNAPSHOT</version>
     <name>Airsonic</name>
     <packaging>pom</packaging>
     <organization>
@@ -221,4 +221,16 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>docker</id>
+            <modules>
+                <module>subsonic-rest-api</module>
+                <module>airsonic-sonos-api</module>
+                <module>airsonic-main</module>
+                <module>install/docker</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

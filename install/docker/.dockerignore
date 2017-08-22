@@ -1,0 +1,4 @@
+.gitignore
+pom.xml
+target/
+!target/dependency/*

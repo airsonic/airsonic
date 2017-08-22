@@ -1,0 +1,31 @@
+# Set the location of the standalone war to use
+#JAVA_JAR=/var/airsonic/airsonic.war
+
+# Set any java opts separated by spaces
+#JAVA_OPTS=-Xmx700m
+
+# Set a different location for airsonic home. 
+# If this path is /var/libresonic or even contains "libresonic",
+# the data from a previous libresonic can be used as is (i.e. without
+# renaming libresonic.properties,db/libresonic*,etc
+#AIRSONIC_HOME=/var/airsonic
+
+# Change the port to listen on
+#PORT=8080
+
+# Change the path that is listened on
+#CONTEXT_PATH=/airsonic
+
+# Add any java args. These are different than JAVA_OPTS in that 
+# they are passed directly to the program. The default is empty:
+#JAVA_ARGS=
+
+# Note that there are several settings for spring boot, not explicitly listed
+# here, but can be used in either JAVA_OPTS or JAVA_ARGS. The full list
+# can be found here: 
+# https://docs.spring.io/spring-boot/docs/1.4.5.RELEASE/reference/htmlsingle/#common-application-properties
+# For example to set debug across the board:
+#JAVA_ARGS=--debug
+
+# Or to change the ip address that is listened on:
+#JAVA_ARGS=--server.address=127.0.0.1
