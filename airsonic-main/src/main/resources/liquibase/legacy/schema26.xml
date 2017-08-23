@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema26_002" author="muff1nman">
+        <validCheckSum>ANY</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="music_folder" />
