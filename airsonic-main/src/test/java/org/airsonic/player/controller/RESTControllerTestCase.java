@@ -20,8 +20,11 @@
 package org.airsonic.player.controller;
 
 import org.airsonic.player.Application;
-import org.airsonic.player.util.HomeRule;
-import org.junit.*;
+import org.airsonic.player.TestCaseUtils;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,27 +33,47 @@ import org.springframework.restdocs.JUnitRestDocumentation;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.RequestDispatcher;
+
+import java.io.IOException;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
 public class RESTControllerTestCase {
 
+    static {
+        System.setProperty("airsonic.home", TestCaseUtils.airsonicHomePathForTest());
+
+        try {
+            TestCaseUtils.cleanAirsonicHomeForTest();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule();
+//        HomeRule airsonicRule = new HomeRule();
 
         @Override
         public Statement apply(Statement base, Description description) {
             Statement spring = super.apply(base, description);
-            return airsonicRule.apply(spring, description);
+//            return airsonicRule.apply(spring, description);
+            return spring;
         }
     };
 
@@ -72,36 +95,38 @@ public class RESTControllerTestCase {
                 .build();
     }
 
-    /*
-
-    {
-      "timestamp": 1503277076677,
-      "status": 404,
-      "error": "Not Found",
-      "message": "No message available",
-      "path": "/airsonic/api/nosdjfl"
-    }
-
-     */
-    @Ignore
+    // This test is a bit of a hack for
+    // https://github.com/spring-projects/spring-boot/issues/5574
     @Test
-    public void test404() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(get("/api/nonexistant").accept(APPLICATION_JSON))
-                .andExpect(status().is(404))
-//                .andExpect(jsonPath("error", is("Not Found")))
-//                .andExpect(jsonPath("status", is(404)))
-//                .andExpect(jsonPath("message", is("No message available")))
-//                .andExpect(jsonPath("timestamp", isA(Long.class)))
-//                .andExpect(jsonPath("path", is("/airsonic/api/nonexistant")))
-                .andDo(document("404-example")).andReturn();
-        System.out.println("test here");
+    public void test400() throws Exception {
+        this.mockMvc.perform(
+                get("/error")
+                        .accept(APPLICATION_JSON)
+                        .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 400)
+                        .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/api/nonexistant")
+                        .requestAttr(RequestDispatcher.ERROR_MESSAGE, "No message available"))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("error", is("Bad Request")))
+                .andExpect(jsonPath("status", is(400)))
+                .andExpect(jsonPath("message", is("No message available")))
+                .andExpect(jsonPath("timestamp", isA(Long.class)))
+                .andExpect(jsonPath("path", is("/api/nonexistant")))
+                .andDo(document("error-example",
+                        responseFields(
+                                fieldWithPath("error").description("The HTTP error that occurred, e.g. `Bad Request`"),
+                                fieldWithPath("message").description("A description of the cause of the error"),
+                                fieldWithPath("path").description("The path to which the request was made"),
+                                fieldWithPath("status").description("The HTTP status code, e.g. `400`"),
+                                fieldWithPath("timestamp").description("The time, in milliseconds, at which the error occurred"))
+                        ));
     }
 
     @Test
     public void testIndex() throws Exception {
         this.mockMvc.perform(get("/api/").accept(APPLICATION_JSON))
                 .andExpect(status().is(204))
-                .andDo(document("index"));
+                .andDo(document("index-example"));
     }
 
 }

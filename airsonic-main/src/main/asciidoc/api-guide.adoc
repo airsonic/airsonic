@@ -63,18 +63,14 @@ use of HTTP status codes.
 == Errors
 
 Whenever an error response (status code >= 400) is returned, the body will contain a JSON object
-that describes the problem. The error object will contain more information about the failure.
+that describes the problem. The error object has the following structure:
 
-Here are some examples:
+include::{snippets}/error-example/response-fields.adoc[]
 
-=== A Generic 404 Error
-For a request sent to a non existing endpoint will produce the following response:
+For example, a request that attempts to apply a non-existent tag to a note will produce a
+`400 Bad Request` response:
 
-include::{snippets}/404-example/http-response.adoc[]
-
-with the following fields
-
-include::{snippets}/404-example/response-fields.adoc[]
+include::{snippets}/error-example/http-response.adoc[]
 
 [[overview-hypermedia]]
 == Hypermedia
@@ -95,4 +91,10 @@ not create URIs themselves, instead they should use the above-described links to
 The index provides the entry point into the service and also allows testing
 api availability.
 
+[[resources-index-access]]
+=== Accessing the index
+
+A `GET` request is used to access the index
+
+operation::index-example[snippets='curl-request,http-response']
 
