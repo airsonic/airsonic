@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.JUnitRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +45,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -75,20 +79,27 @@ public class RESTControllerTestCase {
 
     private MockMvc mockMvc;
 
+    private RestDocumentationResultHandler documentationHandler;
+
     @Autowired
     private WebApplicationContext context;
 
     @Before
     public void setUp() {
+        this.documentationHandler = document("{method-name}",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()));
+
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
                 .apply(documentationConfiguration(this.restDocumentation))
+                .alwaysDo(this.documentationHandler)
                 .build();
     }
 
     // This test is a bit of a hack for
     // https://github.com/spring-projects/spring-boot/issues/5574
     @Test
-    public void test400() throws Exception {
+    public void errorExample() throws Exception {
         this.mockMvc.perform(
                 get("/error")
                         .accept(APPLICATION_JSON)
@@ -102,7 +113,7 @@ public class RESTControllerTestCase {
                 .andExpect(jsonPath("message", is("No message available")))
                 .andExpect(jsonPath("timestamp", isA(Long.class)))
                 .andExpect(jsonPath("path", is("/api/nonexistant")))
-                .andDo(document("error-example",
+                .andDo(documentationHandler.document(
                         responseFields(
                                 fieldWithPath("error").description("The HTTP error that occurred, e.g. `Bad Request`"),
                                 fieldWithPath("message").description("A description of the cause of the error"),
@@ -114,10 +125,10 @@ public class RESTControllerTestCase {
 
     // TODO 204 seems to generate a "null" body with 4 bytes. Should be 0 bytes...
     @Test
-    public void testIndex() throws Exception {
+    public void indexExample() throws Exception {
         this.mockMvc.perform(get("/api/").accept(APPLICATION_JSON))
                 .andExpect(status().is(204))
-                .andDo(document("index-example"));
+                .andDo(documentationHandler.document());
     }
 
 }
