@@ -28,6 +28,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,13 +45,18 @@ import java.util.List;
  * @author Sindre Mehus
  * @see Share
  */
+@Service
 public class ShareService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShareService.class);
 
+    @Autowired
     private ShareDao shareDao;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private JWTSecurityService jwtSecurityService;
 
     public List<Share> getAllShares() {

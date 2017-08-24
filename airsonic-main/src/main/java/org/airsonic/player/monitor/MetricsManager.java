@@ -3,6 +3,7 @@ package org.airsonic.player.monitor;
 import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import org.airsonic.player.service.ApacheCommonsConfigurationService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,6 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MetricsManager {
 
+    @Autowired
     private ApacheCommonsConfigurationService configurationService;
 
     // Main metrics registry

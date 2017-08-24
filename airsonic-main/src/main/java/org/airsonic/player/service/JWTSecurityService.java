@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -16,6 +18,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
 
+@Service("jwtSecurityService")
 public class JWTSecurityService {
     private static final Logger logger = LoggerFactory.getLogger(JWTSecurityService.class);
 
@@ -25,6 +28,7 @@ public class JWTSecurityService {
     public static final int DEFAULT_DAYS_VALID_FOR = 7;
     private static SecureRandom secureRandom = new SecureRandom();
 
+    @Autowired
     private final SettingsService settingsService;
 
     public JWTSecurityService(SettingsService settingsService) {

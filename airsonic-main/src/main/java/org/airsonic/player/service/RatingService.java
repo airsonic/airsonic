@@ -23,6 +23,8 @@ import org.airsonic.player.dao.RatingDao;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,10 +35,14 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Service
 public class RatingService {
 
+    @Autowired
     private RatingDao ratingDao;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileService mediaFileService;
 
     /**

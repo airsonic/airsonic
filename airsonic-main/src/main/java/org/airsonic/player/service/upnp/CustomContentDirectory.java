@@ -37,6 +37,7 @@ import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.Res;
 import org.fourthline.cling.support.model.SortCriterion;
 import org.seamless.util.MimeType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -47,9 +48,13 @@ public abstract class CustomContentDirectory extends AbstractContentDirectorySer
 
     protected static final String CONTAINER_ID_ROOT = "0";
 
+    @Autowired
     protected SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     protected JWTSecurityService jwtSecurityService;
 
     public CustomContentDirectory() {

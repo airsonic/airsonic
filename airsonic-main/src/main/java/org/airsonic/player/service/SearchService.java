@@ -47,6 +47,8 @@ import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +65,7 @@ import static org.airsonic.player.service.SearchService.IndexType.*;
  * @version $Id$
  * @see MediaScannerService
  */
+@Service
 public class SearchService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SearchService.class);
@@ -80,8 +83,11 @@ public class SearchService {
     private static final Version LUCENE_VERSION = Version.LUCENE_30;
     private static final String LUCENE_DIR = "lucene2";
 
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private ArtistDao artistDao;
+    @Autowired
     private AlbumDao albumDao;
 
     private IndexWriter artistWriter;

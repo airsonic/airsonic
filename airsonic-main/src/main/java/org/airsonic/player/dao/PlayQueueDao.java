@@ -20,6 +20,7 @@ package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.SavedPlayQueue;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -31,6 +32,7 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class PlayQueueDao extends AbstractDao {
 
     private static final String INSERT_COLUMNS = "username, current, position_millis, changed, changed_by";

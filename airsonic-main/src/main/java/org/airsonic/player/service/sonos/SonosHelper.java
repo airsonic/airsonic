@@ -29,6 +29,8 @@ import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,20 +42,32 @@ import static org.airsonic.player.service.NetworkService.getBaseUrl;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Service
 public class SonosHelper {
 
     public static final String AIRSONIC_CLIENT_ID = "sonos";
 
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MusicIndexService musicIndexService;
+    @Autowired
     private SearchService searchService;
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private RatingService ratingService;
+    @Autowired
     private LastFmService lastFmService;
+    @Autowired
     private PodcastService podcastService;
 
     public List<AbstractMedia> forRoot() {

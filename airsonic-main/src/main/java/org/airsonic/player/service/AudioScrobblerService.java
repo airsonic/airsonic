@@ -36,6 +36,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
@@ -49,6 +51,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  *
  * @author Sindre Mehus
  */
+@Service
 public class AudioScrobblerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AudioScrobblerService.class);
@@ -57,6 +60,7 @@ public class AudioScrobblerService {
     private RegistrationThread thread;
     private final LinkedBlockingQueue<RegistrationData> queue = new LinkedBlockingQueue<RegistrationData>();
 
+    @Autowired
     private SettingsService settingsService;
     private final RequestConfig requestConfig = RequestConfig.custom()
             .setConnectTimeout(15000)

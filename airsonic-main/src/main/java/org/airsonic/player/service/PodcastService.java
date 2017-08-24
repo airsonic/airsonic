@@ -48,6 +48,10 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -63,6 +67,7 @@ import java.util.concurrent.*;
  *
  * @author Sindre Mehus
  */
+@Service
 public class PodcastService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
@@ -76,10 +81,15 @@ public class PodcastService {
     private final ExecutorService downloadExecutor;
     private final ScheduledExecutorService scheduledExecutor;
     private ScheduledFuture<?> scheduledRefresh;
+    @Autowired
     private PodcastDao podcastDao;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private MetaDataParserFactory metaDataParserFactory;
 
     public PodcastService() {
@@ -95,6 +105,7 @@ public class PodcastService {
         scheduledExecutor = Executors.newSingleThreadScheduledExecutor(threadFactory);
     }
 
+    @PostConstruct
     public synchronized void init() {
         try {
             // Clean up partial downloads.

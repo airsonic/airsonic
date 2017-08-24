@@ -25,6 +25,8 @@ import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
 
@@ -33,15 +35,21 @@ import java.io.InputStream;
  *
  * @author Sindre Mehus
  */
+@Service
 public class JukeboxService implements AudioPlayer.Listener {
 
     private static final Logger LOG = LoggerFactory.getLogger(JukeboxService.class);
 
     private AudioPlayer audioPlayer;
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     private AudioScrobblerService audioScrobblerService;
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
 
     private Player player;
@@ -49,6 +57,7 @@ public class JukeboxService implements AudioPlayer.Listener {
     private MediaFile currentPlayingFile;
     private float gain = AudioPlayer.DEFAULT_GAIN;
     private int offset;
+    @Autowired
     private MediaFileService mediaFileService;
 
     /**

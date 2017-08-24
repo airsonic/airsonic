@@ -27,7 +27,11 @@ import org.airsonic.player.domain.User;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,16 +46,23 @@ import java.util.List;
  * @author Sindre Mehus
  * @see Player
  */
+@Service
+@DependsOn("liquibase")
 public class PlayerService {
 
     private static final String COOKIE_NAME = "player";
     private static final int COOKIE_EXPIRY = 365 * 24 * 3600; // One year
 
+    @Autowired
     private PlayerDao playerDao;
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private TranscodingService transcodingService;
 
+    @PostConstruct
     public void init() {
         playerDao.deleteOldPlayers(60);
     }

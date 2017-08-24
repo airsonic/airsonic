@@ -27,6 +27,8 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.InputStream;
@@ -40,6 +42,7 @@ import java.util.regex.Pattern;
  *
  * @author Sindre Mehus
  */
+@Service("ffmpegParser")
 public class FFmpegParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegParser.class);
@@ -48,7 +51,9 @@ public class FFmpegParser extends MetaDataParser {
     private static final Pattern DIMENSION_PATTERN = Pattern.compile("Video.*?, (\\d+)x(\\d+)");
     private static final Pattern PAR_PATTERN = Pattern.compile("PAR (\\d+):(\\d+)");
 
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     private SettingsService settingsService;
 
     /**

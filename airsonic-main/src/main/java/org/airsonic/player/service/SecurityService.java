@@ -27,6 +27,7 @@ import org.airsonic.player.domain.User;
 import org.airsonic.player.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,6 +35,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,12 +48,16 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Service
 public class SecurityService implements UserDetailsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityService.class);
 
+    @Autowired
     private UserDao userDao;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private Ehcache userCache;
 
     /**
