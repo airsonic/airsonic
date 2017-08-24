@@ -17,7 +17,7 @@
  Copyright 2016 (C) Airsonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.airsonic.player.controller;
+package org.airsonic.player.controller.api;
 
 import org.airsonic.player.Application;
 import org.airsonic.player.TestCaseUtils;

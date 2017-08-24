@@ -66,9 +66,10 @@ public class LeftController  {
 
     /**
      * Note: This class intentionally does not implement org.springframework.web.servlet.mvc.LastModified
-     * as we don't need browser-side caching of left.jsp.  This method is only used by RESTController.
+     * as we don't need browser-side caching of left.jsp.  This method is only used by SubsonicRESTController and
+     * RESTController.
      */
-    long getLastModified(HttpServletRequest request) {
+    public long getLastModified(HttpServletRequest request) {
         saveSelectedMusicFolder(request);
 
         if (mediaScannerService.isScanning()) {

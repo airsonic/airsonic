@@ -17,12 +17,13 @@
  Copyright 2016 (C) Libresonic Authors
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
-package org.airsonic.player.controller;
+package org.airsonic.player.controller.api;
 
 import org.airsonic.player.ajax.LyricsInfo;
 import org.airsonic.player.ajax.LyricsService;
 import org.airsonic.player.ajax.PlayQueueService;
 import org.airsonic.player.command.UserSettingsCommand;
+import org.airsonic.player.controller.*;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
@@ -136,7 +137,7 @@ public class RESTController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/getMusicFolders", method = RequestMethod.GET)
+    @RequestMapping(value = "/musicFolders", method = RequestMethod.GET)
     public ResponseEntity<MusicFolders> getMusicFolders(HttpServletRequest request) throws Exception {
         MusicFolders musicFolders = new MusicFolders();
         String username = securityService.getCurrentUsername(request);
