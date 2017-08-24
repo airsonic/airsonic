@@ -2,8 +2,10 @@ package org.airsonic.player.service;
 
 import com.google.common.collect.Lists;
 import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.dao.PlaylistDao;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.Playlist;
+import org.airsonic.player.service.playlist.DefaultPlaylistExportHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Assert;
@@ -12,19 +14,17 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import org.airsonic.player.dao.PlaylistDao;
-import org.airsonic.player.service.playlist.DefaultPlaylistExportHandler;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

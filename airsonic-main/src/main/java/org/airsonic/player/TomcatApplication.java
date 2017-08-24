@@ -1,4 +1,4 @@
-package org.airsonic.player.boot;
+package org.airsonic.player;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.Wrapper;
