@@ -25,8 +25,6 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.restdocs.JUnitRestDocumentation;
@@ -55,6 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
 public class RESTControllerTestCase {
 
+    // TODO why didnt the home rule work here?
     static {
         System.setProperty("airsonic.home", TestCaseUtils.airsonicHomePathForTest());
 
@@ -66,16 +65,7 @@ public class RESTControllerTestCase {
     }
 
     @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-//        HomeRule airsonicRule = new HomeRule();
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-//            return airsonicRule.apply(spring, description);
-            return spring;
-        }
-    };
+    public static final SpringClassRule classRule = new SpringClassRule();
 
     @Rule
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
@@ -122,6 +112,7 @@ public class RESTControllerTestCase {
                         ));
     }
 
+    // TODO 204 seems to generate a "null" body with 4 bytes. Should be 0 bytes...
     @Test
     public void testIndex() throws Exception {
         this.mockMvc.perform(get("/api/").accept(APPLICATION_JSON))
