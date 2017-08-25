@@ -66,6 +66,7 @@ import static org.airsonic.player.security.RESTRequestParameterProcessingFilter.
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.ServletRequestUtils.*;
 
+// TODO fix this
 @SuppressWarnings("Duplicates")
 @Controller
 @RequestMapping(value = "/api")
@@ -135,19 +136,6 @@ public class RESTController {
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Void> index() {
         return ResponseEntity.noContent().build();
-    }
-
-    @RequestMapping(value = "/musicFolders", method = RequestMethod.GET)
-    public ResponseEntity<MusicFolders> getMusicFolders(HttpServletRequest request) throws Exception {
-        MusicFolders musicFolders = new MusicFolders();
-        String username = securityService.getCurrentUsername(request);
-        for (MusicFolder musicFolder : settingsService.getMusicFoldersForUser(username)) {
-            org.airsonic.restapi.domain.MusicFolder mf = new org.airsonic.restapi.domain.MusicFolder();
-            mf.setId(musicFolder.getId());
-            mf.setName(musicFolder.getName());
-            musicFolders.getMusicFolder().add(mf);
-        }
-        return ResponseEntity.ok(musicFolders);
     }
 
     @RequestMapping(value = "/getIndexes", method = RequestMethod.GET)

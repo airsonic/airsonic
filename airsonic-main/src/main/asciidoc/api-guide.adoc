@@ -98,3 +98,12 @@ A `GET` request is used to access the index
 
 operation::index-example[snippets='curl-request,http-response']
 
+[[resources-music-folders]]
+== Music Folders
+
+Provides interaction with music folders for the current authenticated user.
+
+[[resources-music-folders-access]]
+=== Listing Music Folders
+
+operation::music-folders-list-example[snippets='curl-request,response-fields,http-response']

@@ -19,94 +19,33 @@
  */
 package org.airsonic.player.controller.api;
 
-import org.airsonic.player.Application;
-import org.airsonic.player.TestCaseUtils;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.restdocs.JUnitRestDocumentation;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.RequestDispatcher;
-
-import java.io.IOException;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
-public class RESTControllerTestCase {
-
-    // TODO why didnt the home rule work here?
-    static {
-        System.setProperty("airsonic.home", TestCaseUtils.airsonicHomePathForTest());
-
-        try {
-            TestCaseUtils.cleanAirsonicHomeForTest();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule();
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
-    @Rule
-    public JUnitRestDocumentation restDocumentation = new JUnitRestDocumentation("target/generated-snippets");
-
-    private MockMvc mockMvc;
-
-    private RestDocumentationResultHandler documentationHandler;
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Before
-    public void setUp() {
-        this.documentationHandler = document("{method-name}",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint()));
-
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-                .apply(documentationConfiguration(this.restDocumentation))
-                .alwaysDo(this.documentationHandler)
-                .build();
-    }
+public class RESTControllerTestCase extends BaseRESTControllerTestCase {
 
     // This test is a bit of a hack for
     // https://github.com/spring-projects/spring-boot/issues/5574
     @Test
     public void errorExample() throws Exception {
+
+
         this.mockMvc.perform(
                 get("/error")
                         .accept(APPLICATION_JSON)
                         .requestAttr(RequestDispatcher.ERROR_STATUS_CODE, 400)
                         .requestAttr(RequestDispatcher.ERROR_REQUEST_URI, "/api/nonexistant")
                         .requestAttr(RequestDispatcher.ERROR_MESSAGE, "No message available"))
-                .andDo(print())
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("error", is("Bad Request")))
                 .andExpect(jsonPath("status", is(400)))
