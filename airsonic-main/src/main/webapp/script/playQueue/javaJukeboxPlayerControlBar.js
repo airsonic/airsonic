@@ -52,7 +52,7 @@ function onJavaJukeboxVolumeChanged() {
 
 function onJavaJukeboxPositionChanged() {
     var pos = $("#javaJukeboxSongPositionSlider").slider("value");
-    playQueueService.setJavaJukeboxPosition(pos);
+    playQueueService.setJukeboxPosition(pos);
     javaJukeboxPlayerModel.songPosition = pos;
     refreshView();
 }

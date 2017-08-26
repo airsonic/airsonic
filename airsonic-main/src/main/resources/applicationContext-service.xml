@@ -181,6 +181,11 @@
     </bean>
 
     <bean id="jukeboxService" class="org.airsonic.player.service.JukeboxService">
+        <property name="jukeboxLegacySubsonicService" ref="jukeboxLegacySubsonicService"/>
+        <property name="jukeboxJavaService" ref="jukeboxJavaService"/>
+    </bean>
+
+    <bean id="jukeboxLegacySubsonicService" class="org.airsonic.player.service.JukeboxLegacySubsonicService">
         <property name="statusService" ref="statusService"/>
         <property name="transcodingService" ref="transcodingService"/>
         <property name="audioScrobblerService" ref="audioScrobblerService"/>
@@ -291,7 +296,6 @@
         <property name="mediaFileDao" ref="mediaFileDao"/>
         <property name="playQueueDao" ref="playQueueDao"/>
         <property name="jukeboxService" ref="jukeboxService"/>
-        <property name="jukeboxJavaService" ref="jukeboxJavaService"/>
         <property name="transcodingService" ref="transcodingService"/>
         <property name="settingsService" ref="settingsService"/>
         <property name="searchService" ref="searchService"/>
