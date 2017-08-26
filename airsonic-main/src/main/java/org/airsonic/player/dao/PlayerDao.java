@@ -20,6 +20,7 @@
 package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,7 +39,7 @@ public class PlayerDao extends AbstractDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayerDao.class);
     private static final String INSERT_COLUMNS = "name, type, username, ip_address, auto_control_enabled, m3u_bom_enabled, " +
-                                                 "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id";
+                                                 "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id, mixer";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
@@ -79,8 +80,12 @@ public class PlayerDao extends AbstractDao {
      * @return The player with the given ID, or <code>null</code> if no such player exists.
      */
     public Player getPlayerById(String id) {
-        String sql = "select " + QUERY_COLUMNS + " from player where id=?";
-        return queryOne(sql, rowMapper, id);
+        if (StringUtils.isBlank(id)) {
+            return null;
+        } else {
+            String sql = "select " + QUERY_COLUMNS + " from player where id=?";
+            return queryOne(sql, rowMapper, id);
+        }
     }
 
     /**
@@ -101,7 +106,7 @@ public class PlayerDao extends AbstractDao {
                player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), CoverArtScheme.MEDIUM.name(),
                player.getTranscodeScheme().name(), player.isDynamicIp(),
-               player.getTechnology().name(), player.getClientId());
+               player.getTechnology().name(), player.getClientId(), player.getJavaJukeboxMixer());
         addPlaylist(player);
 
         LOG.info("Created player " + id + '.');
@@ -152,12 +157,13 @@ public class PlayerDao extends AbstractDao {
                      "transcode_scheme = ?, " +
                      "dynamic_ip = ?, " +
                      "technology = ?, " +
-                     "client_id = ? " +
+                     "client_id = ?, " +
+                     "mixer = ? " +
                      "where id = ?";
         update(sql, player.getName(), player.getType(), player.getUsername(),
                player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
                player.getLastSeen(), player.getTranscodeScheme().name(), player.isDynamicIp(),
-               player.getTechnology().name(), player.getClientId(), player.getId());
+               player.getTechnology().name(), player.getClientId(), player.getJavaJukeboxMixer(), player.getId());
     }
 
     private void addPlaylist(Player player) {
@@ -186,6 +192,7 @@ public class PlayerDao extends AbstractDao {
             player.setDynamicIp(rs.getBoolean(col++));
             player.setTechnology(PlayerTechnology.valueOf(rs.getString(col++)));
             player.setClientId(rs.getString(col++));
+            player.setJavaJukeboxMixer(rs.getString(col++));
 
             addPlaylist(player);
             return player;
