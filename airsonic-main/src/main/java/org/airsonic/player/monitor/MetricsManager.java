@@ -4,12 +4,14 @@ import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
 import org.airsonic.player.service.ApacheCommonsConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * Created by remi on 17/01/17.
  */
+@Service
 public class MetricsManager {
 
     @Autowired

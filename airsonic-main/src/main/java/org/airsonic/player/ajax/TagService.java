@@ -29,6 +29,8 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides AJAX-enabled services for editing tags in music files.
@@ -36,11 +38,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxTagService")
 public class TagService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TagService.class);
 
+    @Autowired
     private MetaDataParserFactory metaDataParserFactory;
+    @Autowired
     private MediaFileService mediaFileService;
 
     /**

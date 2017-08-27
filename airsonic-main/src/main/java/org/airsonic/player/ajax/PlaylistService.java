@@ -30,6 +30,8 @@ import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.WebContextFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,14 +45,22 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxPlaylistService")
 public class PlaylistService {
 
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private org.airsonic.player.service.PlaylistService playlistService;
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private LocaleResolver localeResolver;
 
     public List<Playlist> getReadablePlaylists() {

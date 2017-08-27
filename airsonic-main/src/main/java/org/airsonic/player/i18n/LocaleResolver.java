@@ -22,6 +22,8 @@ package org.airsonic.player.i18n;
 import org.airsonic.player.domain.UserSettings;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,15 +32,17 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-
 /**
  * Locale resolver implementation which returns the locale selected in the settings.
  *
  * @author Sindre Mehus
  */
+@Service
 public class LocaleResolver implements org.springframework.web.servlet.LocaleResolver {
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
     private Set<Locale> locales;
 

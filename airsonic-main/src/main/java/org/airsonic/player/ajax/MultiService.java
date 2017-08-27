@@ -30,6 +30,8 @@ import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.WebContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,13 +47,18 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxMultiService")
 public class MultiService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultiService.class);
 
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private LastFmService lastFmService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
 
     public ArtistInfo getArtistInfo(int mediaFileId, int maxSimilarArtists, int maxTopSongs) {

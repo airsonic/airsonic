@@ -26,6 +26,8 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Provides AJAX-enabled services for starring.
@@ -34,11 +36,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxStarService")
 public class StarService {
 
     private static final Logger LOG = LoggerFactory.getLogger(StarService.class);
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileDao mediaFileDao;
 
     public void star(int id) {

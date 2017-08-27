@@ -11,11 +11,14 @@
 
     <!-- DAO's -->
     
-    <context:component-scan base-package="org.airsonic.player.dao" />
+    <context:component-scan base-package="org.airsonic.player.dao, 
+        org.airsonic.player.service, 
+        org.airsonic.player.monitor, 
+        org.airsonic.player.ajax, 
+        org.airsonic.player.i18n." />
 
     <!-- Services -->
 
-    <context:component-scan base-package="org.airsonic.player.service" />
     <bean id="metaDataParserFactory" class="org.airsonic.player.service.metadata.MetaDataParserFactory">
         <property name="parsers">
             <list>
@@ -25,75 +28,7 @@
             </list>
         </property>
     </bean>
-    <bean id="metricsManager" class="org.airsonic.player.monitor.MetricsManager"></bean>
 
     <!-- AJAX services -->
-
-    <bean id="ajaxMultiService" class="org.airsonic.player.ajax.MultiService">
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="lastFmService" ref="lastFmService"/>
-    </bean>
-
-    <bean id="ajaxNowPlayingService" class="org.airsonic.player.ajax.NowPlayingService">
-        <property name="playerService" ref="playerService"/>
-        <property name="statusService" ref="statusService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaScannerService" ref="mediaScannerService"/>
-    </bean>
-
-    <bean id="ajaxPlayQueueService" class="org.airsonic.player.ajax.PlayQueueService">
-        <property name="playerService" ref="playerService"/>
-        <property name="playlistService" ref="playlistService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="lastFmService" ref="lastFmService"/>
-        <property name="mediaFileDao" ref="mediaFileDao"/>
-        <property name="playQueueDao" ref="playQueueDao"/>
-        <property name="jukeboxService" ref="jukeboxService"/>
-        <property name="transcodingService" ref="transcodingService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="searchService" ref="searchService"/>
-        <property name="ratingService" ref="ratingService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="podcastService" ref="podcastService"/>
-        <property name="jwtSecurityService" ref="jwtSecurityService" />
-    </bean>
-
-    <bean id="ajaxPlaylistService" class="org.airsonic.player.ajax.PlaylistService">
-        <property name="playlistService" ref="playlistService"/>
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="playerService" ref="playerService"/>
-        <property name="mediaFileDao" ref="mediaFileDao"/>
-        <property name="localeResolver" ref="localeResolver"/>
-    </bean>
-
-    <bean id="ajaxLyricsService" class="org.airsonic.player.ajax.LyricsService"/>
-
-    <bean id="ajaxCoverArtService" class="org.airsonic.player.ajax.CoverArtService">
-        <property name="securityService" ref="securityService"/>
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="lastFmService" ref="lastFmService"/>
-    </bean>
-
-    <bean id="ajaxStarService" class="org.airsonic.player.ajax.StarService">
-        <property name="securityService" ref="securityService"/>
-        <property name="mediaFileDao" ref="mediaFileDao"/>
-    </bean>
-
-    <bean id="ajaxTagService" class="org.airsonic.player.ajax.TagService">
-        <property name="mediaFileService" ref="mediaFileService"/>
-        <property name="metaDataParserFactory" ref="metaDataParserFactory"/>
-    </bean>
-
-    <bean id="ajaxTransferService" class="org.airsonic.player.ajax.TransferService"/>
-
-    <bean id="localeResolver" class="org.airsonic.player.i18n.LocaleResolver">
-        <property name="securityService" ref="securityService"/>
-        <property name="settingsService" ref="settingsService"/>
-    </bean>
-
 
 </beans>
