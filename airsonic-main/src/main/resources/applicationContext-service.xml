@@ -189,6 +189,15 @@
         <property name="securityService" ref="securityService"/>
     </bean>
 
+    <bean id="jukeboxJavaService" class="org.airsonic.player.service.JukeboxJavaService">
+        <property name="statusService" ref="statusService"/>
+        <property name="audioScrobblerService" ref="audioScrobblerService"/>
+        <property name="mediaFileService" ref="mediaFileService"/>
+        <property name="settingsService" ref="settingsService"/>
+        <property name="securityService" ref="securityService"/>
+    </bean>
+
+
     <bean id="folderBasedContentDirectory" class="org.airsonic.player.service.upnp.FolderBasedContentDirectory">
         <property name="settingsService" ref="settingsService"/>
         <property name="playlistService" ref="playlistService"/>
@@ -282,6 +291,7 @@
         <property name="mediaFileDao" ref="mediaFileDao"/>
         <property name="playQueueDao" ref="playQueueDao"/>
         <property name="jukeboxService" ref="jukeboxService"/>
+        <property name="jukeboxJavaService" ref="jukeboxJavaService"/>
         <property name="transcodingService" ref="transcodingService"/>
         <property name="settingsService" ref="settingsService"/>
         <property name="searchService" ref="searchService"/>

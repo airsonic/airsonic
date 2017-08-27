@@ -1,0 +1,35 @@
+<div id="javaJukeboxPlayerControlBar" class="bgcolor2" style="position:fixed; bottom:0; width:100%;padding-top:10px;padding-bottom: 5px">
+    <table style="white-space:nowrap;">
+        <tr style="white-space:nowrap;">
+            <c:if test="${model.user.settingsRole and fn:length(model.players) gt 1}">
+                <td style="padding-right: 5px">
+                    <select name="player" onchange="location='playQueue.view?player=' + options[selectedIndex].value;">
+                    <c:forEach items="${model.players}" var="player">
+                        <option ${player.id eq model.player.id ? "selected" : ""} value="${player.id}">${player.shortDescription}</option>
+                    </c:forEach>
+                    </select>
+                </td>
+            </c:if>
+            <td>
+                <img id="startIcon" src="<spring:theme code="castPlayImage"/>" onclick="onJavaJukeboxStart()" style="cursor:pointer">
+                <img id="pauseIcon" src="<spring:theme code="castPauseImage"/>" onclick="onJavaJukeboxStop()" style="cursor:pointer; display:none">
+            </td>
+            <td><span id="playingPositionDisplay" class="javaJukeBoxPlayerControlBarSongTime"/></td>
+            <td style="white-space:nowrap;">
+                <div id="javaJukeboxSongPositionSlider"></div>
+            </td>
+            <td><span id="playingDurationDisplay" class="javaJukeBoxPlayerControlBarSongTime"/></td>
+            <td style="white-space:nowrap;">
+                <img src="<spring:theme code="volumeImage"/>" alt="">
+            </td>
+            <td style="white-space:nowrap;">
+                <div id="javaJukeboxVolumeSlider" style="width:80px;height:4px"></div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script type="text/javascript" src="<c:url value='/script/playQueue/javaJukeboxPlayerControlBar.js'/>"></script>
+<script type="text/javascript">
+    initJavaJukeboxPlayerControlBar();
+</script>
