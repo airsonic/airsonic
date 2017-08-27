@@ -23,6 +23,7 @@ import org.airsonic.player.domain.PodcastChannel;
 import org.airsonic.player.domain.PodcastEpisode;
 import org.airsonic.player.domain.PodcastStatus;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -34,6 +35,7 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class PodcastDao extends AbstractDao {
 
     private static final String CHANNEL_INSERT_COLUMNS = "url, title, description, image_url, status, error_message";

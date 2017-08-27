@@ -21,6 +21,7 @@ package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.Avatar;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,6 +32,7 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class AvatarDao extends AbstractDao {
 
     private static final String INSERT_COLUMNS = "name, created_date, mime_type, width, height, data";

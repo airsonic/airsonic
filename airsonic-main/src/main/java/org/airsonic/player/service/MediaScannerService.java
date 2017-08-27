@@ -28,6 +28,10 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.io.File;
 import java.util.*;
@@ -37,6 +41,7 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
+@Service
 public class MediaScannerService {
 
     private static final int INDEX_VERSION = 15;
@@ -46,15 +51,23 @@ public class MediaScannerService {
 
     private boolean scanning;
     private Timer timer;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SearchService searchService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private ArtistDao artistDao;
+    @Autowired
     private AlbumDao albumDao;
     private int scanCount;
 
+    @PostConstruct
     public void init() {
         deleteOldIndexFiles();
         statistics = settingsService.getMediaLibraryStatistics();

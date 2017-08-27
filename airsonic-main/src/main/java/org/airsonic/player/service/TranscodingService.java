@@ -31,6 +31,8 @@ import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,13 +50,17 @@ import java.util.List;
  * @author Sindre Mehus
  * @see TranscodeInputStream
  */
+@Service
 public class TranscodingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TranscodingService.class);
     public static final String FORMAT_RAW = "raw";
 
+    @Autowired
     private TranscodingDao transcodingDao;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlayerService playerService;
 
     /**

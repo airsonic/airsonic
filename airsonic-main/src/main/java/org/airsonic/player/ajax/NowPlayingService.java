@@ -27,6 +27,8 @@ import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,13 +42,18 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxNowPlayingService")
 public class NowPlayingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(NowPlayingService.class);
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaScannerService mediaScannerService;
 
     /**

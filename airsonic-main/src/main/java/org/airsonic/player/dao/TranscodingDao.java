@@ -23,6 +23,7 @@ import org.airsonic.player.domain.Transcoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -34,6 +35,7 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class TranscodingDao extends AbstractDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(TranscodingDao.class);

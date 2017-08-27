@@ -24,6 +24,7 @@ import org.airsonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -35,6 +36,7 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Repository
 @Transactional
 public class UserDao extends AbstractDao {
 

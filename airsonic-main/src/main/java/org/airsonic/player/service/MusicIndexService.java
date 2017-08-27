@@ -22,6 +22,8 @@ package org.airsonic.player.service;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.domain.MusicIndex.SortableArtist;
 import org.airsonic.player.util.FileUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +36,12 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
+@Service
 public class MusicIndexService {
 
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaFileService mediaFileService;
 
     /**

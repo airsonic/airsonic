@@ -21,6 +21,8 @@ package org.airsonic.player.service.metadata;
 
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 
@@ -29,8 +31,10 @@ import java.io.File;
  *
  * @author Sindre Mehus
  */
+@Service
 public class DefaultMetaDataParser extends MetaDataParser {
 
+    @Autowired
     private final SettingsService settingsService;
 
     public DefaultMetaDataParser(SettingsService settingsService) {

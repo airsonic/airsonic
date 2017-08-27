@@ -36,6 +36,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.io.File;
@@ -50,14 +52,21 @@ import java.util.*;
  * @author Sindre Mehus
  * @see PlayQueue
  */
+@Service
 public class PlaylistService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PlaylistService.class);
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private PlaylistDao playlistDao;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private List<PlaylistExportHandler> exportHandlers;
+    @Autowired
     private List<PlaylistImportHandler> importHandlers;
 
     public PlaylistService(

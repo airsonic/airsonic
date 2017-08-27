@@ -28,6 +28,8 @@ import org.airsonic.player.service.*;
 import org.airsonic.player.service.PlaylistService;
 import org.airsonic.player.util.StringUtil;
 import org.directwebremoting.WebContextFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,22 +43,37 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxPlayQueueService")
 @SuppressWarnings("UnusedDeclaration")
 public class PlayQueueService {
 
+    @Autowired
     private PlayerService playerService;
+    @Autowired
     private JukeboxService jukeboxService;
+    @Autowired
     private TranscodingService transcodingService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private LastFmService lastFmService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SearchService searchService;
+    @Autowired
     private RatingService ratingService;
+    @Autowired
     private PodcastService podcastService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private PlayQueueDao playQueueDao;
+    @Autowired
     private JWTSecurityService jwtSecurityService;
 
     /**

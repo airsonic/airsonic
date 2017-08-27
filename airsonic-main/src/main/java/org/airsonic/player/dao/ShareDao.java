@@ -22,6 +22,7 @@ package org.airsonic.player.dao;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.Share;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -36,6 +37,7 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class ShareDao extends AbstractDao {
 
     private static final String INSERT_COLUMNS = "name, description, username, created, expires, last_visited, visit_count";
