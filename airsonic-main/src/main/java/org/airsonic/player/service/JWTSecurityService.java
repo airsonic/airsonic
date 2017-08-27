@@ -28,9 +28,9 @@ public class JWTSecurityService {
     public static final int DEFAULT_DAYS_VALID_FOR = 7;
     private static SecureRandom secureRandom = new SecureRandom();
 
-    @Autowired
     private final SettingsService settingsService;
 
+    @Autowired
     public JWTSecurityService(SettingsService settingsService) {
         this.settingsService = settingsService;
     }
