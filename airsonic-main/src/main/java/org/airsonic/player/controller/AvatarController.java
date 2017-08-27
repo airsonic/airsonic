@@ -28,7 +28,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,17 +59,16 @@ public class AvatarController implements LastModified {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Avatar avatar = getAvatar(request);
 
         if (avatar == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return null;
+            return;
         }
 
         response.setContentType(avatar.getMimeType());
         response.getOutputStream().write(avatar.getData());
-        return null;
     }
 
     private Avatar getAvatar(HttpServletRequest request) {

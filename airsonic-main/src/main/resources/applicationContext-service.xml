@@ -330,4 +330,8 @@
         <constructor-arg ref="settingsService" />
     </bean>
 
+    <bean class="org.airsonic.player.service.BookmarkService">
+        <constructor-arg ref="bookmarkDao" />
+    </bean>
+
 </beans>
