@@ -199,7 +199,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
             if(tomcatESCF.isInstance(container)) {
                 LOG.debug("Attempting to optimize tomcat");
                 Object tomcatESCFInstance = tomcatESCF.cast(container);
-                Class<?> tomcatApplicationClass = Class.forName("TomcatApplication");
+                Class<?> tomcatApplicationClass = Class.forName("org.airsonic.player.TomcatApplication");
                 Method configure = ReflectionUtils.findMethod(tomcatApplicationClass, "configure", tomcatESCF);
                 configure.invoke(null, tomcatESCFInstance);
                 LOG.debug("Tomcat optimizations complete");
