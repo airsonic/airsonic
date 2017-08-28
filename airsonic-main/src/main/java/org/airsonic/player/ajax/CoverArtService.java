@@ -33,6 +33,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,12 +49,16 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Service("ajaxCoverArtService")
 public class CoverArtService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CoverArtService.class);
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private LastFmService lastFmService;
 
     public List<LastFmCoverArt> searchCoverArt(String artist, String album) {

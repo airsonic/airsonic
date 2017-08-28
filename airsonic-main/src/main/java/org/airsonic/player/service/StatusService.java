@@ -23,6 +23,8 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.PlayStatus;
 import org.airsonic.player.domain.Player;
 import org.airsonic.player.domain.TransferStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.*;
@@ -35,8 +37,10 @@ import java.util.*;
  * @author Sindre Mehus
  * @see TransferStatus
  */
+@Service
 public class StatusService {
 
+    @Autowired
     private MediaFileService mediaFileService;
 
     private final List<TransferStatus> streamStatuses = new ArrayList<TransferStatus>();

@@ -30,6 +30,7 @@ import org.fourthline.cling.support.model.item.MusicTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -41,6 +42,7 @@ import java.util.Arrays;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Service
 public class DispatchingContentDirectory extends CustomContentDirectory {
 
     public static final Logger LOG = LoggerFactory.getLogger(DispatchingContentDirectory.class);
@@ -61,9 +63,11 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
     @Autowired
     private MediaFileUpnpProcessor mediaFileProcessor;
     //@Autowired can't autowire because of the subclassing :P
-    private AlbumUpnpProcessor albumProcessor;
+    @Autowired//first checks type then field name to autowire
+    private AlbumUpnpProcessor albumUpnpProcessor;
     //@Autowired can't autowire because of the subclassing :P
-    private RecentAlbumUpnpProcessor recentAlbumProcessor;
+    @Autowired//first checks type then field name to autowire
+    private RecentAlbumUpnpProcessor recentAlbumUpnpProcessor;
     @Autowired
     private ArtistUpnpProcessor artistProcessor;
     @Autowired
@@ -73,7 +77,7 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
 
     @Autowired
     private MediaFileService mediaFileService;
-
+    @Autowired
     private PlaylistService playlistService;
 
     @Autowired
@@ -211,17 +215,17 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
     }
 
     public AlbumUpnpProcessor getAlbumProcessor() {
-        return albumProcessor;
+        return albumUpnpProcessor;
     }
     public void setAlbumProcessor(AlbumUpnpProcessor albumProcessor) {
-        this.albumProcessor = albumProcessor;
+        this.albumUpnpProcessor = albumProcessor;
     }
 
     public RecentAlbumUpnpProcessor getRecentAlbumProcessor() {
-        return recentAlbumProcessor;
+        return recentAlbumUpnpProcessor;
     }
     public void setRecentAlbumProcessor(RecentAlbumUpnpProcessor recentAlbumProcessor) {
-        this.recentAlbumProcessor = recentAlbumProcessor;
+        this.recentAlbumUpnpProcessor = recentAlbumProcessor;
     }
 
     public ArtistUpnpProcessor getArtistProcessor() {

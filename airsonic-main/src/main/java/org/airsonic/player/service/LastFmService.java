@@ -32,6 +32,10 @@ import org.airsonic.player.domain.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,16 +49,21 @@ import java.util.regex.Pattern;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Service
 public class LastFmService {
 
     private static final String LAST_FM_KEY = "ece4499898a9440896dfdce5dab26bbf";
     private static final long CACHE_TIME_TO_LIVE_MILLIS = 6 * 30 * 24 * 3600 * 1000L; // 6 months
     private static final Logger LOG = LoggerFactory.getLogger(LastFmService.class);
 
+    @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private ArtistDao artistDao;
 
+    @PostConstruct
     public void init() {
         Caller caller = Caller.getInstance();
         caller.setUserAgent("Airsonic");

@@ -8,11 +8,13 @@ import org.apache.commons.configuration2.sync.ReadWriteSynchronizer;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
+@Service
 public class ApacheCommonsConfigurationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApacheCommonsConfigurationService.class);

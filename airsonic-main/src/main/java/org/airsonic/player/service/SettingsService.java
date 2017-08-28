@@ -31,6 +31,10 @@ import org.airsonic.player.util.Util;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,11 +43,13 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+
 /**
  * Provides persistent storage of application settings and preferences.
  *
  * @author Sindre Mehus
  */
+@Service
 public class SettingsService {
 
     // Airsonic home directory.
@@ -210,10 +216,15 @@ public class SettingsService {
 
     private List<Theme> themes;
     private List<Locale> locales;
+    @Autowired
     private InternetRadioDao internetRadioDao;
+    @Autowired
     private MusicFolderDao musicFolderDao;
+    @Autowired
     private UserDao userDao;
+    @Autowired
     private AvatarDao avatarDao;
+    @Autowired
     private ApacheCommonsConfigurationService configurationService;
 
     private String[] cachedCoverArtFileTypesArray;
@@ -271,6 +282,7 @@ public class SettingsService {
      * Register in service locator so that non-Spring objects can access me.
      * This method is invoked automatically by Spring.
      */
+    @PostConstruct
     public void init() {
         logServerInfo();
     }

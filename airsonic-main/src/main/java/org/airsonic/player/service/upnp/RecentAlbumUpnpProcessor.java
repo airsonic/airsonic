@@ -20,6 +20,7 @@
 package org.airsonic.player.service.upnp;
 import org.airsonic.player.domain.Album;
 import org.airsonic.player.domain.MusicFolder;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import java.util.List;
  * @author Allen Petersen
  * @version $Id$
  */
+@Service
 public class RecentAlbumUpnpProcessor extends AlbumUpnpProcessor {
     private final static int RECENT_COUNT = 50;
 

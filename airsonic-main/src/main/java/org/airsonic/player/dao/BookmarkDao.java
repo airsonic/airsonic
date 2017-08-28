@@ -21,6 +21,7 @@ package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.Bookmark;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -32,6 +33,7 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class BookmarkDao extends AbstractDao {
 
     private static final String INSERT_COLUMNS = "media_file_id, position_millis, username, comment, created, changed";

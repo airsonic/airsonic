@@ -37,6 +37,11 @@ import org.fourthline.cling.support.model.dlna.DLNAProfiles;
 import org.fourthline.cling.support.model.dlna.DLNAProtocolInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -47,15 +52,20 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Service
 public class UPnPService {
 
     private static final Logger LOG = LoggerFactory.getLogger(UPnPService.class);
 
+    @Autowired
     private SettingsService settingsService;
     private UpnpService upnpService;
-    private CustomContentDirectory customContentDirectory;
+    @Autowired
+    @Qualifier("dispatchingContentDirectory")
+    private CustomContentDirectory dispatchingContentDirectory;
     private AtomicReference<Boolean> running = new AtomicReference<>(false);
 
+    @PostConstruct
     public void init() {
         if(settingsService.isDlnaEnabled() || settingsService.isSonosEnabled()) {
             ensureServiceStarted();
@@ -152,7 +162,7 @@ public class UPnPService {
 
             @Override
             protected CustomContentDirectory createServiceInstance() throws Exception {
-                return customContentDirectory;
+                return dispatchingContentDirectory;
             }
         });
 
@@ -206,6 +216,6 @@ public class UPnPService {
     }
 
     public void setCustomContentDirectory(CustomContentDirectory customContentDirectory) {
-        this.customContentDirectory = customContentDirectory;
+        this.dispatchingContentDirectory = customContentDirectory;
     }
 }

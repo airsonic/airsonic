@@ -22,15 +22,16 @@ package org.airsonic.player.ajax;
 import org.airsonic.player.controller.UploadController;
 import org.airsonic.player.domain.TransferStatus;
 import org.directwebremoting.WebContextFactory;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
-
 /**
  * Provides AJAX-enabled services for retrieving the status of ongoing transfers.
  * This class is used by the DWR framework (http://getahead.ltd.uk/dwr/).
  *
  * @author Sindre Mehus
  */
+@Service("ajaxTransferService")
 public class TransferService {
 
     /**

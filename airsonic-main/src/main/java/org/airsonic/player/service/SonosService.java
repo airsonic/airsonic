@@ -37,6 +37,8 @@ import org.apache.cxf.jaxws.context.WrappedMessageContext;
 import org.apache.cxf.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 
 import javax.annotation.Resource;
@@ -60,6 +62,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Service
 public class SonosService implements SonosSoap {
 
     private static final Logger LOG = LoggerFactory.getLogger(SonosService.class);
@@ -92,11 +95,17 @@ public class SonosService implements SonosSoap {
     public static final String ID_SEARCH_ALBUMS = "search-albums";
     public static final String ID_SEARCH_SONGS = "search-songs";
 
+    @Autowired
     private SonosHelper sonosHelper;
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private PlaylistService playlistService;
+    @Autowired
     private UPnPService upnpService;
 
     /**

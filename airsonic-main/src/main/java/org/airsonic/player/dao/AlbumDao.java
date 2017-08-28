@@ -25,6 +25,7 @@ import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.ObjectUtils;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -36,6 +37,7 @@ import java.util.*;
  *
  * @author Sindre Mehus
  */
+@Repository
 public class AlbumDao extends AbstractDao {
     private static final String INSERT_COLUMNS = "path, name, artist, song_count, duration_seconds, cover_art_path, " +
                                           "year, genre, play_count, last_played, comment, created, last_scanned, present, folder_id";

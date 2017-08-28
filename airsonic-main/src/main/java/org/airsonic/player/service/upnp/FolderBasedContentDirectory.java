@@ -34,6 +34,8 @@ import org.fourthline.cling.support.model.item.Item;
 import org.fourthline.cling.support.model.item.MusicTrack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -45,13 +47,16 @@ import java.util.List;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Service
 public class FolderBasedContentDirectory extends CustomContentDirectory {
 
     private static final Logger LOG = LoggerFactory.getLogger(FolderBasedContentDirectory.class);
     private static final String CONTAINER_ID_PLAYLIST_ROOT = "playlists";
     private static final String CONTAINER_ID_PLAYLIST_PREFIX = "playlist-";
     private static final String CONTAINER_ID_FOLDER_PREFIX = "folder-";
+    @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
     private PlaylistService playlistService;
 
     @Override

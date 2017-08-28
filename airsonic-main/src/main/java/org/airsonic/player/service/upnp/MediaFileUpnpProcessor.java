@@ -31,6 +31,7 @@ import org.fourthline.cling.support.model.container.MusicAlbum;
 import org.fourthline.cling.support.model.item.Item;
 import org.fourthline.cling.support.model.item.MusicTrack;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ import java.util.List;
  * @author Allen Petersen
  * @version $Id$
  */
+@Service
 public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, MediaFile> {
 
     @Autowired

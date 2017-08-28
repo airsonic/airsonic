@@ -22,6 +22,7 @@ package org.airsonic.player.dao;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import java.util.Map;
  *
  * @author Sindre Mehus
  */
+@Repository("musicFileInfoDao")
 public class RatingDao extends AbstractDao {
 
     /**
