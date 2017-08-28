@@ -172,7 +172,7 @@
     function onStart() {
         if (CastPlayer.castSession) {
             CastPlayer.playCast();
-        } else if ($('#audioPlayer')) {
+        } else if ($('#audioPlayer').get(0)) {
             var audioPlayer = $('#audioPlayer');
             if(audioPlayer.paused) {
                 skip(0, audioPlayer.currentTime);
@@ -188,7 +188,7 @@
     function onStop() {
         if (CastPlayer.castSession) {
             CastPlayer.pauseCast();
-        } else if ($('#audioPlayer')) {
+        } else if ($('#audioPlayer').get(0)) {
             $('#audioPlayer').get(0).pause();
         } else {
             playQueueService.stop(playQueueCallback);
