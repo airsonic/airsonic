@@ -7,6 +7,8 @@ import org.airsonic.player.domain.Player;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,19 +23,23 @@ import java.util.Map;
  *
  * @author Rémi Cocula
  */
+@Service
 public class JukeboxJavaService {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(JukeboxJavaService.class);
 
+    @Autowired
     private AudioScrobblerService audioScrobblerService;
+    @Autowired
     private StatusService statusService;
+    @Autowired
     private SettingsService settingsService;
+    @Autowired
     private SecurityService securityService;
-
-    private TransferStatus status;
-
+    @Autowired
     private MediaFileService mediaFileService;
 
+    private TransferStatus status;
     private Map<String,MediaFile> currentPlayingFileMap = new Hashtable();
     private Map<String, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new Hashtable<>();
     private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new Hashtable<>();
@@ -299,27 +305,4 @@ public class JukeboxJavaService {
             audioScrobblerService.register(file, player.getUsername(), submission, null);
         }
     }
-
-
-
-    public void setAudioScrobblerService(AudioScrobblerService audioScrobblerService) {
-        this.audioScrobblerService = audioScrobblerService;
-    }
-
-    public void setStatusService(StatusService statusService) {
-        this.statusService = statusService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
 }

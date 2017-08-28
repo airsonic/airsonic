@@ -22,17 +22,22 @@ package org.airsonic.player.service;
 import org.airsonic.player.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  *
  *
  * @author Rémi Cocula
  */
+@Service
 public class JukeboxService {
 
     private static final Logger log = LoggerFactory.getLogger(JukeboxService.class);
 
+    @Autowired
     private JukeboxLegacySubsonicService jukeboxLegacySubsonicService;
+    @Autowired
     private JukeboxJavaService jukeboxJavaService;
 
 
@@ -102,17 +107,6 @@ public class JukeboxService {
                 return true;
         }
         return false;
-    }
-
-
-    /* properties setters */
-
-    public void setJukeboxLegacySubsonicService(JukeboxLegacySubsonicService jukeboxLegacySubsonicService) {
-        this.jukeboxLegacySubsonicService = jukeboxLegacySubsonicService;
-    }
-
-    public void setJukeboxJavaService(JukeboxJavaService jukeboxJavaService) {
-        this.jukeboxJavaService = jukeboxJavaService;
     }
 
 }
