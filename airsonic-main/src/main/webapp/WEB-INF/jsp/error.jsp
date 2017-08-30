@@ -1,19 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="UTF-8" isErrorPage="true" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 
 <html><head>
+     <%@ include file="head.jsp" %>
     <!--[if lt IE 7.]>
     <script defer type="text/javascript" src="script/pngfix.js"></script>
     <![endif]-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link rel="stylesheet" href="style/default.css" type="text/css"/>
+
 </head>
 
-<body>
+<body class="mainframe bgcolor1">
 <h1>
-    <img src="icons/default_light/error.png" alt=""/>
+    <img src="<spring:theme code="errorImage"/>" alt=""/>
     <span style="vertical-align: middle">Error</span>
 </h1>
 
