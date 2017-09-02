@@ -20,7 +20,7 @@
 package org.airsonic.player.security;
 
 import org.airsonic.player.controller.JAXBWriter;
-import org.airsonic.player.controller.RESTController;
+import org.airsonic.player.controller.SubsonicRESTController;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.domain.Version;
 import org.airsonic.player.service.SecurityService;
@@ -100,7 +100,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         String version = StringUtils.trimToNull(httpRequest.getParameter("v"));
         String client = StringUtils.trimToNull(httpRequest.getParameter("c"));
 
-        RESTController.ErrorCode errorCode = null;
+        SubsonicRESTController.ErrorCode errorCode = null;
 
         // The username and credentials parameters are not required if the user
         // was previously authenticated, for example using Basic Auth.
@@ -108,7 +108,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         Authentication previousAuth = SecurityContextHolder.getContext().getAuthentication();
         boolean missingCredentials = previousAuth == null && (username == null || !passwordOrTokenPresent);
         if (missingCredentials || version == null || client == null) {
-            errorCode = RESTController.ErrorCode.MISSING_PARAMETER;
+            errorCode = SubsonicRESTController.ErrorCode.MISSING_PARAMETER;
         }
 
         if (errorCode == null) {
@@ -127,21 +127,21 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
     }
 
-    private RESTController.ErrorCode checkAPIVersion(String version) {
+    private SubsonicRESTController.ErrorCode checkAPIVersion(String version) {
         Version serverVersion = new Version(jaxbWriter.getRestProtocolVersion());
         Version clientVersion = new Version(version);
 
         if (serverVersion.getMajor() > clientVersion.getMajor()) {
-            return RESTController.ErrorCode.PROTOCOL_MISMATCH_CLIENT_TOO_OLD;
+            return SubsonicRESTController.ErrorCode.PROTOCOL_MISMATCH_CLIENT_TOO_OLD;
         } else if (serverVersion.getMajor() < clientVersion.getMajor()) {
-            return RESTController.ErrorCode.PROTOCOL_MISMATCH_SERVER_TOO_OLD;
+            return SubsonicRESTController.ErrorCode.PROTOCOL_MISMATCH_SERVER_TOO_OLD;
         } else if (serverVersion.getMinor() < clientVersion.getMinor()) {
-            return RESTController.ErrorCode.PROTOCOL_MISMATCH_SERVER_TOO_OLD;
+            return SubsonicRESTController.ErrorCode.PROTOCOL_MISMATCH_SERVER_TOO_OLD;
         }
         return null;
     }
 
-    private RESTController.ErrorCode authenticate(HttpServletRequest httpRequest, String username, String password, String salt, String token, Authentication previousAuth) {
+    private SubsonicRESTController.ErrorCode authenticate(HttpServletRequest httpRequest, String username, String password, String salt, String token, Authentication previousAuth) {
 
         // Previously authenticated and username not overridden?
         if (username == null && previousAuth != null) {
@@ -151,11 +151,11 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         if (salt != null && token != null) {
             User user = securityService.getUserByName(username);
             if (user == null) {
-                return RESTController.ErrorCode.NOT_AUTHENTICATED;
+                return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
             }
             String expectedToken = DigestUtils.md5Hex(user.getPassword() + salt);
             if (!expectedToken.equals(token)) {
-                return RESTController.ErrorCode.NOT_AUTHENTICATED;
+                return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
             }
 
             password = user.getPassword();
@@ -170,11 +170,11 @@ public class RESTRequestParameterProcessingFilter implements Filter {
                 return null;
             } catch (AuthenticationException x) {
                 eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(authRequest, x));
-                return RESTController.ErrorCode.NOT_AUTHENTICATED;
+                return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
             }
         }
 
-        return RESTController.ErrorCode.MISSING_PARAMETER;
+        return SubsonicRESTController.ErrorCode.MISSING_PARAMETER;
     }
 
     public static String decrypt(String s) {
@@ -191,7 +191,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
     }
 
-    private void sendErrorXml(HttpServletRequest request, HttpServletResponse response, RESTController.ErrorCode errorCode) throws IOException {
+    private void sendErrorXml(HttpServletRequest request, HttpServletResponse response, SubsonicRESTController.ErrorCode errorCode) throws IOException {
         try {
             jaxbWriter.writeErrorResponse(request, response, errorCode, errorCode.getMessage());
         } catch (Exception e) {

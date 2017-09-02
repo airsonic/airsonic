@@ -23,8 +23,12 @@ import org.airsonic.player.ajax.LyricsInfo;
 import org.airsonic.player.ajax.LyricsService;
 import org.airsonic.player.ajax.PlayQueueService;
 import org.airsonic.player.command.UserSettingsCommand;
-import org.airsonic.player.dao.*;
+import org.airsonic.player.dao.AlbumDao;
+import org.airsonic.player.dao.ArtistDao;
+import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.dao.PlayQueueDao;
 import org.airsonic.player.domain.*;
+import org.airsonic.player.domain.Bookmark;
 import org.airsonic.player.service.*;
 import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
@@ -43,7 +47,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.subsonic.restapi.*;
 import org.subsonic.restapi.PodcastStatus;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
@@ -65,9 +68,9 @@ import static org.springframework.web.bind.ServletRequestUtils.*;
  */
 @Controller
 @RequestMapping(value = "/rest", method = {RequestMethod.GET, RequestMethod.POST})
-public class RESTController {
+public class SubsonicRESTController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RESTController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SubsonicRESTController.class);
 
     @Autowired
     private SettingsService settingsService;
@@ -124,7 +127,7 @@ public class RESTController {
     @Autowired
     private AlbumDao albumDao;
     @Autowired
-    private BookmarkDao bookmarkDao;
+    private BookmarkService bookmarkService;
     @Autowired
     private PlayQueueDao playQueueDao;
     @Autowired
@@ -135,18 +138,6 @@ public class RESTController {
 
     private static final String NOT_YET_IMPLEMENTED = "Not yet implemented";
     private static final String NO_LONGER_SUPPORTED = "No longer supported";
-
-    @PostConstruct
-    public void init() {
-        refreshBookmarkCache();
-    }
-
-    private void refreshBookmarkCache() {
-        bookmarkCache.clear();
-        for (org.airsonic.player.domain.Bookmark bookmark : bookmarkDao.getBookmarks()) {
-            bookmarkCache.put(BookmarkKey.forBookmark(bookmark), bookmark);
-        }
-    }
 
     @RequestMapping(value = "/ping")
     public void ping(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -1337,12 +1328,12 @@ public class RESTController {
     }
 
     @RequestMapping(value = "/download")
-    public ModelAndView download(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         org.airsonic.player.domain.User user = securityService.getCurrentUser(request);
         if (!user.isDownloadRole()) {
             error(request, response, ErrorCode.NOT_AUTHORIZED, user.getUsername() + " is not authorized to download files.");
-            return null;
+            return;
         }
 
         long ifModifiedSince = request.getDateHeader("If-Modified-Since");
@@ -1350,49 +1341,47 @@ public class RESTController {
 
         if (ifModifiedSince != -1 && lastModified != -1 && lastModified <= ifModifiedSince) {
             response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
-            return null;
+            return;
         }
 
         if (lastModified != -1) {
             response.setDateHeader("Last-Modified", lastModified);
         }
 
-        return downloadController.handleRequest(request, response);
+        downloadController.handleRequest(request, response);
     }
 
     @RequestMapping(value = "/stream")
-    public ModelAndView stream(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void stream(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         org.airsonic.player.domain.User user = securityService.getCurrentUser(request);
         if (!user.isStreamRole()) {
             error(request, response, ErrorCode.NOT_AUTHORIZED, user.getUsername() + " is not authorized to play files.");
-            return null;
+            return;
         }
 
         streamController.handleRequest(request, response);
-        return null;
     }
 
     @RequestMapping(value = "/hls")
-    public ModelAndView hls(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void hls(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
         org.airsonic.player.domain.User user = securityService.getCurrentUser(request);
         if (!user.isStreamRole()) {
             error(request, response, ErrorCode.NOT_AUTHORIZED, user.getUsername() + " is not authorized to play files.");
-            return null;
+            return;
         }
         int id = getRequiredIntParameter(request, "id");
         MediaFile video = mediaFileDao.getMediaFile(id);
         if (video == null || video.isDirectory()) {
             error(request, response, ErrorCode.NOT_FOUND, "Video not found.");
-            return null;
+            return;
         }
         if (!securityService.isFolderAccessAllowed(video, user.getUsername())) {
             error(request, response, ErrorCode.NOT_AUTHORIZED, "Access denied");
-            return null;
+            return;
         }
         hlsController.handleRequest(request, response);
-        return null;
     }
 
     @RequestMapping(value = "/scrobble")
@@ -1702,7 +1691,7 @@ public class RESTController {
         String username = securityService.getCurrentUsername(request);
 
         Bookmarks result = new Bookmarks();
-        for (org.airsonic.player.domain.Bookmark bookmark : bookmarkDao.getBookmarks(username)) {
+        for (Bookmark bookmark : bookmarkService.getBookmarks(username)) {
             org.subsonic.restapi.Bookmark b = new org.subsonic.restapi.Bookmark();
             result.getBookmark().add(b);
             b.setPosition(bookmark.getPositionMillis());
@@ -1729,9 +1718,8 @@ public class RESTController {
         String comment = request.getParameter("comment");
         Date now = new Date();
 
-        org.airsonic.player.domain.Bookmark bookmark = new org.airsonic.player.domain.Bookmark(0, mediaFileId, position, username, comment, now, now);
-        bookmarkDao.createOrUpdateBookmark(bookmark);
-        refreshBookmarkCache();
+        Bookmark bookmark = new Bookmark(0, mediaFileId, position, username, comment, now, now);
+        bookmarkService.createOrUpdateBookmark(bookmark);
         writeEmptyResponse(request, response);
     }
 
@@ -1741,8 +1729,7 @@ public class RESTController {
 
         String username = securityService.getCurrentUsername(request);
         int mediaFileId = getRequiredIntParameter(request, "id");
-        bookmarkDao.deleteBookmark(username, mediaFileId);
-        refreshBookmarkCache();
+        bookmarkService.deleteBookmark(username, mediaFileId);
 
         writeEmptyResponse(request, response);
     }
@@ -1954,15 +1941,15 @@ public class RESTController {
     }
 
     @RequestMapping(value = "/getCoverArt")
-    public ModelAndView getCoverArt(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getCoverArt(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
-        return coverArtController.handleRequest(request, response);
+        coverArtController.handleRequest(request, response);
     }
 
     @RequestMapping(value = "/getAvatar")
-    public ModelAndView getAvatar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getAvatar(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
-        return avatarController.handleRequest(request, response);
+        avatarController.handleRequest(request, response);
     }
 
     @RequestMapping(value = "/changePassword")
@@ -2237,7 +2224,7 @@ public class RESTController {
 
         MediaFile mediaFile = this.mediaFileService.getMediaFile(id);
         if (mediaFile == null) {
-            error(request, response, RESTController.ErrorCode.NOT_FOUND, "Media file not found.");
+            error(request, response, SubsonicRESTController.ErrorCode.NOT_FOUND, "Media file not found.");
             return;
         }
         AlbumNotes albumNotes = this.lastFmService.getAlbumNotes(mediaFile);
@@ -2256,7 +2243,7 @@ public class RESTController {
 
         Album album = this.albumDao.getAlbum(id);
         if (album == null) {
-            error(request, response, RESTController.ErrorCode.NOT_FOUND, "Album not found.");
+            error(request, response, SubsonicRESTController.ErrorCode.NOT_FOUND, "Album not found.");
             return;
         }
         AlbumNotes albumNotes = this.lastFmService.getAlbumNotes(album);

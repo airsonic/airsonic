@@ -20,7 +20,6 @@
 package org.airsonic.player.controller;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -36,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.InputStream;
+
+import static org.springframework.http.HttpStatus.*;
 
 /**
  * A proxy for external HTTP requests.
@@ -61,7 +62,7 @@ public class ProxyController  {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             try (CloseableHttpResponse resp = client.execute(method)) {
                 int statusCode = resp.getStatusLine().getStatusCode();
-                if (statusCode != HttpStatus.SC_OK) {
+                if (statusCode != OK.value()) {
                     response.sendError(statusCode);
                 } else {
                     in = resp.getEntity().getContent();
