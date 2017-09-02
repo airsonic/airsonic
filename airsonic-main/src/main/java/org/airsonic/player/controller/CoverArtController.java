@@ -35,7 +35,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.annotation.PostConstruct;
@@ -98,7 +97,7 @@ public class CoverArtController implements LastModified {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
 //        LOG.info("handleRequest - " + coverArtRequest);
@@ -107,14 +106,14 @@ public class CoverArtController implements LastModified {
         // Send fallback image if no ID is given. (No need to cache it, since it will be cached in browser.)
         if (coverArtRequest == null) {
             sendFallback(size, response);
-            return null;
+            return;
         }
 
         // Optimize if no scaling is required.
         if (size == null && coverArtRequest.getCoverArt() != null) {
 //            LOG.info("sendUnscaled - " + coverArtRequest);
             sendUnscaled(coverArtRequest, response);
-            return null;
+            return;
         }
 
         // Send cached image, creating it if necessary.
@@ -128,7 +127,6 @@ public class CoverArtController implements LastModified {
             sendFallback(size, response);
         }
 
-        return null;
     }
 
     private CoverArtRequest createCoverArtRequest(HttpServletRequest request) {

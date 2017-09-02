@@ -20,7 +20,7 @@
 package org.airsonic.player.filter;
 
 import org.airsonic.player.controller.JAXBWriter;
-import org.airsonic.player.controller.RESTController;
+import org.airsonic.player.controller.SubsonicRESTController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -61,7 +61,7 @@ public class RESTFilter implements Filter {
             x = x.getCause();
         }
 
-        RESTController.ErrorCode code = (x instanceof ServletRequestBindingException) ? RESTController.ErrorCode.MISSING_PARAMETER : RESTController.ErrorCode.GENERIC;
+        SubsonicRESTController.ErrorCode code = (x instanceof ServletRequestBindingException) ? SubsonicRESTController.ErrorCode.MISSING_PARAMETER : SubsonicRESTController.ErrorCode.GENERIC;
         String msg = getErrorMessage(x);
         LOG.warn("Error in REST API: " + msg, x);
 
