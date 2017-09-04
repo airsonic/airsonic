@@ -230,7 +230,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
 
             @Override
             public void sessionDestroyed(HttpSessionEvent se) {
-                LOG.debug("session destroyed");
+                LOG.debug("Session destroyed");
             }
         };
     }
