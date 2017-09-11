@@ -29,6 +29,7 @@ import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.dao.PlayQueueDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.domain.Bookmark;
+import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.service.*;
 import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
@@ -833,51 +834,70 @@ public class SubsonicRESTController {
             return;
         }
 
+        Player player = playerService.getPlayer(request, response);
+
         boolean returnPlaylist = false;
         String action = getRequiredStringParameter(request, "action");
-        if ("start".equals(action)) {
-            playQueueService.doStart(request, response);
-        } else if ("stop".equals(action)) {
-            playQueueService.doStop(request, response);
-        } else if ("skip".equals(action)) {
-            int index = getRequiredIntParameter(request, "index");
-            int offset = getIntParameter(request, "offset", 0);
-            playQueueService.doSkip(request, response, index, offset);
-        } else if ("add".equals(action)) {
-            int[] ids = getIntParameters(request, "id");
-            playQueueService.doAdd(request, response, ids, null);
-        } else if ("set".equals(action)) {
-            int[] ids = getIntParameters(request, "id");
-            playQueueService.doSet(request, response, ids);
-        } else if ("clear".equals(action)) {
-            playQueueService.doClear(request, response);
-        } else if ("remove".equals(action)) {
-            int index = getRequiredIntParameter(request, "index");
-            playQueueService.doRemove(request, response, index);
-        } else if ("shuffle".equals(action)) {
-            playQueueService.doShuffle(request, response);
-        } else if ("setGain".equals(action)) {
-            float gain = getRequiredFloatParameter(request, "gain");
-            jukeboxService.setGain(gain);
-        } else if ("get".equals(action)) {
-            returnPlaylist = true;
-        } else if ("status".equals(action)) {
-            // No action necessary.
-        } else {
-            throw new Exception("Unknown jukebox action: '" + action + "'.");
+
+        switch (action) {
+            case "start":
+                player.getPlayQueue().setStatus(PlayQueue.Status.PLAYING);
+                jukeboxService.start(player);
+                break;
+            case "stop":
+                player.getPlayQueue().setStatus(PlayQueue.Status.STOPPED);
+                jukeboxService.stop(player);
+                break;
+            case "skip":
+                int index = getRequiredIntParameter(request, "index");
+                int offset = getIntParameter(request, "offset", 0);
+                player.getPlayQueue().setIndex(index);
+                jukeboxService.skip(player,index,offset);
+                break;
+            case "add":
+                int[] ids = getIntParameters(request, "id");
+                playQueueService.addMediaFilesToPlayQueue(player.getPlayQueue(),ids,null,true);
+                break;
+            case "set":
+                ids = getIntParameters(request, "id");
+                playQueueService.resetPlayQueue(player.getPlayQueue(),ids,true);
+                break;
+            case "clear":
+                player.getPlayQueue().clear();
+                break;
+            case "remove":
+                index = getRequiredIntParameter(request, "index");
+                player.getPlayQueue().removeFileAt(index);
+                break;
+            case "shuffle":
+                player.getPlayQueue().shuffle();
+                break;
+            case "setGain":
+                float gain = getRequiredFloatParameter(request, "gain");
+                jukeboxService.setGain(player,gain);
+                break;
+            case "get":
+                returnPlaylist = true;
+                break;
+            case "status":
+                // No action necessary.
+                break;
+            default:
+                throw new Exception("Unknown jukebox action: '" + action + "'.");
         }
 
-        Player player = playerService.getPlayer(request, response);
         String username = securityService.getCurrentUsername(request);
-        Player jukeboxPlayer = jukeboxService.getPlayer();
-        boolean controlsJukebox = jukeboxPlayer != null && jukeboxPlayer.getId().equals(player.getId());
-        org.airsonic.player.domain.PlayQueue playQueue = player.getPlayQueue();
+        PlayQueue playQueue = player.getPlayQueue();
 
+        // this variable is only needed for the JukeboxLegacySubsonicService. To be removed.
+        boolean controlsJukebox = jukeboxService.canControl(player);
 
         int currentIndex = controlsJukebox && !playQueue.isEmpty() ? playQueue.getIndex() : -1;
-        boolean playing = controlsJukebox && !playQueue.isEmpty() && playQueue.getStatus() == org.airsonic.player.domain.PlayQueue.Status.PLAYING;
-        float gain = jukeboxService.getGain();
-        int position = controlsJukebox && !playQueue.isEmpty() ? jukeboxService.getPosition() : 0;
+        boolean playing = controlsJukebox && !playQueue.isEmpty() && playQueue.getStatus() == PlayQueue.Status.PLAYING;
+        float gain;
+        int position;
+        gain = jukeboxService.getGain(player);
+        position = controlsJukebox && !playQueue.isEmpty() ? jukeboxService.getPosition(player) : 0;
 
         Response res = createResponse();
         if (returnPlaylist) {
