@@ -25,16 +25,15 @@ import org.airsonic.player.service.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "/api/musicFolders")
 public class MusicFolderRESTController {
 
@@ -46,10 +45,10 @@ public class MusicFolderRESTController {
     private SecurityService securityService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<MusicFolder>> getMusicFolders(HttpServletRequest request) throws Exception {
+    public List<MusicFolder> getMusicFolders(HttpServletRequest request) throws Exception {
         String username = securityService.getCurrentUsername(request);
         List<MusicFolder> musicFoldersForUser = settingsService.getMusicFoldersForUser(username);
 
-        return ResponseEntity.ok(musicFoldersForUser);
+        return musicFoldersForUser;
     }
 }
