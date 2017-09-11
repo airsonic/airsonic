@@ -70,16 +70,4 @@ public class PlayQueueController {
         map.put("autoHide", userSettings.isAutoHidePlayQueue());
         return new ModelAndView("playQueue","model",map);
     }
-
-    public void setPlayerService(PlayerService playerService) {
-        this.playerService = playerService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
 }

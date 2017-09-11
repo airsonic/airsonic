@@ -182,7 +182,11 @@ public class PlayerService {
      * @return The player with the given ID, or <code>null</code> if no such player exists.
      */
     public Player getPlayerById(String id) {
-        return playerDao.getPlayerById(id);
+        if (StringUtils.isBlank(id)) {
+            return null;
+        } else {
+            return playerDao.getPlayerById(id);
+        }
     }
 
     /**
