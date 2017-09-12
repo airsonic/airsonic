@@ -101,6 +101,9 @@ public class MainController  {
                 subDirs.add(child);
             }
         }
+        if (! dir.isAlbum()) {
+            collapseMultiDiscAlbums(subDirs);
+        }
 
         int userPaginationPreference = userSettings.getPaginationSize();
 
@@ -129,9 +132,29 @@ public class MainController  {
         map.put("brand", settingsService.getBrand());
         map.put("viewAsList", isViewAsList(request, userSettings));
         if (dir.isAlbum()) {
-            List<MediaFile> sieblingAlbums = getSieblingAlbums(dir);
-            thereIsMoreSAlbums = trimToSize(showAll, sieblingAlbums, userPaginationPreference);
-            map.put("sieblingAlbums", sieblingAlbums);
+            List<MediaFile> siblingAlbums = getSiblingAlbums(dir);
+            List<MediaFile> allDiscs = getAllAlbumDiscs(dir);
+            siblingAlbums.removeAll(allDiscs);
+            collapseMultiDiscAlbums(siblingAlbums);
+            SortedMap<MediaFile, List<MediaFile>> discFileMap;
+            if (allDiscs.size() > 0) {
+                discFileMap = new TreeMap<>((d1, d2) -> d1.getDiscNumber() - d2.getDiscNumber());
+                List<String> groupIdList = new ArrayList<>();
+                for (MediaFile disc: allDiscs) {
+                    groupIdList.add(Integer.toString(disc.getId()));
+                    List<MediaFile> discChildren = mediaFileService.getChildrenOf(disc, true, true, true).stream().filter(child -> child.isFile()).collect(Collectors.toList());
+
+                    discFileMap.put(disc, discChildren);
+                }
+                dir.setAlbumDiscIds(groupIdList);
+            } else {
+                // this will only have one value so the sorting doesn't matter
+                discFileMap = new TreeMap<>((d1, d2) -> 1);
+                discFileMap.put(dir, files);
+            }
+            map.put("allDiscs", discFileMap);
+            thereIsMoreSAlbums = trimToSize(showAll, siblingAlbums, userPaginationPreference);
+            map.put("siblingAlbums", siblingAlbums);
             map.put("artist", guessArtist(children));
             map.put("album", guessAlbum(children));
         }
@@ -267,15 +290,63 @@ public class MainController  {
         return result;
     }
 
-    private List<MediaFile> getSieblingAlbums(MediaFile dir) {
+    private List<MediaFile> getSiblingAlbums(MediaFile dir) {
         List<MediaFile> result = new ArrayList<>();
 
         MediaFile parent = mediaFileService.getParentOf(dir);
         if (!mediaFileService.isRoot(parent)) {
-            List<MediaFile> sieblings = mediaFileService.getChildrenOf(parent, false, true, true);
-            result.addAll(sieblings.stream().filter(siebling -> siebling.isAlbum() && !siebling.equals(dir)).collect(Collectors.toList()));
+            List<MediaFile> siblings = mediaFileService.getChildrenOf(parent, false, true, true);
+            result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && !sibling.equals(dir)).collect(Collectors.toList()));
         }
         return result;
     }
 
+    private List<MediaFile> getAllAlbumDiscs(MediaFile dir) {
+        List<MediaFile> result = new ArrayList<>();
+        if (dir.getAlbumName() == null) {
+            result.add(dir);
+            return result;
+        }
+        if (dir.isAlbum() && dir.getDiscNumber() != null) {
+            MediaFile parent = mediaFileService.getParentOf(dir);
+            List<MediaFile> siblings = mediaFileService.getChildrenOf(parent, false, true, true);
+            result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && dir.getAlbumName().equals(sibling.getAlbumName()) && sibling.getDiscNumber() != null).collect(Collectors.toList()));
+        }
+        return result;
+    }
+
+    private void collapseMultiDiscAlbums(List<MediaFile> children) {
+        if (children != null && ! children.isEmpty()) {
+            // combine together discs of the same album
+            Map<String, List<MediaFile>> albumMap = new HashMap<>();
+            for (MediaFile child: children) {
+                if (child.isAlbum()&& child.getAlbumName() != null && child.getDiscNumber() != null && child.getDiscNumber() > 0) {
+                    List<MediaFile> albumList = albumMap.get(child.getAlbumName());
+                    if (albumList == null) {
+                        albumList = new ArrayList<MediaFile>();
+                        albumMap.put(child.getAlbumName(), albumList);
+                    }
+                    albumList.add(child);
+                }
+            }
+            // now go through and remove duplicates
+            for (List<MediaFile> albumList: albumMap.values()) {
+                if (albumList.size() > 1) {
+                    albumList.sort((a1,a2) -> a1.getDiscNumber() - a2.getDiscNumber());
+                    boolean keep = true;
+                    List<String> groupIdList = new ArrayList<>();
+                    for (MediaFile disc: albumList) {
+                        groupIdList.add(Integer.toString(disc.getId()));
+                        if (keep) {
+                            disc.setTitle(disc.getAlbumName() + " (" + albumList.size() + " discs)");
+                            disc.setAlbumDiscIds(groupIdList);
+                            keep = false;
+                        } else {
+                                children.remove(disc);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

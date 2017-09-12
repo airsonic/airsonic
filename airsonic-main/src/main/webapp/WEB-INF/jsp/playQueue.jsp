@@ -284,6 +284,9 @@
     function onPlay(id) {
         playQueueService.play(id, playQueueCallback);
     }
+    function onPlayIdList(ids) {
+        playQueueService.playIdList(ids, playQueueCallback);
+    }
     function onPlayShuffle(albumListType, offset, size, genre, decade) {
         playQueueService.playShuffle(albumListType, offset, size, genre, decade, playQueueCallback);
     }
@@ -308,11 +311,17 @@
     function onPlayRandom(id, count) {
         playQueueService.playRandom(id, count, playQueueCallback);
     }
+    function onPlayRandomFromParents(parentIds, count) {
+        playQueueService.playRandomFromParents(parentIds, count, playQueueCallback);
+    }
     function onPlaySimilar(id, count) {
         playQueueService.playSimilar(id, count, playQueueCallback);
     }
     function onAdd(id) {
         playQueueService.add(id, playQueueCallback);
+    }
+    function onAddIdList(ids) {
+        playQueueService.addIdList(ids, playQueueCallback);
     }
     function onAddNext(id) {
         playQueueService.addAt(id, getCurrentSongIndex() + 1, playQueueCallback);
@@ -451,7 +460,7 @@
                 $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
             } else {
                 $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
-            } 
+            }
             if ($("#currentImage" + id) && song.streamUrl == currentStreamUrl) {
                 $("#currentImage" + id).show();
                 if (isJavaJukeboxPresent()) {

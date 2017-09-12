@@ -230,12 +230,13 @@
             <c:forEach items="${model.subDirs}" var="subDir">
                 <tr>
                     <c:import url="playButtons.jsp">
-                        <c:param name="id" value="${subDir.id}"/>
+                        <c:param name="id" value="${subDir.idListString}"/>
+                        <c:param name="onPlay" value="top.playQueue.onPlayIdList(${subDir.idListString}); return false;"/>
                         <c:param name="playEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
                         <c:param name="addEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
                         <c:param name="asTable" value="true"/>
                     </c:import>
-                    <td class="truncate"><a href="main.view?id=${subDir.id}" title="${fn:escapeXml(subDir.name)}">${fn:escapeXml(subDir.name)}</a></td>
+                    <td class="truncate"><a href="main.view?id=${subDir.id}" title="${fn:escapeXml(subDir.displayName)}">${fn:escapeXml(subDir.displayName)}</a></td>
                     <td class="fit rightalign detail">${subDir.year}</td>
                 </tr>
             </c:forEach>
@@ -253,7 +254,7 @@
                             <c:param name="addEnabled" value="${model.user.streamRole and not model.partyModeEnabled}"/>
                             <c:param name="asTable" value="true"/>
                         </c:import>
-                        <td class="truncate"><a href="main.view?id=${subDir.id}" title="${fn:escapeXml(subDir.name)}">${fn:escapeXml(subDir.name)}</a></td>
+                        <td class="truncate"><a href="main.view?id=${subDir.id}" title="${fn:escapeXml(subDir.displayName)}">${fn:escapeXml(subDir.displayName)}</a></td>
                         <td class="fit rightalign detail">${subDir.year}</td>
                     </tr>
                 </c:if>
@@ -268,7 +269,8 @@
                     <div class="albumThumb">
                         <c:import url="coverArt.jsp">
                             <c:param name="albumId" value="${subDir.id}"/>
-                            <c:param name="caption1" value="${fn:escapeXml(subDir.name)}"/>
+                            <c:param name="albumIdList" value="${subDir.idListString}"/>
+                            <c:param name="caption1" value="${fn:escapeXml(subDir.displayName)}"/>
                             <c:param name="caption2" value="${subDir.year}"/>
                             <c:param name="captionCount" value="2"/>
                             <c:param name="coverArtSize" value="${model.coverArtSizeMedium}"/>
