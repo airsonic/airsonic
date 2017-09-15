@@ -85,6 +85,8 @@ public class MusicFolderSettingsController {
         command.setScanning(mediaScannerService.isScanning());
         command.setMusicFolders(wrap(settingsService.getAllMusicFolders(true, true)));
         command.setNewMusicFolder(new MusicFolderSettingsCommand.MusicFolderInfo());
+        command.setExcludePatternString(settingsService.getExcludePatternString());
+        command.setIgnoreSymLinks(settingsService.getIgnoreSymLinks());
 
         model.addAttribute("command",command);
     }
@@ -123,6 +125,8 @@ public class MusicFolderSettingsController {
         settingsService.setIndexCreationHour(Integer.parseInt(command.getHour()));
         settingsService.setFastCacheEnabled(command.isFastCache());
         settingsService.setOrganizeByFolderStructure(command.isOrganizeByFolderStructure());
+        settingsService.setExcludePatternString(command.getExcludePatternString());
+        settingsService.setIgnoreSymLinks(command.getIgnoreSymLinks());
         settingsService.save();
 
 

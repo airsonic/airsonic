@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Pattern;
 
 
 /**
@@ -113,6 +114,8 @@ public class SettingsService {
     private static final String KEY_SMTP_PASSWORD = "SmtpPassword";
     private static final String KEY_SMTP_FROM = "SmtpFrom";
     private static final String KEY_EXPORT_PLAYLIST_FORMAT = "PlaylistExportFormat";
+    private static final String KEY_IGNORE_SYMLINKS = "IgnoreSymLinks";
+    private static final String KEY_EXCLUDE_PATTERN_STRING = "ExcludePattern";
 
     // Database Settings
     private static final String KEY_DATABASE_CONFIG_TYPE = "DatabaseConfigType";
@@ -180,6 +183,8 @@ public class SettingsService {
     private static final String DEFAULT_SONOS_SERVICE_NAME = "Airsonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
     private static final String DEFAULT_EXPORT_PLAYLIST_FORMAT = "m3u";
+    private static final boolean DEFAULT_IGNORE_SYMLINKS = false;
+    private static final String DEFAULT_EXCLUDE_PATTERN_STRING = null;
 
     private static final String DEFAULT_SMTP_SERVER = null;
     private static final String DEFAULT_SMTP_ENCRYPTION = "None";
@@ -200,7 +205,7 @@ public class SettingsService {
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
-            "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", 
+            "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand",
             "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort",
             "PortForwardingEnabled", "RewriteUrl", "UrlRedirectCustomUrl", "UrlRedirectContextPath",
             "UrlRedirectFrom", "UrlRedirectionEnabled", "UrlRedirectType", "Port", "HttpsPort",
@@ -232,6 +237,8 @@ public class SettingsService {
     private String[] cachedVideoFileTypesArray;
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
+
+    private Pattern excludePattern;
 
     private void removeObsoleteProperties() {
 
@@ -727,6 +734,38 @@ public class SettingsService {
 
     public void setSortAlbumsByYear(boolean b) {
         setBoolean(KEY_SORT_ALBUMS_BY_YEAR, b);
+    }
+
+    public boolean getIgnoreSymLinks() {
+        return getBoolean(KEY_IGNORE_SYMLINKS, DEFAULT_IGNORE_SYMLINKS);
+    }
+
+    public void setIgnoreSymLinks(boolean b) {
+        setBoolean(KEY_IGNORE_SYMLINKS, b);
+    }
+
+    public String getExcludePatternString() {
+        return getString(KEY_EXCLUDE_PATTERN_STRING, DEFAULT_EXCLUDE_PATTERN_STRING);
+    }
+
+    public void setExcludePatternString(String s) {
+        setString(KEY_EXCLUDE_PATTERN_STRING, s);
+        compileExcludePattern();
+    }
+
+    private void compileExcludePattern() {
+        if (getExcludePatternString() != null && getExcludePatternString().trim().length() > 0) {
+            excludePattern = Pattern.compile(getExcludePatternString());
+        } else {
+            excludePattern = null;
+        }
+    }
+
+    public Pattern getExcludePattern() {
+        if (excludePattern == null && getExcludePatternString() != null) {
+            compileExcludePattern();
+        }
+        return excludePattern;
     }
 
     public MediaLibraryStatistics getMediaLibraryStatistics() {

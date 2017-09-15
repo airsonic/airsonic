@@ -41,6 +41,8 @@ public class MusicFolderSettingsCommand {
     private boolean organizeByFolderStructure;
     private List<MusicFolderInfo> musicFolders;
     private MusicFolderInfo newMusicFolder;
+    private String excludePatternString;
+    private boolean ignoreSymLinks;
 
     public String getInterval() {
         return interval;
@@ -96,6 +98,22 @@ public class MusicFolderSettingsCommand {
 
     public void setOrganizeByFolderStructure(boolean organizeByFolderStructure) {
         this.organizeByFolderStructure = organizeByFolderStructure;
+    }
+
+    public String getExcludePatternString() {
+        return excludePatternString;
+    }
+
+    public void setExcludePatternString(String excludePatternString) {
+        this.excludePatternString = excludePatternString;
+    }
+
+    public boolean getIgnoreSymLinks() {
+        return ignoreSymLinks;
+    }
+
+    public void setIgnoreSymLinks(boolean ignoreSymLinks) {
+        this.ignoreSymLinks = ignoreSymLinks;
     }
 
     public static class MusicFolderInfo {

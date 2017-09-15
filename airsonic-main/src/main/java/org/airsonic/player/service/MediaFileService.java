@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 /**
@@ -451,9 +452,17 @@ public class MediaFileService {
      * @return Whether the child file is excluded.
      */
     private boolean isExcluded(File file) {
+        if (settingsService.getIgnoreSymLinks() && Files.isSymbolicLink(file.toPath())) {
+            LOG.info("excluding symbolic link " + file.toPath());
+            return true;
+        }
+        String name = file.getName();
+        if (settingsService.getExcludePattern() != null && settingsService.getExcludePattern().matcher(name).find()) {
+            LOG.info("excluding file which matches exclude pattern " + settingsService.getExcludePatternString() + ": " + file.toPath());
+            return true;
+        }
 
         // Exclude all hidden files starting with a single "." or "@eaDir" (thumbnail dir created on Synology devices).
-        String name = file.getName();
         return (name.startsWith(".") && !name.startsWith("..")) || name.startsWith("@eaDir") || name.equals("Thumbs.db");
     }
 
