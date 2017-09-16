@@ -23,6 +23,7 @@ import org.airsonic.player.domain.*;
 import org.airsonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +68,12 @@ public class UserDao extends AbstractDao {
     private UserRowMapper userRowMapper = new UserRowMapper();
     private UserSettingsRowMapper userSettingsRowMapper = new UserSettingsRowMapper();
 
-    String userTableQuote = "";
+    private final String userTableQuote;
+
+    @Autowired
+    public UserDao(String userTableQuote) {
+        this.userTableQuote = userTableQuote;
+    }
 
     /**
      * Returns the user with the given username.
@@ -389,9 +395,5 @@ public class UserDao extends AbstractDao {
 
     String getUserTable() {
         return userTableQuote + "user" + userTableQuote;
-    }
-
-    public void setUserTableQuote(String userTableQuote) {
-        this.userTableQuote = userTableQuote;
     }
 }
