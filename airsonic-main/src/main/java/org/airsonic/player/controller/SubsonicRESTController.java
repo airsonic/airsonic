@@ -41,11 +41,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.subsonic.restapi.*;
+import org.subsonic.restapi.Error;
 import org.subsonic.restapi.PodcastStatus;
 
 import javax.servlet.http.HttpServletRequest;
@@ -139,6 +142,13 @@ public class SubsonicRESTController {
 
     private static final String NOT_YET_IMPLEMENTED = "Not yet implemented";
     private static final String NO_LONGER_SUPPORTED = "No longer supported";
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public void handleMissingRequestParam(HttpServletRequest request,
+                                          HttpServletResponse response,
+                                          MissingServletRequestParameterException exception) throws Exception {
+        error(request, response, ErrorCode.MISSING_PARAMETER, "Required param ("+exception.getParameterName()+") is missing");
+    }
 
     @RequestMapping(value = "/ping")
     public void ping(HttpServletRequest request, HttpServletResponse response) throws Exception {
