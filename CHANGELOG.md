@@ -3,6 +3,16 @@
 # airsonic/airsonic
 # -->
 
+## v10.0.1
+
+Note that with this release, the jdbc-extra flavored war is now the default and only war.
+
+  * Translation updates for French, Bulgarian, German, Italian, Spanish,
+  * Docker image tweaks
+  * Some light cleanup/refactorings
+  * Fixed password reset
+  * Fixed broken liquibase when airsonic.defaultMusicFolder is modified
+
 ## v10.0.0
 
   * Rebranded to Airsonic
