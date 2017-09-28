@@ -72,6 +72,17 @@ For example, a request that attempts to apply a non-existent tag to a note will 
 
 include::{snippets}/error-example/http-response.adoc[]
 
+[[overview-authentication]]
+== Authentication
+
+Authentication for the Airsonic REST API is different than the Subsonic REST API. Methods supported are as follows:
+
+- Basic Auth
+- Website Session Auth
+
+The Website Session auth is useful for calling the rest api from the integrated JSP based frontend.
+Using this method outside of this use case is unadvised.
+
 [[overview-hypermedia]]
 == Hypermedia
 
