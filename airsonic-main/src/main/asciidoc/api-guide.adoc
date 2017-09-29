@@ -118,3 +118,11 @@ Provides interaction with music folders for the current authenticated user.
 === Listing Music Folders
 
 operation::music-folders-list-example[snippets='curl-request,response-fields,http-response']
+
+[[resources-genres]]
+== Genres
+
+[[resources-genres-access]]
+=== Listing Genres
+
+operation::genres-list-example[snippets='curl-request,response-fields,http-response']
