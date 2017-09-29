@@ -83,15 +83,6 @@ Authentication for the Airsonic REST API is different than the Subsonic REST API
 The Website Session auth is useful for calling the rest api from the integrated JSP based frontend.
 Using this method outside of this use case is unadvised.
 
-[[overview-hypermedia]]
-== Hypermedia
-
-RESTful Notes uses hypermedia and resources include links to other resources in their
-responses. Responses are in http://stateless.co/hal_specification.html[Hypertext Application
-from resource to resource.
-Language (HAL)] format. Links can be found beneath the `_links` key. Users of the API should
-not create URIs themselves, instead they should use the above-described links to navigate
-
 [[resources]]
 = Resources
 
