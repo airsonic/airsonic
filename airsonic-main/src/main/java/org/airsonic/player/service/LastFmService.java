@@ -223,8 +223,8 @@ public class LastFmService {
      * @param mediaFile The media file (song, album or artist).
      * @return Artist bio.
      */
-    public ArtistBio getArtistBio(MediaFile mediaFile) {
-        return getArtistBio(getCanonicalArtistName(getArtistName(mediaFile)));
+    public ArtistBio getArtistBio(MediaFile mediaFile, Locale locale) {
+        return getArtistBio(getCanonicalArtistName(getArtistName(mediaFile)), locale);
     }
 
     /**
@@ -233,8 +233,8 @@ public class LastFmService {
      * @param artist The artist.
      * @return Artist bio.
      */
-    public ArtistBio getArtistBio(org.airsonic.player.domain.Artist artist) {
-        return getArtistBio(getCanonicalArtistName(artist.getName()));
+    public ArtistBio getArtistBio(org.airsonic.player.domain.Artist artist, Locale locale) {
+        return getArtistBio(getCanonicalArtistName(artist.getName()), locale);
     }
 
     /**
@@ -370,13 +370,13 @@ public class LastFmService {
     }
 
 
-    private ArtistBio getArtistBio(String artistName) {
+    private ArtistBio getArtistBio(String artistName, Locale locale) {
         try {
             if (artistName == null) {
                 return null;
             }
 
-            Artist info = Artist.getInfo(artistName, LAST_FM_KEY);
+            Artist info = Artist.getInfo(artistName, locale, null /* username */, LAST_FM_KEY);
             if (info == null) {
                 return null;
             }

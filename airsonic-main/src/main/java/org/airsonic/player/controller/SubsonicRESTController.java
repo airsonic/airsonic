@@ -431,7 +431,7 @@ public class SubsonicRESTController {
         for (MediaFile similarArtist : similarArtists) {
             result.getSimilarArtist().add(createJaxbArtist(similarArtist, username));
         }
-        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile);
+        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile, getUserLocale(request));
         if (artistBio != null) {
             result.setBiography(artistBio.getBiography());
             result.setMusicBrainzId(artistBio.getMusicBrainzId());
@@ -468,7 +468,7 @@ public class SubsonicRESTController {
         for (org.airsonic.player.domain.Artist similarArtist : similarArtists) {
             result.getSimilarArtist().add(createJaxbArtist(new ArtistID3(), similarArtist, username));
         }
-        ArtistBio artistBio = lastFmService.getArtistBio(artist);
+        ArtistBio artistBio = lastFmService.getArtistBio(artist, getUserLocale(request));
         if (artistBio != null) {
             result.setBiography(artistBio.getBiography());
             result.setMusicBrainzId(artistBio.getMusicBrainzId());
@@ -2402,6 +2402,9 @@ public class SubsonicRESTController {
         return !players.isEmpty() ? players.get(0).getId() : null;
     }
 
+    private Locale getUserLocale(HttpServletRequest request) {
+        return settingsService.getUserSettings(securityService.getCurrentUsername(request)).getLocale();
+    }
 
     public enum ErrorCode {
 
