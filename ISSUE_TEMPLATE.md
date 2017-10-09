@@ -6,7 +6,8 @@ following sections to make it easier to assist you.
 ## Problem description
 
 *Describe your problem here. Describe what you want to happen, and what happens
-if you try to do it.*
+if you try to do it. If you have a stack trace or any logs, please format them using
+githubs triple backquote notation*
 
 ### Steps to reproduce
 
