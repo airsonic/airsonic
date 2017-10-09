@@ -62,9 +62,12 @@ public class MultiService {
     private SettingsService settingsService;
 
     public ArtistInfo getArtistInfo(int mediaFileId, int maxSimilarArtists, int maxTopSongs) {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
+
         MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
         List<SimilarArtist> similarArtists = getSimilarArtists(mediaFileId, maxSimilarArtists);
-        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile);
+        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile, userSettings.getLocale());
         List<TopSong> topSongs = getTopSongs(mediaFile, maxTopSongs);
 
         return new ArtistInfo(similarArtists, artistBio, topSongs);
