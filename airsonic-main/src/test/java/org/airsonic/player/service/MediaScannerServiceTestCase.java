@@ -108,6 +108,7 @@ public class MediaScannerServiceTestCase {
      */
     @Test
     public void testScanLibrary() {
+        musicFolderDao.getAllMusicFolders().stream().forEach(musicFolder -> musicFolderDao.deleteMusicFolder(musicFolder.getId()));
         MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
         settingsService.clearMusicFolderCache();
 
@@ -158,6 +159,7 @@ public class MediaScannerServiceTestCase {
 
     @Test
     public void testScanMultiFolderAlbum() {
+        musicFolderDao.getAllMusicFolders().stream().forEach(musicFolder -> musicFolderDao.deleteMusicFolder(musicFolder.getId()));
         MusicFolderTestData.getTestMusicFolderForMultiFolderAlbum().forEach(musicFolderDao::createMusicFolder);
         settingsService.clearMusicFolderCache();
 
