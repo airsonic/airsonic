@@ -113,20 +113,20 @@ public class NowPlayingService {
 
             String artist = mediaFile.getArtist();
             String title = mediaFile.getTitle();
-            String streamUrl = url + "/stream?player=" + player.getId() + "&id=" + mediaFile.getId();
-            String albumUrl = url + "/main.view?id=" + mediaFile.getId();
+            String streamUrl = url + "stream?player=" + player.getId() + "&id=" + mediaFile.getId();
+            String albumUrl = url + "main.view?id=" + mediaFile.getId();
             String lyricsUrl = null;
             if (!mediaFile.isVideo()) {
-                lyricsUrl = url + "/lyrics.view?artistUtf8Hex=" + StringUtil.utf8HexEncode(artist) +
+                lyricsUrl = url + "lyrics.view?artistUtf8Hex=" + StringUtil.utf8HexEncode(artist) +
                                                         "&songUtf8Hex=" + StringUtil.utf8HexEncode(title);
             }
-            String coverArtUrl = url + "/coverArt.view?size=60&id=" + mediaFile.getId();
+            String coverArtUrl = url + "coverArt.view?size=60&id=" + mediaFile.getId();
 
             String avatarUrl = null;
             if (userSettings.getAvatarScheme() == AvatarScheme.SYSTEM) {
-                avatarUrl = url + "/avatar.view?id=" + userSettings.getSystemAvatarId();
+                avatarUrl = url + "avatar.view?id=" + userSettings.getSystemAvatarId();
             } else if (userSettings.getAvatarScheme() == AvatarScheme.CUSTOM && settingsService.getCustomAvatar(username) != null) {
-                avatarUrl = url + "/avatar.view?usernameUtf8Hex=" + StringUtil.utf8HexEncode(username);
+                avatarUrl = url + "avatar.view?usernameUtf8Hex=" + StringUtil.utf8HexEncode(username);
             }
 
             String tooltip = StringUtil.toHtml(artist) + " &ndash; " + StringUtil.toHtml(title);
