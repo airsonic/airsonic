@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <c:set var="styleSheet"><spring:theme code="styleSheet"/></c:set>
 <link rel="icon" type="image/png" href="<c:url value="/icons/favicon.png"/>"/>
-<!-- Included before libresonic stylesheet to allow overriding -->
+<!-- Included before airsonic stylesheet to allow overriding -->
 <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/mediaelementplayer.min.css"/>">
 <link rel="stylesheet" href="<c:url value="/${styleSheet}"/>" type="text/css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu&subset=latin,cyrillic-ext,greek-ext,greek,latin-ext,cyrillic" type="text/css"/>
