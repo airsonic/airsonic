@@ -100,7 +100,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
     public FilterRegistrationBean restFilterRegistration() {
         FilterRegistrationBean registration = new FilterRegistrationBean();
         registration.setFilter(restFilter());
-        registration.addUrlPatterns("/rest/*");
+        registration.addUrlPatterns("/rest/*", "/api/*");
         registration.setName("RESTFilter");
         registration.setOrder(3);
         return registration;
