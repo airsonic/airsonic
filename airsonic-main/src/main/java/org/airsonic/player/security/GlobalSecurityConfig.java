@@ -69,9 +69,34 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
     }
 
-
     @Configuration
     @Order(1)
+    public class RESTSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+        public RESTSecurityConfiguration() {
+            super(true);
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher("/api/**").authorizeRequests().antMatchers("/api/**").hasRole("USER").and()
+                .httpBasic().realmName("Airsonic REST API").and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .addFilter(new WebAsyncManagerIntegrationFilter())
+                .exceptionHandling().and()
+                .headers()
+                    .contentTypeOptions().disable()
+                    .xssProtection().disable()
+                    .cacheControl().and()
+                    .httpStrictTransportSecurity().disable()
+                    .frameOptions().disable().and()
+                .securityContext().disable()
+                .servletApi().disable();
+        }
+    }
+
+    @Configuration
+    @Order(2)
     public class ExtSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         public ExtSecurityConfiguration() {
@@ -106,7 +131,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     }
 
     @Configuration
-    @Order(2)
+    @Order(3)
     public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         @Override
