@@ -5,6 +5,7 @@ import org.airsonic.player.filter.*;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -25,6 +26,8 @@ import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 import java.lang.reflect.Method;
 
@@ -43,6 +46,9 @@ import java.lang.reflect.Method;
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+
+    @Value("${session.max.inactive:1200}")
+    int sessionMaxInactive;
 
     /**
      * Registers the DWR servlet.
@@ -211,6 +217,22 @@ public class Application extends SpringBootServletInitializer implements Embedde
         } catch (Exception e) {
             LOG.warn("An error happened while trying to optimize tomcat", e);
         }
+    }
+
+    @Bean
+    public HttpSessionListener timeoutSessionListener() {
+        return new HttpSessionListener() {
+            @Override
+            public void sessionCreated(HttpSessionEvent se) {
+                LOG.debug("Session created");
+                se.getSession().setMaxInactiveInterval(sessionMaxInactive);
+            }
+
+            @Override
+            public void sessionDestroyed(HttpSessionEvent se) {
+                LOG.debug("Session destroyed");
+            }
+        };
     }
 
     public static void main(String[] args) {
