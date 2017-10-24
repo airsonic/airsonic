@@ -125,7 +125,7 @@ public class ShareService {
     }
 
     public String getShareUrl(HttpServletRequest request, Share share) {
-        String shareUrl = NetworkService.getBaseUrl(request) + "/ext/share/" + share.getName();
+        String shareUrl = NetworkService.getBaseUrl(request) + "ext/share/" + share.getName();
         return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(shareUrl), share.getExpires()).build().toUriString();
     }
 

@@ -647,7 +647,7 @@ public class PlayQueueService {
     private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) throws Exception {
         String url = NetworkService.getBaseUrl(request);
 
-       /* if (serverSidePlaylist && player.isJukebox()) {
+        /* if (serverSidePlaylist && player.isJukebox()) {
             updateJukebox(player, offset);
         } */
         boolean isCurrentPlayer = player.getIpAddress() != null && player.getIpAddress().equals(request.getRemoteAddr());
@@ -661,12 +661,12 @@ public class PlayQueueService {
 
         for (MediaFile file : playQueue.getFiles()) {
 
-            String albumUrl = url + "/main.view?id=" + file.getId();
-            String streamUrl = url + "/stream?player=" + player.getId() + "&id=" + file.getId();
-            String coverArtUrl = url + "/coverArt.view?id=" + file.getId();
+            String albumUrl = url + "main.view?id=" + file.getId();
+            String streamUrl = url + "stream?player=" + player.getId() + "&id=" + file.getId();
+            String coverArtUrl = url + "coverArt.view?id=" + file.getId();
 
-            String remoteStreamUrl = jwtSecurityService.addJWTToken(url + "/ext/stream?player=" + player.getId() + "&id=" + file.getId());
-            String remoteCoverArtUrl = jwtSecurityService.addJWTToken(url + "/ext/coverArt.view?id=" + file.getId());
+            String remoteStreamUrl = jwtSecurityService.addJWTToken(url + "ext/stream?player=" + player.getId() + "&id=" + file.getId());
+            String remoteCoverArtUrl = jwtSecurityService.addJWTToken(url + "ext/coverArt.view?id=" + file.getId());
 
             String format = formatFormat(player, file);
             String username = securityService.getCurrentUsername(request);

@@ -128,7 +128,7 @@ public class ExternalPlayerController {
     }
 
     public MediaFileWithUrlInfo addUrlInfo(HttpServletRequest request, Player player, MediaFile mediaFile, Date expires) {
-        String prefix = "/ext";
+        String prefix = "ext";
         String streamUrl = jwtSecurityService.addJWTToken(
                 UriComponentsBuilder
                         .fromHttpUrl(NetworkService.getBaseUrl(request) + prefix + "/stream")
