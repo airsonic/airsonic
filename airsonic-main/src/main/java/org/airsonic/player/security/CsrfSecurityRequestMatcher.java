@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.regex.Pattern;
 
 /**
@@ -19,24 +21,23 @@ import java.util.regex.Pattern;
 @Component
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
     private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
-    private RegexRequestMatcher dwrRequestMatcher = new RegexRequestMatcher("/dwr/.*\\.dwr", "POST");
-    private RegexRequestMatcher restRequestMatcher = new RegexRequestMatcher("/rest/.*\\.view(\\?.*)?", "POST");
+    private Collection<RegexRequestMatcher> whiteListedMatchers;
+
+    public CsrfSecurityRequestMatcher() {
+        Collection<RegexRequestMatcher> whiteListedMatchers = new ArrayList<>();
+        whiteListedMatchers.add(new RegexRequestMatcher("/dwr/.*\\.dwr", "POST"));
+        whiteListedMatchers.add(new RegexRequestMatcher("/rest/.*\\.view(\\?.*)?", "POST"));
+        whiteListedMatchers.add(new RegexRequestMatcher("/search(?:\\.view)?", "POST"));
+        this.whiteListedMatchers = whiteListedMatchers;
+    }
 
     @Override
     public boolean matches(HttpServletRequest request) {
 
-        boolean requireCsrfToken = true;
+        boolean skipCSRF =
+                allowedMethods.matcher(request.getMethod()).matches() ||
+                whiteListedMatchers.stream().anyMatch(matcher -> matcher.matches(request));
 
-        if(allowedMethods.matcher(request.getMethod()).matches()){
-            requireCsrfToken = false;
-        } else {
-            if (dwrRequestMatcher.matches(request)) {
-                requireCsrfToken = false;
-            } else if (restRequestMatcher.matches(request)) {
-                requireCsrfToken = false;
-            }
-        }
-
-        return requireCsrfToken;
+        return !skipCSRF;
     }
 }

@@ -125,7 +125,6 @@
 
         <td style="padding-left:1em">
             <form method="post" action="search.view" target="main" name="searchForm">
-                <sec:csrfInput />
                 <td><input type="text" name="query" id="query" size="28" placeholder="${search}" onclick="select();"
                            onkeyup="triggerInstantSearch();"></td>
                 <td><a href="javascript:document.searchForm.submit()"><img src="<spring:theme code="searchImage"/>" alt="${search}" title="${search}"></a></td>
