@@ -151,9 +151,13 @@ public class MediaFileService {
     }
 
     private MediaFile checkLastModified(MediaFile mediaFile, boolean useFastCache) {
-        if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
+        if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION
+                && !settingsService.isIgnoreFileTimestamps()
+                && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
+            LOG.debug("Detected unmodified file");
             return mediaFile;
         }
+        LOG.debug("Updating database file from disk");
         mediaFile = createMediaFile(mediaFile.getFile());
         mediaFileDao.createOrUpdateMediaFile(mediaFile);
         return mediaFile;

@@ -77,6 +77,7 @@ public class SettingsService {
     private static final String KEY_INDEX_CREATION_INTERVAL = "IndexCreationInterval";
     private static final String KEY_INDEX_CREATION_HOUR = "IndexCreationHour";
     private static final String KEY_FAST_CACHE_ENABLED = "FastCacheEnabled";
+    private static final String KEY_IGNORE_FILE_TIMESTAMPS = "IgnoreFileTimestamps";
     private static final String KEY_PODCAST_UPDATE_INTERVAL = "PodcastUpdateInterval";
     private static final String KEY_PODCAST_FOLDER = "PodcastFolder";
     private static final String KEY_PODCAST_EPISODE_RETENTION_COUNT = "PodcastEpisodeRetentionCount";
@@ -160,6 +161,7 @@ public class SettingsService {
     private static final int DEFAULT_INDEX_CREATION_INTERVAL = 1;
     private static final int DEFAULT_INDEX_CREATION_HOUR = 3;
     private static final boolean DEFAULT_FAST_CACHE_ENABLED = false;
+    private static final boolean DEFAULT_IGNORE_FILE_TIMESTAMPS = false;
     private static final int DEFAULT_PODCAST_UPDATE_INTERVAL = 24;
     private static final String DEFAULT_PODCAST_FOLDER = Util.getDefaultPodcastFolder();
     private static final int DEFAULT_PODCAST_EPISODE_RETENTION_COUNT = 10;
@@ -535,6 +537,14 @@ public class SettingsService {
 
     public void setFastCacheEnabled(boolean enabled) {
         setBoolean(KEY_FAST_CACHE_ENABLED, enabled);
+    }
+
+    public boolean isIgnoreFileTimestamps() {
+        return getBoolean(KEY_IGNORE_FILE_TIMESTAMPS, DEFAULT_IGNORE_FILE_TIMESTAMPS);
+    }
+
+    public void setIgnoreFileTimestamps(boolean ignore) {
+        setBoolean(KEY_IGNORE_FILE_TIMESTAMPS, ignore);
     }
 
     /**

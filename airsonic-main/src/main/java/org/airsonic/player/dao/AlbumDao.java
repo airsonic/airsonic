@@ -334,12 +334,12 @@ public class AlbumDao extends AbstractDao {
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from album where last_scanned != ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from album where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from album where last_scanned < ? and present", 0, lastScanned);
+        int maxId = queryForInt("select max(id) from album where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("update album set present=false where id between ? and ? and last_scanned != ? and present", id, id + batchSize, lastScanned);
+            update("update album set present=false where id between ? and ? and last_scanned < ? and present", id, id + batchSize, lastScanned);
         }
     }
 

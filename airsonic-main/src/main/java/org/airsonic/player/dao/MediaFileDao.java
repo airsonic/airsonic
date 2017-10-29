@@ -646,17 +646,18 @@ public class MediaFileDao extends AbstractDao {
     }
 
     public void markPresent(String path, Date lastScanned) {
-        update("update media_file set present=?, last_scanned=? where path=?", true, lastScanned, path);
+        update("update media_file set present=?, last_scanned = ? where path=?", true, lastScanned, path);
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from media_file where last_scanned != ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from media_file where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from media_file where last_scanned < ? and present", 0, lastScanned);
+        int maxId = queryForInt("select max(id) from media_file where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
         Date childrenLastUpdated = new Date(0L);  // Used to force a children rescan if file is later resurrected.
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("update media_file set present=false, children_last_updated=? where id between ? and ? and last_scanned != ? and present",
+            update("update media_file set present=false, children_last_updated=? where id between ? and ? and " +
+                            "last_scanned < ? and present",
                    childrenLastUpdated, id, id + batchSize, lastScanned);
         }
     }
