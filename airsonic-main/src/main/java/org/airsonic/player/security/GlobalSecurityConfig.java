@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -82,6 +83,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             http.antMatcher("/api/**").authorizeRequests().antMatchers("/api/**").hasRole("USER").and()
                 .httpBasic().realmName("Airsonic REST API").and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .requestCache().requestCache(new NullRequestCache()).and()
                 .addFilter(new WebAsyncManagerIntegrationFilter())
                 .exceptionHandling().and()
                 .headers()
@@ -122,6 +124,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .antMatchers("/ext/stream/**", "/ext/coverArt*", "/ext/share/**", "/ext/hls/**")
                     .hasAnyRole("TEMP", "USER").and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                    .requestCache().requestCache(new NullRequestCache()).and()
                     .exceptionHandling().and()
                     .securityContext().and()
                     .requestCache().and()
