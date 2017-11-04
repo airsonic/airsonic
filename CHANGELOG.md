@@ -3,6 +3,28 @@
 # airsonic/airsonic
 # -->
 
+## v10.1.0
+
+Changes:
+  * New Jukebox player using javasound api
+  * Localize artist bios from last.fm
+  * Use `ffprobe` and not `ffmpeg` to scrape metadata
+  * Added options for excluding files during scan (symlinks and regex)
+  * Add "opus" and "mka" extension to default extension list
+
+Fixes:
+  * Error message readability
+  * Adding album comment
+  * Subsonic API wrong error behavior for getAlbumList
+  * Stop airsonic from creating double slashes in urls.
+  * Search csrf timeout/expiration
+  
+Security:
+  * CVE-2014-3004 - XML playlist parsing
+
+Translation Updates:
+  * English
+
 ## v10.0.1
 
 Note that with this release, the jdbc-extra flavored war is now the default and only war.
