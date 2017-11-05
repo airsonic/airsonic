@@ -38,6 +38,7 @@ public class MetaData {
     private Integer durationSeconds;
     private Integer width;
     private Integer height;
+    private String musicBrainzReleaseId;
 
     public Integer getDiscNumber() {
         return discNumber;
@@ -141,5 +142,13 @@ public class MetaData {
 
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    public String getMusicBrainzReleaseId() {
+        return musicBrainzReleaseId;
+    }
+
+    public void setMusicBrainzReleaseId(String musicBrainzReleaseId) {
+        this.musicBrainzReleaseId = musicBrainzReleaseId;
     }
 }

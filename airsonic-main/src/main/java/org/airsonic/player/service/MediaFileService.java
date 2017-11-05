@@ -503,6 +503,7 @@ public class MediaFileService {
                 mediaFile.setVariableBitRate(metaData.getVariableBitRate());
                 mediaFile.setHeight(metaData.getHeight());
                 mediaFile.setWidth(metaData.getWidth());
+                mediaFile.setMusicBrainzReleaseId(metaData.getMusicBrainzReleaseId());
             }
             String format = StringUtils.trimToNull(StringUtils.lowerCase(FilenameUtils.getExtension(mediaFile.getPath())));
             mediaFile.setFormat(format);

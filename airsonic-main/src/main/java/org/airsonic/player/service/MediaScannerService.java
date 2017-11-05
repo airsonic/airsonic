@@ -298,6 +298,9 @@ public class MediaScannerService {
             album.setArtist(artist);
             album.setCreated(file.getChanged());
         }
+        if (file.getMusicBrainzReleaseId() != null) {
+            album.setMusicBrainzReleaseId(file.getMusicBrainzReleaseId());
+        }
         if (file.getYear() != null) {
             album.setYear(file.getYear());
         }

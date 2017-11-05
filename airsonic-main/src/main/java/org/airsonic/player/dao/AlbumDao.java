@@ -40,7 +40,8 @@ import java.util.*;
 @Repository
 public class AlbumDao extends AbstractDao {
     private static final String INSERT_COLUMNS = "path, name, artist, song_count, duration_seconds, cover_art_path, " +
-                                          "year, genre, play_count, last_played, comment, created, last_scanned, present, folder_id";
+                                          "year, genre, play_count, last_played, comment, created, last_scanned, present, " +
+                                          "folder_id, mb_release_id";
 
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
@@ -127,19 +128,20 @@ public class AlbumDao extends AbstractDao {
                      "created=?," +
                      "last_scanned=?," +
                      "present=?, " +
-                     "folder_id=? " +
+                     "folder_id=?, " +
+                     "mb_release_id=? " +
                      "where artist=? and name=?";
 
         int n = update(sql, album.getPath(), album.getSongCount(), album.getDurationSeconds(), album.getCoverArtPath(), album.getYear(),
                        album.getGenre(), album.getPlayCount(), album.getLastPlayed(), album.getComment(), album.getCreated(),
-                       album.getLastScanned(), album.isPresent(), album.getFolderId(), album.getArtist(), album.getName());
+                       album.getLastScanned(), album.isPresent(), album.getFolderId(), album.getMusicBrainzReleaseId(), album.getArtist(), album.getName());
 
         if (n == 0) {
 
             update("insert into album (" + INSERT_COLUMNS + ") values (" + questionMarks(INSERT_COLUMNS) + ")", album.getPath(),
                    album.getName(), album.getArtist(), album.getSongCount(), album.getDurationSeconds(),
                    album.getCoverArtPath(), album.getYear(), album.getGenre(), album.getPlayCount(), album.getLastPlayed(),
-                   album.getComment(), album.getCreated(), album.getLastScanned(), album.isPresent(), album.getFolderId());
+                   album.getComment(), album.getCreated(), album.getLastScanned(), album.isPresent(), album.getFolderId(), album.getMusicBrainzReleaseId());
         }
 
         int id = queryForInt("select id from album where artist=? and name=?", null, album.getArtist(), album.getName());
@@ -404,7 +406,8 @@ public class AlbumDao extends AbstractDao {
                     rs.getTimestamp(13),
                     rs.getTimestamp(14),
                     rs.getBoolean(15),
-                    rs.getInt(16));
+                    rs.getInt(16),
+                    rs.getString(17));
         }
     }
 }

@@ -134,6 +134,7 @@ public class MainController  {
             map.put("sieblingAlbums", sieblingAlbums);
             map.put("artist", guessArtist(children));
             map.put("album", guessAlbum(children));
+            map.put("musicBrainzReleaseId", guessMusicBrainzReleaseId(children));
         }
 
         try {
@@ -236,6 +237,15 @@ public class MainController  {
         for (MediaFile child : children) {
             if (child.isFile() && child.getArtist() != null) {
                 return child.getAlbumName();
+            }
+        }
+        return null;
+    }
+
+    private String guessMusicBrainzReleaseId(List<MediaFile> children) {
+        for (MediaFile child : children) {
+            if (child.isFile() && child.getMusicBrainzReleaseId() != null) {
+                return child.getMusicBrainzReleaseId();
             }
         }
         return null;

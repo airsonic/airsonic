@@ -262,6 +262,11 @@
         <span class="header"><a target="_blank" href="${wikipediaUrl}">Wikipedia</a></span> |
         <span class="header"><a target="_blank" href="${allmusicUrl}">allmusic</a></span> |
         <span class="header"><a target="_blank" href="${lastFmUrl}">Last.fm</a></span> |
+        <c:if test="${not empty model.musicBrainzReleaseId}">
+          <sub:url value="https://musicbrainz.org/release/${model.musicBrainzReleaseId}" var="musicBrainzUrl" encoding="UTF-8">
+          </sub:url>
+          <span class="header"><a target="_blank" href="${musicBrainzUrl}">MusicBrainz</a></span> |
+        </c:if>
         <span class="header">
             <fmt:message key="main.playcount"><fmt:param value="${model.dir.playCount}"/></fmt:message>
             <c:if test="${not empty model.dir.lastPlayed}">
