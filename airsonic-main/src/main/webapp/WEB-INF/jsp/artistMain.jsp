@@ -240,6 +240,9 @@
                 </tr>
             </c:forEach>
         </table>
+        <c:if test="${model.thereIsMore}">
+            <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+        </c:if>
     </c:when>
 
     <c:otherwise>
