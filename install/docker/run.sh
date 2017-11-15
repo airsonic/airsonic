@@ -16,6 +16,7 @@ if [[ $# -lt 1 ]] || [[ ! "$1" == "java"* ]]; then
      -Dserver.host=0.0.0.0 \
      -Dserver.port=$AIRSONIC_PORT \
      -Dserver.contextPath=$CONTEXT_PATH \
+     -Dserver.use-forward-headers=true \
      -Dairsonic.home=$AIRSONIC_DIR/data \
      -Dairsonic.defaultMusicFolder=$AIRSONIC_DIR/music \
      -Dairsonic.defaultPodcastFolder=$AIRSONIC_DIR/podcasts \

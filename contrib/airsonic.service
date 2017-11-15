@@ -17,6 +17,7 @@ ExecStart=/usr/bin/java \
           -Dairsonic.home=${AIRSONIC_HOME} \
           -Dserver.context-path=${CONTEXT_PATH} \
           -Dserver.port=${PORT} \
+          -Dserver.use-forward-headers=true \
           -jar ${JAVA_JAR} $JAVA_ARGS
 User=airsonic
 Group=airsonic
