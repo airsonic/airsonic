@@ -12,6 +12,8 @@ RUN apk --no-cache add \
     lame \
     bash \
     libressl \
+    fontconfig \
+    ttf-dejavu \
     ca-certificates \
     tini \
     openjdk8-jre
