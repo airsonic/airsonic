@@ -37,6 +37,7 @@ public class RecentAlbumUpnpProcessor extends AlbumUpnpProcessor {
         setRootTitle("RecentAlbums");
     }
 
+    @Override
     public List<Album> getAllItems() {
         List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
         List<Album> recentAlbums = getAlbumDao().getNewestAlbums(0, RECENT_COUNT, allFolders);
@@ -50,5 +51,12 @@ public class RecentAlbumUpnpProcessor extends AlbumUpnpProcessor {
             recentAlbums.add(0, viewAll);
         }
         return recentAlbums;
+    }
+
+    @Override
+    public int getAllItemsSize() throws Exception {
+        List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
+        int allAlbumCount = getAlbumDao().getAlbumCount(allFolders);
+        return Math.min(allAlbumCount, RECENT_COUNT);
     }
 }

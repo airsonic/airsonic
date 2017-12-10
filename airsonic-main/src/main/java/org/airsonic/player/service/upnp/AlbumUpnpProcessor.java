@@ -26,10 +26,8 @@ import org.airsonic.player.domain.CoverArtScheme;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.SearchService;
-import org.fourthline.cling.support.model.BrowseResult;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.PersonWithRole;
-import org.fourthline.cling.support.model.SortCriterion;
 import org.fourthline.cling.support.model.container.Container;
 import org.fourthline.cling.support.model.container.MusicAlbum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,20 +59,6 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
         setRootTitle("Albums");
     }
 
-    /**
-     * Browses the top-level content of a type.
-     */
-    public BrowseResult browseRoot(String filter, long firstResult, long maxResults, SortCriterion[] orderBy) throws Exception {
-        DIDLContent didl = new DIDLContent();
-
-        List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
-        List<Album> selectedItems = getAlbumDao().getAlphabeticalAlbums((int) firstResult, (int) maxResults, false, true, allFolders);
-        for (Album item : selectedItems) {
-            addItem(didl, item);
-        }
-
-        return createBrowseResult(didl, (int) didl.getCount(), getAllItemsSize());
-    }
     public Container createContainer(Album album) throws Exception {
         MusicAlbum container = new MusicAlbum();
 
