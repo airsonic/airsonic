@@ -20,6 +20,10 @@
 package org.airsonic.player.service.upnp;
 import org.airsonic.player.domain.Album;
 import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.util.Util;
+import org.fourthline.cling.support.model.BrowseResult;
+import org.fourthline.cling.support.model.DIDLContent;
+import org.fourthline.cling.support.model.SortCriterion;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +39,28 @@ public class RecentAlbumUpnpProcessor extends AlbumUpnpProcessor {
     public RecentAlbumUpnpProcessor() {
         setRootId(DispatchingContentDirectory.CONTAINER_ID_RECENT_PREFIX);
         setRootTitle("RecentAlbums");
+    }
+
+    /**
+     * Browses the top-level content.
+     */
+    public BrowseResult browseRoot(String filter, long firstResult, long maxResults, SortCriterion[] orderBy) throws Exception {
+        // AlbumUpnpProcessor overrides browseRoot() with an optimization;
+        // this restores the default behavior for the subclass.
+        DIDLContent didl = new DIDLContent();
+        List<Album> allItems = getAllItems();
+        if (filter != null) {
+            // filter items (not implemented yet)
+        }
+        if (orderBy != null) {
+            // sort items (not implemented yet)
+        }
+        List<Album> selectedItems = Util.subList(allItems, firstResult, maxResults);
+        for (Album item : selectedItems) {
+            addItem(didl, item);
+        }
+
+        return createBrowseResult(didl, (int) didl.getCount(), allItems.size());
     }
 
     @Override
