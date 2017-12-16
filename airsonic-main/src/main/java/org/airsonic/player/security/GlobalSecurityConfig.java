@@ -12,12 +12,15 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -118,7 +121,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             restAuthenticationFilter.setEventPublisher(eventPublisher);
             http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
-            http
+            FormLoginConfigurer<HttpSecurity> formConfig = http
                     .csrf()
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
                     .and().headers()
@@ -153,8 +156,17 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .hasRole("USER")
                     .anyRequest().authenticated()
                     .and().formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                    .loginPage("/login");
+
+            formConfig.addObjectPostProcessor(new ObjectPostProcessor<LoginUrlAuthenticationEntryPoint>() {
+                @Override
+                public LoginUrlAuthenticationEntryPoint postProcess(LoginUrlAuthenticationEntryPoint object) {
+                    object.setUseForward(true);
+                    return object;
+                }
+            });
+
+            formConfig.permitAll()
                     .defaultSuccessUrl("/index", true)
                     .failureUrl(FAILURE_URL)
                     .usernameParameter("j_username")
