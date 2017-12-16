@@ -3,6 +3,21 @@
 # airsonic/airsonic
 # -->
 
+## v10.1.1
+
+Changes:
+  * Add show-all button on artist landing page
+  * Upgrade jaudiotagger to 2.2.5 supporting Java 9
+
+Fixes:
+  * DLNA Recent Albums is just listing albums
+  * NPE in docker container
+  * Substandard theme css
+  * Build error causing Jetty to be default container (should be Tomcat)
+
+Translation Updates:
+  * English language cleanup
+
 ## v10.1.0
 
 Changes:
