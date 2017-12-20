@@ -217,7 +217,7 @@ public class CoverArtController implements LastModified {
 
     private void sendUnscaled(CoverArtRequest coverArtRequest, HttpServletResponse response) throws IOException {
         File file = coverArtRequest.getCoverArt();
-        if (!jaudiotaggerParser.isApplicable(file)) {
+        if (jaudiotaggerParser.isApplicable(file)) {
             response.setContentType(StringUtil.getMimeType(FilenameUtils.getExtension(file.getName())));
         }
         InputStream in = null;
