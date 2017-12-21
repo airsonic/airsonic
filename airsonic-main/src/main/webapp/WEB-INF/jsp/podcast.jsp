@@ -1,5 +1,5 @@
 <%@ include file="include.jsp" %>
-<%@ page language="java" contentType="text/xml; charset=utf-8" pageEncoding="iso-8859-1"%>
+<%@ page language="java" contentType="text/xml; charset=utf-8" pageEncoding="utf-8"%>
 
 <rss version="2.0">
     <channel>
