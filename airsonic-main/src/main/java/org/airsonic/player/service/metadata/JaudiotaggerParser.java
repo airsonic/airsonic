@@ -321,22 +321,7 @@ public class JaudiotaggerParser extends MetaDataParser {
         }
     }
 
-    /**
-     * Returns the cover art image data embedded in the given file.
-     *
-     * @param file The music file.
-     * @return The embedded cover art image data, or <code>null</code> if not available.
-     */
-    public byte[] getImageData(MediaFile file) {
-        try {
-            return getArtwork(file).getBinaryData();
-        } catch (Throwable x) {
-            LOG.warn("Failed to find cover art tag in " + file, x);
-            return null;
-        }
-    }
-
-    private Artwork getArtwork(MediaFile file) throws Exception {
+    public Artwork getArtwork(MediaFile file) throws Exception {
         AudioFile audioFile = AudioFileIO.read(file.getFile());
         Tag tag = audioFile.getTag();
         return tag == null ? null : tag.getFirstArtwork();

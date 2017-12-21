@@ -28,6 +28,8 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jaudiotagger.tag.images.Artwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +102,7 @@ public class CoverArtController implements LastModified {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
-//        LOG.info("handleRequest - " + coverArtRequest);
+        LOG.trace("handleRequest - " + coverArtRequest);
         Integer size = ServletRequestUtils.getIntParameter(request, "size");
 
         // Send fallback image if no ID is given. (No need to cache it, since it will be cached in browser.)
@@ -109,21 +111,22 @@ public class CoverArtController implements LastModified {
             return;
         }
 
-        // Optimize if no scaling is required.
-        if (size == null && coverArtRequest.getCoverArt() != null) {
-//            LOG.info("sendUnscaled - " + coverArtRequest);
-            sendUnscaled(coverArtRequest, response);
-            return;
-        }
-
-        // Send cached image, creating it if necessary.
-        if (size == null) {
-            size = CoverArtScheme.LARGE.getSize() * 2;
-        }
         try {
+            // Optimize if no scaling is required.
+            if (size == null && coverArtRequest.getCoverArt() != null) {
+                LOG.trace("sendUnscaled - " + coverArtRequest);
+                sendUnscaled(coverArtRequest, response);
+                return;
+            }
+
+            // Send cached image, creating it if necessary.
+            if (size == null) {
+                size = CoverArtScheme.LARGE.getSize() * 2;
+            }
             File cachedImage = getCachedImage(coverArtRequest, size);
             sendImage(cachedImage, response);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LOG.debug("Sending fallback as an exception was encountered during normal cover art processing", e);
             sendFallback(size, response);
         }
 
@@ -217,12 +220,11 @@ public class CoverArtController implements LastModified {
 
     private void sendUnscaled(CoverArtRequest coverArtRequest, HttpServletResponse response) throws IOException {
         File file = coverArtRequest.getCoverArt();
-        if (!jaudiotaggerParser.isApplicable(file)) {
-            response.setContentType(StringUtil.getMimeType(FilenameUtils.getExtension(file.getName())));
-        }
         InputStream in = null;
         try {
-            in = getImageInputStream(file);
+            Pair<InputStream, String> imageInputStreamWithType = getImageInputStreamWithType(file);
+            in = imageInputStreamWithType.getLeft();
+            response.setContentType(imageInputStreamWithType.getRight());
             IOUtils.copy(in, response.getOutputStream());
         } finally {
             IOUtils.closeQuietly(in);
@@ -273,12 +275,34 @@ public class CoverArtController implements LastModified {
      * the embedded album art is returned.
      */
     private InputStream getImageInputStream(File file) throws IOException {
+        return getImageInputStreamWithType(file).getLeft();
+    }
+
+    /**
+     * Returns an input stream to the image in the given file.  If the file is an audio file,
+     * the embedded album art is returned. In addition returns the mime type
+     */
+    private Pair<InputStream, String> getImageInputStreamWithType(File file) throws IOException {
+        InputStream is;
+        String mimeType;
         if (jaudiotaggerParser.isApplicable(file)) {
+            LOG.trace("Using Jaudio Tagger for reading artwork from {}", file);
             MediaFile mediaFile = mediaFileService.getMediaFile(file);
-            return new ByteArrayInputStream(jaudiotaggerParser.getImageData(mediaFile));
+            Artwork artwork;
+            try {
+                LOG.trace("Reading artwork from file {}", mediaFile);
+                artwork = jaudiotaggerParser.getArtwork(mediaFile);
+            } catch (Exception e) {
+                LOG.debug("Could not read artwork from file {}", mediaFile);
+                throw new RuntimeException(e);
+            }
+            is = new ByteArrayInputStream(artwork.getBinaryData());
+            mimeType = artwork.getMimeType();
         } else {
-            return new FileInputStream(file);
+            is =  new FileInputStream(file);
+            mimeType = StringUtil.getMimeType(FilenameUtils.getExtension(file.getName()));
         }
+        return Pair.of(is, mimeType);
     }
 
     private InputStream getImageInputStreamForVideo(MediaFile mediaFile, int width, int height, int offset) throws Exception {
