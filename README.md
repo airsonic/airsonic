@@ -5,6 +5,8 @@
 Airsonic
 ========
 
+[![Help Contribute to Open Source](https://www.codetriage.com/airsonic/airsonic/badges/users.svg)](https://www.codetriage.com/airsonic/airsonic)
+
 What is Airsonic?
 -----------------
 
