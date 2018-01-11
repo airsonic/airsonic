@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[airsonic.resourcebundle-en-properties]
+file_filter = airsonic-main/src/main/resources/org/airsonic/player/i18n/ResourceBundle_<lang>.properties
+minimum_perc = 0
+source_file = airsonic-main/src/main/resources/org/airsonic/player/i18n/ResourceBundle_en.properties
+source_lang = en
+type = UNICODEPROPERTIES
+
