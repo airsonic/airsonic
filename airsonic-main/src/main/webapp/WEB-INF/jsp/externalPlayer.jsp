@@ -15,51 +15,52 @@
     </c:if>
 
     <script type="text/javascript">
+        var curTrack = 0;
+        var playlist = new Array();
+
         function init() {
-            var flashvars = {
-                id:"player1",
-                screencolor:"000000",
-                frontcolor:"<spring:theme code="textColor"/>",
-                backcolor:"<spring:theme code="backgroundColor"/>",
-                "playlist.position": "bottom",
-                "playlist.size": 300,
-                repeat: "list"
-            };
-            var params = {
-                allowfullscreen:"true",
-                allowscriptaccess:"always"
-            };
-            var attributes = {
-                id:"player1",
-                name:"player1"
-            };
-            swfobject.embedSWF("<c:url value="/flash/jw-player-5.10.swf"/>", "placeholder", "500", "600", "9.0.0", false, flashvars, params, attributes);
+            createPlayer();
+            play(0);
         }
 
-        function playerReady(thePlayer) {
-            var player = $("player1");
-            var list = new Array();
+        function onEnded() {
+            curTrack += 1;
 
-        <c:forEach items="${model.songs}" var="song" varStatus="loopStatus">
-            <%--@elvariable id="song" type="org.airsonic.player.domain.MediaFileWithUrlInfo"--%>
+            if (curTrack - 1 <= playlist.length) {
+                play(curTrack);
+            }
+        }
 
-            // TODO: Use video provider for aac, m4a
-            list[${loopStatus.count - 1}] = {
-                file: "${song.streamUrl}",
-                image: "${song.coverArtUrl}",
-                title: "${fn:escapeXml(song.title)}",
-                provider: "${song.video ? "video" : "sound"}",
-                description: "${fn:escapeXml(song.artist)}"
-            };
+        function createPlayer() {
+            var player = $('audioPlayer');
+            player.addEventListener("ended", onEnded);
 
-        <c:if test="${not empty song.durationSeconds}">
-            list[${loopStatus.count-1}].duration = ${song.durationSeconds};
-        </c:if>
+            <c:forEach items="${model.songs}" var="song" varStatus="loopStatus">
+                <%--@elvariable id="song" type="org.airsonic.player.domain.MediaFileWithUrlInfo"--%>
 
-        </c:forEach>
+                // TODO: Use video provider for aac, m4a
+                playlist[${loopStatus.count - 1}] = {
+                    file: "${song.streamUrl}",
+                    image: "${song.coverArtUrl}",
+                    title: "${fn:escapeXml(song.title)}",
+                    provider: "${song.video ? "video" : "sound"}",
+                    description: "${fn:escapeXml(song.artist)}"
+                };
 
-            player.sendEvent("LOAD", list);
-            player.sendEvent("PLAY");
+                <c:if test="${not empty song.durationSeconds}">
+                    playlist[${loopStatus.count-1}].duration = ${song.durationSeconds};
+                </c:if>
+            </c:forEach>
+        }
+
+        function play (idx) {
+            var player = $('audioPlayer');
+            player.src = playlist[idx].file;
+            $("coverart").src = playlist[idx].image;
+            player.load();
+            player.play();
+            console.log(playlist[idx].file);
+            player.controls = true;
         }
 
     </script>
@@ -84,8 +85,9 @@
     <div class="detail" style="float:right">Streaming by <a href="https://airsonic.github.io/" target="_blank"><b>Airsonic</b></a></div>
 
     <div style="clear:both;padding-top:1em">
-        <div id="placeholder">
-            <a href="http://www.adobe.com/go/getflashplayer" target="_blank"><fmt:message key="playlist.getflash"/></a>
+        <div id="player" style="width:340px; height:40px;padding-right:10px">
+            <img id="coverart" src="" width="340px" />
+            <audio id="audioPlayer" style="width: 340px" />
         </div>
     </div>
 </div>
