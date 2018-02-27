@@ -31,6 +31,7 @@ PARAMETERS
 <str:randomString count="5" type="alphabet" var="divId"/>
 <str:randomString count="5" type="alphabet" var="imgId"/>
 <str:randomString count="5" type="alphabet" var="playId"/>
+<str:randomString count="5" type="alphabet" var="addId"/>
 
 <div class="coverart dropshadow">
     <div style="width:${size};max-width:${size};height:${size};max-height:${size};cursor:pointer;<c:if test="${param.hideOverflow}">overflow:hidden</c:if>;" title="${param.caption1}" id="${divId}">
@@ -74,6 +75,14 @@ PARAMETERS
             <img src="<spring:theme code="playOverlayImage"/>" id="${playId}"
                  style="position: relative; top: 8px; left: 8px; z-index: 2; display:none" >
         </div>
+
+        <c:if test="${not empty param.albumId}">
+          <div style="position: relative; width: 0; height: 0">
+              <img src="<spring:theme code="addOverlayImage"/>" id="${addId}"
+                   style="position: relative; top: 8px; left: 48px; z-index: 2; display:none" >
+          </div>
+        </c:if>
+
         <c:choose>
         <c:when test="${param.showLink}"><a href="${targetUrl}" title="${param.caption1}"></c:when>
         <c:when test="${param.showZoom}"><a href="${zoomCoverArtUrl}" rel="zoom" title="${param.caption1}"></c:when>
@@ -120,11 +129,13 @@ PARAMETERS
 
     $("#${divId}").mouseenter(function () {
         $("#${playId}").show();
+        $("#${addId}").show();
         $("#${imgId}").stop();
         $("#${imgId}").animate({opacity: 0.7}, 150);
     });
     $("#${divId}").mouseleave(function () {
         $("#${playId}").hide();
+        $("#${addId}").hide();
         $("#${imgId}").stop();
         $("#${imgId}").animate({opacity: 1.0}, 150);
     });
@@ -139,6 +150,9 @@ PARAMETERS
         top.playQueue.onPlayPodcastChannel(${param.podcastChannelId});
         </c:if>
     });
-
+    $("#${addId}").click(function () {
+        <c:if test="${not empty param.albumId}">
+        top.playQueue.onAdd(${param.albumId});
+        </c:if>
+    });
 </script>
-
