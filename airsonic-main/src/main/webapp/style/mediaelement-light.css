@@ -1,4 +1,3 @@
-
 .mejs__overlay-loading-bg-img {
     background-image: url("mejs-controls-dark.svg");
 }
@@ -12,15 +11,15 @@
 }
 
 .mejs__container {
-    background: #F1F1F1;
+  background: transparent;
 }
 
 .mejs__container .me_cannotplay a {
-    color: #F1F1F1;
+  background: transparent;
 }
 
 .mejs__controls:not([style*="display: none"]) {
-    background: #F1F1F1;
+  background: transparent;
 }
 
 .mejs__time {

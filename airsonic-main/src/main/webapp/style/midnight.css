@@ -4,7 +4,8 @@
  * Author: Sindre Mehus
  */
 
-@import "default-without-mediaelement-light.css";
+@import "default-without-mediaelement.css";
+@import "mediaelement-dark.css";
 
 /* The primary background color. */
 .bgcolor1, table.music tr:nth-of-type(even) {

@@ -4,7 +4,8 @@
  * Author: David D ddavis1@gmail.com
  */
 
-@import "default-without-mediaelement-light.css";
+@import "default-without-mediaelement.css";
+@import "mediaelement-dark.css";
 
 /* The primary background colour. */
 .bgcolor1, table.music tr:nth-of-type(even) {
