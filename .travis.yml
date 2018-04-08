@@ -7,5 +7,10 @@ cache:
     - $HOME/.m2
 install:
   - sudo apt-get -qq update
+before_script:
+  - wget http://www-us.apache.org/dist/maven/maven-3/3.5.3/binaries/apache-maven-3.5.3-bin.tar.gz
+  - tar -xvf apache-maven-3.5.3-bin.tar.gz
+  - export M2_HOME=$PWD/apache-maven-3.5.3
+  - export PATH=$PWD/apache-maven-3.5.3/bin:$PATH
 script:
   - mvn package install
