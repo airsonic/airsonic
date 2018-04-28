@@ -87,6 +87,11 @@
             <version>1.5.5</version>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.5.5</version>
+        </dependency>
 
         <!-- SONOS API / WSDL SUPPORT -->
         <dependency>
