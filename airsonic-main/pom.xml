@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>airsonic-main</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>Airsonic Main</name>
 
     <parent>
@@ -19,11 +19,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.airsonic.player</groupId>
-            <artifactId>subsonic-rest-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.airsonic.player</groupId>
@@ -94,10 +89,6 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ldap</groupId>
-            <artifactId>spring-ldap-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -192,12 +183,6 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.directwebremoting</groupId>
-            <artifactId>dwr</artifactId>
-            <version>3.0.rc1</version>
-        </dependency>
-
         <!--Needed by dwr-->
         <dependency>
             <groupId>com.yahoo.platform.yui</groupId>
@@ -207,33 +192,22 @@
         </dependency>
 
         <dependency>
-            <groupId>ant-zip</groupId>
-            <artifactId>ant-zip</artifactId>
-            <version>1.6.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>2.2.5</version>
         </dependency>
 
+<!-- Embedded Jetty -->
         <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart</artifactId>
-            <version>1.0.11</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>gnujaxp</groupId>
-                    <artifactId>gnujaxp</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+            <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
@@ -246,11 +220,6 @@
             <version>2.5.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>2.5.1</version>
-        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -267,15 +236,15 @@
         </dependency>
 
         <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-            <version>1.0.1</version>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.2</version>
         </dependency>
 
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <version>1.5.5</version>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
         <dependency>
@@ -324,29 +293,12 @@
         </dependency>
 
         <dependency>
-            <groupId>net.tanesha.recaptcha4j</groupId>
-            <artifactId>recaptcha4j</artifactId>
-            <version>0.0.8</version>
-        </dependency>
-
-        <dependency>
             <groupId>de.u-mass</groupId>
             <artifactId>lastfm-java</artifactId>
             <version>0.1.2</version>
         </dependency>
 
         <!-- SONOS API / WSDL SUPPORT -->
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>${cxf.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.cxf</groupId>
@@ -431,37 +383,8 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.1.0.Final</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-        </dependency>
-
-        <!-- Embedded tomcat -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-jasper</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Embedded Jetty -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jsp</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -475,12 +398,6 @@
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.5.5</version>
-            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -503,76 +420,10 @@
     </dependencies>
 
     <build>
-        <finalName>airsonic</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.5.2.RELEASE</version>
-                <configuration>
-                    <mainClass>org.airsonic.player.Application</mainClass>
-                    <layout>WAR</layout>
-                    <excludeGroupIds>${boot.group.excludes}</excludeGroupIds>
-                    <excludeArtifactIds>${boot.artifact.excludes}</excludeArtifactIds>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <reuseForks>false</reuseForks>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <target>
-                                <tstamp/>
-                                <copy file="${basedir}/src/main/resources/org/airsonic/player/i18n/ResourceBundle_en.properties"
-                                      tofile="${project.build.directory}/classes/org/airsonic/player/i18n/ResourceBundle.properties"/>
-                                <echo file="${project.build.directory}/classes/build_number.txt">${buildNumber}</echo>
-                                <!--suppress MavenModelInspection -->
-                                <echo file="${project.build.directory}/classes/build_date.txt">${DSTAMP}</echo>
-                                <echo file="${project.build.directory}/classes/version.txt">${project.version}</echo>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.owasp</groupId>
@@ -580,23 +431,4 @@
             </plugin>
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>tomcat-embed</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <boot.group.excludes>org.eclipse.jetty,org.eclipse.jetty.websocket,org.mortbay.jasper,org.eclipse.jetty.toolchain,org.ow2.asm</boot.group.excludes>
-                <boot.artifact.excludes>spring-boot-starter-jetty</boot.artifact.excludes>
-            </properties>
-        </profile>
-        <profile>
-            <id>jetty-embed</id>
-            <properties>
-                <boot.group.excludes>org.apache.tomcat.embed</boot.group.excludes>
-                <boot.artifact.excludes>spring-boot-starter-tomcat</boot.artifact.excludes>
-            </properties>
-        </profile>
-    </profiles>
 </project>

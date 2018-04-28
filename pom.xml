@@ -16,7 +16,7 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
-        <cxf.version>3.1.12</cxf.version>
+        <cxf.version>3.1.15</cxf.version>
     </properties>
 
     <repositories>
@@ -78,6 +78,7 @@
         <module>subsonic-rest-api</module>
         <module>airsonic-sonos-api</module>
         <module>airsonic-main</module>
+        <module>airsonic-site</module>
     </modules>
 
     <dependencyManagement>
@@ -86,7 +87,7 @@
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>1.5.10.RELEASE</version>
+                <version>1.5.12.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -266,6 +267,7 @@
                                 <!-- Needed for airsonic-booter to load Airsonic correctly -->
                                 <ignoredUnusedDeclaredDependency>org.springframework.security:*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot*</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>javax.annotation:javax.annotation-api*</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>

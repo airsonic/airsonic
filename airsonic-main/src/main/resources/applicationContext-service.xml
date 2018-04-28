@@ -14,7 +14,7 @@
     <context:component-scan base-package="org.airsonic.player.dao, 
         org.airsonic.player.service, 
         org.airsonic.player.monitor, 
-        org.airsonic.player.ajax, 
+        org.airsonic.site.ajax,
         org.airsonic.player.i18n." />
 
     <!-- Services -->
