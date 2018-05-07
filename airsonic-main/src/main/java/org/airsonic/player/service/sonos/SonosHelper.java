@@ -23,7 +23,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sonos.services._1.*;
-import org.airsonic.player.controller.CoverArtController;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
@@ -44,7 +43,7 @@ import static org.airsonic.player.service.NetworkService.getBaseUrl;
  */
 @Service
 public class SonosHelper {
-
+    public static final String PLAYLIST_COVERART_PREFIX = "pl-";
     public static final String AIRSONIC_CLIENT_ID = "sonos";
 
     @Autowired
@@ -271,7 +270,7 @@ public class SonosHelper {
         for (Playlist playlist : playlistService.getReadablePlaylistsForUser(username)) {
             MediaCollection mediaCollection = new MediaCollection();
             AlbumArtUrl albumArtURI = new AlbumArtUrl();
-            albumArtURI.setValue(getCoverArtUrl(CoverArtController.PLAYLIST_COVERART_PREFIX + playlist.getId(), request));
+            albumArtURI.setValue(getCoverArtUrl(PLAYLIST_COVERART_PREFIX + playlist.getId(), request));
 
             mediaCollection.setId(SonosService.ID_PLAYLIST_PREFIX + playlist.getId());
             mediaCollection.setCanPlay(true);

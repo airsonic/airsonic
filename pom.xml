@@ -78,6 +78,7 @@
         <module>subsonic-rest-api</module>
         <module>airsonic-sonos-api</module>
         <module>airsonic-main</module>
+        <module>airsonic-site</module>
     </modules>
 
     <dependencyManagement>
@@ -266,6 +267,8 @@
                                 <!-- Needed for airsonic-booter to load Airsonic correctly -->
                                 <ignoredUnusedDeclaredDependency>org.springframework.security:*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot*</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>javax.annotation:javax.annotation-api*</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>javax.mail:javax.mail-api*</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
