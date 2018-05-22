@@ -24,6 +24,10 @@ public class MusicFolderTestData {
     return (MusicFolderTestData.resolveBaseMediaPath() + "Music2");
   }
 
+  public static String resolveMusic3FolderPath() {
+    return (MusicFolderTestData.resolveBaseMediaPath() + "Music3");
+  }
+
   public static List<MusicFolder> getTestMusicFolders() {
     List<MusicFolder> liste = new ArrayList<>();
     File musicDir = new File(MusicFolderTestData.resolveMusicFolderPath());

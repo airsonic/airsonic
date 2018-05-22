@@ -58,6 +58,16 @@ public class MusicFolderDao extends AbstractDao {
     }
 
     /**
+     * Return the music folder a the given path
+     *
+     * @return Possibly null instance of MusicFolder
+     */
+    public MusicFolder getMusicFolderForPath(String path) {
+        String sql = "select " + QUERY_COLUMNS + " from music_folder where path = ?";
+        return queryOne(sql, rowMapper, path);
+    }
+
+    /**
      * Creates a new music folder.
      *
      * @param musicFolder The music folder to create.
