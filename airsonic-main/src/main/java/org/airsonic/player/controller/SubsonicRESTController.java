@@ -1225,7 +1225,7 @@ public class SubsonicRESTController {
             if (minutesAgo < 60) {
                 NowPlayingEntry entry = new NowPlayingEntry();
                 entry.setUsername(username);
-                entry.setPlayerId(Integer.parseInt(player.getId()));
+                entry.setPlayerId(player.getId());
                 entry.setPlayerName(player.getName());
                 entry.setMinutesAgo((int) minutesAgo);
                 result.getEntry().add(createJaxbChild(entry, player, mediaFile, username));
@@ -2399,7 +2399,7 @@ public class SubsonicRESTController {
         }
 
         // Return the player ID.
-        return !players.isEmpty() ? players.get(0).getId() : null;
+        return !players.isEmpty() ? String.valueOf(players.get(0).getId()) : null;
     }
 
     private Locale getUserLocale(HttpServletRequest request) {

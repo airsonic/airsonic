@@ -39,7 +39,7 @@ public class JukeboxJavaService {
 
 
     private TransferStatus status;
-    private Map<String, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new Hashtable<>();
+    private Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new Hashtable<>();
     private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new Hashtable<>();
     private final static String DEFAULT_MIXER_ENTRY_KEY = "_default";
 

@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
@@ -70,7 +71,7 @@ public class PlayerService {
     /**
      * Equivalent to <code>getPlayer(request, response, true)</code> .
      */
-    public Player getPlayer(HttpServletRequest request, HttpServletResponse response) {
+    public Player getPlayer(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return getPlayer(request, response, true, false);
     }
 
@@ -85,14 +86,14 @@ public class PlayerService {
      * @return The player associated with the given HTTP request.
      */
     public synchronized Player getPlayer(HttpServletRequest request, HttpServletResponse response,
-                                         boolean remoteControlEnabled, boolean isStreamRequest) {
+                                         boolean remoteControlEnabled, boolean isStreamRequest) throws Exception {
 
         // Find by 'player' request parameter.
-        Player player = getPlayerById(request.getParameter("player"));
+        Player player = getPlayerById(ServletRequestUtils.getIntParameter(request, "player"));
 
         // Find in session context.
         if (player == null && remoteControlEnabled) {
-            String playerId = (String) request.getSession().getAttribute("player");
+            Integer playerId = (Integer) request.getSession().getAttribute("player");
             if (playerId != null) {
                 player = getPlayerById(playerId);
             }
@@ -148,7 +149,7 @@ public class PlayerService {
         // Set cookie in response.
         if (response != null) {
             String cookieName = COOKIE_NAME + "-" + StringUtil.utf8HexEncode(username);
-            Cookie cookie = new Cookie(cookieName, player.getId());
+            Cookie cookie = new Cookie(cookieName, String.valueOf(player.getId()));
             cookie.setMaxAge(COOKIE_EXPIRY);
             String path = request.getContextPath();
             if (StringUtils.isEmpty(path)) {
@@ -181,8 +182,8 @@ public class PlayerService {
      * @param id The unique player ID.
      * @return The player with the given ID, or <code>null</code> if no such player exists.
      */
-    public Player getPlayerById(String id) {
-        if (StringUtils.isBlank(id)) {
+    public Player getPlayerById(Integer id) {
+        if (id == null) {
             return null;
         } else {
             return playerDao.getPlayerById(id);
@@ -234,7 +235,7 @@ public class PlayerService {
      * @param username The name of the current user.
      * @return The player ID embedded in the cookie, or <code>null</code> if cookie is not present.
      */
-    private String getPlayerIdFromCookie(HttpServletRequest request, String username) {
+    private Integer getPlayerIdFromCookie(HttpServletRequest request, String username) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return null;
@@ -242,7 +243,11 @@ public class PlayerService {
         String cookieName = COOKIE_NAME + "-" + StringUtil.utf8HexEncode(username);
         for (Cookie cookie : cookies) {
             if (cookieName.equals(cookie.getName())) {
-                return StringUtils.trimToNull(cookie.getValue());
+                try {
+                    return Integer.valueOf(cookie.getValue());
+                } catch (NumberFormatException e) {
+                    return null;
+                }
             }
         }
         return null;
@@ -274,7 +279,7 @@ public class PlayerService {
      *
      * @param id The unique player ID.
      */
-    public synchronized void removePlayerById(String id) {
+    public synchronized void removePlayerById(int id) {
         playerDao.deletePlayer(id);
     }
 
@@ -284,7 +289,7 @@ public class PlayerService {
      * @param playerId The ID of the player to clone.
      * @return The cloned player.
      */
-    public Player clonePlayer(String playerId) {
+    public Player clonePlayer(int playerId) {
         Player player = getPlayerById(playerId);
         if (player.getName() != null) {
             player.setName(player.getName() + " (copy)");
@@ -309,8 +314,9 @@ public class PlayerService {
                 defaultActiveTranscodings.add(transcoding);
             }
         }
-
-        transcodingService.setTranscodingsForPlayer(player, defaultActiveTranscodings);
+        if (player != null) {
+            transcodingService.setTranscodingsForPlayer(player, defaultActiveTranscodings);
+        }
     }
 
     /**

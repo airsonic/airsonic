@@ -40,7 +40,7 @@ public class StatusServiceTestCase extends TestCase {
         super.setUp();
         service = new StatusService();
         player1 = new Player();
-        player1.setId("1");
+        player1.setId(1);
     }
 
     public void testSimpleAddRemove() {

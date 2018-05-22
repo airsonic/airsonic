@@ -118,9 +118,11 @@ public class TranscodingService {
         // Activate this transcoding for all players?
         if (transcoding.isDefaultActive()) {
             for (Player player : playerService.getAllPlayers()) {
-                List<Transcoding> transcodings = getTranscodingsForPlayer(player);
-                transcodings.add(transcoding);
-                setTranscodingsForPlayer(player, transcodings);
+                if (player != null) {
+                    List<Transcoding> transcodings = getTranscodingsForPlayer(player);
+                    transcodings.add(transcoding);
+                    setTranscodingsForPlayer(player, transcodings);
+                }
             }
         }
     }

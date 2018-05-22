@@ -149,7 +149,7 @@ public class PlayQueueService {
         return convert(request, player, false);
     }
 
-    public void savePlayQueue(int currentSongIndex, long positionMillis) {
+    public void savePlayQueue(int currentSongIndex, long positionMillis) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
@@ -710,11 +710,11 @@ public class PlayQueueService {
         return mediaFile.getBitRate() + " Kbps";
     }
 
-    private Player getCurrentPlayer(HttpServletRequest request, HttpServletResponse response) {
+    private Player getCurrentPlayer(HttpServletRequest request, HttpServletResponse response) throws Exception {
         return playerService.getPlayer(request, response);
     }
 
-    private Player resolvePlayer() {
+    private Player resolvePlayer() throws Exception {
         return getCurrentPlayer(resolveHttpServletRequest(), resolveHttpServletResponse());
     }
 
@@ -732,7 +732,7 @@ public class PlayQueueService {
     // Methods dedicated to jukebox
     //
 
-    public void setGain(float gain) {
+    public void setGain(float gain) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
         Player player = getCurrentPlayer(request, response);
@@ -741,7 +741,7 @@ public class PlayQueueService {
         }
     }
 
-    public void setJukeboxPosition(int positionInSeconds) {
+    public void setJukeboxPosition(int positionInSeconds) throws Exception {
         Player player = resolvePlayer();
         jukeboxService.setPosition(player,positionInSeconds);
     }

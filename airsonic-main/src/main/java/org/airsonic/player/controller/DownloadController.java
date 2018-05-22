@@ -99,7 +99,7 @@ public class DownloadController implements LastModified {
             MediaFile mediaFile = getMediaFile(request);
 
             Integer playlistId = ServletRequestUtils.getIntParameter(request, "playlist");
-            String playerId = request.getParameter("player");
+            Integer playerId = ServletRequestUtils.getIntParameter(request, "player");
             int[] indexes = request.getParameter("i") == null ? null : ServletRequestUtils.getIntParameters(request, "i");
 
             if (mediaFile != null) {

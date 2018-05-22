@@ -20,7 +20,6 @@
 package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.*;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -45,7 +44,7 @@ public class PlayerDao extends AbstractDao {
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
-    private Map<String, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<String, PlayQueue>());
+    private Map<Integer, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<Integer, PlayQueue>());
 
     /**
      * Returns all players.
@@ -81,13 +80,9 @@ public class PlayerDao extends AbstractDao {
      * @param id The unique player ID.
      * @return The player with the given ID, or <code>null</code> if no such player exists.
      */
-    public Player getPlayerById(String id) {
-        if (StringUtils.isBlank(id)) {
-            return null;
-        } else {
-            String sql = "select " + QUERY_COLUMNS + " from player where id=?";
-            return queryOne(sql, rowMapper, id);
-        }
+    public Player getPlayerById(int id) {
+        String sql = "select " + QUERY_COLUMNS + " from player where id=?";
+        return queryOne(sql, rowMapper, id);
     }
 
     /**
@@ -102,7 +97,7 @@ public class PlayerDao extends AbstractDao {
             existingMax = 0;
         }
         int id = existingMax + 1;
-        player.setId(String.valueOf(id));
+        player.setId(id);
         String sql = "insert into player (" + QUERY_COLUMNS + ") values (" + questionMarks(QUERY_COLUMNS) + ")";
         update(sql, player.getId(), player.getName(), player.getType(), player.getUsername(),
                player.getIpAddress(), player.isAutoControlEnabled(), player.isM3uBomEnabled(),
@@ -119,7 +114,7 @@ public class PlayerDao extends AbstractDao {
      *
      * @param id The player ID.
      */
-    public void deletePlayer(String id) {
+    public void deletePlayer(Integer id) {
         String sql = "delete from player where id=?";
         update(sql, id);
         playlists.remove(id);
@@ -181,7 +176,7 @@ public class PlayerDao extends AbstractDao {
         public Player mapRow(ResultSet rs, int rowNum) throws SQLException {
             Player player = new Player();
             int col = 1;
-            player.setId(rs.getString(col++));
+            player.setId(rs.getInt(col++));
             player.setName(rs.getString(col++));
             player.setType(rs.getString(col++));
             player.setUsername(rs.getString(col++));

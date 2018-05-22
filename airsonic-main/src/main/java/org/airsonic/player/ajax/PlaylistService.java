@@ -112,7 +112,7 @@ public class PlaylistService {
         return getReadablePlaylists();
     }
 
-    public int createPlaylistForPlayQueue() {
+    public int createPlaylistForPlayQueue() throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
         Player player = playerService.getPlayer(request, response);
@@ -167,7 +167,7 @@ public class PlaylistService {
         }
         playlistService.setFilesInPlaylist(playlistId, files);
     }
-    
+
     private List<PlaylistInfo.Entry> createEntries(List<MediaFile> files) {
         List<PlaylistInfo.Entry> result = new ArrayList<PlaylistInfo.Entry>();
         for (MediaFile file : files) {

@@ -94,7 +94,7 @@ public class ShareManagementController  {
 
     private List<MediaFile> getMediaFiles(HttpServletRequest request) throws Exception {
         Integer id = ServletRequestUtils.getIntParameter(request, "id");
-        String playerId = request.getParameter("player");
+        Integer playerId = ServletRequestUtils.getIntParameter(request, "player");
         Integer playlistId = ServletRequestUtils.getIntParameter(request, "playlist");
 
         List<MediaFile> result = new ArrayList<>();

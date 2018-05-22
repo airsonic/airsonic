@@ -49,7 +49,7 @@ public class StatusService {
     private final List<PlayStatus> remotePlays = new ArrayList<PlayStatus>();
 
     // Maps from player ID to latest inactive stream status.
-    private final Map<String, TransferStatus> inactiveStreamStatuses = new LinkedHashMap<String, TransferStatus>();
+    private final Map<Integer, TransferStatus> inactiveStreamStatuses = new LinkedHashMap<Integer, TransferStatus>();
 
     public synchronized TransferStatus createStreamStatus(Player player) {
         // Reuse existing status, if possible.
@@ -74,12 +74,12 @@ public class StatusService {
         List<TransferStatus> result = new ArrayList<TransferStatus>(streamStatuses);
 
         // Add inactive status for those players that have no active status.
-        Set<String> activePlayers = new HashSet<String>();
+        Set<Integer> activePlayers = new HashSet<Integer>();
         for (TransferStatus status : streamStatuses) {
             activePlayers.add(status.getPlayer().getId());
         }
 
-        for (Map.Entry<String, TransferStatus> entry : inactiveStreamStatuses.entrySet()) {
+        for (Map.Entry<Integer, TransferStatus> entry : inactiveStreamStatuses.entrySet()) {
             if (!activePlayers.contains(entry.getKey())) {
                 result.add(entry.getValue());
             }
@@ -142,7 +142,7 @@ public class StatusService {
     }
 
     public synchronized List<PlayStatus> getPlayStatuses() {
-        Map<String, PlayStatus> result = new LinkedHashMap<String, PlayStatus>();
+        Map<Integer, PlayStatus> result = new LinkedHashMap<Integer, PlayStatus>();
         for (PlayStatus remotePlay : remotePlays) {
             if (!remotePlay.isExpired()) {
                 result.put(remotePlay.getPlayer().getId(), remotePlay);

@@ -68,7 +68,7 @@ public class LeftController  {
      * Note: This class intentionally does not implement org.springframework.web.servlet.mvc.LastModified
      * as we don't need browser-side caching of left.jsp.  This method is only used by RESTController.
      */
-    long getLastModified(HttpServletRequest request) {
+    long getLastModified(HttpServletRequest request) throws Exception {
         saveSelectedMusicFolder(request);
 
         if (mediaScannerService.isScanning()) {
@@ -157,12 +157,11 @@ public class LeftController  {
         return new ModelAndView("left","model",map);
     }
 
-    private boolean saveSelectedMusicFolder(HttpServletRequest request) {
-        if (request.getParameter("musicFolderId") == null) {
+    private boolean saveSelectedMusicFolder(HttpServletRequest request) throws Exception {
+        Integer musicFolderId = ServletRequestUtils.getIntParameter(request, "musicFolderId");
+        if (musicFolderId == null) {
             return false;
         }
-        int musicFolderId = Integer.parseInt(request.getParameter("musicFolderId"));
-
         // Note: UserSettings.setChanged() is intentionally not called. This would break browser caching
         // of the left frame.
         UserSettings settings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
