@@ -451,7 +451,7 @@
                 $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
             } else {
                 $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
-            } 
+            }
             if ($("#currentImage" + id) && song.streamUrl == currentStreamUrl) {
                 $("#currentImage" + id).show();
                 if (isJavaJukeboxPresent()) {
@@ -677,7 +677,7 @@
     </c:when>
     <c:otherwise>
         <div class="bgcolor2" style="position:fixed; bottom:0; width:100%;padding-top:10px;">
-            <table style="white-space:nowrap;">
+            <table style="white-space:nowrap; margin-bottom:0;">
                 <tr style="white-space:nowrap;">
                     <c:if test="${model.user.settingsRole and fn:length(model.players) gt 1}">
                         <td style="padding-right: 5px"><select name="player" onchange="location='playQueue.view?player=' + options[selectedIndex].value;">

@@ -4,7 +4,8 @@
  * Author: Jeebs (Fisher Evans)
  */
 
-@import "default-without-mediaelement-light.css";
+@import "default-without-mediaelement.css";
+@import "mediaelement-dark.css";
 
 table {
 	color: #a3a3a3;

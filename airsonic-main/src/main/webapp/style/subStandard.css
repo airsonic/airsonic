@@ -79,7 +79,7 @@ a:hover, a:hover * {
 /* Selected Headers. */
 .headerSelected {
     color: #FFDA23;
-    text-shadow: 0.1em 0.1em 0.2em grey;    
+    text-shadow: 0.1em 0.1em 0.2em grey;
     background-color: transparent;
     border: 0px
 }
@@ -133,11 +133,11 @@ a:hover, a:hover * {
 }
 ::-webkit-scrollbar-button {
     display:none;
-    background: 
+    background:
         -webkit-gradient(
-        linear, 
-        0 0, 
-        100% 0, 
+        linear,
+        0 0,
+        100% 0,
         from(#464646),
         to(#383838)
         );
@@ -155,12 +155,12 @@ a:hover, a:hover * {
 ::-webkit-scrollbar-thumb:horizontal{
     height: 12px;
     -webkit-border-radius:12px;
-    background: 
+    background:
         -webkit-gradient(
-        linear, 
-        0 0, 
-        0 100%, 
-        from(rgba(0,0,0,0.1)), 
+        linear,
+        0 0,
+        0 100%,
+        from(rgba(0,0,0,0.1)),
         to(rgba(0,0,0,0.25))
         );
     border: 6px solid transparent;

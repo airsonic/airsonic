@@ -1,0 +1,11 @@
+.mejs__container {
+  background: transparent;
+}
+
+.mejs__container .me_cannotplay a {
+  background: transparent;
+}
+
+.mejs__controls:not([style*="display: none"]) {
+  background: transparent;
+}
