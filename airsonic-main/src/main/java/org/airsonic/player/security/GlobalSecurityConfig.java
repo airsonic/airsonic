@@ -22,6 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -118,6 +121,21 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             restAuthenticationFilter.setEventPublisher(eventPublisher);
             http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+            List<String> permitAll = new ArrayList<>();
+            permitAll.add("/recover*");
+            permitAll.add("/accessDenied*");
+            permitAll.add("/style/**");
+            permitAll.add("/icons/**");
+            permitAll.add("/flash/**");
+            permitAll.add("/script/**");
+            permitAll.add("/sonos/**");
+            permitAll.add("/crossdomain.xml");
+            permitAll.add("/login");
+            permitAll.add("/error");
+            if(settingsService.isSonosAllowInsecureWS()) {
+                permitAll.add("/ws/**");
+            }
+
             http
                     .csrf()
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
@@ -125,9 +143,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .frameOptions()
                     .sameOrigin()
                     .and().authorizeRequests()
-                    .antMatchers("/recover*", "/accessDenied*",
-                            "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/crossdomain.xml", "/login", "/error")
+                    .antMatchers(permitAll.toArray(new String[permitAll.size()]))
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")

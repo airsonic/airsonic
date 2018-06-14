@@ -105,6 +105,7 @@ public class SettingsService {
     private static final String KEY_SONOS_ENABLED = "SonosEnabled";
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
+    private static final String KEY_SONOS_ALLOW_INSECURE_WS = "SonosAllowInsecureWS";
     private static final String KEY_JWT_KEY = "JWTKey";
 
     private static final String KEY_SMTP_SERVER = "SmtpServer";
@@ -182,6 +183,7 @@ public class SettingsService {
     private static final boolean DEFAULT_SONOS_ENABLED = false;
     private static final String DEFAULT_SONOS_SERVICE_NAME = "Airsonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
+    private static final boolean DEFAULT_SONOS_ALLOW_INSECURE_WS = false;
     private static final String DEFAULT_EXPORT_PLAYLIST_FORMAT = "m3u";
     private static final boolean DEFAULT_IGNORE_SYMLINKS = false;
     private static final String DEFAULT_EXCLUDE_PATTERN_STRING = null;
@@ -1217,6 +1219,15 @@ public class SettingsService {
 
     int getSonosServiceId() {
         return getInt(KEY_SONOS_SERVICE_ID, DEFAULT_SONOS_SERVICE_ID);
+    }
+
+    // Hidden for now
+//    public void setSonosAllowInsecureWS(boolean sonosAllowInsecureWS) {
+//        setBoolean(KEY_SONOS_ALLOW_INSECURE_WS, sonosAllowInsecureWS);
+//    }
+
+    public boolean isSonosAllowInsecureWS() {
+        return getBoolean(KEY_SONOS_ALLOW_INSECURE_WS, DEFAULT_SONOS_ALLOW_INSECURE_WS);
     }
 
     private void setProperty(String key, Object value) {
