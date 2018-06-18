@@ -28,4 +28,6 @@ EXPOSE $AIRSONIC_PORT
 
 VOLUME $AIRSONIC_DIR/data $AIRSONIC_DIR/music $AIRSONIC_DIR/playlists $AIRSONIC_DIR/podcasts
 
+HEALTHCHECK CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"/rest/ping -O /dev/null || exit 1
+
 ENTRYPOINT ["tini", "--", "run.sh"]
