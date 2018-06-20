@@ -57,6 +57,7 @@ public class TranscodingSettingsController {
         map.put("transcodings", transcodingService.getAllTranscodings());
         map.put("transcodeDirectory", transcodingService.getTranscodeDirectory());
         map.put("downsampleCommand", settingsService.getDownsamplingCommand());
+        map.put("downsamplingEnableSeek", settingsService.isDownsamplingEnableSeek());
         map.put("hlsCommand", settingsService.getHlsCommand());
         map.put("brand", settingsService.getBrand());
 
@@ -84,6 +85,7 @@ public class TranscodingSettingsController {
             String step1 = getParameter(request, "step1", id);
             String step2 = getParameter(request, "step2", id);
             boolean delete = getParameter(request, "delete", id) != null;
+            boolean enableSeek = getParameter(request, "enableSeek", id) != null;
 
             if (delete) {
                 transcodingService.deleteTranscoding(id);
@@ -101,6 +103,7 @@ public class TranscodingSettingsController {
                 transcoding.setTargetFormat(targetFormat);
                 transcoding.setStep1(step1);
                 transcoding.setStep2(step2);
+                transcoding.setEnableSeek(enableSeek);
                 transcodingService.updateTranscoding(transcoding);
             }
         }
@@ -111,9 +114,10 @@ public class TranscodingSettingsController {
         String step1 = StringUtils.trimToNull(request.getParameter("step1"));
         String step2 = StringUtils.trimToNull(request.getParameter("step2"));
         boolean defaultActive = request.getParameter("defaultActive") != null;
+        boolean enableSeek = request.getParameter("enableSeek") != null;
 
         if (name != null || sourceFormats != null || targetFormat != null || step1 != null || step2 != null) {
-            Transcoding transcoding = new Transcoding(null, name, sourceFormats, targetFormat, step1, step2, null, defaultActive);
+            Transcoding transcoding = new Transcoding(null, name, sourceFormats, targetFormat, step1, step2, null, defaultActive, enableSeek);
             String error = null;
             if (name == null) {
                 error = "transcodingsettings.noname";
@@ -132,6 +136,7 @@ public class TranscodingSettingsController {
             }
         }
         settingsService.setDownsamplingCommand(StringUtils.trim(request.getParameter("downsampleCommand")));
+        settingsService.setDownsamplingEnableSeek(request.getParameter("downsampleEnableSeek") != null);
         settingsService.setHlsCommand(StringUtils.trim(request.getParameter("hlsCommand")));
         settingsService.save();
         return null;

@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="trancoding-enable-seek_001" author="willypillow">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="transcoding2" columnName="enable_seek" />
+            </not>
+        </preConditions>
+        <addColumn tableName="transcoding2">
+            <column name="enable_seek" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

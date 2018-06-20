@@ -22,6 +22,7 @@
         <th><fmt:message key="transcodingsettings.targetformat"/></th>
         <th><fmt:message key="transcodingsettings.step1"/></th>
         <th><fmt:message key="transcodingsettings.step2"/></th>
+        <th style="padding-left:1em"><fmt:message key="transcodingsettings.enableseek"/></th>
         <th style="padding-left:1em"><fmt:message key="common.delete"/></th>
     </tr>
 
@@ -32,6 +33,7 @@
             <td><input style="font-family:monospace" type="text" name="targetFormat[${transcoding.id}]" size="10" value="${transcoding.targetFormat}"/></td>
             <td><input style="font-family:monospace" type="text" name="step1[${transcoding.id}]" size="60" value="${transcoding.step1}"/></td>
             <td><input style="font-family:monospace" type="text" name="step2[${transcoding.id}]" size="22" value="${transcoding.step2}"/></td>
+            <td align="center" style="padding-left:1em"><input type="checkbox" name="enableSeek[${transcoding.id}]" class="checkbox" ${transcoding.enableSeek ? "checked" : ""}/></td>
             <td align="center" style="padding-left:1em"><input type="checkbox" name="delete[${transcoding.id}]" class="checkbox"/></td>
         </tr>
     </c:forEach>
@@ -66,6 +68,10 @@
             </td>
             <td>
                 <input style="font-family:monospace" type="text" name="downsampleCommand" size="100" value="${model.downsampleCommand}"/>
+            </td>
+            <td>
+                <input type="checkbox" id="enableSeek" name="enableSeek" class="checkbox" ${model.downsamplingEnableSeek ? "checked" : ""}/>
+                <label for="enableSeek"><fmt:message key="transcodingsettings.enableseek"/></label>
             </td>
         </tr>
         <tr>

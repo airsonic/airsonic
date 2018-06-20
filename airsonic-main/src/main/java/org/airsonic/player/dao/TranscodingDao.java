@@ -39,7 +39,7 @@ import java.util.List;
 public class TranscodingDao extends AbstractDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(TranscodingDao.class);
-    private static final String INSERT_COLUMNS = "name, source_formats, target_format, step1, step2, step3, default_active";
+    private static final String INSERT_COLUMNS = "name, source_formats, target_format, step1, step2, step3, default_active, enable_seek";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private TranscodingRowMapper rowMapper = new TranscodingRowMapper();
 
@@ -95,7 +95,8 @@ public class TranscodingDao extends AbstractDao {
         String sql = "insert into transcoding2 (" + QUERY_COLUMNS + ") values (" + questionMarks(QUERY_COLUMNS) + ")";
         update(sql, transcoding.getId(), transcoding.getName(), transcoding.getSourceFormats(),
                 transcoding.getTargetFormat(), transcoding.getStep1(),
-                transcoding.getStep2(), transcoding.getStep3(), transcoding.isDefaultActive());
+                transcoding.getStep2(), transcoding.getStep3(),
+                transcoding.isDefaultActive(), transcoding.isEnableSeek());
         LOG.info("Created transcoding " + transcoding.getName());
     }
 
@@ -117,16 +118,17 @@ public class TranscodingDao extends AbstractDao {
      */
     public void updateTranscoding(Transcoding transcoding) {
         String sql = "update transcoding2 set name=?, source_formats=?, target_format=?, " +
-                "step1=?, step2=?, step3=?, default_active=? where id=?";
+                "step1=?, step2=?, step3=?, default_active=?, enable_seek=? where id=?";
         update(sql, transcoding.getName(), transcoding.getSourceFormats(),
                 transcoding.getTargetFormat(), transcoding.getStep1(), transcoding.getStep2(),
-                transcoding.getStep3(), transcoding.isDefaultActive(), transcoding.getId());
+                transcoding.getStep3(), transcoding.isDefaultActive(),
+                transcoding.isEnableSeek(), transcoding.getId());
     }
 
     private static class TranscodingRowMapper implements RowMapper<Transcoding> {
         public Transcoding mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Transcoding(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
-                    rs.getString(6), rs.getString(7), rs.getBoolean(8));
+                    rs.getString(6), rs.getString(7), rs.getBoolean(8), rs.getBoolean(9));
         }
     }
 }
