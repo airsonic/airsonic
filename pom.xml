@@ -86,7 +86,7 @@
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>1.5.12.RELEASE</version>
+                <version>1.5.14.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -205,7 +205,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.2.1</version>
                     <inherited>true</inherited>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
