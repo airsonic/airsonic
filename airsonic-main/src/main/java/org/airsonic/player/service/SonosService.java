@@ -133,7 +133,7 @@ public class SonosService implements SonosSoap {
                                                           sonosServiceName, sonosServiceId);
                 break;
             } catch (IOException x) {
-                LOG.warn(String.format("Failed to enable/disable music service in Sonos controller %s: %s", sonosController, x));
+                LOG.warn("Failed to enable/disable music service in Sonos controller "+ sonosController, x);
             }
         }
     }
