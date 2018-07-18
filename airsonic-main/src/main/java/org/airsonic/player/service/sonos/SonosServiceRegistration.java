@@ -21,7 +21,8 @@ package org.airsonic.player.service.sonos;
 
 import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -31,10 +32,12 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +100,31 @@ public class SonosServiceRegistration {
 
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
-            ResponseHandler<String> responseHandler = new BasicResponseHandler();
+            ResponseHandler<String> responseHandler = new BasicResponseHandler() {
+                @Override
+                public String handleResponse(final HttpResponse response) throws HttpResponseException, IOException {
+                    final StatusLine statusLine = response.getStatusLine();
+                    final HttpEntity entity = response.getEntity();
+                    if (statusLine.getStatusCode() >= 300) {
+                        if(LOG.isTraceEnabled()) {
+                            try {
+                                final Header[] headers = response.getAllHeaders();
+                                for (final Header header : headers) {
+                                    LOG.trace("Header: {}", header.toString());
+                                }
+                                LOG.trace("Response body was\n{}",
+                                        EntityUtils.toString(entity, Charset.defaultCharset()));
+
+                            } catch (Exception ignored) {}
+                        } else {
+                            EntityUtils.consume(entity);
+                        }
+                        throw new HttpResponseException(statusLine.getStatusCode(),
+                                statusLine.getReasonPhrase());
+                    }
+                    return entity == null ? null : handleEntity(entity);
+                }
+            };
             return client.execute(request, responseHandler);
 
         }
