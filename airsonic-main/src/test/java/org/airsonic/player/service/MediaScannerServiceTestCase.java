@@ -4,8 +4,7 @@ import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import org.airsonic.player.dao.*;
-import org.airsonic.player.domain.MediaFile;
-import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.domain.*;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -15,8 +14,6 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.domain.Album;
-import org.airsonic.player.domain.Artist;
 import org.airsonic.player.util.HomeRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -34,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * A unit test class to test the MediaScannerService.
@@ -95,6 +90,9 @@ public class MediaScannerServiceTestCase {
     private AlbumDao albumDao;
 
     @Autowired
+    private GenreDao genreDao;
+
+    @Autowired
     private SettingsService settingsService;
 
     @Rule
@@ -111,6 +109,7 @@ public class MediaScannerServiceTestCase {
     public void testScanLibrary() {
         MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
         settingsService.clearMusicFolderCache();
+        genreDao.clearGenres();
 
         Timer globalTimer = metrics.timer(MetricRegistry.name(MediaScannerServiceTestCase.class, "Timer.global"));
 
@@ -147,6 +146,17 @@ public class MediaScannerServiceTestCase {
         List<MediaFile> listeSongs = mediaFileDao.getSongsByGenre("Baroque Instrumental", 0, 0, musicFolderDao.getAllMusicFolders());
         Assert.assertEquals(2, listeSongs.size());
 
+        List<Genre> genres = genreDao.getGenres(true);
+        Assert.assertEquals(6, genres.size());
+
+        // 16-Horsepower should be both 'Americana' and 'Alt-Country'
+        List<MediaFile> americanaSongs = mediaFileDao.getSongsByGenre("Americana", 0, 0, musicFolderDao.getAllMusicFolders());
+        Assert.assertEquals(3, americanaSongs.size());
+        for (MediaFile americanaSong : americanaSongs) {
+            Assert.assertEquals("_DIR_ Sixteen Horsepower", americanaSong.getArtist());
+            Assert.assertEquals("Alt-Country, Americana", americanaSong.getGenre());
+        }
+
         // display out metrics report
         ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
                 .convertRatesTo(TimeUnit.SECONDS.SECONDS)
@@ -171,9 +181,9 @@ public class MediaScannerServiceTestCase {
         settingsService.clearMusicFolderCache();
         TestCaseUtils.execScan(mediaScannerService);
         MediaFile mediaFile = mediaFileService.getMediaFile(musicFile);
-        assertEquals(mediaFile.getFile().toString(), musicFile.toString());
+        Assert.assertEquals(mediaFile.getFile().toString(), musicFile.toString());
         System.out.println(mediaFile.getFile().getPath());
-        assertNotNull(mediaFile);
+        Assert.assertNotNull(mediaFile);
     }
 
     @Test

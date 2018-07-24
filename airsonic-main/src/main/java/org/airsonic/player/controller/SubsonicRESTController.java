@@ -23,10 +23,7 @@ import org.airsonic.player.ajax.LyricsInfo;
 import org.airsonic.player.ajax.LyricsService;
 import org.airsonic.player.ajax.PlayQueueService;
 import org.airsonic.player.command.UserSettingsCommand;
-import org.airsonic.player.dao.AlbumDao;
-import org.airsonic.player.dao.ArtistDao;
-import org.airsonic.player.dao.MediaFileDao;
-import org.airsonic.player.dao.PlayQueueDao;
+import org.airsonic.player.dao.*;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.domain.Bookmark;
 import org.airsonic.player.domain.PlayQueue;
@@ -129,6 +126,8 @@ public class SubsonicRESTController {
     private ArtistDao artistDao;
     @Autowired
     private AlbumDao albumDao;
+    @Autowired
+    private GenreDao genreDao;
     @Autowired
     private BookmarkService bookmarkService;
     @Autowired
@@ -273,7 +272,7 @@ public class SubsonicRESTController {
         request = wrapRequest(request);
         org.subsonic.restapi.Genres genres = new org.subsonic.restapi.Genres();
 
-        for (org.airsonic.player.domain.Genre genre : mediaFileDao.getGenres(false)) {
+        for (org.airsonic.player.domain.Genre genre : genreDao.getGenres(false)) {
             org.subsonic.restapi.Genre g = new org.subsonic.restapi.Genre();
             genres.getGenre().add(g);
             g.setContent(genre.getName());

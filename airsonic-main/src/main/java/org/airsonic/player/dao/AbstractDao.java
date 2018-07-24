@@ -26,10 +26,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Abstract superclass for all DAO's.
@@ -183,6 +185,12 @@ public class AbstractDao {
     protected <T> T namedQueryOne(String sql, RowMapper rowMapper, Map<String, Object> args) {
         List<T> list = namedQuery(sql, rowMapper, args);
         return list.isEmpty() ? null : list.get(0);
+    }
+
+    protected String appendTableAlias(String alias, String fields) {
+        return Arrays.stream(fields.split(","))
+                .map(f -> alias + "." + f.trim())
+                .collect(Collectors.joining(", "));
     }
 
     public void setDaoHelper(DaoHelper daoHelper) {

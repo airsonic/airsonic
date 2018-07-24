@@ -27,18 +27,25 @@ package org.airsonic.player.domain;
  */
 public class Genre {
 
+    private final int id;
     private final String name;
     private int songCount;
     private int albumCount;
 
-    public Genre(String name) {
+    public Genre(int id, String name) {
+        this.id = id;
         this.name = name;
     }
 
-    public Genre(String name, int songCount, int albumCount) {
+    public Genre(int id, String name, int songCount, int albumCount) {
+        this.id = id;
         this.name = name;
         this.songCount = songCount;
         this.albumCount = albumCount;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {

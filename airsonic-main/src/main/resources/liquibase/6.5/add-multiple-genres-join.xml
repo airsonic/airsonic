@@ -1,0 +1,88 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <!-- Drop the previous genre table and create a new one w/ an id primary index -->
+    <changeSet id="recreate-genre-table" author="devonbryant">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="genre" columnName="id"/>
+            </not>
+        </preConditions>
+        <dropTable tableName="genre"/>
+        <createTable tableName="genre">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="${varchar_type}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="song_count" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="album_count" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="genre" indexName="idx_genre_name">
+            <column name="name"/>
+        </createIndex>
+        <rollback>
+            <createTable tableName="genre">
+                <column name="name" type="${varchar_type}">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="song_count" type="int">
+                    <constraints nullable="false"/>
+                </column>
+                <column name="album_count" type="int">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+        </rollback>
+    </changeSet>
+    <!-- Add an album - genre join table -->
+    <changeSet id="add-album-genre-join" author="devonbryant">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="album_genre"/>
+            </not>
+        </preConditions>
+        <createTable tableName="album_genre">
+            <column name="album_id" type="int">
+                <constraints nullable="false" foreignKeyName="ag_a_fk" referencedTableName="album"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="genre_id" type="int">
+                <constraints nullable="false" foreignKeyName="ag_g_fk" referencedTableName="genre"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="album_genre" columnNames="album_id,genre_id"/>
+        <rollback>
+            <dropTable tableName="album_genre"/>
+        </rollback>
+    </changeSet>
+    <!-- Add a media_file - genre join table -->
+    <changeSet id="add-media_file-genre-join" author="devonbryant">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="media_file_genre"/>
+            </not>
+        </preConditions>
+        <createTable tableName="media_file_genre">
+            <column name="media_file_id" type="int">
+                <constraints nullable="false" foreignKeyName="mfg_a_fk" referencedTableName="media_file"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+            <column name="genre_id" type="int">
+                <constraints nullable="false" foreignKeyName="mfg_g_fk" referencedTableName="genre"
+                             referencedColumnNames="id" deleteCascade="true"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="media_file_genre" columnNames="media_file_id,genre_id"/>
+        <rollback>
+            <dropTable tableName="media_file_genre"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

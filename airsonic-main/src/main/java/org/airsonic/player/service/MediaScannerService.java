@@ -21,10 +21,12 @@ package org.airsonic.player.service;
 
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
+import org.airsonic.player.dao.GenreDao;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +67,8 @@ public class MediaScannerService {
     private ArtistDao artistDao;
     @Autowired
     private AlbumDao albumDao;
+    @Autowired
+    private GenreDao genreDao;
     private int scanCount;
 
     @PostConstruct
@@ -172,7 +176,8 @@ public class MediaScannerService {
 
             // Maps from artist name to album count.
             Map<String, Integer> albumCount = new HashMap<String, Integer>();
-            Genres genres = new Genres();
+
+            Map<String, Genre> genres = new HashMap<>();
 
             scanCount = 0;
             statistics.reset();
@@ -181,6 +186,8 @@ public class MediaScannerService {
             searchService.startIndexing();
 
             mediaFileService.clearMemoryCache();
+
+            genreDao.resetCounts();
 
             // Recurse through all files on disk.
             for (MusicFolder musicFolder : settingsService.getAllMusicFolders()) {
@@ -210,9 +217,6 @@ public class MediaScannerService {
                 statistics.incrementAlbums(albums);
             }
 
-            // Update genres
-            mediaFileDao.updateGenres(genres.getGenres());
-
             settingsService.setMediaLibraryStatistics(statistics);
             settingsService.setLastScanned(lastScanned);
             settingsService.save(false);
@@ -228,15 +232,13 @@ public class MediaScannerService {
     }
 
     private void scanFile(MediaFile file, MusicFolder musicFolder, Date lastScanned,
-                          Map<String, Integer> albumCount, Genres genres, boolean isPodcast) {
+                          Map<String, Integer> albumCount, Map<String, Genre> genreCache, boolean isPodcast) {
         scanCount++;
         if (scanCount % 250 == 0) {
             LOG.info("Scanned media library with " + scanCount + " entries.");
         }
 
         LOG.trace("Scanning file {}", file.getPath());
-
-        searchService.index(file);
 
         // Update the root folder if it has changed.
         if (!musicFolder.getPath().getPath().equals(file.getFolder())) {
@@ -245,21 +247,29 @@ public class MediaScannerService {
         }
 
         if (file.isDirectory()) {
+            searchService.index(file, Collections.emptyList());
+
             for (MediaFile child : mediaFileService.getChildrenOf(file, true, false, false, false)) {
-                scanFile(child, musicFolder, lastScanned, albumCount, genres, isPodcast);
+                scanFile(child, musicFolder, lastScanned, albumCount, genreCache, isPodcast);
             }
             for (MediaFile child : mediaFileService.getChildrenOf(file, false, true, false, false)) {
-                scanFile(child, musicFolder, lastScanned, albumCount, genres, isPodcast);
+                scanFile(child, musicFolder, lastScanned, albumCount, genreCache, isPodcast);
             }
         } else {
+            List<Genre> genres = getGenres(file, genreCache);
+            for (Genre genre : genres) {
+                genreDao.addGenre(file, genre);
+            }
+
+            searchService.index(file, genres);
+
             if (!isPodcast) {
-                updateAlbum(file, musicFolder, lastScanned, albumCount);
+                updateAlbum(file, musicFolder, lastScanned, albumCount, genres);
                 updateArtist(file, musicFolder, lastScanned, albumCount);
             }
             statistics.incrementSongs(1);
         }
 
-        updateGenres(file, genres);
         mediaFileDao.markPresent(file.getPath(), lastScanned);
         artistDao.markPresent(file.getAlbumArtist(), lastScanned);
 
@@ -271,20 +281,39 @@ public class MediaScannerService {
         }
     }
 
-    private void updateGenres(MediaFile file, Genres genres) {
-        String genre = file.getGenre();
-        if (genre == null) {
-            return;
+    private List<Genre> getGenres(MediaFile file, Map<String, Genre> cache) {
+        if (StringUtils.isNotBlank(file.getGenre())) {
+            // Split the genres by the configured delimiter
+            String[] split = file.getGenre().split(settingsService.getMultiGenreDelimiter());
+
+            List<Genre> genres = new ArrayList<>(split.length);
+            for (String genreStr : split) {
+                String name = genreStr.trim();
+                if (!name.isEmpty()) {
+                    // First see if we have the genre cached locally
+                    Genre genre = cache.get(name);
+                    if (genre == null) {
+                        // The genre is not cached locally, check the DB
+                        genre = genreDao.getGenre(name);
+                        if (genre == null) {
+                            // We need to create the genre in the DB
+                            genre = genreDao.create(name);
+                        }
+                    }
+                    if (genre != null) {
+                        genres.add(genre);
+                    }
+                }
+            }
+
+            return genres;
         }
-        if (file.isAlbum()) {
-            genres.incrementAlbumCount(genre);
-        }
-        else if (file.isAudio()) {
-            genres.incrementSongCount(genre);
+        else {
+            return Collections.emptyList();
         }
     }
 
-    private void updateAlbum(MediaFile file, MusicFolder musicFolder, Date lastScanned, Map<String, Integer> albumCount) {
+    private void updateAlbum(MediaFile file, MusicFolder musicFolder, Date lastScanned, Map<String, Integer> albumCount, List<Genre> genres) {
         String artist = file.getAlbumArtist() != null ? file.getAlbumArtist() : file.getArtist();
         if (file.getAlbumName() == null || artist == null || file.getParentPath() == null || !file.isAudio()) {
             return;
@@ -331,6 +360,11 @@ public class MediaScannerService {
         albumDao.createOrUpdateAlbum(album);
         if (firstEncounter) {
             searchService.index(album);
+        }
+
+        // Update the album genres
+        for (Genre genre : genres) {
+            genreDao.addGenre(album, genre);
         }
 
         // Update the file's album artist, if necessary.
@@ -433,6 +467,10 @@ public class MediaScannerService {
 
     public void setAlbumDao(AlbumDao albumDao) {
         this.albumDao = albumDao;
+    }
+
+    public void setGenreDao(GenreDao genreDao) {
+        this.genreDao = genreDao;
     }
 
     public void setPlaylistService(PlaylistService playlistService) {

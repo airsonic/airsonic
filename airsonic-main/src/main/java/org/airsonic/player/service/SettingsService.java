@@ -106,6 +106,7 @@ public class SettingsService {
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
     private static final String KEY_JWT_KEY = "JWTKey";
+    private static final String KEY_MULTI_GENRE_DELIMITER = "MultiGenreDelim";
 
     private static final String KEY_SMTP_SERVER = "SmtpServer";
     private static final String KEY_SMTP_ENCRYPTION = "SmtpEncryption";
@@ -185,6 +186,7 @@ public class SettingsService {
     private static final String DEFAULT_EXPORT_PLAYLIST_FORMAT = "m3u";
     private static final boolean DEFAULT_IGNORE_SYMLINKS = false;
     private static final String DEFAULT_EXCLUDE_PATTERN_STRING = null;
+    private static final String DEFAULT_MULTI_GENRE_DELIM = ",";
 
     private static final String DEFAULT_SMTP_SERVER = null;
     private static final String DEFAULT_SMTP_ENCRYPTION = "None";
@@ -1173,6 +1175,14 @@ public class SettingsService {
      */
     public void setCustomAvatar(Avatar avatar, String username) {
         avatarDao.setCustomAvatar(avatar, username);
+    }
+
+    public String getMultiGenreDelimiter() {
+        return getProperty(KEY_MULTI_GENRE_DELIMITER, DEFAULT_MULTI_GENRE_DELIM);
+    }
+
+    public void setMultiGenreDelimiter(String delim) {
+        setProperty(KEY_MULTI_GENRE_DELIMITER, delim);
     }
 
     public boolean isDlnaEnabled() {

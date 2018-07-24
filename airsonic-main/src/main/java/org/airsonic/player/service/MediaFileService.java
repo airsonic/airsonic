@@ -22,6 +22,7 @@ package org.airsonic.player.service;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.airsonic.player.dao.AlbumDao;
+import org.airsonic.player.dao.GenreDao;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.metadata.JaudiotaggerParser;
@@ -61,6 +62,8 @@ public class MediaFileService {
     private MediaFileDao mediaFileDao;
     @Autowired
     private AlbumDao albumDao;
+    @Autowired
+    private GenreDao genreDao;
     @Autowired
     private JaudiotaggerParser parser;
     @Autowired
@@ -234,7 +237,7 @@ public class MediaFileService {
      * @return Sorted list of genres.
      */
     public List<Genre> getGenres(boolean sortByAlbum) {
-        return mediaFileDao.getGenres(sortByAlbum);
+        return genreDao.getGenres(sortByAlbum);
     }
 
     /**
@@ -348,9 +351,8 @@ public class MediaFileService {
      * Returns random songs matching search criteria.
      *
      * @param criteria Random search criteria.
-     * @param count    Max number of songs to return.
+     * @param username the username
      * @return Random songs
-     * @see SearchService.getRandomSongs
      */
     public List<MediaFile> getRandomSongs(RandomSearchCriteria criteria, String username) {
         return mediaFileDao.getRandomSongs(criteria, username);
@@ -725,6 +727,10 @@ public class MediaFileService {
 
     public void setAlbumDao(AlbumDao albumDao) {
         this.albumDao = albumDao;
+    }
+
+    public void setGenreDao(GenreDao genreDao) {
+        this.genreDao = genreDao;
     }
 
     public void setParser(JaudiotaggerParser parser) {

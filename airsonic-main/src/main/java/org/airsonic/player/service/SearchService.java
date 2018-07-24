@@ -112,14 +112,14 @@ public class SearchService {
         }
     }
 
-    public void index(MediaFile mediaFile) {
+    public void index(MediaFile mediaFile, List<Genre> genres) {
         try {
             if (mediaFile.isFile()) {
-                songWriter.addDocument(SONG.createDocument(mediaFile));
+                songWriter.addDocument(SONG.createDocument(mediaFile, genres));
             } else if (mediaFile.isAlbum()) {
-                albumWriter.addDocument(ALBUM.createDocument(mediaFile));
+                albumWriter.addDocument(ALBUM.createDocument(mediaFile, genres));
             } else {
-                artistWriter.addDocument(ARTIST.createDocument(mediaFile));
+                artistWriter.addDocument(ARTIST.createDocument(mediaFile, genres));
             }
         } catch (Exception x) {
             LOG.error("Failed to create search index for " + mediaFile, x);
@@ -500,7 +500,7 @@ public class SearchService {
 
         SONG(new String[]{FIELD_TITLE, FIELD_ARTIST}, FIELD_TITLE) {
             @Override
-            public Document createDocument(MediaFile mediaFile) {
+            public Document createDocument(MediaFile mediaFile, List<Genre> genres) {
                 Document doc = new Document();
                 doc.add(new NumericField(FIELD_ID, Field.Store.YES, false).setIntValue(mediaFile.getId()));
                 doc.add(new Field(FIELD_MEDIA_TYPE, mediaFile.getMediaType().name(), Field.Store.NO, Field.Index.ANALYZED_NO_NORMS));
@@ -511,14 +511,14 @@ public class SearchService {
                 if (mediaFile.getArtist() != null) {
                     doc.add(new Field(FIELD_ARTIST, mediaFile.getArtist(), Field.Store.YES, Field.Index.ANALYZED));
                 }
-                if (mediaFile.getGenre() != null) {
-                    doc.add(new Field(FIELD_GENRE, normalizeGenre(mediaFile.getGenre()), Field.Store.NO, Field.Index.ANALYZED));
-                }
                 if (mediaFile.getYear() != null) {
                     doc.add(new NumericField(FIELD_YEAR, Field.Store.NO, true).setIntValue(mediaFile.getYear()));
                 }
                 if (mediaFile.getFolder() != null) {
                     doc.add(new Field(FIELD_FOLDER, mediaFile.getFolder(), Field.Store.NO, Field.Index.NOT_ANALYZED_NO_NORMS));
+                }
+                for (Genre genre : genres) {
+                    doc.add(new Field(FIELD_GENRE, normalizeGenre(genre.getName()), Field.Store.NO, Field.Index.ANALYZED));
                 }
 
                 return doc;
@@ -527,7 +527,7 @@ public class SearchService {
 
         ALBUM(new String[]{FIELD_ALBUM, FIELD_ARTIST, FIELD_FOLDER}, FIELD_ALBUM) {
             @Override
-            public Document createDocument(MediaFile mediaFile) {
+            public Document createDocument(MediaFile mediaFile, List<Genre> genres) {
                 Document doc = new Document();
                 doc.add(new NumericField(FIELD_ID, Field.Store.YES, false).setIntValue(mediaFile.getId()));
 
@@ -567,7 +567,7 @@ public class SearchService {
 
         ARTIST(new String[]{FIELD_ARTIST, FIELD_FOLDER}, null) {
             @Override
-            public Document createDocument(MediaFile mediaFile) {
+            public Document createDocument(MediaFile mediaFile, List<Genre> genres) {
                 Document doc = new Document();
                 doc.add(new NumericField(FIELD_ID, Field.Store.YES, false).setIntValue(mediaFile.getId()));
 
@@ -609,7 +609,7 @@ public class SearchService {
             return fields;
         }
 
-        protected Document createDocument(MediaFile mediaFile) {
+        protected Document createDocument(MediaFile mediaFile, List<Genre> genres) {
             throw new UnsupportedOperationException();
         }
 

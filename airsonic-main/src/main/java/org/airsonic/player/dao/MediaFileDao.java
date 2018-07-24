@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.dao;
 
-import org.airsonic.player.domain.Genre;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
@@ -49,13 +48,11 @@ public class MediaFileDao extends AbstractDao {
                                                 "version, mb_release_id";
 
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
-    private static final String GENRE_COLUMNS = "name, song_count, album_count";
 
     public static final int VERSION = 4;
 
     private final RowMapper<MediaFile> rowMapper = new MediaFileMapper();
     private final RowMapper musicFileInfoRowMapper = new MusicFileInfoMapper();
-    private final RowMapper genreRowMapper = new GenreMapper();
 
     /**
      * Returns the media file for the given path.
@@ -206,19 +203,6 @@ public class MediaFileDao extends AbstractDao {
 
     public void deleteMediaFile(String path) {
         update("update media_file set present=false, children_last_updated=? where path=?", new Date(0L), path);
-    }
-
-    public List<Genre> getGenres(boolean sortByAlbum) {
-        String orderBy = sortByAlbum ? "album_count" : "song_count";
-        return query("select " + GENRE_COLUMNS + " from genre order by " + orderBy + " desc", genreRowMapper);
-    }
-
-    public void updateGenres(List<Genre> genres) {
-        update("delete from genre");
-        for (Genre genre : genres) {
-            update("insert into genre(" + GENRE_COLUMNS + ") values(?, ?, ?)",
-                   genre.getName(), genre.getSongCount(), genre.getAlbumCount());
-        }
     }
 
     /**
@@ -376,8 +360,13 @@ public class MediaFileDao extends AbstractDao {
             put("count", count);
             put("offset", offset);
         }};
-        return namedQuery("select " + QUERY_COLUMNS + " from media_file where type = :type and folder in (:folders) " +
-                          "and present and genre = :genre limit :count offset :offset", rowMapper, args);
+        return namedQuery("select " + appendTableAlias("mf", QUERY_COLUMNS) + " from media_file mf " +
+                          "join album al on mf.path = al.path " +
+                          "join album_genre ag on al.id = ag.album_id " +
+                          "join genre ge on ag.genre_id = ge.id " +
+                          "where mf.type = :type and mf.folder in (:folders) " +
+                          "and mf.present and ge.name = :genre limit :count offset :offset",
+                          rowMapper, args);
     }
 
     public List<MediaFile> getSongsByGenre(final String genre, final int offset, final int count, final List<MusicFolder> musicFolders) {
@@ -391,8 +380,11 @@ public class MediaFileDao extends AbstractDao {
             put("offset", offset);
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
-        return namedQuery("select " + QUERY_COLUMNS + " from media_file where type in (:types) and genre = :genre " +
-                          "and present and folder in (:folders) limit :count offset :offset",
+        return namedQuery("select " + appendTableAlias("mf", QUERY_COLUMNS) + " from media_file mf " +
+                          "join media_file_genre mfg on mf.id = mfg.media_file_id " +
+                          "join genre ge on mfg.genre_id = ge.id " +
+                          "where mf.type in (:types) and ge.name = :genre " +
+                          "and mf.present and mf.folder in (:folders) limit :count offset :offset",
                           rowMapper, args);
     }
 
@@ -732,12 +724,6 @@ public class MediaFileDao extends AbstractDao {
             file.setLastPlayed(rs.getTimestamp(2));
             file.setComment(rs.getString(3));
             return file;
-        }
-    }
-
-    private static class GenreMapper implements RowMapper<Genre> {
-        public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Genre(rs.getString(1), rs.getInt(2), rs.getInt(3));
         }
     }
 }
