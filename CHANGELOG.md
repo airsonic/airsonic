@@ -3,6 +3,11 @@
 # airsonic/airsonic
 # -->
 
+## v10.1.2
+
+Security:
+  * Fix LDAP authentication bypass 
+
 ## v10.1.1
 
 Changes:
