@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.airsonic.player</groupId>
         <artifactId>airsonic</artifactId>
-        <version>10.1.1-RELEASE</version>
+        <version>10.1.2-RELEASE</version>
     </parent>
 
     <properties>
