@@ -81,7 +81,14 @@ public class SecurityService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = getGrantedAuthorities(username);
 
-        return new org.springframework.security.core.userdetails.User(username, user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(
+                username,
+                user.getPassword(),
+                !user.isLdapAuthenticated(),
+                true,
+                true,
+                true,
+                authorities);
     }
 
     public List<GrantedAuthority> getGrantedAuthorities(String username) {
