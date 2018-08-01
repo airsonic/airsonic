@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -174,8 +175,15 @@ public class AudioScrobblerService {
         String clientVersion = "0.1";
         long timestamp = System.currentTimeMillis() / 1000L;
         String authToken = calculateAuthenticationToken(registrationData.password, timestamp);
-        String[] lines = executeGetRequest("http://post.audioscrobbler.com/?hs=true&p=1.2.1&c=" + clientId + "&v=" +
-                                           clientVersion + "&u=" + registrationData.username + "&t=" + timestamp + "&a=" + authToken);
+        URI uri = new URI("https",
+                /* userInfo= */ null, "post.audioscrobbler.com", -1,
+                "/",
+                String.format("hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s",
+                        clientId, clientVersion, registrationData.username,
+                        timestamp, authToken),
+                /* fragment= */ null);
+
+        String[] lines = executeGetRequest(uri);
 
         if (lines[0].startsWith("BANNED")) {
             LOG.warn("Failed to scrobble song '" + registrationData.title + "' at Last.fm. Client version is banned.");
@@ -236,7 +244,7 @@ public class AudioScrobblerService {
         return DigestUtils.md5Hex(DigestUtils.md5Hex(password) + timestamp);
     }
 
-    private String[] executeGetRequest(String url) throws IOException {
+    private String[] executeGetRequest(URI url) throws IOException {
         HttpGet method = new HttpGet(url);
         method.setConfig(requestConfig);
         return executeRequest(method);
