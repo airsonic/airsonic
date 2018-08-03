@@ -16,7 +16,7 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
-        <cxf.version>3.1.15</cxf.version>
+        <cxf.version>3.2.5</cxf.version>
     </properties>
 
     <repositories>
@@ -162,7 +162,7 @@
                 <plugin>
                     <groupId>org.jvnet.jaxb2.maven2</groupId>
                     <artifactId>maven-jaxb2-plugin</artifactId>
-                    <version>0.13.1</version>
+                    <version>0.14.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
@@ -229,12 +229,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>10</source>
+                    <target>10</target>
                     <encoding>ISO-8859-1</encoding>
                     <verbose>false</verbose>
-                    <compilerVersion>1.8</compilerVersion>
+                    <compilerVersion>10</compilerVersion>
                     <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>--add-modules</arg>
+                        <arg>java.xml.bind,java.xml.ws,java.activation</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
 
