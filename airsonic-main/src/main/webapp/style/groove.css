@@ -13,7 +13,8 @@
  * Main theme icon part of itunes icon pack created by Michael Flarup (http://pixelresort.com)
  */
 
-@import "default.css";
+@import "default-without-mediaelement.css";
+@import "mediaelement-dark.css";
 
 /* The primary background colour. */
 .bgcolor1, table.music tr:nth-of-type(even) {
