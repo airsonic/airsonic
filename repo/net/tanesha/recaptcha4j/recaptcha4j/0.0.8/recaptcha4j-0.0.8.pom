@@ -1,6 +1,0 @@
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>net.tanesha.recaptcha4j</groupId>
-    <artifactId>recaptcha4j</artifactId>
-    <version>0.0.8</version>
-</project>

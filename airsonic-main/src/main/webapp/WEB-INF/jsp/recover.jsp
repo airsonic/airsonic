@@ -21,12 +21,6 @@
                 <input name="submit" type="submit" value="<fmt:message key="recover.send"/>">
             </c:if>
 
-            <c:if test="${not empty model.captcha}">
-                <p style="padding-top: 1em">
-                    <c:out value="${model.captcha}" escapeXml="false"/>
-                </p>
-            </c:if>
-
             <c:if test="${not empty model.sentTo}">
                 <p style="padding-top: 1em"><fmt:message key="recover.success"><fmt:param value="${model.sentTo}"/></fmt:message></p>
             </c:if>
