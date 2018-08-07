@@ -21,6 +21,13 @@
                 <input name="submit" type="submit" value="<fmt:message key="recover.send"/>">
             </c:if>
 
+            <c:if test="${not empty model.recaptchaSiteKey and empty model.sentTo}">
+                <p style="padding-top: 1em">
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="${model.recaptchaSiteKey}"></div>
+                </p>
+            </c:if>
+
             <c:if test="${not empty model.sentTo}">
                 <p style="padding-top: 1em"><fmt:message key="recover.success"><fmt:param value="${model.sentTo}"/></fmt:message></p>
             </c:if>

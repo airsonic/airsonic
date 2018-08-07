@@ -69,6 +69,10 @@ public class RecoverController {
             }
         }
 
+        if (settingsService.isCaptchaEnabled()) {
+            map.put("recaptchaSiteKey", settingsService.getRecaptchaSiteKey());
+        }
+
         return new ModelAndView("recover", "model", map);
     }
 
