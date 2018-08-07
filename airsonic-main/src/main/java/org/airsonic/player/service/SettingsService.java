@@ -117,6 +117,10 @@ public class SettingsService {
     private static final String KEY_IGNORE_SYMLINKS = "IgnoreSymLinks";
     private static final String KEY_EXCLUDE_PATTERN_STRING = "ExcludePattern";
 
+    private static final String KEY_CAPTCHA_ENABLED = "CaptchaEnabled";
+    private static final String KEY_RECAPTCHA_SITE_KEY = "ReCaptchaSiteKey";
+    private static final String KEY_RECAPTCHA_SECRET_KEY = "ReCaptchaSecretKey";
+
     // Database Settings
     private static final String KEY_DATABASE_CONFIG_TYPE = "DatabaseConfigType";
     private static final String KEY_DATABASE_CONFIG_EMBED_DRIVER = "DatabaseConfigEmbedDriver";
@@ -192,6 +196,10 @@ public class SettingsService {
     private static final String DEFAULT_SMTP_USER = null;
     private static final String DEFAULT_SMTP_PASSWORD = null;
     private static final String DEFAULT_SMTP_FROM = "airsonic@airsonic.org";
+
+    private static final boolean DEFAULT_CAPTCHA_ENABLED = false;
+    private static final String DEFAULT_RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+    private static final String DEFAULT_RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
 
     private static final DataSourceConfigType DEFAULT_DATABASE_CONFIG_TYPE = DataSourceConfigType.LEGACY;
     private static final String DEFAULT_DATABASE_CONFIG_EMBED_DRIVER = null;
@@ -1309,6 +1317,30 @@ public class SettingsService {
 
     public void setSmtpFrom(String smtpFrom) {
         setString(KEY_SMTP_FROM, smtpFrom);
+    }
+
+    public boolean isCaptchaEnabled() {
+        return getBoolean(KEY_CAPTCHA_ENABLED, DEFAULT_CAPTCHA_ENABLED);
+    }
+
+    public void setCaptchaEnabled(boolean captchaEnabled) {
+        setBoolean(KEY_CAPTCHA_ENABLED, captchaEnabled);
+    }
+
+    public String getRecaptchaSiteKey() {
+        return getProperty(KEY_RECAPTCHA_SITE_KEY, DEFAULT_RECAPTCHA_SITE_KEY);
+    }
+
+    public void setRecaptchaSiteKey(String recaptchaSiteKey) {
+        setString(KEY_RECAPTCHA_SITE_KEY, recaptchaSiteKey);
+    }
+
+    public String getRecaptchaSecretKey() {
+        return getProperty(KEY_RECAPTCHA_SECRET_KEY, DEFAULT_RECAPTCHA_SECRET_KEY);
+    }
+
+    public void setRecaptchaSecretKey(String recaptchaSecretKey) {
+        setString(KEY_RECAPTCHA_SECRET_KEY, recaptchaSecretKey);
     }
 
     public DataSourceConfigType getDatabaseConfigType() {
