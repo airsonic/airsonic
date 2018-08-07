@@ -1,5 +1,6 @@
 package org.airsonic.player.controller;
 
+import de.triology.recaptchav2java.ReCaptcha;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
@@ -52,7 +53,18 @@ public class RecoverController {
             map.put("usernameOrEmail", usernameOrEmail);
             User user = getUserByUsernameOrEmail(usernameOrEmail);
 
-            if (user == null) {
+            boolean captchaOk;
+            if (settingsService.isCaptchaEnabled()) {
+                String recaptchaResponse = request.getParameter("g-recaptcha-response");
+                ReCaptcha captcha = new ReCaptcha(settingsService.getRecaptchaSecretKey());
+                captchaOk = recaptchaResponse != null && captcha.isValid(recaptchaResponse);
+            } else {
+                captchaOk = true;
+            }
+            
+            if (!captchaOk) {
+                map.put("error", "recover.error.invalidcaptcha");
+            } else if (user == null) {
                 map.put("error", "recover.error.usernotfound");
             } else if (user.getEmail() == null) {
                 map.put("error", "recover.error.noemail");
