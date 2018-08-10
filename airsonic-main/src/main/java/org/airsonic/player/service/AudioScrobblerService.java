@@ -175,7 +175,7 @@ public class AudioScrobblerService {
         String clientVersion = "0.1";
         long timestamp = System.currentTimeMillis() / 1000L;
         String authToken = calculateAuthenticationToken(registrationData.password, timestamp);
-        URI uri = new URI("https",
+        URI uri = new URI("http",
                 /* userInfo= */ null, "post.audioscrobbler.com", -1,
                 "/",
                 String.format("hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s",
