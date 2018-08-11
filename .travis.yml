@@ -9,8 +9,8 @@ install:
   - sudo apt-get -qq update
 before_script:
   - wget http://apache.mirrors.tds.net/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
-  - tar -xvf apache-maven-3.5.3-bin.tar.gz
-  - export M2_HOME=$PWD/apache-maven-3.5.3
-  - export PATH=$PWD/apache-maven-3.5.3/bin:$PATH
+  - tar -xvf apache-maven-3.5.4-bin.tar.gz
+  - export M2_HOME=$PWD/apache-maven-3.5.4
+  - export PATH=$PWD/apache-maven-3.5.4/bin:$PATH
 script:
   - mvn package install
