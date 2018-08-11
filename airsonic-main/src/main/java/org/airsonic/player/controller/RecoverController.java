@@ -1,8 +1,6 @@
 package org.airsonic.player.controller;
 
-import net.tanesha.recaptcha.ReCaptcha;
-import net.tanesha.recaptcha.ReCaptchaFactory;
-import net.tanesha.recaptcha.ReCaptchaResponse;
+import de.triology.recaptchav2java.ReCaptcha;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
@@ -49,19 +47,22 @@ public class RecoverController {
 
         Map<String, Object> map = new HashMap<String, Object>();
         String usernameOrEmail = StringUtils.trimToNull(request.getParameter("usernameOrEmail"));
-        ReCaptcha captcha = ReCaptchaFactory.newSecureReCaptcha("6LcZ3OMSAAAAANkKMdFdaNopWu9iS03V-nLOuoiH",
-                "6LcZ3OMSAAAAAPaFg89mEzs-Ft0fIu7wxfKtkwmQ", false);
-        boolean showCaptcha = true;
 
         if (usernameOrEmail != null) {
 
             map.put("usernameOrEmail", usernameOrEmail);
             User user = getUserByUsernameOrEmail(usernameOrEmail);
-            String challenge = request.getParameter("recaptcha_challenge_field");
-            String uresponse = request.getParameter("recaptcha_response_field");
-            ReCaptchaResponse captchaResponse = captcha.checkAnswer(request.getRemoteAddr(), challenge, uresponse);
 
-            if (!captchaResponse.isValid()) {
+            boolean captchaOk;
+            if (settingsService.isCaptchaEnabled()) {
+                String recaptchaResponse = request.getParameter("g-recaptcha-response");
+                ReCaptcha captcha = new ReCaptcha(settingsService.getRecaptchaSecretKey());
+                captchaOk = recaptchaResponse != null && captcha.isValid(recaptchaResponse);
+            } else {
+                captchaOk = true;
+            }
+            
+            if (!captchaOk) {
                 map.put("error", "recover.error.invalidcaptcha");
             } else if (user == null) {
                 map.put("error", "recover.error.usernotfound");
@@ -74,15 +75,14 @@ public class RecoverController {
                     user.setLdapAuthenticated(false);
                     user.setPassword(password);
                     securityService.updateUser(user);
-                    showCaptcha = false;
                 } else {
                     map.put("error", "recover.error.sendfailed");
                 }
             }
         }
 
-        if (showCaptcha) {
-            map.put("captcha", captcha.createRecaptchaHtml(null, null));
+        if (settingsService.isCaptchaEnabled()) {
+            map.put("recaptchaSiteKey", settingsService.getRecaptchaSiteKey());
         }
 
         return new ModelAndView("recover", "model", map);

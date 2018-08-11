@@ -61,6 +61,9 @@ public class AdvancedSettingsController {
         command.setSmtpUser(settingsService.getSmtpUser());
         command.setSmtpFrom(settingsService.getSmtpFrom());
 
+        command.setCaptchaEnabled(settingsService.isCaptchaEnabled());
+        command.setRecaptchaSiteKey(settingsService.getRecaptchaSiteKey());
+
         model.addAttribute("command", command);
         return "advancedSettings";
     }
@@ -96,6 +99,12 @@ public class AdvancedSettingsController {
 
         if (StringUtils.isNotEmpty(command.getSmtpPassword())) {
             settingsService.setSmtpPassword(command.getSmtpPassword());
+        }
+
+        settingsService.setCaptchaEnabled(command.isCaptchaEnabled());
+        settingsService.setRecaptchaSiteKey(command.getRecaptchaSiteKey());
+        if (StringUtils.isNotEmpty(command.getRecaptchaSecretKey())) {
+            settingsService.setRecaptchaSecretKey(command.getRecaptchaSecretKey());
         }
 
         settingsService.save();

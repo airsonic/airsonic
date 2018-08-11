@@ -324,15 +324,15 @@
         </dependency>
 
         <dependency>
-            <groupId>net.tanesha.recaptcha4j</groupId>
-            <artifactId>recaptcha4j</artifactId>
-            <version>0.0.8</version>
-        </dependency>
-
-        <dependency>
             <groupId>de.u-mass</groupId>
             <artifactId>lastfm-java</artifactId>
             <version>0.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.triology.recaptchav2-java</groupId>
+            <artifactId>recaptchav2-java</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- SONOS API / WSDL SUPPORT -->
