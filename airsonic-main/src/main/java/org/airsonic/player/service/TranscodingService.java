@@ -198,10 +198,12 @@ public class TranscodingService {
             maxBitRate = transcodeScheme.getMaxBitRate();
         }
 
+        boolean enableSeek = true;
         boolean hls = videoTranscodingSettings != null && videoTranscodingSettings.isHls();
         Transcoding transcoding = getTranscoding(mediaFile, player, preferredTargetFormat, hls);
         if (transcoding != null) {
             parameters.setTranscoding(transcoding);
+            enableSeek &= transcoding.isEnableSeek();
             if (maxBitRate == null) {
                 maxBitRate = mediaFile.isVideo() ? VideoPlayerController.DEFAULT_BIT_RATE : TranscodeScheme.MAX_192.getMaxBitRate();
             }
@@ -210,10 +212,12 @@ public class TranscodingService {
             Integer bitRate = mediaFile.getBitRate();
             if (supported && bitRate != null && bitRate > maxBitRate) {
                 parameters.setDownsample(true);
+                enableSeek &= settingsService.isDownsamplingEnableSeek();
             }
         }
 
         parameters.setMaxBitRate(maxBitRate);
+        parameters.setEnableSeek(enableSeek);
         return parameters;
     }
 
@@ -391,7 +395,7 @@ public class TranscodingService {
     private Transcoding getTranscoding(MediaFile mediaFile, Player player, String preferredTargetFormat, boolean hls) {
 
         if (hls) {
-            return new Transcoding(null, "hls", mediaFile.getFormat(), "ts", settingsService.getHlsCommand(), null, null, true);
+            return new Transcoding(null, "hls", mediaFile.getFormat(), "ts", settingsService.getHlsCommand(), null, null, true, true);
         }
 
         if (FORMAT_RAW.equals(preferredTargetFormat)) {
@@ -517,6 +521,7 @@ public class TranscodingService {
         private final VideoTranscodingSettings videoTranscodingSettings;
         private Integer maxBitRate;
         private Transcoding transcoding;
+        private boolean enableSeek;
 
         public Parameters(MediaFile mediaFile, VideoTranscodingSettings videoTranscodingSettings) {
             this.mediaFile = mediaFile;
@@ -557,6 +562,14 @@ public class TranscodingService {
 
         public VideoTranscodingSettings getVideoTranscodingSettings() {
             return videoTranscodingSettings;
+        }
+
+        public void setEnableSeek(boolean enableSeek) {
+            this.enableSeek = enableSeek;
+        }
+
+        public boolean isEnableSeek() {
+            return enableSeek;
         }
     }
 }

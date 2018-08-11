@@ -152,19 +152,20 @@ public class StreamController  {
                 playQueue.addFiles(true, file);
                 player.setPlayQueue(playQueue);
 
-                if (!file.isVideo()) {
+                TranscodingService.Parameters parameters = transcodingService.getParameters(file, player, maxBitRate, preferredTargetFormat, null);
+
+                if (parameters.isEnableSeek() && !file.isVideo()) {
                     response.setIntHeader("ETag", file.getId());
                     response.setHeader("Accept-Ranges", "bytes");
                 }
 
-                TranscodingService.Parameters parameters = transcodingService.getParameters(file, player, maxBitRate, preferredTargetFormat, null);
                 long fileLength = getFileLength(parameters);
                 boolean isConversion = parameters.isDownsample() || parameters.isTranscode();
                 boolean estimateContentLength = ServletRequestUtils.getBooleanParameter(request, "estimateContentLength", false);
                 boolean isHls = ServletRequestUtils.getBooleanParameter(request, "hls", false);
 
                 range = getRange(request, file);
-                if (range != null && !file.isVideo()) {
+                if (parameters.isEnableSeek() && range != null && !file.isVideo()) {
                     LOG.info("Got HTTP range: " + range);
                     response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                     Util.setContentLength(response, range.isClosed() ? range.size() : fileLength - range.getFirstBytePos());

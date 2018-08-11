@@ -30,7 +30,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
 
     @Test
     public void testCreateTranscoding() {
-        Transcoding transcoding = new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false);
+        Transcoding transcoding = new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false, true);
         transcodingDao.createTranscoding(transcoding);
 
         Transcoding newTranscoding = transcodingDao.getAllTranscodings().get(0);
@@ -39,7 +39,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
 
     @Test
     public void testUpdateTranscoding() {
-        Transcoding transcoding = new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false);
+        Transcoding transcoding = new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false, true);
         transcodingDao.createTranscoding(transcoding);
         transcoding = transcodingDao.getAllTranscodings().get(0);
 
@@ -60,10 +60,10 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
     public void testDeleteTranscoding() {
         assertEquals("Wrong number of transcodings.", 0, transcodingDao.getAllTranscodings().size());
 
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true, true));
         assertEquals("Wrong number of transcodings.", 1, transcodingDao.getAllTranscodings().size());
 
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true, true));
         assertEquals("Wrong number of transcodings.", 2, transcodingDao.getAllTranscodings().size());
 
         transcodingDao.deleteTranscoding(transcodingDao.getAllTranscodings().get(0).getId());
@@ -78,9 +78,9 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
         Player player = new Player();
         playerDao.createPlayer(player);
 
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false));
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false));
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false, true));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false, true));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", false, true));
         Transcoding transcodingA = transcodingDao.getAllTranscodings().get(0);
         Transcoding transcodingB = transcodingDao.getAllTranscodings().get(1);
         Transcoding transcodingC = transcodingDao.getAllTranscodings().get(2);
@@ -109,7 +109,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
         Player player = new Player();
         playerDao.createPlayer(player);
 
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true, true));
         Transcoding transcoding = transcodingDao.getAllTranscodings().get(0);
 
         transcodingDao.setTranscodingsForPlayer(player.getId(), new int[]{transcoding.getId()});
@@ -126,7 +126,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
         Player player = new Player();
         playerDao.createPlayer(player);
 
-        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true));
+        transcodingDao.createTranscoding(new Transcoding(null, "name", "sourceFormats", "targetFormat", "step1", "step2", "step3", true, true));
         Transcoding transcoding = transcodingDao.getAllTranscodings().get(0);
 
         transcodingDao.setTranscodingsForPlayer(player.getId(), new int[]{transcoding.getId()});

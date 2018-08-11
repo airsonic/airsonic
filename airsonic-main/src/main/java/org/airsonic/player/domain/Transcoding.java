@@ -40,6 +40,7 @@ public class Transcoding {
     private String step2;
     private String step3;
     private boolean defaultActive;
+    private boolean enableSeek;
 
     /**
      * Creates a new transcoding specification.
@@ -52,9 +53,10 @@ public class Transcoding {
      * @param step2           The command to execute in step 2.
      * @param step3           The command to execute in step 3.
      * @param defaultActive   Whether the transcoding should be automatically activated for all players.
+     * @param enableSeek      Whether seeking on streams should be enabled.
      */
     public Transcoding(Integer id, String name, String sourceFormats, String targetFormat, String step1,
-            String step2, String step3, boolean defaultActive) {
+            String step2, String step3, boolean defaultActive, boolean enableSeek) {
         this.id = id;
         this.name = name;
         this.sourceFormats = sourceFormats;
@@ -63,6 +65,7 @@ public class Transcoding {
         this.step2 = step2;
         this.step3 = step3;
         this.defaultActive = defaultActive;
+        this.enableSeek = enableSeek;
     }
 
     /**
@@ -188,6 +191,24 @@ public class Transcoding {
      */
     public void setStep3(String step3) {
         this.step3 = step3;
+    }
+
+    /**
+     * Returns whether seeking on streams should be enabled.
+     *
+     * @return Whether seeking on streams should be enabled.
+     */
+    public boolean isEnableSeek() {
+        return enableSeek;
+    }
+
+    /**
+     * Sets whether seeking on streams should be enabled.
+     *
+     * @param enableSeek Whether seeking on streams should be enabled.
+     */
+    public void setEnableSeek(boolean enableSeek) {
+        this.enableSeek = enableSeek;
     }
 
     /**
