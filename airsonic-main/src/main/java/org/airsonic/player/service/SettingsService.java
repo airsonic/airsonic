@@ -83,6 +83,7 @@ public class SettingsService {
     private static final String KEY_PODCAST_EPISODE_DOWNLOAD_COUNT = "PodcastEpisodeDownloadCount";
     private static final String KEY_DOWNLOAD_BITRATE_LIMIT = "DownloadBitrateLimit";
     private static final String KEY_UPLOAD_BITRATE_LIMIT = "UploadBitrateLimit";
+    private static final String KEY_ENABLE_SEEK = "EnableSeek1";
     private static final String KEY_DOWNSAMPLING_COMMAND = "DownsamplingCommand4";
     private static final String KEY_HLS_COMMAND = "HlsCommand3";
     private static final String KEY_JUKEBOX_COMMAND = "JukeboxCommand2";
@@ -165,6 +166,7 @@ public class SettingsService {
     private static final int DEFAULT_PODCAST_EPISODE_DOWNLOAD_COUNT = 1;
     private static final long DEFAULT_DOWNLOAD_BITRATE_LIMIT = 0;
     private static final long DEFAULT_UPLOAD_BITRATE_LIMIT = 0;
+    private static final boolean DEFAULT_ENABLE_SEEK = true;
     private static final String DEFAULT_DOWNSAMPLING_COMMAND = "ffmpeg -i %s -map 0:0 -b:a %bk -v 0 -f mp3 -";
     private static final String DEFAULT_HLS_COMMAND = "ffmpeg -ss %o -t %d -i %s -async 1 -b:v %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mpegts -c:v libx264 -preset superfast -c:a libmp3lame -threads 0 -";
     private static final String DEFAULT_JUKEBOX_COMMAND = "ffmpeg -ss %o -i %s -map 0:0 -v 0 -ar 44100 -ac 2 -f s16be -";
@@ -619,6 +621,14 @@ public class SettingsService {
      */
     public void setUploadBitrateLimit(long limit) {
         setLong(KEY_UPLOAD_BITRATE_LIMIT, limit);
+    }
+
+    public boolean isEnableSeek() {
+        return getBoolean(KEY_ENABLE_SEEK, DEFAULT_ENABLE_SEEK);
+    }
+
+    public void setEnableSeek(boolean enableSeek) {
+        setBoolean(KEY_ENABLE_SEEK, enableSeek);
     }
 
     public String getDownsamplingCommand() {

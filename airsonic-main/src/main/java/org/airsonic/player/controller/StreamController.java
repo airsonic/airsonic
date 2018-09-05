@@ -152,7 +152,7 @@ public class StreamController  {
                 playQueue.addFiles(true, file);
                 player.setPlayQueue(playQueue);
 
-                if (!file.isVideo()) {
+                if (settingsService.isEnableSeek() && !file.isVideo()) {
                     response.setIntHeader("ETag", file.getId());
                     response.setHeader("Accept-Ranges", "bytes");
                 }
@@ -164,7 +164,7 @@ public class StreamController  {
                 boolean isHls = ServletRequestUtils.getBooleanParameter(request, "hls", false);
 
                 range = getRange(request, file);
-                if (range != null && !file.isVideo()) {
+                if (settingsService.isEnableSeek() && range != null && !file.isVideo()) {
                     LOG.info("Got HTTP range: " + range);
                     response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                     Util.setContentLength(response, range.isClosed() ? range.size() : fileLength - range.getFirstBytePos());
