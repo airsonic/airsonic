@@ -12,6 +12,7 @@ exemptLabels:
   - enhancement
   - accepted
   - critical
+  - neverstale
 
 # Set to true to ignore issues in a project (defaults to false)
 exemptProjects: false
