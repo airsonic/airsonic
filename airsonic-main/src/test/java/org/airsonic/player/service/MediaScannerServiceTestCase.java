@@ -125,10 +125,10 @@ public class MediaScannerServiceTestCase {
 
 
         // Music Folder Music must have 3 children
-        List<MediaFile> listeMusicChildren = mediaFileDao.getChildrenOf(MusicFolderTestData.resolveMusicFolderPath());
+        List<MediaFile> listeMusicChildren = mediaFileDao.getChildrenOf(new File(MusicFolderTestData.resolveMusicFolderPath()).getPath());
         Assert.assertEquals(3, listeMusicChildren.size());
         // Music Folder Music2 must have 1 children
-        List<MediaFile> listeMusic2Children = mediaFileDao.getChildrenOf(MusicFolderTestData.resolveMusic2FolderPath());
+        List<MediaFile> listeMusic2Children = mediaFileDao.getChildrenOf(new File(MusicFolderTestData.resolveMusic2FolderPath()).getPath());
         Assert.assertEquals(1, listeMusic2Children.size());
 
         System.out.println("--- List of all artists ---");
