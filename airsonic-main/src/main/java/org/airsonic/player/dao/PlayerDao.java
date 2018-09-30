@@ -22,6 +22,7 @@ package org.airsonic.player.dao;
 import org.airsonic.player.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,9 @@ public class PlayerDao extends AbstractDao {
     private static final String INSERT_COLUMNS = "name, type, username, ip_address, auto_control_enabled, m3u_bom_enabled, " +
                                                  "last_seen, cover_art_scheme, transcode_scheme, dynamic_ip, technology, client_id, mixer";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
+
+    @Autowired
+    private PlayerDaoPlayQueueFactory playerDaoPlayQueueFactory;
 
     private PlayerRowMapper rowMapper = new PlayerRowMapper();
     private Map<Integer, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<Integer, PlayQueue>());
@@ -166,7 +170,7 @@ public class PlayerDao extends AbstractDao {
     private void addPlaylist(Player player) {
         PlayQueue playQueue = playlists.get(player.getId());
         if (playQueue == null) {
-            playQueue = new PlayQueue();
+            playQueue = playerDaoPlayQueueFactory.createPlayQueue();
             playlists.put(player.getId(), playQueue);
         }
         player.setPlayQueue(playQueue);
