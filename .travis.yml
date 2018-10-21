@@ -2,6 +2,8 @@ language: java
 sudo: required
 jdk:
   - oraclejdk8
+services:
+  - docker
 cache:
   directories:
     - $HOME/.m2
@@ -13,4 +15,4 @@ before_script:
   - export M2_HOME=$PWD/apache-maven-3.5.4
   - export PATH=$PWD/apache-maven-3.5.4/bin:$PATH
 script:
-  - mvn package install
+  - mvn verify -P integration-test
