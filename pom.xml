@@ -255,6 +255,8 @@
                                 <ignoredUsedUndeclaredDependency>org.springframework:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.springframework.security:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.springframework.boot:*</ignoredUsedUndeclaredDependency>
+                                <ignoredUsedUndeclaredDependency>org.assertj:*</ignoredUsedUndeclaredDependency>
+                                <ignoredUsedUndeclaredDependency>org.hamcrest:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat.embed:tomcat-embed-core*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat:tomcat-annotations-api:*</ignoredUsedUndeclaredDependency>
                             </ignoredUsedUndeclaredDependencies>

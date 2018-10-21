@@ -1274,7 +1274,7 @@ public class SubsonicRESTController {
             child.setSuffix(suffix);
             child.setContentType(StringUtil.getMimeType(suffix));
             child.setIsVideo(mediaFile.isVideo());
-            child.setPath(getRelativePath(mediaFile));
+            child.setPath(getRelativePath(mediaFile, settingsService));
 
             org.airsonic.player.domain.Bookmark bookmark = bookmarkCache.get(new BookmarkKey(username, mediaFile.getId()));
             if (bookmark != null) {
@@ -1329,7 +1329,7 @@ public class SubsonicRESTController {
         return null;
     }
 
-    private String getRelativePath(MediaFile musicFile) {
+    public static String getRelativePath(MediaFile musicFile, SettingsService settingsService) {
 
         String filePath = musicFile.getPath();
 

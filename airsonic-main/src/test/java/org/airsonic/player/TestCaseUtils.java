@@ -1,5 +1,6 @@
 package org.airsonic.player;
 
+import org.airsonic.player.controller.JAXBWriter;
 import org.airsonic.player.dao.DaoHelper;
 import org.airsonic.player.service.MediaScannerService;
 import org.apache.commons.io.FileUtils;
@@ -37,6 +38,13 @@ public class TestCaseUtils {
     return airsonicHomeDirForTest.getAbsolutePath();
   }
 
+  /**
+   *
+   * @return current REST api version.
+   */
+  public static String restApiVersion() {
+    return new JAXBWriter().getRestProtocolVersion();
+  }
 
   /**
    * Cleans the AIRSONIC_HOME directory used for tests.
@@ -106,6 +114,7 @@ public class TestCaseUtils {
    * Scans the music library   * @param mediaScannerService
    */
   public static void execScan(MediaScannerService mediaScannerService) {
+    // TODO create a synchronous scan
     mediaScannerService.scanLibrary();
 
     while (mediaScannerService.isScanning()) {
