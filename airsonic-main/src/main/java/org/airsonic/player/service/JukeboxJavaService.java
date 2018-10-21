@@ -329,9 +329,6 @@ public class JukeboxJavaService {
         this.statusService = statusService;
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-    }
-
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
