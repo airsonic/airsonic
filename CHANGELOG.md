@@ -66,7 +66,7 @@ Note that with this release, the jdbc-extra flavored war is now the default and 
   * New login page
   * Added additional war with builtin support for external databases
   * Improved playlist handling
-  * DLNA browsing improvments
+  * DLNA browsing improvements
   * Small fixes and improvements
 
 ## v6.2

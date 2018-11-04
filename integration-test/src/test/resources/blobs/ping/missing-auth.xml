@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<subsonic-response xmlns="http://subsonic.org/restapi" status="failed" version="1.15.0">
+    <error code="10" message="Required parameter is missing."/>
+</subsonic-response>

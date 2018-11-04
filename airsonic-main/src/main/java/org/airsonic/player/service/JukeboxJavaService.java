@@ -1,9 +1,9 @@
 package org.airsonic.player.service;
 
-import com.github.biconou.AudioPlayer.JavaPlayer;
-import com.github.biconou.AudioPlayer.api.*;
+import com.github.biconou.AudioPlayer.api.PlayList;
+import com.github.biconou.AudioPlayer.api.PlayerListener;
 import org.airsonic.player.domain.*;
-import org.airsonic.player.domain.Player;
+import org.airsonic.player.service.jukebox.JavaPlayerFactory;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -19,23 +19,25 @@ import java.util.Map;
 
 
 /**
- * @author R??mi Cocula
+ * @author Rémi Cocula
  */
 @Service
 public class JukeboxJavaService {
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(JukeboxJavaService.class);
 
+    private static final float DEFAULT_GAIN = 0.75f;
+
     @Autowired
     private AudioScrobblerService audioScrobblerService;
     @Autowired
     private StatusService statusService;
     @Autowired
-    private SettingsService settingsService;
-    @Autowired
     private SecurityService securityService;
     @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
+    private JavaPlayerFactory javaPlayerFactory;
 
 
     private TransferStatus status;
@@ -45,31 +47,32 @@ public class JukeboxJavaService {
 
     /**
      * Finds the corresponding active audio player for a given airsonic player.
+     * If no player exists we create one.
      * The JukeboxJavaService references all active audio players in a map indexed by airsonic player id.
      *
      * @param airsonicPlayer a given airsonic player.
-     * @return the corresponding active audio player of null if none exists.
+     * @return the corresponding active audio player.
      */
     private com.github.biconou.AudioPlayer.api.Player retrieveAudioPlayerForAirsonicPlayer(Player airsonicPlayer) {
         com.github.biconou.AudioPlayer.api.Player foundPlayer = activeAudioPlayers.get(airsonicPlayer.getId());
         if (foundPlayer == null) {
             synchronized (activeAudioPlayers) {
-                foundPlayer = initAudioPlayer(airsonicPlayer);
-                if (foundPlayer == null) {
+                com.github.biconou.AudioPlayer.api.Player newPlayer = initAudioPlayer(airsonicPlayer);
+                if (newPlayer == null) {
                     throw new RuntimeException("Did not initialized a player");
-                } else {
-                    activeAudioPlayers.put(airsonicPlayer.getId(), foundPlayer);
-                    String mixer = airsonicPlayer.getJavaJukeboxMixer();
-                    if (StringUtils.isBlank(mixer)) {
-                        mixer = DEFAULT_MIXER_ENTRY_KEY;
-                    }
-                    List<com.github.biconou.AudioPlayer.api.Player> playersForMixer = activeAudioPlayersPerMixer.get(mixer);
-                    if (playersForMixer == null) {
-                        playersForMixer = new ArrayList<>();
-                        activeAudioPlayersPerMixer.put(mixer, playersForMixer);
-                    }
-                    playersForMixer.add(foundPlayer);
                 }
+                activeAudioPlayers.put(airsonicPlayer.getId(), newPlayer);
+                String mixer = airsonicPlayer.getJavaJukeboxMixer();
+                if (StringUtils.isBlank(mixer)) {
+                    mixer = DEFAULT_MIXER_ENTRY_KEY;
+                }
+                List<com.github.biconou.AudioPlayer.api.Player> playersForMixer = activeAudioPlayersPerMixer.get(mixer);
+                if (playersForMixer == null) {
+                    playersForMixer = new ArrayList<>();
+                    activeAudioPlayersPerMixer.put(mixer, playersForMixer);
+                }
+                playersForMixer.add(newPlayer);
+                foundPlayer = newPlayer;
             }
         }
         return foundPlayer;
@@ -88,11 +91,12 @@ public class JukeboxJavaService {
 
         if (StringUtils.isNotBlank(airsonicPlayer.getJavaJukeboxMixer())) {
             log.info("use mixer : {}", airsonicPlayer.getJavaJukeboxMixer());
-            audioPlayer = new JavaPlayer(airsonicPlayer.getJavaJukeboxMixer());
+            audioPlayer = javaPlayerFactory.createJavaPlayer(airsonicPlayer.getJavaJukeboxMixer());
         } else {
             log.info("use default mixer");
-            audioPlayer = new JavaPlayer();
+            audioPlayer = javaPlayerFactory.createJavaPlayer();
         }
+        audioPlayer.setGain(DEFAULT_GAIN);
         if (audioPlayer != null) {
             audioPlayer.registerListener(new PlayerListener() {
                 @Override
@@ -159,10 +163,7 @@ public class JukeboxJavaService {
             throw new RuntimeException("The player " + airsonicPlayer.getName() + " is not a java jukebox player");
         }
         com.github.biconou.AudioPlayer.api.Player audioPlayer = retrieveAudioPlayerForAirsonicPlayer(airsonicPlayer);
-        if (audioPlayer != null) {
-            return audioPlayer.getGain();
-        }
-        return 0.5f;
+        return audioPlayer.getGain();
     }
 
     public void setGain(final Player airsonicPlayer, final float gain) {
@@ -271,20 +272,8 @@ public class JukeboxJavaService {
         }
     }
 
-    public void start(Player airsonicPlayer) throws Exception {
-        log.debug("begin start jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
-
-        com.github.biconou.AudioPlayer.api.Player audioPlayer = retrieveAudioPlayerForAirsonicPlayer(airsonicPlayer);
-
-        // Control user authorizations
-        User user = securityService.getUserByName(airsonicPlayer.getUsername());
-        if (!user.isJukeboxRole()) {
-            log.warn("{} is not authorized for jukebox playback.", user.getUsername());
-            return;
-        }
-
-        log.debug("PlayQueue.Status is {}", airsonicPlayer.getPlayQueue().getStatus());
-        audioPlayer.play();
+    public void start(Player airsonicPlayer) {
+        play(airsonicPlayer);
     }
 
     public void stop(Player airsonicPlayer) throws Exception {
@@ -332,17 +321,12 @@ public class JukeboxJavaService {
         }
     }
 
-
     public void setAudioScrobblerService(AudioScrobblerService audioScrobblerService) {
         this.audioScrobblerService = audioScrobblerService;
     }
 
     public void setStatusService(StatusService statusService) {
         this.statusService = statusService;
-    }
-
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
     }
 
     public void setSecurityService(SecurityService securityService) {

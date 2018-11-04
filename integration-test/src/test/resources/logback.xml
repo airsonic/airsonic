@@ -1,0 +1,14 @@
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger level="trace" name="org.airsonic.test.cucumber_hooks.docker.DockerHook" />
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>

@@ -16,6 +16,7 @@ RUN apk --no-cache add \
     ttf-dejavu \
     ca-certificates \
     tini \
+    curl \
     openjdk8-jre
 
 COPY run.sh /usr/local/bin/run.sh
@@ -28,6 +29,6 @@ EXPOSE $AIRSONIC_PORT
 
 VOLUME $AIRSONIC_DIR/data $AIRSONIC_DIR/music $AIRSONIC_DIR/playlists $AIRSONIC_DIR/podcasts
 
-HEALTHCHECK CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"/rest/ping -O /dev/null || exit 1
+HEALTHCHECK --interval=15s --timeout=3s CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"rest/ping -O /dev/null || exit 1
 
 ENTRYPOINT ["tini", "--", "run.sh"]
