@@ -58,8 +58,8 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
         }
     }
 
-    protected static final String CLIENT_NAME = "airsonic";
-    protected static final String JUKEBOX_PLAYER_NAME = CLIENT_NAME + "-jukebox";
+    static final String CLIENT_NAME = "airsonic";
+    static final String JUKEBOX_PLAYER_NAME = CLIENT_NAME + "-jukebox";
     private static final String EXPECTED_FORMAT = "json";
     private static String AIRSONIC_API_VERSION;
 
