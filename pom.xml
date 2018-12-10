@@ -213,7 +213,9 @@
                     <inherited>true</inherited>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
-                        <suppressionFile>${project.basedir}/cve-suppressed.xml</suppressionFile>
+                        <suppressionFiles>
+                            <suppressionFile>${project.basedir}/cve-suppressed.xml</suppressionFile>
+                        </suppressionFiles>
                     </configuration>
                     <executions>
                         <execution>
