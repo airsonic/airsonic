@@ -19,12 +19,12 @@
  */
 package org.airsonic.player.service;
 
-import net.sf.ehcache.Ehcache;
 import org.airsonic.player.dao.UserDao;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.util.FileUtil;
+import org.ehcache.core.Ehcache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +58,7 @@ public class SecurityService implements UserDetailsService {
     @Autowired
     private SettingsService settingsService;
     @Autowired
-    private Ehcache userCache;
+    private Ehcache<String, User> userCache;
 
     /**
      * Locates the user based on the username.
@@ -344,7 +344,7 @@ public class SecurityService implements UserDetailsService {
         this.userDao = userDao;
     }
 
-    public void setUserCache(Ehcache userCache) {
+    public void setUserCache(Ehcache<String, User> userCache) {
         this.userCache = userCache;
     }
 }

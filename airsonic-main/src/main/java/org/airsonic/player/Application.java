@@ -1,6 +1,5 @@
 package org.airsonic.player;
 
-import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
@@ -24,7 +23,6 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletContextListener;
 
 import java.lang.reflect.Method;
 
@@ -59,11 +57,6 @@ public class Application extends SpringBootServletInitializer implements Embedde
     @Bean
     public ServletRegistrationBean cxfServletBean() {
         return new ServletRegistrationBean(new org.apache.cxf.transport.servlet.CXFServlet(), "/ws/*");
-    }
-
-    @Bean
-    public ServletContextListener ehCacheShutdownListener() {
-        return new ShutdownListener();
     }
 
     @Bean

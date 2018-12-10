@@ -19,16 +19,19 @@
  */
 package org.airsonic.player.cache;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.config.Configuration;
-import net.sf.ehcache.config.ConfigurationFactory;
 import org.airsonic.player.service.SettingsService;
+import org.ehcache.CacheManager;
+import org.ehcache.config.Configuration;
+import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.Ehcache;
+import org.ehcache.xml.XmlConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  * Initializes Ehcache and creates caches.
@@ -36,22 +39,30 @@ import java.io.File;
  * @author Sindre Mehus
  * @version $Id$
  */
-public class CacheFactory implements InitializingBean {
+public class CacheFactory implements InitializingBean, DisposableBean {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheFactory.class);
     private CacheManager cacheManager;
 
     public void afterPropertiesSet() throws Exception {
-        Configuration configuration = ConfigurationFactory.parseConfiguration();
+        URL myUrl = getClass().getResource("ehcache.xml"); 
+        Configuration xmlConfig = new XmlConfiguration(myUrl); 
 
         // Override configuration to make sure cache is stored in Airsonic home dir.
         File cacheDir = new File(SettingsService.getAirsonicHome(), "cache");
-        configuration.getDiskStoreConfiguration().setPath(cacheDir.getPath());
+        //configuration.getDiskStoreConfiguration().setPath(cacheDir.getPath());
 
-        cacheManager = CacheManager.create(configuration);
+        cacheManager = CacheManagerBuilder.newCacheManager(xmlConfig);
     }
 
     public Ehcache getCache(String name) {
-        return cacheManager.getCache(name);
+        return (Ehcache) cacheManager.getCache(name, Object.class, Object.class);
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (cacheManager != null) {
+            cacheManager.close();
+        }
     }
 }

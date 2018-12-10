@@ -19,8 +19,6 @@
  */
 package org.airsonic.player.service;
 
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
@@ -31,6 +29,7 @@ import org.airsonic.player.service.metadata.MetaDataParserFactory;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.ehcache.core.Ehcache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class MediaFileService {
     private static final Logger LOG = LoggerFactory.getLogger(MediaFileService.class);
 
     @Autowired
-    private Ehcache mediaFileMemoryCache;
+    private Ehcache<File, MediaFile> mediaFileMemoryCache;
     @Autowired
     private SecurityService securityService;
     @Autowired
@@ -578,7 +577,7 @@ public class MediaFileService {
 
     private void putInMemoryCache(File file, MediaFile mediaFile) {
         if (memoryCacheEnabled) {
-            mediaFileMemoryCache.put(new Element(file, mediaFile));
+            mediaFileMemoryCache.put(file, mediaFile);
         }
     }
 
@@ -586,14 +585,13 @@ public class MediaFileService {
         if (!memoryCacheEnabled) {
             return null;
         }
-        Element element = mediaFileMemoryCache.get(file);
-        return element == null ? null : (MediaFile) element.getObjectValue();
+        return mediaFileMemoryCache.get(file);
     }
 
     public void setMemoryCacheEnabled(boolean memoryCacheEnabled) {
         this.memoryCacheEnabled = memoryCacheEnabled;
         if (!memoryCacheEnabled) {
-            mediaFileMemoryCache.removeAll();
+            mediaFileMemoryCache.clear();
         }
     }
 
@@ -641,7 +639,7 @@ public class MediaFileService {
         this.settingsService = settingsService;
     }
 
-    public void setMediaFileMemoryCache(Ehcache mediaFileMemoryCache) {
+    public void setMediaFileMemoryCache(Ehcache<File, MediaFile> mediaFileMemoryCache) {
         this.mediaFileMemoryCache = mediaFileMemoryCache;
     }
 
@@ -720,7 +718,7 @@ public class MediaFileService {
     }
 
     public void clearMemoryCache() {
-        mediaFileMemoryCache.removeAll();
+        mediaFileMemoryCache.clear();
     }
 
     public void setAlbumDao(AlbumDao albumDao) {
