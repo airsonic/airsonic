@@ -9,7 +9,7 @@
 <link rel="icon" type="image/png" sizes="32x32" href="<c:url value="/icons/favicon-32x32.png"/>"/>
 <link rel="icon" type="image/png" sizes="16x16" href="<c:url value="/icons/favicon-16x16.png"/>"/>
 <link rel="manifest" href="<c:url value="/icons/site.webmanifest"/>"/>
-<link rel="mask-icon" href="<c:url value="/icons/safari-pinned-tab.svg"/>" color="#2f7bd9"/>"/>
+<link rel="mask-icon" href="<c:url value="/icons/safari-pinned-tab.svg"/>" color="#2f7bd9"/>
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="theme-color" content="#ffffff">
 <!-- Included before airsonic stylesheet to allow overriding -->
