@@ -8,10 +8,14 @@
 
     <bean id="userCache" factory-bean="cacheFactory" factory-method="getCache">
         <constructor-arg value="userCache"/>
+        <constructor-arg type="java.lang.Class" value="java.lang.String"/>
+        <constructor-arg type="java.lang.Class" value="org.airsonic.player.domain.User"/>
     </bean>
 
     <bean id="mediaFileMemoryCache" factory-bean="cacheFactory" factory-method="getCache">
         <constructor-arg value="mediaFileMemoryCache"/>
+        <constructor-arg type="java.lang.Class" value="java.io.File"/>
+        <constructor-arg type="java.lang.Class" value="org.airsonic.player.domain.MediaFile"/>
     </bean>
 
 </beans>

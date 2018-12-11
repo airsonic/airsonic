@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import java.util.Date;
 import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**
@@ -115,15 +116,13 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         User user = new User("sindre", "secret", null);
         userDao.createUser(user);
 
-        User newUser = userDao.getUserByName("sindre", true);
-        assertNotNull("Error in getUserByName().", newUser);
-        assertUserEquals(user, newUser);
+        assertThat(userDao.getUserByName("sindre", true)).isNotNull().isEqualToComparingFieldByField(user);
 
-        assertNull("Error in getUserByName().", userDao.getUserByName("sindre2", true));
-        assertNull("Error in getUserByName().", userDao.getUserByName("sindre ", true));
-        assertNull("Error in getUserByName().", userDao.getUserByName("bente", true));
-        assertNull("Error in getUserByName().", userDao.getUserByName("", true));
-        assertNull("Error in getUserByName().", userDao.getUserByName(null, true));
+        assertThat(userDao.getUserByName("sindre2", true)).isNull();
+        assertThat(userDao.getUserByName("Sindre ", true)).isNull();
+        assertThat(userDao.getUserByName("bente", true)).isNull();
+        assertThat(userDao.getUserByName("", true)).isNull();
+        assertThat(userDao.getUserByName(null, true)).isNull();
     }
 
     @Test

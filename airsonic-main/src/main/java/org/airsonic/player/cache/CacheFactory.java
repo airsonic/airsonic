@@ -19,7 +19,8 @@
  */
 package org.airsonic.player.cache;
 
-import org.airsonic.player.service.SettingsService;
+import com.google.common.io.Resources;
+
 import org.ehcache.CacheManager;
 import org.ehcache.config.Configuration;
 import org.ehcache.config.builders.CacheManagerBuilder;
@@ -30,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.io.File;
 import java.net.URL;
 
 /**
@@ -41,28 +41,34 @@ import java.net.URL;
  */
 public class CacheFactory implements InitializingBean, DisposableBean {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CacheFactory.class);
+    private static final Logger LOG= LoggerFactory.getLogger(CacheFactory.class);
     private CacheManager cacheManager;
 
+    @Override
     public void afterPropertiesSet() throws Exception {
-        URL myUrl = getClass().getResource("ehcache.xml"); 
-        Configuration xmlConfig = new XmlConfiguration(myUrl); 
+        URL myUrl = Resources.getResource("ehcache.xml");
+        Configuration xmlConfig = new XmlConfiguration(myUrl);
 
         // Override configuration to make sure cache is stored in Airsonic home dir.
-        File cacheDir = new File(SettingsService.getAirsonicHome(), "cache");
+        //File cacheDir = new File(SettingsService.getAirsonicHome(), "cache");
         //configuration.getDiskStoreConfiguration().setPath(cacheDir.getPath());
 
         cacheManager = CacheManagerBuilder.newCacheManager(xmlConfig);
+        cacheManager.init();
     }
 
-    public Ehcache getCache(String name) {
-        return (Ehcache) cacheManager.getCache(name, Object.class, Object.class);
+    public <K, V> Ehcache<K, V> getCache(String name, Class<K> keyType, Class<V> valueType) {
+        return (Ehcache<K, V>) cacheManager.getCache(name, keyType, valueType);
     }
 
     @Override
     public void destroy() throws Exception {
         if (cacheManager != null) {
-            cacheManager.close();
+            try {
+                cacheManager.close();
+            } catch (Exception e) {
+                //ignore
+            }
         }
     }
 }
