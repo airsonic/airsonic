@@ -38,6 +38,7 @@ import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -86,7 +87,7 @@ public class SearchService {
     private static final String FIELD_FOLDER_ID = "folderId";
 
     private static final String LUCENE_DIR = "lucene7";
-    
+
     private static Analyzer analyzer;
     private static Analyzer queryAnalyzer;
     static {
@@ -97,7 +98,7 @@ public class SearchService {
                     .addTokenFilter(StopFilterFactory.class, "ignoreCase", "true")
                     .addTokenFilter(ASCIIFoldingFilterFactory.class, "preserveOriginal", "false")
                     .build();
-            
+
             queryAnalyzer = CustomAnalyzer.builder()
                     .withTokenizer(StandardTokenizerFactory.class)
                     .addTokenFilter(LowerCaseFilterFactory.class)
@@ -199,13 +200,13 @@ public class SearchService {
         try {
             reader = createIndexReader(indexType);
             IndexSearcher searcher = new IndexSearcher(reader);
-            
+
             MultiFieldQueryParser queryParser = new MultiFieldQueryParser(indexType.getFields(), queryAnalyzer, indexType.getBoosts());
 
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder()
                     .add(queryParser.parse(criteria.getQuery()), BooleanClause.Occur.MUST);
 
-            List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+            List<SpanTermQuery> musicFolderQueries = new ArrayList<>();
             for (MusicFolder musicFolder : musicFolders) {
                 if (indexType == ALBUM_ID3 || indexType == ARTIST_ID3) {
                     byte[] bytes = new byte[Integer.BYTES];
@@ -260,7 +261,7 @@ public class SearchService {
      * @return List of random songs.
      */
     public List<MediaFile> getRandomSongs(RandomSearchCriteria criteria) {
-        List<MediaFile> result = new ArrayList<MediaFile>();
+        List<MediaFile> result = new ArrayList<>();
 
         IndexReader reader = null;
         try {
@@ -273,13 +274,13 @@ public class SearchService {
                 String genre = normalizeGenre(criteria.getGenre());
                 query.add(new TermQuery(new Term(FIELD_GENRE, genre)), BooleanClause.Occur.MUST);
             }
-            
+
             if (criteria.getFromYear() != null || criteria.getToYear() != null) {
                 Query rangeQuery = IntPoint.newRangeQuery(FIELD_YEAR, criteria.getFromYear(), criteria.getToYear());
                 query.add(rangeQuery, BooleanClause.Occur.MUST);
             }
 
-            List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+            List<SpanTermQuery> musicFolderQueries = new ArrayList<>();
             for (MusicFolder musicFolder : criteria.getMusicFolders()) {
                 musicFolderQueries.add(new SpanTermQuery(new Term(FIELD_FOLDER, musicFolder.getPath().getPath())));
             }
@@ -320,14 +321,14 @@ public class SearchService {
      * @return List of random albums.
      */
     public List<MediaFile> getRandomAlbums(int count, List<MusicFolder> musicFolders) {
-        List<MediaFile> result = new ArrayList<MediaFile>();
+        List<MediaFile> result = new ArrayList<>();
 
         IndexReader reader = null;
         try {
             reader = createIndexReader(ALBUM);
             IndexSearcher searcher = new IndexSearcher(reader);
 
-            List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+            List<SpanTermQuery> musicFolderQueries = new ArrayList<>();
             for (MusicFolder musicFolder : musicFolders) {
                 musicFolderQueries.add(new SpanTermQuery(new Term(FIELD_FOLDER, musicFolder.getPath().getPath())));
             }
@@ -364,14 +365,14 @@ public class SearchService {
      * @return List of random albums.
      */
     public List<Album> getRandomAlbumsId3(int count, List<MusicFolder> musicFolders) {
-        List<Album> result = new ArrayList<Album>();
+        List<Album> result = new ArrayList<>();
 
         IndexReader reader = null;
         try {
             reader = createIndexReader(ALBUM_ID3);
             IndexSearcher searcher = new IndexSearcher(reader);
 
-            List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+            List<SpanTermQuery> musicFolderQueries = new ArrayList<>();
             for (MusicFolder musicFolder : musicFolders) {
                 byte[] bytes = new byte[Integer.BYTES];
                 NumericUtils.intToSortableBytes(musicFolder.getId(), bytes, 0);
@@ -415,7 +416,7 @@ public class SearchService {
             indexType = IndexType.SONG;
             field = FIELD_TITLE;
         }
-        ParamSearchResult<T> result = new ParamSearchResult<T>();
+        ParamSearchResult<T> result = new ParamSearchResult<>();
         // we only support album, artist, and song for now
         if (indexType == null || field == null) {
             return result;
@@ -510,10 +511,13 @@ public class SearchService {
                 Document doc = new Document();
                 doc.add(new StoredField(FIELD_ID, mediaFile.getId()));
                 doc.add(new IntPoint(FIELD_ID, mediaFile.getId()));
-                
-                FieldType omitNormsType = new FieldType();
+
+                FieldType indexableType = new FieldType();
+                indexableType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+
+                FieldType omitNormsType = new FieldType(indexableType);
                 omitNormsType.setOmitNorms(true);
-                
+
                 doc.add(new Field(FIELD_MEDIA_TYPE, mediaFile.getMediaType().name(), omitNormsType));
 
                 if (mediaFile.getTitle() != null) {
@@ -523,7 +527,7 @@ public class SearchService {
                     doc.add(new StoredField(FIELD_ARTIST, mediaFile.getArtist()));
                 }
                 if (mediaFile.getGenre() != null) {
-                    doc.add(new Field(FIELD_GENRE, normalizeGenre(mediaFile.getGenre()), new FieldType()));
+                    doc.add(new Field(FIELD_GENRE, normalizeGenre(mediaFile.getGenre()), indexableType));
                 }
                 if (mediaFile.getYear() != null) {
                     doc.add(new IntPoint(FIELD_YEAR, mediaFile.getYear()));
@@ -542,10 +546,11 @@ public class SearchService {
                 Document doc = new Document();
                 doc.add(new StoredField(FIELD_ID, mediaFile.getId()));
                 doc.add(new IntPoint(FIELD_ID, mediaFile.getId()));
-                
+
                 FieldType omitNormsType = new FieldType();
                 omitNormsType.setOmitNorms(true);
-                
+                omitNormsType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+
                 if (mediaFile.getArtist() != null) {
                     doc.add(new StoredField(FIELD_ARTIST, mediaFile.getArtist()));
                 }
@@ -587,10 +592,11 @@ public class SearchService {
                 Document doc = new Document();
                 doc.add(new StoredField(FIELD_ID, mediaFile.getId()));
                 doc.add(new IntPoint(FIELD_ID, mediaFile.getId()));
-                
+
                 FieldType omitNormsType = new FieldType();
                 omitNormsType.setOmitNorms(true);
-                
+                omitNormsType.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);
+
                 if (mediaFile.getArtist() != null) {
                     doc.add(new StoredField(FIELD_ARTIST, mediaFile.getArtist()));
                 }
@@ -621,7 +627,7 @@ public class SearchService {
 
         private IndexType(String[] fields, String boostedField) {
             this.fields = fields;
-            boosts = new HashMap<String, Float>();
+            boosts = new HashMap<>();
             if (boostedField != null) {
                 boosts.put(boostedField, 2.0F);
             }
