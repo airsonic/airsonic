@@ -7,6 +7,7 @@ import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.StringUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -164,23 +165,26 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
         return result -> {
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].id").value(mediaFile.getId()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].parent").value(parent.getId()).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isDir").value(false).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].title").value("01 - Gaspard de la Nuit - i. Ondine").match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].album").value("Complete Piano Works").match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].artist").value("_DIR_ Ravel").match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isDir").value(mediaFile.isDirectory()).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].title").value(mediaFile.getTitle()).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].album").value(mediaFile.getAlbumName()).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].artist").value(mediaFile.getArtist()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].coverArt").value(parent.getId()).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].size").value(45138).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].contentType").value("audio/mpeg").match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].suffix").value("mp3").match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].duration").value(2).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].bitRate").value(128).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value("_DIR_ Ravel/_DIR_ Ravel - Complete Piano Works/01 - Gaspard de la Nuit - i. Ondine.mp3").match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isVideo").value(false).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].size").value(mediaFile.getFileSize()).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].contentType").value(StringUtil.getMimeType(mediaFile.getFormat())).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].suffix").value(mediaFile.getFormat()).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].duration").value(mediaFile.getDurationSeconds()).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].bitRate").value(mediaFile.getBitRate()).match(result);
+
+            // The path is absolute, we remove the folder source with replace the folder with nothing
+            // and the "/" they stay with substring(1), must be a method in mediaFile for method to obtain the relative path is same every where.
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value(mediaFile.getPath().replace(mediaFile.getFolder(), "").substring(1)).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isVideo").value(mediaFile.isVideo()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].playCount").isNumber().match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].created").value(convertDateToString(mediaFile.getCreated())).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].albumId").value(album.getId()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].artistId").value(artist.getId()).match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].type").value("music").match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].type").value(mediaFile.getMediaType().name().toLowerCase()).match(result);
         };
     }
 
