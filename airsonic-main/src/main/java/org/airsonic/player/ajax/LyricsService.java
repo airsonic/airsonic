@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketException;
 
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
+
 /**
  * Provides AJAX-enabled services for retrieving song lyrics from chartlyrics.com.
  * <p/>
@@ -80,7 +82,7 @@ public class LyricsService {
     }
 
     private LyricsInfo parseSearchResult(String xml) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = createSAXBuilder();
         Document document = builder.build(new StringReader(xml));
 
         Element root = document.getRootElement();
