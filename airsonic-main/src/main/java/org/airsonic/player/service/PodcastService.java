@@ -45,7 +45,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +60,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
+
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 
 /**
  * Provides services for Podcast reception.
@@ -317,7 +318,7 @@ public class PodcastService {
             try (CloseableHttpResponse response = client.execute(method)) {
                 in = response.getEntity().getContent();
 
-                Document document = new SAXBuilder().build(in);
+                Document document = createSAXBuilder().build(in);
                 Element channelElement = document.getRootElement().getChild("channel");
 
                 channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
