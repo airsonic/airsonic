@@ -20,7 +20,6 @@
 package org.airsonic.player.service.sonos;
 
 import org.airsonic.player.util.Pair;
-import org.airsonic.player.util.StringUtil;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -31,6 +30,9 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +48,17 @@ public class SonosServiceRegistration {
 
     private static final Logger LOG = LoggerFactory.getLogger(SonosServiceRegistration.class);
 
+    /**
+     * Enable or disable Sonos registration
+     *
+     * @param airsonicBaseUrl must be the ip address, not the name
+     * @param sonosControllerIp must be a ip too
+     * @param enabled true for enable or false to disable
+     * @param sonosServiceName the name of service you will see on Sonos service list
+     * @param sonosServiceId the ID, the free id is : 240-253 or 255
+     * @throws IOException if some io problem
+     */
+
     public void setEnabled(String airsonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName, int sonosServiceId) throws IOException {
         String localUrl = airsonicBaseUrl + "ws/Sonos";
         String controllerUrl = String.format("http://%s:1400/customsd", sonosControllerIp);
@@ -53,8 +66,15 @@ public class SonosServiceRegistration {
         LOG.info((enabled ? "Enabling" : "Disabling") + " Sonos music service, using Sonos controller IP " + sonosControllerIp +
                  ", SID " + sonosServiceId + ", and Airsonic URL " + localUrl);
 
-        List<Pair<String, String>> params = new ArrayList<Pair<String, String>>();
+        List<Pair<String, String>> params = new ArrayList<>();
         params.add(Pair.create("sid", String.valueOf(sonosServiceId)));
+
+        // Need the csrf token on each request
+        String csrfToken = retrieveCsrfToken(controllerUrl);
+        if(csrfToken != null){
+            params.add(Pair.create("csrfToken", csrfToken));
+        }
+
         if (enabled) {
             params.add(Pair.create("name", sonosServiceName));
             params.add(Pair.create("uri", localUrl));
@@ -71,6 +91,10 @@ public class SonosServiceRegistration {
             params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
             params.add(Pair.create("stringsVersion", "5"));
             params.add(Pair.create("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
+        } else {
+
+            // For disable it need name with empty value
+            params.add(Pair.create("name", null));
         }
 
         String result = execute(controllerUrl, params);
@@ -78,28 +102,45 @@ public class SonosServiceRegistration {
     }
 
     private String execute(String url, List<Pair<String, String>> parameters) throws IOException {
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        List<NameValuePair> params = new ArrayList<>();
         for (Pair<String, String> parameter : parameters) {
             params.add(new BasicNameValuePair(parameter.getFirst(), parameter.getSecond()));
         }
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(20 * 1000) // 20 seconds
-                .setSocketTimeout(20 * 1000) // 20 seconds
-                .build();
+
         HttpPost request = new HttpPost(url);
-        request.setConfig(requestConfig);
-        request.setEntity(new UrlEncodedFormEntity(params, StringUtil.ENCODING_UTF8));
+        request.setConfig(getDefaultRequestConfig());
+
+        // Don't use the UTF8 encoding, is nice but the sonos controller didn't like (it's american!).
+        request.setEntity(new UrlEncodedFormEntity(params));
 
         return executeRequest(request);
     }
 
     private String executeRequest(HttpUriRequest request) throws IOException {
 
-
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             ResponseHandler<String> responseHandler = new BasicResponseHandler();
             return client.execute(request, responseHandler);
 
         }
+    }
+
+    private String retrieveCsrfToken(String controllerUrl) throws IOException {
+        Document doc = Jsoup.connect(controllerUrl).get();
+        Element element = doc.selectFirst("input[name='csrfToken']");
+
+        if(element == null ){
+            return null;
+        } else {
+            return element.attributes().get("value");
+        }
+    }
+
+    private RequestConfig getDefaultRequestConfig(){
+        return RequestConfig.custom()
+                .setConnectTimeout(20 * 1000) // 20 seconds
+                .setSocketTimeout(20 * 1000) // 20 seconds
+                .build();
+
     }
 }

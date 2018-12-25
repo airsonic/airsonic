@@ -1,0 +1,22 @@
+#======================================================================================================
+# For manuel test
+#
+# The Sonos controller didn't resolve name, so you must use the ip adresse
+#
+#-----------------------------------------------------------------------------------------------------
+
+POST http://192.168.0.109:1400/customsd
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Content-Type: application/x-www-form-urlencoded
+
+csrfToken=qYjsB1ChxPX71oXSYbd4b85VgNYqVj4O&sid=242&name=TestAirSonic&uri=http%3A%2F%2F192.168.0.101%3A9080%2Fairsonic%2Fws%2FSonos&secureUri=http%3A%2F%2F192.168.0.101%3A9080%2Fairsonic%2Fws%2FSonos&pollInterval=1200&authType=UserId&stringsVersion=5&stringsUri=http%3A%2F%2F192.168.0.101%3A9080%2Fairsonic%2Fsonos%2Fstrings.xml&presentationMapVersion=1&presentationMapUri=http%3A%2F%2F192.168.0.101%3A9080%2Fairsonic%2Fsonos%2FpresentationMap.xml&manifestVersion=0&manifestUri=&containerType=MService&caps=search&caps=trFavorites&caps=alFavorites&caps=ucPlaylists&caps=accountLogging&caps=extendedMD
+
+###
+
+POST http://192.168.0.109:1400/customsd
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Content-Type: application/x-www-form-urlencoded
+
+csrfToken=1XoaKpg6A2iPdeCW3QEbZDMx5qo914R3&sid=242&name
+
+###
