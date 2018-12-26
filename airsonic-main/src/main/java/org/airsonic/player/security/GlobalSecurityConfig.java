@@ -120,6 +120,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
             http
                     .csrf()
+                    .ignoringAntMatchers("/ws/Sonos/**")
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
                     .and().headers()
                     .frameOptions()
@@ -127,7 +128,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .and().authorizeRequests()
                     .antMatchers("/recover*", "/accessDenied*",
                             "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/crossdomain.xml", "/login", "/error")
+                            "/sonos/**", "/crossdomain.xml", "/login", "/error", "/ws/Sonos/**")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")

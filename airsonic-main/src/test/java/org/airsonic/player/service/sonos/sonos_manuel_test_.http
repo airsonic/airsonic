@@ -20,3 +20,24 @@ Content-Type: application/x-www-form-urlencoded
 csrfToken=1XoaKpg6A2iPdeCW3QEbZDMx5qo914R3&sid=242&name
 
 ###
+
+POST http://localhost:8090/ws/Sonos
+Content-Type: text/xml;charset=UTF-8
+SOAPACTION: "http://www.sonos.com/Services/1.1#getSessionId"
+
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+    <s:Header>
+        <credentials xmlns="http://www.sonos.com/Services/1.1">
+            <deviceId>00-0E-58-83-12-FA:B</deviceId>
+            <deviceProvider>Sonos</deviceProvider>
+        </credentials>
+    </s:Header>
+    <s:Body>
+        <getSessionId xmlns="http://www.sonos.com/Services/1.1">
+            <username>admin</username>
+            <password>admin</password>
+        </getSessionId>
+    </s:Body>
+</s:Envelope>
+
+###
