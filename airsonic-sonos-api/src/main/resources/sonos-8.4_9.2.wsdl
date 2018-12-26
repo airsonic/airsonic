@@ -1,0 +1,2180 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+   Sonos Music Service WSDL definition
+   Copyright (c) 2007-2016 Sonos, Inc. All Rights Reserved
+
+   This document is licensed under the Creative Commons Attribution, Share-Alike
+   license, v3.0 (Unported) with the following modifications:
+
+   As clarified in the license, distribution of any software (source or binary)
+   that instantiates the API will require the party(ies) distributing such
+   software to publish the revised API and associated documentation, at no charge,
+   in accordance with the terms of the license. There is no requirement, however,
+   to publish the underlying code.
+  -->
+
+<!--
+    No version change, so the Sonos site say the wsdl change for version of controller : 8.6, 8.5.2, 8.5, 8.4
+    And no change for 9.0, 9.1 and 9.2.
+
+    So I rename the wsdl version with the 8.4_9.2. I let the sonos-1.1.wsdl for ref.
+
+    see : https://musicpartners.sonos.com/?q=node/412
+-->
+
+<wsdl:definitions name="Sonos"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://www.sonos.com/Services/1.1"
+                  targetNamespace="http://www.sonos.com/Services/1.1">
+
+    <wsdl:types>
+
+        <xs:schema targetNamespace="http://www.sonos.com/Services/1.1"
+                   elementFormDefault="qualified">
+
+            <xs:simpleType name="privateDataType">
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="2048"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType name="sonosUri">
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="2048"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType name="id">
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="255"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType name="algorithm">
+                <xs:restriction base="xs:token">
+                    <xs:enumeration value="AES/CBC/PKCS#7"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:element name="id" type="tns:id"/>
+
+            <xs:element name="password">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="128"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <xs:element name="username">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="128"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <xs:element name="sessionId">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="128"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <xs:element name="label">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="128"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <xs:element name="login">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:username"/>
+                        <xs:element ref="tns:password"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="loginToken">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="token" type="xs:string"/>
+                        <xs:element name="key" type="xs:string"/>
+                        <xs:element name="householdId" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="nickname">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:maxLength value="32"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+
+            <xs:simpleType name="userAccountType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="premium"/>
+                    <xs:enumeration value="trial"/>
+                    <xs:enumeration value="free"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType name="userAccountStatus">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="active"/>
+                    <xs:enumeration value="restricted"/>
+                    <xs:enumeration value="expired"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:element name="credentials">
+                <xs:complexType>
+                    <xs:sequence>
+                        <!-- Unique id for a single zone player -->
+                        <xs:element name="zonePlayerId" type="tns:id" minOccurs="0"/>
+                        <!-- Unique id for all Zone Player's in a single household -->
+                        <xs:element name="deviceId" type="tns:id" minOccurs="0"/>
+
+                        <xs:element name="deviceProvider" type="xs:string" minOccurs="0"/>
+
+                        <!-- Zone Player's  X.509 certificate (as raw ASN.1 DER), encoded using base64.
+                        This element is sent in the request only when "Requires Player Certificate" capability flag is enabled.
+                        Associated client SOAP Faults:
+                            Client.DeviceCertRequired:  a cert was required, but Sonos did not provide one
+                            Client.DeviceCertInvalid:   a cert was provided, but is considered invalid
+                            Client.DeviceCertExpired:   a cert was provided, but is considered expired
+                            Client.DeviceCertRevoked:   a cert was provided, but is revoked by the service
+                        -->
+                        <xs:element name="deviceCert" type="xs:string" minOccurs="0"/>
+
+                        <xs:choice minOccurs="0">
+                            <xs:element ref="tns:sessionId"/>
+                            <xs:element ref="tns:login"/>
+                            <xs:element ref="tns:loginToken"/>
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="context">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="timeZone" type="xs:string" minOccurs="0"/>
+                        <xs:any namespace="##other" processContents="skip" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Extensibility point to add new context header information.
+                                    Please refer to Sonos documentation for details
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:any>
+                    </xs:sequence>
+                 </xs:complexType>
+            </xs:element>
+
+            <xs:simpleType name="itemType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="artist"/>
+                    <xs:enumeration value="album"/>
+                    <xs:enumeration value="genre"/>
+                    <xs:enumeration value="playlist"/>
+                    <xs:enumeration value="track"/>
+                    <xs:enumeration value="search"/>
+                    <xs:enumeration value="stream"/>
+                    <xs:enumeration value="show"/>
+                    <xs:enumeration value="program"/>
+                    <xs:enumeration value="favorites"/>
+                    <xs:enumeration value="favorite"/>
+                    <xs:enumeration value="collection"/>
+                    <xs:enumeration value="container"/>
+                    <xs:enumeration value="albumList"/>
+                    <xs:enumeration value="trackList"/>
+                    <xs:enumeration value="streamList"/>
+                    <xs:enumeration value="artistTrackList"/>
+                    <xs:enumeration value="audiobook"/>
+                    <xs:enumeration value="other"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:element name="itemType" type="tns:itemType"/>
+
+            <xs:simpleType name="deviceSessionToken">
+                <xs:annotation>
+                    <xs:documentation>It is a token that is specific to a device to allow that device to stream.
+                        If a deviceSessionToken was returned in a previous call, this is provided here.  There may be
+                        some tracks that do not include one in the mediaUriResponse; this will not cause Sonos to
+                        remove the previous deviceSessionToken. Sonos will send this element until a new one is returned, always.
+                        This element can be used to avoid having to re-validate the cert by encoding that information.
+                        It can provide a lower cost short cut for encoding session keys.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:restriction base="xs:string">
+                    <xs:maxLength value="2048"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:simpleType name="encryptionType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="NONE" />
+                    <xs:enumeration value="AES-ECB" />
+                    <xs:enumeration value="AES-CBC" />
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:complexType name="encryptionContext">
+                <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                        <xs:attribute name="type" type="tns:encryptionType"/>
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+
+            <xs:simpleType name="mediaUriAction">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="IMPLICIT"/>
+                    <xs:enumeration value="EXPLICIT:PLAY"/>
+                    <xs:enumeration value="EXPLICIT:SEEK"/>
+                    <xs:enumeration value="EXPLICIT:SKIP_FORWARD"/>
+                    <xs:enumeration value="EXPLICIT:SKIP_BACK"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:element name="mediaUriAction" type="tns:mediaUriAction" />
+
+            <xs:complexType name="AbstractMedia" abstract="true">
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <xs:element ref="tns:itemType"/>
+                    <xs:element name="displayType" type="xs:string" minOccurs="0"/>
+                    <xs:element name="title" type="xs:string"/>
+
+                    <!--
+                       The summary field will only be displayed if the displayType
+                       maps to a HeroView or Editorial layout otherwise it will be ignored
+                    -->
+                    <xs:element name="summary" type="xs:string" minOccurs="0"/>
+                    <!--Indicates that the item is currently favorited.
+                       If omitted, we don't know the favorited state. -->
+                    <xs:element name="isFavorite" type="xs:boolean" minOccurs="0"/>
+                    <!--Indicates one or more tags are relevant for the item. In the UI
+                     this may translate to badges (icons) being displayed
+                     with the metadata for the track or container-->
+                    <xs:element name="tags" type="tns:tagsData" minOccurs="0" maxOccurs="1"/>
+
+                    <!-- This combined with user settings determine content playability -->
+                    <xs:element name="isExplicit" type="xs:boolean" minOccurs="0"/>
+
+                    <!--
+                       Included for backwards compatibility with MOAPI 1.0. These are
+                       currently all disregarded by the Sonos firmware. -->
+                    <xs:element name="language" type="xs:string" minOccurs="0"/>
+                    <xs:element name="country" type="xs:string" minOccurs="0"/>
+                    <xs:element name="genreId" type="xs:string" minOccurs="0"/>
+                    <xs:element name="genre" type="xs:string" minOccurs="0"/>
+                    <xs:element name="twitterId" type="xs:string" minOccurs="0"/>
+                    <xs:element name="liveNow" type="xs:boolean" minOccurs="0"/>
+                    <xs:element name="onDemand" type="xs:boolean" minOccurs="0"/>
+
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="appLinkInfo">
+                <xs:sequence>
+                    <!--  Required. A URL the Sonos Application will open. Typically after a user selects it. -->
+                    <xs:element name="appUrl"             type="tns:sonosUri" minOccurs="0"/>
+                    <!-- Required. A string resource id (in strings.xml) to use as a label for the link to "appUrL" -->
+                    <xs:element name="appUrlStringId"     type="xs:string" minOccurs="1"/>
+                    <!-- Optional. deviceLink data to use as a fall-back if the app the appURL points to is not installed
+                    or the appLink method is not available on the current platform -->
+                    <xs:element name="deviceLink" type="tns:deviceLinkCodeResult" minOccurs="0" />
+                    <!-- Optional. A string resource id to message the user in case Sonos fails to open "appUrl" -->
+                    <xs:element name="failureStringId"    type="xs:string" minOccurs="0"/>
+                    <!-- Optional. A URL where users can go to get support or find out more about what might possibly be wrong. Use
+                    in conjunction with failureStringId message -->
+                    <xs:element name="failureUrl"         type="tns:sonosUri" minOccurs="0"/>
+                    <!-- Optional. A string resource id to use as a label for the link to "failureUrl" -->
+                    <xs:element name="failureUrlStringId" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="callToActionInfo">
+                <xs:sequence>
+                    <!-- Required. A string resource id of a message to help users understand what is the action they need to take -->
+                    <xs:element name="messageStringId" type="xs:string" minOccurs="1"/>
+                    <!-- Optional. A URL where users can navigate to take some action or learn more about options -->
+                    <xs:element name="url"             type="tns:sonosUri" minOccurs="0"/>
+                    <!-- Optional. A string resource id to use as a label for the link to "url" in this context -->
+                    <xs:element name="urlStringId"     type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="appLinkResult">
+                <xs:choice>
+                    <xs:sequence>
+                        <!-- Required. Where to authorize an account (for "add account" or "re-authorize account" flows -->
+                        <xs:element name="authorizeAccount" type="tns:appLinkInfo" minOccurs="1"/>
+                        <!-- Optional. Provides a way for a user to create an account. -->
+                        <xs:element name="createAccount"    type="tns:appLinkInfo" minOccurs="0"/>
+                        <!-- Optional. If a Sonos application detects that the application associated with
+                        "authorizeAccount/appUrl" is not installed, it will use the information in this element to message
+                        the user. -->
+                        <xs:element name="installAction"    type="tns:callToActionInfo" minOccurs="0"/>
+                </xs:sequence>
+
+                    <!-- if there is no app link for the given hardware, osVersion, sonosAppName combination this
+                    element MUST be returned instead -->
+                    <xs:element name="callToAction" type="tns:callToActionInfo" minOccurs="1"/>
+                </xs:choice>
+            </xs:complexType>
+
+            <xs:complexType name="deviceLinkCodeResult">
+                <xs:sequence>
+                    <xs:element name="regUrl" type="xs:string"/>
+                    <xs:element name="linkCode" type="xs:string"/>
+                    <xs:element name="showLinkCode" type="xs:boolean"/>
+                    <xs:element name="linkDeviceId" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="deviceAuthTokenResult">
+                <xs:sequence>
+                    <xs:element name="authToken" type="xs:string"/>
+                    <xs:element name="privateKey" type="xs:string"/>
+                    <xs:element name="userInfo" type="tns:userInfo" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="userInfo">
+                <xs:sequence>
+                    <!-- Everything except userIdHashCode and nickname are for future use -->
+                    <xs:element name="userIdHashCode" type="xs:string" minOccurs="1"/>
+                    <xs:element name="accountType" type="tns:userAccountType" minOccurs="0"/>
+                    <xs:element name="accountStatus" type="tns:userAccountStatus" minOccurs="0"/>
+                    <xs:element ref="tns:nickname" minOccurs="0"/>
+                    <xs:element name="profileUrl" type="tns:sonosUri" minOccurs="0"/>
+                    <xs:element name="pictureUrl" type="tns:sonosUri" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="reportPlaySecondsResult">
+                <xs:sequence>
+                    <xs:element name="interval" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="albumArtUrl">
+                <xs:simpleContent>
+                    <xs:extension base="xs:anyURI">
+                        <xs:attribute name="requiresAuthentication" type="xs:boolean" use="optional" />
+                    </xs:extension>
+                </xs:simpleContent>
+            </xs:complexType>
+
+            <xs:complexType name="positionInformation">
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <!-- Required for future use. Base-0 index in the container to the track with 'tns:id'. If there is no container return "0" -->
+                    <xs:element name="index"        type="xs:int"/>
+                    <!-- Required. The offset at which playback should be resumed. -->
+                    <xs:element name="offsetMillis" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="mediaCollection">
+                <xs:complexContent>
+                    <xs:extension base="tns:AbstractMedia">
+                        <xs:sequence>
+                            <!--The collection can implement one of these two sets of metadata
+                            the first is intended for music collections, the second for audio books-->
+                            <xs:choice>
+                                <xs:sequence>
+                            <!--
+                               Collections can optionally indicate a creator. For example, a
+                               collection could represent an album and "artist" would indicate
+                               the album artist. -->
+                            <xs:element name="artist" type="xs:string" minOccurs="0"/>
+                            <xs:element name="artistId" type="tns:id" minOccurs="0"/>
+                                </xs:sequence>
+                                <xs:sequence>
+                                    <xs:element name="authorId" type="xs:string" minOccurs="0" />
+                                    <xs:element name="author" type="xs:string" minOccurs="0" />
+                                    <xs:element name="narratorId" type="xs:string" minOccurs="0" />
+                                    <xs:element name="narrator" type="xs:string" minOccurs="0" />
+                                </xs:sequence>
+                            </xs:choice>
+
+                            <!--
+                               Indicates that the collection supports the getScrollIndices
+                               method if omitted, canScroll is assumed to be false. -->
+                            <xs:element name="canScroll" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Indicates that the collection can be "played" by enumerating
+                               using the "recursive" flag to obtain a flat list of all
+                               mediaMetadata items it contains. If omitted, canPlay is assumed
+                               to be false -->
+                            <xs:element name="canPlay" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Indicates that the collection can be enumerated, using the
+                               collection id in a subsequent call to getMetadata. If omitted,
+                               canEnumerate is assumed to be true -->
+                            <xs:element name="canEnumerate" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Indicates that the collection can be added to user favorites.
+                               If omitted, canAddToFavorites is assumed to be true. -->
+                            <xs:element name="canAddToFavorites" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Indicates that the collection contains user favorites.
+                               If omitted, containsFavorite is assumed to be false. -->
+                            <xs:element name="containsFavorite" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Included for backwards compatibility with MOAPI 1.0. This is
+                               currently disregarded by the Sonos firmware. -->
+                            <xs:element name="canCache" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Indicates that playback of this whole collection allows skip
+                               forward. Defaults to true. -->
+                            <xs:element name="canSkip" type="xs:boolean" minOccurs="0"/>
+
+                            <!-- This is really any artwork in the square album style. -->
+                            <xs:element name="albumArtURI" type="tns:albumArtUrl" minOccurs="0"/>
+
+                            <!-- Does this collection support resume from last playhead position reported? -->
+                            <xs:element name="canResume" type="xs:boolean" minOccurs="0"/>
+
+                            <!--
+                               Included for backwards compatibility with MOAPI 1.0. These
+                               are currently all disregarded by the Sonos firmware. -->
+                            <xs:element name="authRequired" type="xs:boolean" minOccurs="0"/>
+                            <xs:element name="homogeneous" type="xs:boolean" minOccurs="0"/>
+                            <xs:element name="canAddToFavorite" type="xs:boolean" minOccurs="0"/>
+                        </xs:sequence>
+
+                        <!-- For editable containers you must always return readOnly false. You can further configure
+                             editable features with the use of canReorderItems and canDeleteItems -->
+                        <xs:attribute name="readOnly" type="xs:boolean" use="optional" default="true"/>
+                        <!-- You can control if the items in the collection can be deleted and/or reordered with the
+                             following attributes -->
+                        <xs:attribute name="canReorderItems" type="xs:boolean" use="optional" default="false"/>
+                        <xs:attribute name="canDeleteItems"  type="xs:boolean" use="optional" default="false"/>
+
+                        <xs:attribute name="renameable" type="xs:boolean" use="optional" default="false"/>
+                        <xs:attribute name="userContent" type="xs:boolean" use="optional" default="false"/>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+
+            <xs:complexType name="trackMetadata">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:sequence>
+                            <xs:element name="artistId" type="tns:id" minOccurs="0"/>
+                            <xs:element name="artist" type="xs:string" minOccurs="0"/>
+                            <xs:element name="composerId" type="tns:id" minOccurs="0"/>
+                            <xs:element name="composer" type="xs:string" minOccurs="0"/>
+                            <xs:element name="albumArtistId" type="tns:id" minOccurs="0"/>
+                            <xs:element name="albumArtist" type="xs:string" minOccurs="0"/>
+                            <xs:element name="albumId" type="tns:id" minOccurs="0"/>
+                            <xs:element name="album" type="xs:string" minOccurs="0"/>
+                        </xs:sequence>
+                        <xs:sequence>
+                            <xs:element name="authorId" type="xs:string" minOccurs="0" />
+                            <xs:element name="author" type="xs:string" minOccurs="0" />
+                            <xs:element name="narratorId" type="xs:string" minOccurs="0" />
+                            <xs:element name="narrator" type="xs:string" minOccurs="0" />
+                            <xs:element name="bookId" type="xs:string" minOccurs="0" />
+                            <xs:element name="book" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                    </xs:choice>
+                    <xs:element name="genreId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="genre" type="xs:string" minOccurs="0"/>
+                    <xs:element name="duration" type="xs:int" minOccurs="0"/>
+                    <xs:element name="rating" type="xs:int" minOccurs="0"/>
+                    <xs:element name="albumArtURI" type="tns:albumArtUrl" minOccurs="0"/>
+                    <xs:element name="trackNumber" type="xs:int" minOccurs="0"/>
+
+                    <!--
+                       Indicates that the track can be played. If not present, the
+                       default value is "true". If "false" this flag indicates that the
+                       user does not have rights to stream the track. -->
+                    <xs:element name="canPlay" type="xs:boolean" minOccurs="0"/>
+
+                    <!--
+                       Indicates that playback of this track allows skip forward.
+                       Defaults to true. -->
+                    <xs:element name="canSkip" type="xs:boolean" minOccurs="0"/>
+
+                    <!-- Indicates that this track can be added to the favorites. -->
+                    <xs:element name="canAddToFavorites" type="xs:boolean" minOccurs="0"/>
+
+                    <!-- Does this track (or it's container) support resume from last playhead position reported? -->
+                    <xs:element name="canResume" type="xs:boolean" minOccurs="0"/>
+
+                    <xs:element name="canSeek" type="xs:boolean" minOccurs="0"/>
+                    <xs:element name="hasOutOfBandMetadata" type="xs:boolean" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="streamMetadata">
+                <xs:sequence>
+                    <xs:element name="currentHost" type="xs:string" minOccurs="0"/>
+                    <xs:element name="currentShowId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="currentShow" type="xs:string" minOccurs="0"/>
+                    <xs:element name="secondsRemaining" type="xs:int" minOccurs="0"/>
+                    <xs:element name="secondsToNextShow" type="xs:int" minOccurs="0"/>
+                    <xs:element name="bitrate" type="xs:int" minOccurs="0"/>
+                    <xs:element name="logo" type="tns:albumArtUrl" minOccurs="0"/>
+                    <xs:element name="description" type="xs:string" minOccurs="0"/>
+
+                    <!-- is this short lived, if so do not allow adding to Sonos Favorites or alarms-->
+                    <xs:element name="isEphemeral" type="xs:boolean" minOccurs="0"/>
+
+                    <!--
+                       Included for backwards compatibility with MOAPI 1.0.  These are
+                       currently all disregarded by the Sonos firmware. -->
+                    <xs:element name="reliability" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="title" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="subtitle" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="nextShowSeconds" type="xs:anyURI" minOccurs="0"/>
+
+                    <!-- Deprecated as of 6.3. To embed metadata use HLS specification. -->
+                    <xs:element name="hasOutOfBandMetadata" type="xs:boolean" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="property">
+                <xs:sequence>
+                    <xs:element name="name" type="xs:string"/>
+                    <xs:element name="value" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="dynamicData">
+                <xs:sequence>
+                    <xs:element name="property" type="tns:property" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="behaviorsData">
+                <xs:sequence>
+                    <xs:element name="supportsQuickSkip" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="tagsData">
+                <xs:sequence>
+                    <xs:element name="explicit" type="xs:int" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="premium" type="xs:int" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="mediaMetadata">
+                <xs:complexContent>
+                    <xs:extension base="tns:AbstractMedia">
+                        <xs:sequence>
+                            <xs:element name="mimeType" type="xs:string"/>
+                            <xs:choice>
+                                <xs:element name="trackMetadata" type="tns:trackMetadata"/>
+                                <xs:element name="streamMetadata" type="tns:streamMetadata"/>
+                            </xs:choice>
+                            <xs:element name="dynamic" type="tns:dynamicData" minOccurs="0" maxOccurs="1"/>
+                            <xs:element name="behaviors" type="tns:behaviorsData" minOccurs="0" maxOccurs="1"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+
+            <!-- Deprecated as of 6.3. To embed metadata use HLS specification. -->
+            <xs:complexType name="segmentMetadata">
+                <xs:annotation>
+                    <xs:documentation>segmentMetadata is metadata that applies to a specified time range.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <xs:element name="trackId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="track" type="xs:string" minOccurs="0"/>
+                    <xs:element name="artistId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="artist" type="xs:string" minOccurs="0"/>
+                    <xs:element name="composerId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="composer" type="xs:string" minOccurs="0"/>
+                    <xs:element name="albumId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="album" type="xs:string" minOccurs="0"/>
+                    <xs:element name="albumArtistId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="albumArtist" type="xs:string" minOccurs="0"/>
+                    <xs:element name="genreId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="genre" type="xs:string" minOccurs="0"/>
+                    <xs:element name="showId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="show" type="xs:string" minOccurs="0"/>
+                    <xs:element name="episodeId" type="tns:id" minOccurs="0"/>
+                    <xs:element name="episode" type="xs:string" minOccurs="0"/>
+                    <xs:element name="host" type="xs:string" minOccurs="0"/>
+                    <xs:element name="topic" type="xs:string" minOccurs="0"/>
+                    <xs:element name="rating" type="xs:int" minOccurs="0"/>
+                    <xs:element name="albumArtURI" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="startTime" type="xs:dateTime">
+                        <xs:annotation>
+                            <xs:documentation>Specifies the inclusive start time of the period to which this metadata
+                                applies.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="duration" type="xs:int">
+                        <xs:annotation>
+                            <xs:documentation>Specifies the length of the period in milliseconds.</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="mediaList">
+                <xs:sequence>
+                    <xs:element name="index" type="xs:int"/>
+                    <xs:element name="count" type="xs:int"/>
+                    <xs:element name="total" type="xs:int"/>
+                    <xs:element name="positionInformation" type="tns:positionInformation" minOccurs="0" maxOccurs="1"/>
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="mediaCollection" type="tns:mediaCollection"/>
+                        <xs:element name="mediaMetadata" type="tns:mediaMetadata"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="radioTrackList">
+                <xs:sequence>
+                    <xs:element name="count" type="xs:int" />
+                    <xs:element name="id" type="xs:string" minOccurs="0" />
+                    <xs:element name="name" type="xs:string" minOccurs="0" />
+                    <xs:choice minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="mediaMetadata" type="tns:mediaMetadata"/>
+                    </xs:choice>
+                </xs:sequence>
+            </xs:complexType>
+
+            <!-- Deprecated as of 6.3. To embed metadata use HLS specification. -->
+            <xs:complexType name="segmentMetadataList">
+                <xs:sequence minOccurs="0">
+                    <xs:element name="startTime" type="xs:dateTime" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Specifies the inclusive start time of the period for this list. If
+                                omitted, defaults the startTime of the first temporalMediaMetadata element.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="duration" type="xs:int" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Specifies the length of the period of this list in milliseconds. If
+                                omitted, defaults the duration between startTime and the last elment's end time.
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="segmentMetadata" type="tns:segmentMetadata" minOccurs="0" maxOccurs="unbounded">
+                        <xs:annotation>
+                            <xs:documentation>A chronologically ordered list of segmentMetadata elements
+                            </xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="lastUpdate">
+                <xs:sequence>
+                    <xs:element name="catalog" type="xs:string"/>
+                    <xs:element name="favorites" type="xs:string"/>
+                    <!-- Can optionally return a new polling interval in seconds -->
+                    <xs:element name="pollInterval" type="xs:int" minOccurs="0"/>
+                    <!-- Can optionally turn auto refresh OFF for the container a user is browsed into. Auto Refresh
+                    is always ON by default -->
+                    <xs:element name="autoRefreshEnabled" type="xs:boolean" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="relatedBrowse">
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <xs:element name="type" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="relatedText">
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <xs:element name="type" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="relatedPlay">
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <xs:element ref="tns:itemType"/>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="canPlay" type="xs:boolean" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="relatedActions">
+                <xs:sequence>
+                    <xs:element name="action" type="tns:genericAction" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="extendedMetadata">
+                <xs:sequence>
+                    <xs:choice>
+                        <xs:element name="mediaCollection" type="tns:mediaCollection" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="mediaMetadata" type="tns:mediaMetadata" minOccurs="0" maxOccurs="1"/>
+                    </xs:choice>
+                    <xs:element name="relatedBrowse" type="tns:relatedBrowse" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="relatedText" type="tns:relatedText" minOccurs="0" maxOccurs="unbounded"/>
+                    <xs:element name="relatedPlay" type="tns:relatedPlay" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="relatedActions" type="tns:relatedActions" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:simpleType name="actionType">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="openUrl"/>
+                    <xs:enumeration value="simpleHttpRequest"/>
+                    <xs:enumeration value="rateItem"/>
+                </xs:restriction>
+            </xs:simpleType>
+
+            <xs:complexType name="genericAction">
+                <xs:sequence>
+                    <xs:element ref="tns:id"/>
+                    <xs:element name="title" type="xs:string"/>
+                    <xs:element name="actionType" type="tns:actionType"/>
+                    <xs:element name="showInBrowse" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+                    <xs:choice>
+                        <xs:element name="openUrlAction" type="tns:openUrlAction"/>
+                        <xs:element name="simpleHttpRequestAction" type="tns:simpleHttpRequestAction"/>
+                        <xs:element name="rateItemAction" type="tns:rateItemAction"/>
+                    </xs:choice>
+                    <xs:element name="successMessageStringId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="failureMessageStringId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="openUrlAction">
+                <xs:sequence>
+                    <xs:element name="url" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="simpleHttpRequestAction">
+                <xs:sequence>
+                    <xs:element name="url" type="xs:string"/>
+                    <xs:element name="method" type="xs:string"/>
+                    <xs:element name="httpHeaders" type="tns:httpHeaders" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="refreshOnSuccess" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="rateItemAction">
+                <xs:sequence>
+                    <xs:element ref="tns:rateItem"/>
+                    <xs:element name="shouldSkip" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="itemRating">
+                <xs:sequence>
+                    <xs:element name="shouldSkip" type="xs:boolean" minOccurs="0"/>
+                    <xs:element name="messageStringId" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="httpHeader">
+                <xs:sequence>
+                    <xs:element name="header" type="xs:string"/>
+                    <xs:element name="value" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="httpHeaders">
+                <xs:sequence>
+                    <xs:element name="httpHeader" type="tns:httpHeader" minOccurs="0" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="contentKey">
+                <xs:sequence>
+                    <xs:element name="uri" type="xs:anyURI"/>
+                    <xs:element name="deviceSessionToken" type="tns:deviceSessionToken" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="deviceSessionKey" type="tns:encryptionContext" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="contentKey" type="tns:encryptionContext" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:element name="getSessionId">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:username"/>
+                        <xs:element ref="tns:password"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getSessionIdResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getSessionIdResult" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMetadata">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:id"/>
+                        <xs:element name="index" type="xs:int"/>
+                        <xs:element name="count" type="xs:int"/>
+                        <xs:element name="recursive" type="xs:boolean" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMetadataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getMetadataResult" type="tns:mediaList"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getExtendedMetadata">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getExtendedMetadataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getExtendedMetadataResult" type="tns:extendedMetadata"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getExtendedMetadataText">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:id"/>
+                        <xs:element name="type" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getExtendedMetadataTextResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getExtendedMetadataTextResult" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getUserInfo">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="getUserInfoResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getUserInfoResult" type="tns:userInfo"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="rateItem">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:id"/>
+                        <xs:element name="rating" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="rateItemResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="rateItemResult" type="tns:itemRating"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="search">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:id"/>
+                        <xs:element name="term" type="xs:string"/>
+                        <xs:element name="index" type="xs:int"/>
+                        <xs:element name="count" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="searchResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="searchResult" type="tns:mediaList"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMediaMetadata">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element ref="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMediaMetadataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getMediaMetadataResult" type="tns:mediaMetadata"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getMediaURI">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="action" type="tns:mediaUriAction" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="secondsSinceExplicit" type="xs:int" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="deviceSessionToken" type="tns:deviceSessionToken" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getMediaURIResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getMediaURIResult" type="xs:anyURI"/>
+                        <xs:element name="deviceSessionToken" type="tns:deviceSessionToken" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="deviceSessionKey" type="tns:encryptionContext" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="contentKey" type="tns:encryptionContext" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="httpHeaders" type="tns:httpHeaders" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="uriTimeout" type="xs:int" minOccurs="0" maxOccurs="1"/>
+                        <xs:element name="positionInformation" type="tns:positionInformation" minOccurs="0" maxOccurs="1"/>
+                        <!-- if desired, include the field to extracted out of ID3v2 "PRIV" frame.
+                        The data extracted will be sent in the privateData element in reportPlaySeconds and setPlayedSeconds -->
+                        <xs:element name="privateDataFieldName" type="xs:string" minOccurs="0" />
+
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createItem">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="favorite" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="createItemResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="createItemResult" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="deleteItem">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="favorite" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="deleteItemResponse">
+                <xs:complexType/>
+            </xs:element>
+
+            <xs:element name="getScrollIndices">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getScrollIndicesResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <!--
+                           Result is a comma separated list of name value pairs representing
+                           the first letter prefix of an item and its position in the
+                           list (e.g A,0,B,123 etc.) -->
+                        <xs:element name="getScrollIndicesResult" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getLastUpdate">
+                <xs:complexType/>
+            </xs:element>
+            <xs:element name="getLastUpdateResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getLastUpdateResult" type="tns:lastUpdate"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="reportStatus">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="errorCode" type="xs:int"/>
+                        <xs:element name="message" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="reportStatusResponse">
+                <xs:complexType/>
+            </xs:element>
+
+            <xs:element name="setPlayedSeconds">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="seconds" type="xs:int"/>
+                        <xs:element name="contextId" type="xs:string" minOccurs="0"/>
+                        <xs:element name="privateData" type="tns:privateDataType" minOccurs="0"/>
+                        <!-- Optional. Reports the last known playhead position in milliseconds. -->
+                        <xs:element name="offsetMillis" type="xs:int" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="setPlayedSecondsResponse">
+                <xs:complexType/>
+            </xs:element>
+
+            <xs:element name="reportPlaySeconds">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="seconds" type="xs:int"/>
+                        <xs:element name="contextId" type="xs:string" minOccurs="0"/>
+                        <xs:element name="privateData" type="tns:privateDataType" minOccurs="0"/>
+                        <!-- Optional. Reports the current playhead position in milliseconds. -->
+                        <xs:element name="offsetMillis" type="xs:int" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="reportPlaySecondsResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="reportPlaySecondsResult" type="tns:reportPlaySecondsResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="reportPlayStatus">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="status" type="xs:string"/>
+                        <xs:element name="contextId" type="xs:string" minOccurs="0"/>
+                        <!-- Optional. Reports the current playhead position in milliseconds. -->
+                        <xs:element name="offsetMillis" type="xs:int" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="reportPlayStatusResponse">
+                <xs:complexType/>
+            </xs:element>
+
+            <xs:element name="reportAccountAction">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="type" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="reportAccountActionResponse">
+                <xs:complexType/>
+            </xs:element>
+
+            <xs:element name="getAppLink">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="householdId" type="tns:id"/>
+                        <xs:element name="hardware"    type="xs:string"/>
+                        <xs:element name="osVersion"   type="xs:string"/>
+                        <xs:element name="sonosAppName" type="xs:string"/>
+                        <xs:element name="callbackPath" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getAppLinkResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getAppLinkResult" type="tns:appLinkResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getDeviceLinkCode">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="householdId" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getDeviceLinkCodeResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getDeviceLinkCodeResult" type="tns:deviceLinkCodeResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getDeviceAuthToken">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="householdId" type="tns:id"/>
+                        <xs:element name="linkCode" type="xs:string" minOccurs="0"/>
+                        <xs:element name="linkDeviceId" type="xs:string" minOccurs="0"/>
+                        <!--callbackPath element will only be sent when authType = appLink
+                        Doing so maintains backwards compatibility with deviceLink-->
+                        <xs:element name="callbackPath" type="xs:string" minOccurs="0"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getDeviceAuthTokenResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getDeviceAuthTokenResult" type="tns:deviceAuthTokenResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="refreshAuthToken">
+                <xs:complexType/>
+            </xs:element>
+
+            <xs:element name="refreshAuthTokenResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="refreshAuthTokenResult" type="tns:deviceAuthTokenResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- Deprecated as of 6.3. To embed metadata use HLS specification. -->
+            <xs:element name="getStreamingMetadata">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="startTime" type="xs:dateTime"/>
+                        <xs:element name="duration" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getStreamingMetadataResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="getStreamingMetadataResult" type="tns:segmentMetadataList"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="getContentKey">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="uri" type="xs:anyURI" minOccurs="0"/>
+                        <xs:element name="deviceSessionToken" type="tns:deviceSessionToken" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="getContentKeyResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="contentKey" type="tns:contentKey"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="createContainer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="containerType" type="xs:string"/>
+                        <xs:element name="title" type="xs:string"/>
+                        <xs:element name="parentId" type="tns:id"/>
+                        <xs:element name="seedId" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="createContainerResult">
+                <xs:sequence>
+                    <xs:element name="id" type="tns:id"/>
+                    <xs:element name="updateId" type="tns:id"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="createContainerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="createContainerResult" type="tns:createContainerResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="addToContainer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="parentId" type="tns:id"/>
+                        <xs:element name="index" type="xs:int"/>
+                        <xs:element name="updateId" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="addToContainerResult">
+                <xs:sequence>
+                    <xs:element name="updateId" type="tns:id"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="addToContainerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="addToContainerResult" type="tns:addToContainerResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="renameContainer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="title" type="xs:string"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="renameContainerResult">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:element name="renameContainerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="renameContainerResult" type="tns:renameContainerResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="deleteContainer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="deleteContainerResult">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:element name="deleteContainerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="deleteContainerResult" type="tns:deleteContainerResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="removeFromContainer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="indices" type="xs:string"/>
+                        <xs:element name="updateId" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="removeFromContainerResult">
+                <xs:sequence>
+                    <xs:element name="updateId" type="tns:id"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="removeFromContainerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="removeFromContainerResult" type="tns:removeFromContainerResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="reorderContainer">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="tns:id"/>
+                        <xs:element name="from" type="xs:string"/>
+                        <xs:element name="to" type="xs:int"/>
+                        <xs:element name="updateId" type="tns:id"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:complexType name="reorderContainerResult">
+                <xs:sequence>
+                    <xs:element name="updateId" type="tns:id"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:element name="reorderContainerResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="reorderContainerResult" type="tns:reorderContainerResult"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="customFault">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:sequence>
+	                        <xs:element name="SonosError" type="xs:int"/>
+	                        <xs:element name="ExceptionInfo" type="xs:string"/>
+                    	</xs:sequence>
+                    	<xs:element name="refreshAuthTokenResult" type="tns:deviceAuthTokenResult"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </wsdl:types>
+
+    <wsdl:message name="smapiHeader">
+        <wsdl:part name="credentials" element="tns:credentials"/>
+        <wsdl:part name="context"     element="tns:context"/>
+    </wsdl:message>
+
+    <wsdl:message name="getSessionIdIn">
+        <wsdl:part name="parameters" element="tns:getSessionId"/>
+    </wsdl:message>
+
+    <wsdl:message name="getSessionIdOut">
+        <wsdl:part name="parameters" element="tns:getSessionIdResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMetadataIn">
+        <wsdl:part name="parameters" element="tns:getMetadata"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMetadataOut">
+        <wsdl:part name="parameters" element="tns:getMetadataResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getExtendedMetadataIn">
+        <wsdl:part name="parameters" element="tns:getExtendedMetadata"/>
+    </wsdl:message>
+
+    <wsdl:message name="getExtendedMetadataOut">
+        <wsdl:part name="parameters" element="tns:getExtendedMetadataResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getExtendedMetadataTextIn">
+        <wsdl:part name="parameters" element="tns:getExtendedMetadataText"/>
+    </wsdl:message>
+
+    <wsdl:message name="getExtendedMetadataTextOut">
+        <wsdl:part name="parameters" element="tns:getExtendedMetadataTextResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getUserInfoIn">
+        <wsdl:part name="parameters" element="tns:getUserInfo"/>
+    </wsdl:message>
+
+    <wsdl:message name="getUserInfoOut">
+        <wsdl:part name="parameters" element="tns:getUserInfoResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="rateItemIn">
+        <wsdl:part name="parameters" element="tns:rateItem"/>
+    </wsdl:message>
+
+    <wsdl:message name="rateItemOut">
+        <wsdl:part name="parameters" element="tns:rateItemResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="searchIn">
+        <wsdl:part name="parameters" element="tns:search"/>
+    </wsdl:message>
+
+    <wsdl:message name="searchOut">
+        <wsdl:part name="parameters" element="tns:searchResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMediaMetadataIn">
+        <wsdl:part name="parameters" element="tns:getMediaMetadata"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMediaMetadataOut">
+        <wsdl:part name="parameters" element="tns:getMediaMetadataResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMediaURIIn">
+        <wsdl:part name="parameters" element="tns:getMediaURI"/>
+    </wsdl:message>
+
+    <wsdl:message name="getMediaURIOut">
+        <wsdl:part name="parameters" element="tns:getMediaURIResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getScrollIndicesIn">
+        <wsdl:part name="parameters" element="tns:getScrollIndices"/>
+    </wsdl:message>
+
+    <wsdl:message name="getScrollIndicesOut">
+        <wsdl:part name="parameters" element="tns:getScrollIndicesResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="createItemIn">
+        <wsdl:part name="parameters" element="tns:createItem"/>
+    </wsdl:message>
+
+    <wsdl:message name="createItemOut">
+        <wsdl:part name="parameters" element="tns:createItemResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="deleteItemIn">
+        <wsdl:part name="parameters" element="tns:deleteItem"/>
+    </wsdl:message>
+
+    <wsdl:message name="deleteItemOut">
+        <wsdl:part name="parameters" element="tns:deleteItemResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getLastUpdateIn">
+        <wsdl:part name="parameters" element="tns:getLastUpdate"/>
+    </wsdl:message>
+
+    <wsdl:message name="getLastUpdateOut">
+        <wsdl:part name="parameters" element="tns:getLastUpdateResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportStatusIn">
+        <wsdl:part name="parameters" element="tns:reportStatus"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportStatusOut">
+        <wsdl:part name="parameters" element="tns:reportStatusResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="setPlayedSecondsIn">
+        <wsdl:part name="parameters" element="tns:setPlayedSeconds"/>
+    </wsdl:message>
+
+    <wsdl:message name="setPlayedSecondsOut">
+        <wsdl:part name="parameters" element="tns:setPlayedSecondsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportPlaySecondsIn">
+        <wsdl:part name="parameters" element="tns:reportPlaySeconds"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportPlaySecondsOut">
+        <wsdl:part name="parameters" element="tns:reportPlaySecondsResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportPlayStatusIn">
+        <wsdl:part name="parameters" element="tns:reportPlayStatus"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportPlayStatusOut">
+        <wsdl:part name="parameters" element="tns:reportPlayStatusResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportAccountActionIn">
+        <wsdl:part name="parameters" element="tns:reportAccountAction"/>
+    </wsdl:message>
+
+    <wsdl:message name="reportAccountActionOut">
+        <wsdl:part name="parameters" element="tns:reportAccountActionResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAppLinkIn">
+        <wsdl:part name="parameters" element="tns:getAppLink"/>
+    </wsdl:message>
+
+    <wsdl:message name="getAppLinkOut">
+        <wsdl:part name="parameters" element="tns:getAppLinkResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getDeviceLinkCodeIn">
+        <wsdl:part name="parameters" element="tns:getDeviceLinkCode"/>
+    </wsdl:message>
+
+    <wsdl:message name="getDeviceLinkCodeOut">
+        <wsdl:part name="parameters" element="tns:getDeviceLinkCodeResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="refreshAuthTokenIn">
+        <wsdl:part name="parameters" element="tns:refreshAuthToken"/>
+    </wsdl:message>
+
+    <wsdl:message name="refreshAuthTokenOut">
+        <wsdl:part name="parameters" element="tns:refreshAuthTokenResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getDeviceAuthTokenIn">
+        <wsdl:part name="parameters" element="tns:getDeviceAuthToken"/>
+    </wsdl:message>
+
+    <wsdl:message name="getDeviceAuthTokenOut">
+        <wsdl:part name="parameters" element="tns:getDeviceAuthTokenResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getStreamingMetadataIn">
+        <wsdl:part name="parameters" element="tns:getStreamingMetadata"/>
+    </wsdl:message>
+
+    <wsdl:message name="getStreamingMetadataOut">
+        <wsdl:part name="parameters" element="tns:getStreamingMetadataResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="getContentKeyIn">
+        <wsdl:part name="parameters" element="tns:getContentKey"/>
+    </wsdl:message>
+
+    <wsdl:message name="getContentKeyOut">
+        <wsdl:part name="parameters" element="tns:getContentKeyResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="createContainerIn">
+        <wsdl:part name="parameters" element="tns:createContainer"/>
+    </wsdl:message>
+
+    <wsdl:message name="createContainerOut">
+        <wsdl:part name="parameters" element="tns:createContainerResponse"/>
+    </wsdl:message>
+    <wsdl:message name="addToContainerIn">
+        <wsdl:part name="parameters" element="tns:addToContainer"/>
+    </wsdl:message>
+
+    <wsdl:message name="addToContainerOut">
+        <wsdl:part name="parameters" element="tns:addToContainerResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="renameContainerIn">
+        <wsdl:part name="parameters" element="tns:renameContainer"/>
+    </wsdl:message>
+
+    <wsdl:message name="renameContainerOut">
+        <wsdl:part name="parameters" element="tns:renameContainerResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="deleteContainerIn">
+        <wsdl:part name="parameters" element="tns:deleteContainer"/>
+    </wsdl:message>
+
+    <wsdl:message name="deleteContainerOut">
+        <wsdl:part name="parameters" element="tns:deleteContainerResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="removeFromContainerIn">
+        <wsdl:part name="parameters" element="tns:removeFromContainer"/>
+    </wsdl:message>
+
+    <wsdl:message name="removeFromContainerOut">
+        <wsdl:part name="parameters" element="tns:removeFromContainerResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="reorderContainerIn">
+        <wsdl:part name="parameters" element="tns:reorderContainer"/>
+    </wsdl:message>
+
+    <wsdl:message name="reorderContainerOut">
+        <wsdl:part name="parameters" element="tns:reorderContainerResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="customFault">
+       <wsdl:part name="customFault" element="tns:customFault"/>
+    </wsdl:message>
+
+    <wsdl:portType name="SonosSoap">
+        <wsdl:operation name="getSessionId">
+            <wsdl:input message="tns:getSessionIdIn"/>
+            <wsdl:output message="tns:getSessionIdOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMetadata">
+            <wsdl:input message="tns:getMetadataIn"/>
+            <wsdl:output message="tns:getMetadataOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getExtendedMetadata">
+            <wsdl:input message="tns:getExtendedMetadataIn"/>
+            <wsdl:output message="tns:getExtendedMetadataOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getExtendedMetadataText">
+            <wsdl:input message="tns:getExtendedMetadataTextIn"/>
+            <wsdl:output message="tns:getExtendedMetadataTextOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getUserInfo">
+            <wsdl:input message="tns:getUserInfoIn"/>
+            <wsdl:output message="tns:getUserInfoOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="rateItem">
+            <wsdl:input message="tns:rateItemIn"/>
+            <wsdl:output message="tns:rateItemOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="search">
+            <wsdl:input message="tns:searchIn"/>
+            <wsdl:output message="tns:searchOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMediaMetadata">
+            <wsdl:input message="tns:getMediaMetadataIn"/>
+            <wsdl:output message="tns:getMediaMetadataOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getMediaURI">
+            <wsdl:input message="tns:getMediaURIIn"/>
+            <wsdl:output message="tns:getMediaURIOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="createItem">
+            <wsdl:input message="tns:createItemIn"/>
+            <wsdl:output message="tns:createItemOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="deleteItem">
+            <wsdl:input message="tns:deleteItemIn"/>
+            <wsdl:output message="tns:deleteItemOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getScrollIndices">
+            <wsdl:input message="tns:getScrollIndicesIn"/>
+            <wsdl:output message="tns:getScrollIndicesOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getLastUpdate">
+            <wsdl:input message="tns:getLastUpdateIn"/>
+            <wsdl:output message="tns:getLastUpdateOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="reportStatus">
+            <wsdl:input message="tns:reportStatusIn"/>
+            <wsdl:output message="tns:reportStatusOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="setPlayedSeconds">
+            <wsdl:input message="tns:setPlayedSecondsIn"/>
+            <wsdl:output message="tns:setPlayedSecondsOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="reportPlaySeconds">
+            <wsdl:input message="tns:reportPlaySecondsIn"/>
+            <wsdl:output message="tns:reportPlaySecondsOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="reportPlayStatus">
+            <wsdl:input message="tns:reportPlayStatusIn"/>
+            <wsdl:output message="tns:reportPlayStatusOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="reportAccountAction">
+            <wsdl:input message="tns:reportAccountActionIn"/>
+            <wsdl:output message="tns:reportAccountActionOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getAppLink">
+            <wsdl:input message="tns:getAppLinkIn"/>
+            <wsdl:output message="tns:getAppLinkOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDeviceLinkCode">
+            <wsdl:input message="tns:getDeviceLinkCodeIn"/>
+            <wsdl:output message="tns:getDeviceLinkCodeOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getDeviceAuthToken">
+            <wsdl:input message="tns:getDeviceAuthTokenIn"/>
+            <wsdl:output message="tns:getDeviceAuthTokenOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="refreshAuthToken">
+            <wsdl:input message="tns:refreshAuthTokenIn"/>
+            <wsdl:output message="tns:refreshAuthTokenOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <!-- Deprecated as of 6.3. To embed metadata use HLS specification. -->
+        <wsdl:operation name="getStreamingMetadata">
+            <wsdl:input message="tns:getStreamingMetadataIn"/>
+            <wsdl:output message="tns:getStreamingMetadataOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="getContentKey">
+            <wsdl:input message="tns:getContentKeyIn"/>
+            <wsdl:output message="tns:getContentKeyOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="createContainer">
+            <wsdl:input message="tns:createContainerIn"/>
+            <wsdl:output message="tns:createContainerOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="addToContainer">
+            <wsdl:input message="tns:addToContainerIn"/>
+            <wsdl:output message="tns:addToContainerOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="renameContainer">
+            <wsdl:input message="tns:renameContainerIn"/>
+            <wsdl:output message="tns:renameContainerOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="deleteContainer">
+            <wsdl:input message="tns:deleteContainerIn"/>
+            <wsdl:output message="tns:deleteContainerOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="removeFromContainer">
+            <wsdl:input message="tns:removeFromContainerIn"/>
+            <wsdl:output message="tns:removeFromContainerOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+        <wsdl:operation name="reorderContainer">
+            <wsdl:input message="tns:reorderContainerIn"/>
+            <wsdl:output message="tns:reorderContainerOut"/>
+            <wsdl:fault message="tns:customFault" name="customFault"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="SonosSoap" type="tns:SonosSoap">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getSessionId">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getSessionId" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getMetadata">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getMetadata" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getExtendedMetadata">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getExtendedMetadata" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getExtendedMetadataText">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getExtendedMetadataText" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getUserInfo">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getUserInfo" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="rateItem">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#rateItem" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="search">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#search" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getMediaMetadata">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getMediaMetadata" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getMediaURI">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getMediaURI" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getScrollIndices">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getScrollIndices" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createItem">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#createItem" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="deleteItem">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#deleteItem" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getLastUpdate">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getLastUpdate" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="reportStatus">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#reportStatus" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="setPlayedSeconds">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#setPlayedSeconds" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="reportPlaySeconds">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#reportPlaySeconds" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="reportPlayStatus">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#reportPlayStatus" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="reportAccountAction">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#reportAccountAction" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getAppLink">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getAppLink" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getDeviceLinkCode">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getDeviceLinkCode" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getDeviceAuthToken">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getDeviceAuthToken" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="refreshAuthToken">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#refreshAuthToken" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getStreamingMetadata">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getStreamingMetadata" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getContentKey">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#getContentKey" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createContainer">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#createContainer" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="addToContainer">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#addToContainer" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="renameContainer">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#renameContainer" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="deleteContainer">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#deleteContainer" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="removeFromContainer">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#removeFromContainer" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="reorderContainer">
+            <soap:operation soapAction="http://www.sonos.com/Services/1.1#reorderContainer" style="document"/>
+            <wsdl:input>
+                <soap:header use="literal" message="tns:smapiHeader" part="credentials"/>
+                <soap:header use="literal" message="tns:smapiHeader" part="context"/>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="customFault">
+                <soap:fault name="customFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="Sonos">
+        <wsdl:port name="SonosSoap" binding="tns:SonosSoap">
+            <soap:address location="http://moapi.sonos.com/Test/TestService.php"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

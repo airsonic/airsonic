@@ -20,6 +20,7 @@
 package org.airsonic.player.service;
 
 import com.sonos.services._1.*;
+import com.sonos.services._1_1.CustomFault;
 import com.sonos.services._1_1.SonosSoap;
 import org.airsonic.player.domain.AlbumListType;
 import org.airsonic.player.domain.MediaFile;
@@ -297,6 +298,11 @@ public class SonosService implements SonosSoap {
     }
 
     @Override
+    public UserInfo getUserInfo() throws CustomFault {
+        return null;
+    }
+
+    @Override
     public GetMediaMetadataResponse getMediaMetadata(GetMediaMetadata parameters) {
         LOG.debug("getMediaMetadata: " + parameters.getId());
 
@@ -317,8 +323,11 @@ public class SonosService implements SonosSoap {
     }
 
     @Override
-    public void getMediaURI(String id, MediaUriAction action, Integer secondsSinceExplicit, Holder<String> result,
-                            Holder<HttpHeaders> httpHeaders, Holder<Integer> uriTimeout) {
+    public void getMediaURI(String id, MediaUriAction action, Integer secondsSinceExplicit, Holder<String> deviceSessionToken,
+                            Holder<String> result, Holder<EncryptionContext> deviceSessionKey, Holder<EncryptionContext> contentKey,
+                            Holder<HttpHeaders> httpHeaders, Holder<Integer> uriTimeout, Holder<PositionInformation> positionInformation,
+                            Holder<String> privateDataFieldName
+    ) throws CustomFault {
         result.value = sonosHelper.getMediaURI(Integer.parseInt(id), getUsername(), getRequest());
         LOG.debug("getMediaURI: " + id + " -> " + result.value);
     }
@@ -376,6 +385,26 @@ public class SonosService implements SonosSoap {
             }
         }
         return new AddToContainerResult();
+    }
+
+    @Override
+    public void reportPlayStatus(String id, String status, String contextId, Integer offsetMillis) throws CustomFault {
+
+    }
+
+    @Override
+    public ContentKey getContentKey(String id, String uri, String deviceSessionToken) throws CustomFault {
+        return null;
+    }
+
+    @Override
+    public DeviceAuthTokenResult refreshAuthToken() throws CustomFault {
+        return null;
+    }
+
+    @Override
+    public void setPlayedSeconds(String id, int seconds, String contextId, String privateData, Integer offsetMillis) throws CustomFault {
+
     }
 
     private void addItemToPlaylist(int playlistId, String id, int index) {
@@ -565,27 +594,28 @@ public class SonosService implements SonosSoap {
     }
 
     @Override
+    public AppLinkResult getAppLink(String householdId, String hardware, String osVersion, String sonosAppName, String callbackPath) throws CustomFault {
+        return null;
+    }
+
+    @Override
     public void reportAccountAction(String type) {
 
     }
 
     @Override
-    public void setPlayedSeconds(String id, int seconds) {
-
-    }
-
-    @Override
-    public ReportPlaySecondsResult reportPlaySeconds(String id, int seconds) {
+    public ReportPlaySecondsResult reportPlaySeconds(String id, int seconds, String contextId, String privateData, Integer offsetMillis) throws CustomFault {
         return null;
     }
 
-    @Override
-    public DeviceAuthTokenResult getDeviceAuthToken(String householdId, String linkCode, String linkDeviceId) {
-        return null;
-    }
 
     @Override
     public void reportStatus(String id, int errorCode, String message) {
+    }
+
+    @Override
+    public DeviceAuthTokenResult getDeviceAuthToken(String householdId, String linkCode, String linkDeviceId, String callbackPath) throws CustomFault {
+        return null;
     }
 
     @Override
@@ -593,15 +623,6 @@ public class SonosService implements SonosSoap {
         return null;
     }
 
-    @Override
-    public void reportPlayStatus(String id, String status) {
-
-    }
-
-    @Override
-    public ContentKey getContentKey(String id, String uri) {
-        return null;
-    }
 
     public void setMediaFileService(MediaFileService mediaFileService) {
         this.mediaFileService = mediaFileService;
@@ -622,4 +643,6 @@ public class SonosService implements SonosSoap {
     public void setPlaylistService(PlaylistService playlistService) {
         this.playlistService = playlistService;
     }
+
+
 }
