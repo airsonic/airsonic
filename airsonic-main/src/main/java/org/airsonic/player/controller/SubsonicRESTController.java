@@ -1295,12 +1295,14 @@ public class SubsonicRESTController {
             }
             switch (mediaFile.getMediaType()) {
                 case MUSIC:
+                case MUSIC_SINGLE_FILE:
                     child.setType(MediaType.MUSIC);
                     break;
                 case PODCAST:
                     child.setType(MediaType.PODCAST);
                     break;
                 case AUDIOBOOK:
+                case AUDIOBOOK_SINGLE_FILE:
                     child.setType(MediaType.AUDIOBOOK);
                     break;
                 case VIDEO:

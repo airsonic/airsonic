@@ -245,6 +245,12 @@ public class TranscodingService {
                 return createDownsampledInputStream(parameters);
             }
 
+            // (ab)use downsampling to splice single_file media into tracks,
+            if (parameters.getMediaFile().isSingleFile()) {
+                parameters.setMaxBitRate(parameters.getMediaFile().getBitRate());
+                return createDownsampledInputStream(parameters);
+            }
+
         } catch (Exception x) {
             LOG.warn("Failed to transcode " + parameters.getMediaFile() + ". Using original.", x);
         }
@@ -341,6 +347,23 @@ public class TranscodingService {
 
         for (int i = 1; i < result.size(); i++) {
             String cmd = result.get(i);
+
+            if (cmd.contains("%ss")) {
+                if (mediaFile.isSingleFile()) {
+                    cmd = cmd.replace("%ss", mediaFile.getSingleFileAlbumSongBegin());
+                } else {
+                    cmd = cmd.replace("%ss", "0");
+                }
+            }
+
+            if (cmd.contains("%to")) {
+                if (mediaFile.isSingleFile()) {
+                    cmd = cmd.replace("%to", mediaFile.getSingleFileAlbumSongEnd());
+                } else {
+                    cmd = cmd.replace("%to", "" + mediaFile.getDurationSeconds());
+                }
+            }
+
             if (cmd.contains("%b")) {
                 cmd = cmd.replace("%b", String.valueOf(maxBitRate));
             }

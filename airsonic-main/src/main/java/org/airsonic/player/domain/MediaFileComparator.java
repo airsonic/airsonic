@@ -63,6 +63,14 @@ public class MediaFileComparator implements Comparator<MediaFile> {
             return n == 0 ? a.getPath().compareToIgnoreCase(b.getPath()) : n; // To make it consistent to MediaFile.equals()
         }
 
+        // keep single_file tracks together
+        if (a.isSingleFile() && b.isSingleFile()) {
+            int i = a.getSingleFileAlbumSongWholePath().compareToIgnoreCase(b.getSingleFileAlbumSongWholePath());
+            if (i != 0) {
+                return i;
+            }
+        }
+
         // Compare by disc and track numbers, if present.
         Integer trackA = getSortableDiscAndTrackNumber(a);
         Integer trackB = getSortableDiscAndTrackNumber(b);

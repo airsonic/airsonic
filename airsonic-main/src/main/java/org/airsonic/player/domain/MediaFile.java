@@ -23,10 +23,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 
 /**
  * A media file (audio, video or directory) with an assortment of its meta data.
@@ -35,6 +39,8 @@ import java.util.List;
  * @version $Id$
  */
 public class MediaFile {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MediaFile.class);
 
     private int id;
     private String path;
@@ -136,6 +142,9 @@ public class MediaFile {
 
     public File getFile() {
         // TODO: Optimize
+        if (isSingleFile()) {
+            return new File(getSingleFileAlbumSongWholePath());
+        }
         return new File(path);
     }
 
@@ -156,7 +165,11 @@ public class MediaFile {
     }
 
     public boolean isAudio() {
-        return mediaType == MediaType.MUSIC || mediaType == MediaType.AUDIOBOOK || mediaType == MediaType.PODCAST;
+        return MediaType.audioTypes().contains(mediaType.toString());
+    }
+
+    public boolean isSingleFile() {
+        return mediaType == MediaType.MUSIC_SINGLE_FILE || mediaType == MediaType.AUDIOBOOK_SINGLE_FILE;
     }
 
     public String getFormat() {
@@ -172,11 +185,11 @@ public class MediaFile {
     }
 
     public boolean isFile() {
-        return mediaType != MediaType.DIRECTORY && mediaType != MediaType.ALBUM;
+        return MediaType.playableTypes().contains(mediaType.toString());
     }
 
     public boolean isAlbum() {
-        return mediaType == MediaType.ALBUM;
+        return MediaType.albumTypes().contains(mediaType.toString());
     }
 
     public String getTitle() {
@@ -471,12 +484,70 @@ public class MediaFile {
         };
     }
 
+    public void setPathForSingleFileMedia(String mediaFilePath, int songStart, int songEnd) {
+        setPath(mediaFilePath + ":" + songStart + ":" + songEnd);
+    }
+
+    public String getSingleFileAlbumSongBegin(){
+        try {
+            String[] parts = path.split(":");
+            return parts[parts.length-2];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // ignore
+            return null;
+        }
+    }
+
+    public String getSingleFileAlbumSongEnd(){
+        try {
+            String[] parts = path.split(":");
+            return parts[parts.length-1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // ignore
+            return null;
+        }
+    }
+
+    public String getSingleFileAlbumSongWholePath(){
+        try {
+            String[] parts = path.split(":");
+            return parts[parts.length-3];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // normal file
+            return path;
+        }
+    }
+
     public static enum MediaType {
         MUSIC,
+        MUSIC_SINGLE_FILE,
         PODCAST,
         AUDIOBOOK,
+        AUDIOBOOK_SINGLE_FILE,
         VIDEO,
         DIRECTORY,
-        ALBUM
+        ALBUM,
+        ALBUM_SINGLE_FILE;
+
+        private static final List<String> ALBUM_TYPES = Arrays.asList(ALBUM.toString(),ALBUM_SINGLE_FILE.toString());
+        private static final List<String> MUSIC_TYPES = Arrays.asList(MUSIC.toString(),MUSIC_SINGLE_FILE.toString());
+        private static final List<String> AUDIO_TYPES = Arrays.asList(MUSIC.toString(),MUSIC_SINGLE_FILE.toString(),AUDIOBOOK.toString(),AUDIOBOOK_SINGLE_FILE.toString(),PODCAST.toString());
+        private static final List<String> PLAYABLE_TYPES = Arrays.asList(MUSIC.toString(),MUSIC_SINGLE_FILE.toString(),AUDIOBOOK.toString(),AUDIOBOOK_SINGLE_FILE.toString(),PODCAST.toString(),VIDEO.toString());
+        
+        public static List<String> albumTypes() {
+            return ALBUM_TYPES;
+        }
+
+        public static List<String> musicTypes() {
+            return MUSIC_TYPES;
+        }
+        
+        public static List<String> audioTypes() {
+            return AUDIO_TYPES;
+        }
+
+        public static List<String> playableTypes() {
+            return PLAYABLE_TYPES;
+        }
     }
 }

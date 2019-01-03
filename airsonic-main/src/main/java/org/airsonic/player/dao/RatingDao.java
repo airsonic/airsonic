@@ -51,14 +51,14 @@ public class RatingDao extends AbstractDao {
         }
 
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
         }};
 
         String sql = "select user_rating.path from user_rating, media_file " +
-                     "where user_rating.path=media_file.path and media_file.present and media_file.type = :type and media_file.folder in (:folders) " +
+                     "where user_rating.path=media_file.path and media_file.present and media_file.type in (:types) and media_file.folder in (:folders) " +
                      "group by user_rating.path " +
                      "order by avg(rating) desc limit :count offset :offset";
         return namedQueryForStrings(sql, args);
@@ -116,14 +116,14 @@ public class RatingDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
         }};
 
         return namedQueryForInt("select count(*) from user_rating, media_file " +
                                 "where media_file.path = user_rating.path " +
-                                "and media_file.type = :type " +
+                                "and media_file.type in (:types) " +
                                 "and media_file.present " +
                                 "and media_file.folder in (:folders) " +
                                 "and user_rating.username = :username",

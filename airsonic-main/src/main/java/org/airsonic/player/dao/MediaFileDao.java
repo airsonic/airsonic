@@ -94,10 +94,14 @@ public class MediaFileDao extends AbstractDao {
                      "order by playlist_file.id", rowMapper, playlistId);
     }
 
-    public List<MediaFile> getSongsForAlbum(String artist, String album) {
-        return query("select " + QUERY_COLUMNS + " from media_file where album_artist=? and album=? and present " +
-                     "and type in (?,?,?) order by disc_number, track_number", rowMapper,
-                     artist, album, MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.AUDIOBOOK.name(), MediaFile.MediaType.PODCAST.name());
+    public List<MediaFile> getSongsForAlbum(final String artist, final String album) {
+        Map<String, Object> args = new HashMap<String, Object>() {{
+            put("types", MediaFile.MediaType.audioTypes());
+            put("artist", artist);
+            put("album", album);
+        }};
+        return namedQuery("select " + QUERY_COLUMNS + " from media_file where album_artist = :artist and album = :album and present " +
+                          "and type in (:types) order by disc_number, track_number", rowMapper, args);
     }
 
     public List<MediaFile> getVideos(final int count, final int offset, final List<MusicFolder> musicFolders) {
@@ -234,14 +238,14 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
         }};
 
         return namedQuery("select " + QUERY_COLUMNS
-                          + " from media_file where type = :type and play_count > 0 and present and folder in (:folders) " +
+                          + " from media_file where type in (:types) and play_count > 0 and present and folder in (:folders) " +
                           "order by play_count desc limit :count offset :offset", rowMapper, args);
     }
 
@@ -258,13 +262,13 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
         }};
         return namedQuery("select " + QUERY_COLUMNS
-                          + " from media_file where type = :type and last_played is not null and present " +
+                          + " from media_file where type in (:types) and last_played is not null and present " +
                           "and folder in (:folders) order by last_played desc limit :count offset :offset", rowMapper, args);
     }
 
@@ -281,14 +285,14 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
         }};
 
         return namedQuery("select " + QUERY_COLUMNS
-                          + " from media_file where type = :type and folder in (:folders) and present " +
+                          + " from media_file where type in (:types) and folder in (:folders) and present " +
                           "order by created desc limit :count offset :offset", rowMapper, args);
     }
 
@@ -306,7 +310,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
@@ -314,7 +318,7 @@ public class MediaFileDao extends AbstractDao {
 
         String orderBy = byArtist ? "artist, album" : "album";
         return namedQuery("select " + QUERY_COLUMNS
-                          + " from media_file where type = :type and folder in (:folders) and present " +
+                          + " from media_file where type in (:types) and folder in (:folders) and present " +
                           "order by " + orderBy + " limit :count offset :offset", rowMapper, args);
     }
 
@@ -334,7 +338,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("fromYear", fromYear);
             put("toYear", toYear);
@@ -344,12 +348,12 @@ public class MediaFileDao extends AbstractDao {
 
         if (fromYear <= toYear) {
             return namedQuery("select " + QUERY_COLUMNS
-                              + " from media_file where type = :type and folder in (:folders) and present " +
+                              + " from media_file where type in (:types) and folder in (:folders) and present " +
                               "and year between :fromYear and :toYear order by year limit :count offset :offset",
                               rowMapper, args);
         } else {
             return namedQuery("select " + QUERY_COLUMNS
-                              + " from media_file where type = :type and folder in (:folders) and present " +
+                              + " from media_file where type in (:types) and folder in (:folders) and present " +
                               "and year between :toYear and :fromYear order by year desc limit :count offset :offset",
                               rowMapper, args);
         }
@@ -370,13 +374,13 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("genre", genre);
             put("folders", MusicFolder.toPathList(musicFolders));
             put("count", count);
             put("offset", offset);
         }};
-        return namedQuery("select " + QUERY_COLUMNS + " from media_file where type = :type and folder in (:folders) " +
+        return namedQuery("select " + QUERY_COLUMNS + " from media_file where type in (:types) and folder in (:folders) " +
                           "and present and genre = :genre limit :count offset :offset", rowMapper, args);
     }
 
@@ -385,7 +389,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("types", Arrays.asList(MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(), MediaFile.MediaType.AUDIOBOOK.name()));
+            put("types", MediaFile.MediaType.audioTypes());
             put("genre", genre);
             put("count", count);
             put("offset", offset);
@@ -396,10 +400,16 @@ public class MediaFileDao extends AbstractDao {
                           rowMapper, args);
     }
 
-    public List<MediaFile> getSongsByArtist(String artist, int offset, int count) {
-        return query("select " + QUERY_COLUMNS
-                     + " from media_file where type in (?,?,?) and artist=? and present limit ? offset ?",
-                     rowMapper, MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(), MediaFile.MediaType.AUDIOBOOK.name(), artist, count, offset);
+    public List<MediaFile> getSongsByArtist(final String artist, final int offset, final int count) {
+        Map<String, Object> args = new HashMap<String, Object>() {{
+            put("types", MediaFile.MediaType.audioTypes());
+            put("artist", artist);
+            put("count", count);
+            put("offset", offset);
+        }};
+        return namedQuery("select " + QUERY_COLUMNS + " from media_file where type in (:types) and artist = :artist " +
+                          "and present limit :count offset :offset",
+                          rowMapper, args);
     }
 
     public MediaFile getSongByArtistAndTitle(final String artist, final String title, final List<MusicFolder> musicFolders) {
@@ -409,11 +419,11 @@ public class MediaFileDao extends AbstractDao {
         Map<String, Object> args = new HashMap<String, Object>() {{
             put("artist", artist);
             put("title", title);
-            put("type", MediaFile.MediaType.MUSIC.name());
+            put("types", MediaFile.MediaType.musicTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
         return namedQueryOne("select " + QUERY_COLUMNS + " from media_file where artist = :artist " +
-                             "and title = :title and type = :type and present and folder in (:folders)" ,
+                             "and title = :title and type in (:types) and present and folder in (:folders)" ,
                              rowMapper, args);
     }
 
@@ -432,14 +442,14 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
             put("count", count);
             put("offset", offset);
         }};
         return namedQuery("select " + prefix(QUERY_COLUMNS, "media_file") + " from starred_media_file, media_file where media_file.id = starred_media_file.media_file_id and " +
-                          "media_file.present and media_file.type = :type and media_file.folder in (:folders) and starred_media_file.username = :username " +
+                          "media_file.present and media_file.type in (:types) and media_file.folder in (:folders) and starred_media_file.username = :username " +
                           "order by starred_media_file.created desc limit :count offset :offset",
                           rowMapper, args);
     }
@@ -488,7 +498,7 @@ public class MediaFileDao extends AbstractDao {
             return Collections.emptyList();
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("types", Arrays.asList(MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(), MediaFile.MediaType.AUDIOBOOK.name(), MediaFile.MediaType.VIDEO.name()));
+            put("types", MediaFile.MediaType.playableTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
             put("count", count);
@@ -533,11 +543,11 @@ public class MediaFileDao extends AbstractDao {
         }
 
         if (joinAlbumRating) {
-            query += "left outer join media_file media_album on media_album.type = 'ALBUM' and media_album.album = media_file.album and media_album.artist = media_file.artist ";
+            query += "left outer join media_file media_album on media_album.type in ('ALBUM','ALBUM_SINGLE_FILE') and media_album.album = media_file.album and media_album.artist = media_file.artist ";
             query += "left outer join user_rating on user_rating.path = media_album.path and user_rating.username = :username ";
         }
 
-        query += " where media_file.present and media_file.type = 'MUSIC'";
+        query += " where media_file.present and media_file.type in ('MUSIC','MUSIC_SINGLE_FILE')";
 
         if (!criteria.getMusicFolders().isEmpty()) {
             query += " and media_file.folder in (:folders)";
@@ -613,10 +623,10 @@ public class MediaFileDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
-        return namedQueryForInt("select count(*) from media_file where type = :type and folder in (:folders) and present", 0, args);
+        return namedQueryForInt("select count(*) from media_file where type in (:types) and folder in (:folders) and present", 0, args);
     }
 
     public int getPlayedAlbumCount(final List<MusicFolder> musicFolders) {
@@ -624,10 +634,10 @@ public class MediaFileDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
         }};
-        return namedQueryForInt("select count(*) from media_file where type = :type " +
+        return namedQueryForInt("select count(*) from media_file where type in (:types) " +
                                 "and play_count > 0 and present and folder in (:folders)", 0, args);
     }
 
@@ -636,13 +646,13 @@ public class MediaFileDao extends AbstractDao {
             return 0;
         }
         Map<String, Object> args = new HashMap<String, Object>() {{
-            put("type", MediaFile.MediaType.ALBUM.name());
+            put("types", MediaFile.MediaType.albumTypes());
             put("folders", MusicFolder.toPathList(musicFolders));
             put("username", username);
         }};
         return namedQueryForInt("select count(*) from starred_media_file, media_file " +
                                 "where media_file.id = starred_media_file.media_file_id " +
-                                "and media_file.type = :type " +
+                                "and media_file.type in (:types) " +
                                 "and media_file.present " +
                                 "and media_file.folder in (:folders) " +
                                 "and starred_media_file.username = :username",
