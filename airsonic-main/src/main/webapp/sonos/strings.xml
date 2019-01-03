@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- If you change some text in that file don't forget to change the version of string () for sonos take change. -->
 <stringtables xmlns="http://sonos.com/sonosapi">
 
-    <stringtable rev="5" xml:lang="en-US">
-        <string stringId="ServicePromo">Stream music from your own Airsonic server. Please log on with an existing Airsonic account.</string>
+    <stringtable rev="1" xml:lang="en-US">
+        <string stringId="ServicePromo">Airsonic is a free, web-based media streamer, providing ubiquitious access to your music.</string>
         <string stringId="Error0Message">Sorry, wrong Airsonic username or password.</string>
-        <string stringId="Error1Message">Please upgrade to Subsonic Premium to continue to use this service.</string>
+        <!-- String for browser authentication -->
+        <string stringId="appUrlStringId">Start procedure for link my account.</string>
+    </stringtable>
+
+    <stringtable rev="1" xml:lang="fr-FR">
+        <string stringId="ServicePromo">Airsonic est une application de diffusion multimédia gratuite sur le Web, offrant un accès omniprésent à votre musique.</string>
+        <string stringId="Error0Message">Erreur de nom d'utilisateur ou de mot de passe.</string>
+        <!-- String for browser authentication -->
+        <string stringId="appUrlStringId">Lancer la procédure pour lier mon compte.</string>
     </stringtable>
 
 </stringtables>

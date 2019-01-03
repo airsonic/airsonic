@@ -19,6 +19,7 @@
 
 package org.airsonic.player.service.sonos;
 
+import org.airsonic.player.dao.SonosLinkDao;
 import org.airsonic.player.util.Pair;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -35,18 +36,54 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * <p>Registration with Sonos controller. They are 2 types of registration they are still supported by Sonos.
+ * The ANONYMOUS and APPLICATION_LINK. The third USER_ID, must still work but will be not supported.</p>
+ * <p></p>
  * @author Sindre Mehus
+ * @author Nacrylic
  * @version $Id$
  */
+@Component
 public class SonosServiceRegistration {
-
     private static final Logger LOG = LoggerFactory.getLogger(SonosServiceRegistration.class);
+
+
+    @Autowired
+    private SonosLinkDao sonosLinkDao;
+
+    /**
+     * The type of Authentication fo Sonos, the old want USER_ID, is will be not supported. We must use the
+     * Anonymous or AppLink. The USER_ID
+     */
+    public enum AuthenticationType {
+        //@Deprecated use ANONYMOUS or APPLICATION_LINK
+        @Deprecated
+        DEVICE_LINK("DeviceLink"),
+        @Deprecated
+        USER_ID("UserId"),
+
+        ANONYMOUS("Anonymous"),
+        APPLICATION_LINK("AppLink");
+
+        private String fieldValue;
+
+        AuthenticationType(String fieldValue){
+            this.fieldValue = fieldValue;
+        }
+
+        public String getFieldValue() {
+            return fieldValue;
+        }
+    }
+
 
     /**
      * Enable or disable Sonos registration
@@ -59,8 +96,9 @@ public class SonosServiceRegistration {
      * @throws IOException if some io problem
      */
 
-    public void setEnabled(String airsonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName, int sonosServiceId) throws IOException {
-        String localUrl = airsonicBaseUrl + "ws/Sonos";
+    public boolean setEnabled(String airsonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName,
+                           int sonosServiceId, AuthenticationType authenticationType) throws IOException {
+        String localUrl = airsonicBaseUrl + "/ws/Sonos";
         String controllerUrl = String.format("http://%s:1400/customsd", sonosControllerIp);
 
         LOG.info((enabled ? "Enabling" : "Disabling") + " Sonos music service, using Sonos controller IP " + sonosControllerIp +
@@ -80,28 +118,39 @@ public class SonosServiceRegistration {
             params.add(Pair.create("uri", localUrl));
             params.add(Pair.create("secureUri", localUrl));
             params.add(Pair.create("pollInterval", "1200"));
-            params.add(Pair.create("authType", "UserId"));
             params.add(Pair.create("containerType", "MService"));
             params.add(Pair.create("caps", "search"));
             params.add(Pair.create("caps", "trFavorites"));
             params.add(Pair.create("caps", "alFavorites"));
             params.add(Pair.create("caps", "ucPlaylists"));
             params.add(Pair.create("caps", "extendedMD"));
+
+            // If you change /home/michel/externalDev/airsonic/airsonic-main/src/main/webapp/sonos/presentationMap.xml
+            // Change the presentationMapVersion
             params.add(Pair.create("presentationMapVersion", "1"));
-            params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
-            params.add(Pair.create("stringsVersion", "5"));
-            params.add(Pair.create("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
+            params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "/sonos/presentationMap.xml"));
+
+            // If you are change text in : /home/michel/externalDev/airsonic/airsonic-main/src/main/webapp/sonos/strings.xml
+            // Change the stringsVersion
+            params.add(Pair.create("stringsVersion", "11"));
+            params.add(Pair.create("stringsUri", airsonicBaseUrl + "/sonos/strings.xml"));
+            params.add(Pair.create("authType", authenticationType.getFieldValue()));
+
+            return execute(controllerUrl, params);
         } else {
 
-            // For disable it need name with empty value
+            // For disable it need name with empty value, without that the service registration didn't disable.
             params.add(Pair.create("name", null));
-        }
 
-        String result = execute(controllerUrl, params);
-        LOG.info("Sonos controller returned: " + result);
+            if(execute(controllerUrl, params)){
+                sonosLinkDao.removeAll();
+            }
+            return false;
+        }
     }
 
-    private String execute(String url, List<Pair<String, String>> parameters) throws IOException {
+
+    private boolean execute(String url, List<Pair<String, String>> parameters) throws IOException {
         List<NameValuePair> params = new ArrayList<>();
         for (Pair<String, String> parameter : parameters) {
             params.add(new BasicNameValuePair(parameter.getFirst(), parameter.getSecond()));
@@ -113,7 +162,11 @@ public class SonosServiceRegistration {
         // Don't use the UTF8 encoding, is nice but the sonos controller didn't like (it's american!).
         request.setEntity(new UrlEncodedFormEntity(params));
 
-        return executeRequest(request);
+
+        String result = executeRequest(request);
+        LOG.info("Sonos controller returned: " + result);
+
+        return result.contains("Success");
     }
 
     private String executeRequest(HttpUriRequest request) throws IOException {

@@ -31,22 +31,13 @@ import org.airsonic.player.service.sonos.SonosServiceRegistration;
 import org.airsonic.player.service.sonos.SonosSoapFault;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.cxf.headers.Header;
-import org.apache.cxf.helpers.CastUtils;
-import org.apache.cxf.jaxb.JAXBDataBinding;
-import org.apache.cxf.jaxws.context.WrappedMessageContext;
-import org.apache.cxf.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Node;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Holder;
 import javax.xml.ws.WebServiceContext;
@@ -55,6 +46,8 @@ import javax.xml.ws.handler.MessageContext;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
+
+import static org.airsonic.player.service.sonos.SonosServiceRegistration.AuthenticationType.APPLICATION_LINK;
 
 /**
  * For manual testing of this service:
@@ -108,6 +101,8 @@ public class SonosService implements SonosSoap {
     private PlaylistService playlistService;
     @Autowired
     private UPnPService upnpService;
+    @Autowired
+    private SonosServiceRegistration registration;
 
     /**
      * The context for the request. This is used to get the Auth information
@@ -130,8 +125,7 @@ public class SonosService implements SonosSoap {
 
         for (String sonosController : sonosControllers) {
             try {
-                new SonosServiceRegistration().setEnabled(baseUrl, sonosController, enabled,
-                                                          sonosServiceName, sonosServiceId);
+                registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, APPLICATION_LINK);
                 break;
             } catch (IOException x) {
                 LOG.warn(String.format("Failed to enable/disable music service in Sonos controller %s: %s", sonosController, x));
@@ -524,49 +518,9 @@ public class SonosService implements SonosSoap {
         return messageContext == null ? null : (HttpServletRequest) messageContext.get("HTTP.REQUEST");
     }
 
+
     private String getUsername() {
-        MessageContext messageContext = context.getMessageContext();
-        if (messageContext == null || !(messageContext instanceof WrappedMessageContext)) {
-            LOG.error("Message context is null or not an instance of WrappedMessageContext.");
-            return null;
-        }
-
-        Message message = ((WrappedMessageContext) messageContext).getWrappedMessage();
-        List<Header> headers = CastUtils.cast((List<?>) message.get(Header.HEADER_LIST));
-        if (headers != null) {
-            for (Header h : headers) {
-                Object o = h.getObject();
-                // Unwrap the node using JAXB
-                if (o instanceof Node) {
-                    JAXBContext jaxbContext;
-                    try {
-                        // TODO: Check performance
-                        jaxbContext = new JAXBDataBinding(Credentials.class).getContext();
-                        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                        o = unmarshaller.unmarshal((Node) o);
-                    } catch (JAXBException e) {
-                        // failed to get the credentials object from the headers
-                        LOG.error("JAXB error trying to unwrap credentials", e);
-                    }
-                }
-                if (o instanceof Credentials) {
-                    Credentials c = (Credentials) o;
-
-                    // Note: We're using the username as session ID.
-                    String username = c.getSessionId();
-                    if (username == null) {
-                        LOG.debug("No session id in credentials object, get from login");
-                        username = c.getLogin().getUsername();
-                    }
-                    return username;
-                } else {
-                    LOG.error("No credentials object");
-                }
-            }
-        } else {
-            LOG.error("No headers found");
-        }
-        return null;
+        return securityService.getLoginUser();
     }
 
     public void setSonosHelper(SonosHelper sonosHelper) {
@@ -595,7 +549,20 @@ public class SonosService implements SonosSoap {
 
     @Override
     public AppLinkResult getAppLink(String householdId, String hardware, String osVersion, String sonosAppName, String callbackPath) throws CustomFault {
-        return null;
+        AppLinkResult result = new AppLinkResult();
+
+        result.setAuthorizeAccount(new AppLinkInfo());
+        result.getAuthorizeAccount().setAppUrlStringId("appUrlStringId");
+        DeviceLinkCodeResult linkCodeResult = new DeviceLinkCodeResult();
+
+        String linkCode = securityService.generateLinkCode(householdId);
+        linkCodeResult.setLinkCode(linkCode);
+        linkCodeResult.setRegUrl(settingsService.getHost() + "/sonoslink/" + linkCode);
+        linkCodeResult.setShowLinkCode(false);
+
+        result.getAuthorizeAccount().setDeviceLink(linkCodeResult);
+
+        return result;
     }
 
     @Override
@@ -615,7 +582,19 @@ public class SonosService implements SonosSoap {
 
     @Override
     public DeviceAuthTokenResult getDeviceAuthToken(String householdId, String linkCode, String linkDeviceId, String callbackPath) throws CustomFault {
-        return null;
+        LOG.debug("Get device auth token for householdid {} and linkcode {}.", householdId, linkCode);
+
+        String authToken = securityService.getSonosAuthToken(householdId, linkCode);
+
+        if(authToken == null){
+            throw new SonosSoapFault.NotLInkedRetry();
+        } else {
+            DeviceAuthTokenResult authTokenResult = new DeviceAuthTokenResult();
+            authTokenResult.setAuthToken(authToken);
+            authTokenResult.setPrivateKey("alwaysAuthenticate");
+            return authTokenResult;
+        }
+
     }
 
     @Override

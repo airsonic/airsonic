@@ -11,6 +11,9 @@
         <jaxws:outFaultInterceptors>
             <bean class="org.airsonic.player.service.sonos.SonosFaultInterceptor"/>
         </jaxws:outFaultInterceptors>
+        <jaxws:inInterceptors>
+            <ref bean="sonosLinkkInterceptor"/>
+        </jaxws:inInterceptors>
     </jaxws:endpoint>
 
     <bean id="sonosHelper" class="org.airsonic.player.service.sonos.SonosHelper">

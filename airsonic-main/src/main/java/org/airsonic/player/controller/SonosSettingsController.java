@@ -18,7 +18,6 @@
  */
 package org.airsonic.player.controller;
 
-import org.airsonic.player.service.NetworkService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.SonosService;
 import org.apache.commons.lang.StringUtils;
@@ -81,8 +80,7 @@ public class SonosSettingsController {
         settingsService.setSonosServiceName(sonosServiceName);
         settingsService.save();
 
-        sonosService.setMusicServiceEnabled(false, NetworkService.getBaseUrl(request));
-        sonosService.setMusicServiceEnabled(sonosEnabled, NetworkService.getBaseUrl(request));
+        sonosService.setMusicServiceEnabled(sonosEnabled, settingsService.getHost());
     }
 
     public void setSettingsService(SettingsService settingsService) {

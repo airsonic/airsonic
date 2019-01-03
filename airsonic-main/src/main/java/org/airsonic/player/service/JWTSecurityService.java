@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.airsonic.player.domain.SonosLink;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -24,6 +25,11 @@ public class JWTSecurityService {
 
     public static final String JWT_PARAM_NAME = "jwt";
     public static final String CLAIM_PATH = "path";
+
+    public static final String CLAIM_USERNAME = "username";
+    public static final String CLAIM_HOUSEHOLDID = "householdid";
+    public static final String CLAIM_LINKCODE = "linkcode";
+
     // TODO make this configurable
     public static final int DEFAULT_DAYS_VALID_FOR = 7;
     private static SecureRandom secureRandom = new SecureRandom();
@@ -84,5 +90,27 @@ public class JWTSecurityService {
 
     public DecodedJWT verify(String credentials) {
         return verify(settingsService.getJWTKey(), credentials);
+    }
+
+
+    /**
+     * Create a unexpired token for sonos link
+     */
+    public String createSonosToken(String username, String householdId, String linkCode){
+        return JWT.create()
+                .withClaim(CLAIM_USERNAME, username)
+                .withClaim(CLAIM_HOUSEHOLDID, householdId)
+                .withClaim(CLAIM_LINKCODE, linkCode)
+                .sign(getAlgorithm(settingsService.getJWTKey()));
+    }
+
+
+    public SonosLink verifySonosLink(String sonosLinkToken) {
+        DecodedJWT jwt = verify(sonosLinkToken);
+
+        SonosLink sonosLink = new SonosLink(jwt.getClaim(CLAIM_USERNAME).asString(),
+                jwt.getClaim(CLAIM_HOUSEHOLDID).asString(), jwt.getClaim(CLAIM_LINKCODE).asString());
+
+        return sonosLink;
     }
 }

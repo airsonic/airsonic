@@ -1,0 +1,22 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="add-sonos-table-link" author="nacrylic">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="sonoslink" />
+            </not>
+        </preConditions>
+        <createTable tableName="sonoslink">
+            <column name="linkcode" type="${varchar_type}">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="username" type="${varchar_type}"/>
+            <column name="householdid" type="${varchar_type}"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="sonoslink" />
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

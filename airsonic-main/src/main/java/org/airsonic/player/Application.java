@@ -2,9 +2,11 @@ package org.airsonic.player;
 
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
+import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -15,18 +17,23 @@ import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.env.Environment;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @SpringBootApplication(exclude = {
         JmxAutoConfiguration.class,
@@ -40,9 +47,13 @@ import java.lang.reflect.Method;
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
         "classpath:/servlet.xml"})
-public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
+public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer,
+        ApplicationListener<ApplicationReadyEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
+
+    @Autowired
+    private SettingsService settingsService;
 
     /**
      * Registers the DWR servlet.
@@ -221,6 +232,29 @@ public class Application extends SpringBootServletInitializer implements Embedde
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             LOG.debug("No jetty classes found");
+        }
+    }
+
+    /**
+     * Initialise the host name and host address in setting service if is not set in file.
+     */
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        int port = event.getApplicationContext().getBean(Environment.class).getProperty("server.port", Integer.class, 8080);
+        try {
+
+            if(settingsService.getHostAddress() == null){
+                settingsService.setHostAddress(String.format("%s:%d",InetAddress.getLocalHost().getHostAddress(), port));
+            }
+
+            if(settingsService.getHostAddress() == null){
+                settingsService.setHostAddress(String.format("%s:%d",InetAddress.getLocalHost().getHostName(), port));
+            }
+
+        } catch (UnknownHostException e) {
+            if(settingsService.getHostAddress() == null &&  settingsService.getHostName() == null){
+                throw new IllegalStateException("The host name and address cannot be retrieve. Set it in airsonic.properties.");
+            }
         }
     }
 
