@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import com.sonos.services._1.Credentials;
 import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
 import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.SettingsService;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
 import org.apache.cxf.headers.Header;
@@ -24,6 +25,8 @@ import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Set;
 
+import static org.airsonic.player.service.sonos.SonosServiceRegistration.AuthenticationType;
+
 /**
  * <p>Interceptor for the Soap sonos, is validate access for all methods (Soap Action) except methods for exchange
  * on set link between airsonic and sonos controller.</p>
@@ -42,6 +45,9 @@ public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
     @Autowired
     private SecurityService securityService;
 
+    @Autowired
+    private SettingsService settingsService;
+
     private JAXBContext jaxbContext;
 
     @PostConstruct
@@ -52,16 +58,24 @@ public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
     @Override
     public void handleMessage(SoapMessage message) throws Fault {
         try {
+            if(!settingsService.isSonosEnabled()){
+                throw new SonosSoapFault.LoginUnauthorized();
+            }
+
             String action = getAction(message);
+            AuthenticationType authenticationType = AuthenticationType.valueOf(settingsService.getSonosLinkMethod());
 
             if (action != null && openMethod.contains(action)) {
                 LOG.debug("Soap message not process : " + message.toString());
 
-            } else if( action != null) {
+            } else if( action != null && authenticationType == AuthenticationType.APPLICATION_LINK) {
+
                 String sonosLinkToken = getToken(message);
                 if (sonosLinkToken != null) {
                     securityService.setSonosUser(sonosLinkToken);
                 }
+            } else if( action != null && authenticationType == AuthenticationType.ANONYMOUS){
+                securityService.setSonosUser();
             } else {
                 LOG.debug("Soap message not process : " + message.toString());
                 throw new SonosSoapFault.LoginUnauthorized();

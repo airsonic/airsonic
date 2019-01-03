@@ -22,6 +22,7 @@ package org.airsonic.player.service;
 import com.sonos.services._1.*;
 import com.sonos.services._1_1.CustomFault;
 import com.sonos.services._1_1.SonosSoap;
+import org.airsonic.player.dao.SonosLinkDao;
 import org.airsonic.player.domain.AlbumListType;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.Playlist;
@@ -47,7 +48,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-import static org.airsonic.player.service.sonos.SonosServiceRegistration.AuthenticationType.APPLICATION_LINK;
+import static org.airsonic.player.service.sonos.SonosServiceRegistration.AuthenticationType;
 
 /**
  * For manual testing of this service:
@@ -103,6 +104,8 @@ public class SonosService implements SonosSoap {
     private UPnPService upnpService;
     @Autowired
     private SonosServiceRegistration registration;
+    @Autowired
+    private SonosLinkDao sonosLinkDao;
 
     /**
      * The context for the request. This is used to get the Auth information
@@ -122,11 +125,18 @@ public class SonosService implements SonosSoap {
 
         String sonosServiceName = settingsService.getSonosServiceName();
         int sonosServiceId = settingsService.getSonosServiceId();
+        AuthenticationType authenticationType = AuthenticationType.valueOf(settingsService.getSonosLinkMethod());
 
         for (String sonosController : sonosControllers) {
             try {
-                registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, APPLICATION_LINK);
-                break;
+                if( registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, authenticationType)){
+
+                    // Clean old links.
+                    if(!enabled) {
+                        sonosLinkDao.removeAll();
+                    }
+                    break;
+                }
             } catch (IOException x) {
                 LOG.warn(String.format("Failed to enable/disable music service in Sonos controller %s: %s", sonosController, x));
             }

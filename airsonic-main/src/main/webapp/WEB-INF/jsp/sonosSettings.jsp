@@ -18,7 +18,8 @@
   ~  Copyright 2015 (C) Sindre Mehus
   --%>
 
-<html><head>
+<html>
+<head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
     <script type="text/javascript" src="<c:url value="/script/scripts.js"/>"></script>
@@ -34,7 +35,7 @@
 </c:import>
 
 <form method="post" action="sonosSettings.view">
-    <sec:csrfInput />
+    <sec:csrfInput/>
 
     <div>
         <input type="checkbox" name="sonosEnabled" id="sonosEnabled" class="checkbox"
@@ -42,9 +43,27 @@
         <label for="sonosEnabled"><fmt:message key="sonossettings.enabled"/></label>
     </div>
 
-    <p class="detail" style="width:60%;white-space:normal">
-        <fmt:message key="sonossettings.description"/>
-    </p>
+    <div>
+        <p class="detail" style="width:60%;white-space:normal"> <fmt:message key="sonossettings.description"/></p>
+    </div>
+
+    <div>
+        <p></p>
+        <p><label for="sonosEnabled"><fmt:message key="sonossettings.linkMethod"/></label></p>
+        <div><label>
+            <input type="radio" name="sonosLinkMethod" value="APPLICATION_LINK" <c:if test="${model.sonosLinkMethod == 'APPLICATION_LINK'}">checked="checked"</c:if>>
+            <fmt:message key="sonossettings.linkMethod.applicationLink"/>
+        </label></div>
+        <div><label>
+            <input type="radio" name="sonosLinkMethod" value="ANONYMOUS" <c:if test="${model.sonosLinkMethod == 'ANONYMOUS'}">checked="checked"</c:if>>
+            <fmt:message key="sonossettings.linkMethod.anonymous"/>
+        </label></div>
+        <p class="detail" style="width:60%;white-space:normal;padding-top:0">
+            <fmt:message key="sonossettings.linkMethod.anonymous.description"/>
+        </p>
+        <p></p>
+    </div>
+
     <div>
         <fmt:message key="sonossettings.servicename"/>
         <input name="sonosServiceName" id="sonosServiceName" size="40"
@@ -61,4 +80,5 @@
 
 </form>
 
-</body></html>
+</body>
+</html>

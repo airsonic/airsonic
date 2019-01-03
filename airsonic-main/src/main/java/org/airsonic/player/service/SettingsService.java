@@ -24,6 +24,7 @@ import org.airsonic.player.dao.InternetRadioDao;
 import org.airsonic.player.dao.MusicFolderDao;
 import org.airsonic.player.dao.UserDao;
 import org.airsonic.player.domain.*;
+import org.airsonic.player.service.sonos.SonosServiceRegistration;
 import org.airsonic.player.spring.DataSourceConfigType;
 import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
@@ -140,6 +141,8 @@ public class SettingsService {
     private static final String KEY_HOST_NAME = "HostName";
     private static final String KEY_USE_HOST_NAME = "UseHostName";
 
+    private static final String KEY_SONOS_LINK_METHOD = "SonosLinkMethod";
+
 
     // Default values.
     private static final String DEFAULT_JWT_KEY = null;
@@ -220,6 +223,8 @@ public class SettingsService {
     private static final String DEFAULT_DATABASE_CONFIG_JNDI_NAME = null;
     private static final Integer DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH = 512;
     private static final String DEFAULT_DATABASE_USERTABLE_QUOTE = null;
+
+    private static final String DEFAULT_SONOS_LINK_METHOD = SonosServiceRegistration.AuthenticationType.APPLICATION_LINK.name();
 
 
     // Array of obsolete keys.  Used to clean property file.
@@ -1460,6 +1465,14 @@ public class SettingsService {
         return getProperty(KEY_EXPORT_PLAYLIST_FORMAT, DEFAULT_EXPORT_PLAYLIST_FORMAT);
     }
 
+
+    public String getSonosLinkMethod(){
+        return getString(KEY_SONOS_LINK_METHOD, DEFAULT_SONOS_LINK_METHOD);
+    }
+
+    public void setSonosLinkMethod(String linkMethod){
+        setString(KEY_SONOS_LINK_METHOD, linkMethod);
+    }
 
     public String getHost() {
         String host;

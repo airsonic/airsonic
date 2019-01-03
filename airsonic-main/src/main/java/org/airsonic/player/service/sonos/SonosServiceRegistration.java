@@ -55,10 +55,6 @@ import java.util.List;
 public class SonosServiceRegistration {
     private static final Logger LOG = LoggerFactory.getLogger(SonosServiceRegistration.class);
 
-
-    @Autowired
-    private SonosLinkDao sonosLinkDao;
-
     /**
      * The type of Authentication fo Sonos, the old want USER_ID, is will be not supported. We must use the
      * Anonymous or AppLink. The USER_ID
@@ -136,17 +132,13 @@ public class SonosServiceRegistration {
             params.add(Pair.create("stringsUri", airsonicBaseUrl + "/sonos/strings.xml"));
             params.add(Pair.create("authType", authenticationType.getFieldValue()));
 
-            return execute(controllerUrl, params);
         } else {
 
             // For disable it need name with empty value, without that the service registration didn't disable.
             params.add(Pair.create("name", null));
-
-            if(execute(controllerUrl, params)){
-                sonosLinkDao.removeAll();
-            }
-            return false;
         }
+
+        return execute(controllerUrl, params);
     }
 
 

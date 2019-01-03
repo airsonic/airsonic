@@ -55,6 +55,7 @@ public class SonosSettingsController {
 
         map.put("sonosEnabled", settingsService.isSonosEnabled());
         map.put("sonosServiceName", settingsService.getSonosServiceName());
+        map.put("sonosLinkMethod", settingsService.getSonosLinkMethod());
 
         model.addAttribute("model", map);
         return "sonosSettings";
@@ -76,6 +77,7 @@ public class SonosSettingsController {
             sonosServiceName = "Airsonic";
         }
 
+        settingsService.setSonosLinkMethod(request.getParameter("sonosLinkMethod"));
         settingsService.setSonosEnabled(sonosEnabled);
         settingsService.setSonosServiceName(sonosServiceName);
         settingsService.save();

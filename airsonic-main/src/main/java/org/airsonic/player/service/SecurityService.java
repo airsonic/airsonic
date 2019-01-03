@@ -62,6 +62,8 @@ public class SecurityService implements UserDetailsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityService.class);
 
+    public static final String SONOS_USER_USERNAME = "sonos";
+
     @Autowired
     private UserDao userDao;
 
@@ -448,15 +450,23 @@ public class SecurityService implements UserDetailsService {
         SonosLink sonosLink =jwtSecurityService.verifySonosLink(sonosLinkToken);
 
         if(sonosLinkDao.isExist(sonosLink)){
-            User user = getUserByName(sonosLink.getUsername(), true);
-            Authentication authentication = authenticate(user.getUsername(), user.getPassword());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            setUser(sonosLink.getUsername());
         } else {
             throw new SonosSoapFault.LoginUnauthorized();
         }
     }
 
-    // must be strict 32 character limit on length
+    public void setSonosUser() throws SonosSoapFault.LoginUnauthorized {
+        setUser(SONOS_USER_USERNAME);
+    }
+
+    private void setUser(String username) throws SonosSoapFault.LoginUnauthorized {
+        User user = getUserByName(SONOS_USER_USERNAME, true);
+        Authentication authentication = authenticate(user.getUsername(), user.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+        // must be strict 32 character limit on length
     private String createLinkCode() {
         return UUID.randomUUID().toString().replace("-", "");
     }
