@@ -19,7 +19,6 @@
 
 package org.airsonic.player.service.sonos;
 
-import org.airsonic.player.dao.SonosLinkDao;
 import org.airsonic.player.util.Pair;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
@@ -36,7 +35,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
