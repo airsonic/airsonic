@@ -408,7 +408,11 @@ public class MediaFileService {
                     mediaFileDao.createOrUpdateMediaFile(child);
                 }
             }
-        } else {
+        }
+
+        // uncomment the 'else' section to hide indexed sound files (i.e. the base
+        // files for CUE-sheets from which tracks are added) from the listing
+        //} else {
             List<File> children = filterMediaFiles(FileUtil.listFiles(parent.getFile()));
             for (File child : children) {
                 if (storedChildrenMap.remove(child.getPath()) == null) {
@@ -416,7 +420,7 @@ public class MediaFileService {
                     mediaFileDao.createOrUpdateMediaFile(createMediaFile(child));
                 }
             }
-        }
+        //}
 
         // Delete children that no longer exist on disk.
         for (String path : storedChildrenMap.keySet()) {
