@@ -65,7 +65,7 @@
     <p></p>
     <div>
         <fmt:message key="sonossettings.callbackHostAddress"/>
-        <input name="callBackHostAddress" id="callbackHostAddress" size="80"
+        <input name="callbackHostAddress" id="callbackHostAddress" size="80"
                value="<c:out value="${model.callbackHostAddress}" escapeXml="true"/>"/>
     </div>
     <p class="detail" style="width:60%;white-space:normal;padding-top:0">
