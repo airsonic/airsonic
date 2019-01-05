@@ -58,9 +58,9 @@ public class SonosSoapFault extends RuntimeException {
         }
     }
 
-    public static class NotLInkedRetry extends SonosSoapFault {
+    public static class NotLinkedRetry extends SonosSoapFault {
 
-        public NotLInkedRetry() {
+        public NotLinkedRetry() {
             super("Cannot find link code, retry", "Client.NOT_LINKED_RETRY", 5);
         }
     }

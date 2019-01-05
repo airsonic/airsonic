@@ -89,10 +89,9 @@ public class SonosServiceRegistration {
      * @param sonosServiceId the ID, the free id is : 240-253 or 255
      * @throws IOException if some io problem
      */
-
     public boolean setEnabled(String airsonicBaseUrl, String sonosControllerIp, boolean enabled, String sonosServiceName,
                            int sonosServiceId, AuthenticationType authenticationType) throws IOException {
-        String localUrl = airsonicBaseUrl + "/ws/Sonos";
+        String localUrl = airsonicBaseUrl + "ws/Sonos";
         String controllerUrl = String.format("http://%s:1400/customsd", sonosControllerIp);
 
         LOG.info((enabled ? "Enabling" : "Disabling") + " Sonos music service, using Sonos controller IP " + sonosControllerIp +
