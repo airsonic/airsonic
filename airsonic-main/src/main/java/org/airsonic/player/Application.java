@@ -5,19 +5,20 @@ import org.airsonic.player.filter.*;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -40,7 +41,7 @@ import java.lang.reflect.Method;
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
         "classpath:/servlet.xml"})
-public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
+public class Application extends SpringBootServletInitializer implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
@@ -52,7 +53,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
     @Bean
     public ServletRegistrationBean dwrServletRegistrationBean() {
         ServletRegistrationBean servlet = new ServletRegistrationBean(new DwrServlet(), "/dwr/*");
-        servlet.addInitParameter("crossDomainSessionSecurity","false");
+        servlet.addInitParameter("crossDomainSessionSecurity", "false");
         return servlet;
     }
 
@@ -179,7 +180,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
         // Customize the application or call application.sources(...) to add sources
         // Since our example is itself a @Configuration class (via @SpringBootApplication)
         // we actually don't need to override this method.
-        return application.sources(Application.class).web(true);
+        return application.sources(Application.class).web(WebApplicationType.SERVLET);
     }
 
     @Override
@@ -188,7 +189,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
     }
 
     @Override
-    public void customize(ConfigurableEmbeddedServletContainer container) {
+    public void customize(ConfigurableServletWebServerFactory container) {
         LOG.trace("Servlet container is {}", container.getClass().getCanonicalName());
         // Yes, there is a good reason we do this.
         // We cannot count on the tomcat classes being on the classpath which will
@@ -197,7 +198,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
         // specific classes.
         try {
             Class<?> tomcatESCF = Class.forName("org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory");
-            if(tomcatESCF.isInstance(container)) {
+            if (tomcatESCF.isInstance(container)) {
                 LOG.info("Detected Tomcat web server");
                 LOG.debug("Attempting to optimize tomcat");
                 Object tomcatESCFInstance = tomcatESCF.cast(container);
@@ -216,7 +217,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
 
         try {
             Class<?> jettyESCF = Class.forName("org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory");
-            if(jettyESCF.isInstance(container)) {
+            if (jettyESCF.isInstance(container)) {
                 LOG.warn("Detected Jetty web server. Here there be dragons.");
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
