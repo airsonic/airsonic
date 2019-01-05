@@ -583,7 +583,7 @@ public class SonosService implements SonosSoap {
 
         String linkCode = securityService.generateLinkCode(householdId);
         linkCodeResult.setLinkCode(linkCode);
-        linkCodeResult.setRegUrl(settingsService.getSonosCallbackHostAddress() + "sonoslink/" + linkCode);
+        linkCodeResult.setRegUrl(settingsService.getSonosCallbackHostAddress() + "sonoslink?linkCode=" + linkCode);
         linkCodeResult.setShowLinkCode(false);
 
         result.getAuthorizeAccount().setDeviceLink(linkCodeResult);

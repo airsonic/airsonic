@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.websocket.server.PathParam;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,8 +67,8 @@ public class SonosLinkController {
     }
 
 
-    @GetMapping(value = "/sonoslink/{linkCode}")
-    public ModelAndView linkCode(@PathVariable("linkCode") String linkCode) throws Exception {
+    @GetMapping(value = "/sonoslink", params = "linkCode")
+    public ModelAndView linkCode(@PathParam("linkCode") String linkCode) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
         String householdid = securityService.getHousehold(linkCode);
