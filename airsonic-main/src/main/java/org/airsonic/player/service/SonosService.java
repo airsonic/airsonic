@@ -115,11 +115,21 @@ public class SonosService implements SonosSoap {
     @Resource
     private WebServiceContext context;
 
-    public void setMusicServiceEnabled(boolean enabled, String baseUrl) {
+    /**
+     * Try to enable/disbale the Sonos link.
+     *
+     * @param enabled or not, is not the sonoslink table is clear
+     * @param baseUrl call back root address
+     * @return list of message code for user return
+     */
+    public List<String> setMusicServiceEnabled(boolean enabled, String baseUrl) {
+        List<String> messagesCodes = new ArrayList<>();
+
         List<String> sonosControllers = upnpService.getSonosControllerHosts();
         if (sonosControllers.isEmpty()) {
             LOG.info("No Sonos controller found");
-            return;
+            messagesCodes.add("sonossettings.controller.notfound");
+            return messagesCodes;
         }
         LOG.info("Found Sonos controllers: " + sonosControllers);
 
@@ -131,16 +141,22 @@ public class SonosService implements SonosSoap {
             try {
                 if( registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, authenticationType)){
 
+                    messagesCodes.add("sonossettings.sonoslink.success");
                     // Clean old links.
                     if(!enabled) {
                         sonosLinkDao.removeAll();
+                        messagesCodes.add("sonossettings.sonoslink.removed");
                     }
                     break;
                 }
             } catch (IOException x) {
+                messagesCodes.add("sonossettings.exception");
                 LOG.warn(String.format("Failed to enable/disable music service in Sonos controller %s: %s", sonosController, x));
             }
+            messagesCodes.add("sonossettings.sonoslink.fail");
         }
+
+        return messagesCodes;
     }
 
 
@@ -567,7 +583,7 @@ public class SonosService implements SonosSoap {
 
         String linkCode = securityService.generateLinkCode(householdId);
         linkCodeResult.setLinkCode(linkCode);
-        linkCodeResult.setRegUrl(settingsService.getHost() + "/sonoslink/" + linkCode);
+        linkCodeResult.setRegUrl(settingsService.getSonosCallbackHostAddress() + "/sonoslink/" + linkCode);
         linkCodeResult.setShowLinkCode(false);
 
         result.getAuthorizeAccount().setDeviceLink(linkCodeResult);

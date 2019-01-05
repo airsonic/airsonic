@@ -17,23 +17,18 @@ import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.core.env.Environment;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 @SpringBootApplication(exclude = {
         JmxAutoConfiguration.class,
@@ -47,8 +42,7 @@ import java.net.UnknownHostException;
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
         "classpath:/servlet.xml"})
-public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer,
-        ApplicationListener<ApplicationReadyEvent> {
+public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
@@ -232,29 +226,6 @@ public class Application extends SpringBootServletInitializer implements Embedde
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             LOG.debug("No jetty classes found");
-        }
-    }
-
-    /**
-     * Initialise the host name and host address in setting service if is not set in file.
-     */
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
-        int port = event.getApplicationContext().getBean(Environment.class).getProperty("server.port", Integer.class, 8080);
-        try {
-
-            if(settingsService.getHostAddress() == null){
-                settingsService.setHostAddress(String.format("%s:%d",InetAddress.getLocalHost().getHostAddress(), port));
-            }
-
-            if(settingsService.getHostAddress() == null){
-                settingsService.setHostAddress(String.format("%s:%d",InetAddress.getLocalHost().getHostName(), port));
-            }
-
-        } catch (UnknownHostException e) {
-            if(settingsService.getHostAddress() == null &&  settingsService.getHostName() == null){
-                throw new IllegalStateException("The host name and address cannot be retrieve. Set it in airsonic.properties.");
-            }
         }
     }
 

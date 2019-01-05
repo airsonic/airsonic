@@ -43,26 +43,35 @@
         <label for="sonosEnabled"><fmt:message key="sonossettings.enabled"/></label>
     </div>
 
+    <p class="detail" style="width:60%;white-space:normal"><fmt:message key="sonossettings.description"/></p>
+    <p><label for="sonosEnabled"><fmt:message key="sonossettings.linkMethod"/></label></p>
+    <div><label>
+        <input type="radio" name="sonosLinkMethod" value="APPLICATION_LINK"
+               <c:if test="${model.sonosLinkMethod == 'APPLICATION_LINK'}">checked="checked"</c:if>>
+        <fmt:message key="sonossettings.linkMethod.applicationLink"/>
+    </label></div>
+    <p class="detail" style="width:60%;white-space:normal;padding-top:0">
+        <fmt:message key="sonossettings.linkMethod.applicationLink.description"/>
+    </p>
+    <div><label>
+        <input type="radio" name="sonosLinkMethod" value="ANONYMOUS"
+               <c:if test="${model.sonosLinkMethod == 'ANONYMOUS'}">checked="checked"</c:if>>
+        <fmt:message key="sonossettings.linkMethod.anonymous"/>
+    </label></div>
+    <p class="detail" style="width:60%;white-space:normal;padding-top:0">
+        <fmt:message key="sonossettings.linkMethod.anonymous.description"/>
+    </p>
+    <p></p>
+    <p></p>
     <div>
-        <p class="detail" style="width:60%;white-space:normal"> <fmt:message key="sonossettings.description"/></p>
+        <fmt:message key="sonossettings.callbackHostAddress"/>
+        <input name="callBackHostAddress" id="callbackHostAddress" size="80"
+               value="<c:out value="${model.callbackHostAddress}" escapeXml="true"/>"/>
     </div>
-
-    <div>
-        <p></p>
-        <p><label for="sonosEnabled"><fmt:message key="sonossettings.linkMethod"/></label></p>
-        <div><label>
-            <input type="radio" name="sonosLinkMethod" value="APPLICATION_LINK" <c:if test="${model.sonosLinkMethod == 'APPLICATION_LINK'}">checked="checked"</c:if>>
-            <fmt:message key="sonossettings.linkMethod.applicationLink"/>
-        </label></div>
-        <div><label>
-            <input type="radio" name="sonosLinkMethod" value="ANONYMOUS" <c:if test="${model.sonosLinkMethod == 'ANONYMOUS'}">checked="checked"</c:if>>
-            <fmt:message key="sonossettings.linkMethod.anonymous"/>
-        </label></div>
-        <p class="detail" style="width:60%;white-space:normal;padding-top:0">
-            <fmt:message key="sonossettings.linkMethod.anonymous.description"/>
-        </p>
-        <p></p>
-    </div>
+    <p class="detail" style="width:60%;white-space:normal;padding-top:0">
+        <fmt:message key="sonossettings.callbackHostAddress.description"/>
+    </p>
+    <p></p>
 
     <div>
         <fmt:message key="sonossettings.servicename"/>
@@ -72,11 +81,22 @@
     <p class="detail" style="width:60%;white-space:normal;padding-top:0">
         <fmt:message key="sonossettings.servicename.description"/>
     </p>
+    <p></p>
 
     <p>
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
         <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
     </p>
+
+    <p></p>
+    <h2 <c:if test="${empty model.returnCodes}">hidden</c:if>><fmt:message key="sonossettings.returnCodes"/></h2>
+    <p></p>
+    <div style="padding:5" class="log indent" <c:if test="${empty model.returnCodes}">hidden</c:if>>
+        <c:forEach items="${model.returnCodes}" var="returnCode">
+            <p><fmt:message key="${returnCode}"/></p>
+        </c:forEach>
+    </div>
+
 
 </form>
 

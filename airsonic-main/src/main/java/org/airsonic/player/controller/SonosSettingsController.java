@@ -18,6 +18,7 @@
  */
 package org.airsonic.player.controller;
 
+import org.airsonic.player.service.NetworkService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.SonosService;
 import org.apache.commons.lang.StringUtils;
@@ -27,11 +28,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,28 +51,13 @@ public class SonosSettingsController {
     private SonosService sonosService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String doGet(Model model) throws Exception {
-
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        map.put("sonosEnabled", settingsService.isSonosEnabled());
-        map.put("sonosServiceName", settingsService.getSonosServiceName());
-        map.put("sonosLinkMethod", settingsService.getSonosLinkMethod());
-
-        model.addAttribute("model", map);
-        return "sonosSettings";
+    public ModelAndView doGet(HttpServletRequest request, Model model) throws Exception {
+        return new ModelAndView("sonosSettings", "model", getModel(request));
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
-        handleParameters(request);
+    public ModelAndView doPost(HttpServletRequest request) throws Exception {
 
-        redirectAttributes.addFlashAttribute("settings_toast", true);
-
-        return "redirect:sonosSettings.view";
-    }
-
-    private void handleParameters(HttpServletRequest request) {
         boolean sonosEnabled = ServletRequestUtils.getBooleanParameter(request, "sonosEnabled", false);
         String sonosServiceName = StringUtils.trimToNull(request.getParameter("sonosServiceName"));
         if (sonosServiceName == null) {
@@ -80,16 +67,26 @@ public class SonosSettingsController {
         settingsService.setSonosLinkMethod(request.getParameter("sonosLinkMethod"));
         settingsService.setSonosEnabled(sonosEnabled);
         settingsService.setSonosServiceName(sonosServiceName);
+        settingsService.setSonosCallbackHostAddress(request.getParameter("callbackHostAddress"));
         settingsService.save();
 
-        sonosService.setMusicServiceEnabled(sonosEnabled, settingsService.getHost());
+        List<String> returnCodes = sonosService.setMusicServiceEnabled(sonosEnabled, settingsService.getSonosCallbackHostAddress());
+
+
+        Map<String, Object> map = getModel(request);
+
+        map.put("returnCodes", returnCodes);
+
+        return new ModelAndView("sonosSettings", "model", map);
     }
 
-    public void setSettingsService(SettingsService settingsService) {
-        this.settingsService = settingsService;
-    }
+    private  Map<String, Object> getModel(HttpServletRequest request){
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("sonosEnabled", settingsService.isSonosEnabled());
+        map.put("sonosServiceName", settingsService.getSonosServiceName());
+        map.put("sonosLinkMethod", settingsService.getSonosLinkMethod());
+        map.put("callbackHostAddress", settingsService.getSonosCallbackHostAddress(NetworkService.getBaseUrl(request)));
 
-    public void setSonosService(SonosService sonosService) {
-        this.sonosService = sonosService;
+        return map;
     }
 }

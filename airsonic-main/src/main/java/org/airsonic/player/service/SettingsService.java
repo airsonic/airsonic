@@ -134,13 +134,7 @@ public class SettingsService {
     private static final String KEY_DATABASE_USERTABLE_QUOTE = "DatabaseUsertableQuote";
 
 
-    // Airsonic host ip and name, if not set is pickup on startup
-    // The host address is IP and port of the airsonic server
-    private static final String KEY_HOST_ADDRESS = "HostAddress";
-    // The host address is name and port if necessary of the airsonic server
-    private static final String KEY_HOST_NAME = "HostName";
-    private static final String KEY_USE_HOST_NAME = "UseHostName";
-
+    private static final String KEY_SONOS_CALLBACK_HOST_ADDRESS = "SonosCallbackHostAddress";
     private static final String KEY_SONOS_LINK_METHOD = "SonosLinkMethod";
 
 
@@ -1474,43 +1468,15 @@ public class SettingsService {
         setString(KEY_SONOS_LINK_METHOD, linkMethod);
     }
 
-    public String getHost() {
-        String host;
-
-        if (getBoolean(KEY_USE_HOST_NAME, true)) {
-            host = getHostName() != null ? getHostName() : getHostAddress();
-        } else {
-            host = getHostAddress() != null ? getHostAddress() : getHostName();
-        }
-
-        if(host != null && !host.toLowerCase().startsWith("http://")){
-            host = "http://" + host;
-        }
-
-        return host;
+    public String getSonosCallbackHostAddress() {
+        return getSonosCallbackHostAddress(null);
     }
 
-    public String getHostAddress() {
-        if (hostAddress == null) {
-            return getProperty(KEY_HOST_ADDRESS, null);
-        } else {
-            return hostAddress;
-        }
+    public String getSonosCallbackHostAddress(String def) {
+        return getString(KEY_SONOS_CALLBACK_HOST_ADDRESS, def);
     }
 
-    public void setHostAddress(String hostAddress) {
-        this.hostAddress = hostAddress;
-    }
-
-    public String getHostName() {
-        if (hostName == null) {
-            return getProperty(KEY_HOST_NAME, null);
-        } else {
-            return hostName;
-        }
-    }
-
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
+    public void setSonosCallbackHostAddress(String hostAddress) {
+        setString(KEY_SONOS_CALLBACK_HOST_ADDRESS, hostAddress);
     }
 }
