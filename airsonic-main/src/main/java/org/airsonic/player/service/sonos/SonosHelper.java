@@ -69,6 +69,8 @@ public class SonosHelper {
     private LastFmService lastFmService;
     @Autowired
     private PodcastService podcastService;
+    @Autowired
+    private JWTSecurityService jwtSecurityService;
 
     public List<AbstractMedia> forRoot() {
         MediaMetadata shuffle = new MediaMetadata();
@@ -608,7 +610,8 @@ public class SonosHelper {
     }
 
     private String getCoverArtUrl(String id, HttpServletRequest request) {
-        return getBaseUrl(request) + "coverArt.view?id=" + id + "&size=" + CoverArtScheme.LARGE.getSize();
+        String uri = getBaseUrl(request) + "ext/coverArt.view?id=" + id + "&size=" + CoverArtScheme.LARGE.getSize();
+        return jwtSecurityService.addJWTToken(uri);
     }
 
     public static MediaList createSubList(int index, int count, List<? extends AbstractMedia> mediaCollections) {
@@ -647,8 +650,8 @@ public class SonosHelper {
     public String getMediaURI(int mediaFileId, String username, HttpServletRequest request) {
         Player player = createPlayerIfNecessary(username);
         MediaFile song = mediaFileService.getMediaFile(mediaFileId);
-
-        return NetworkService.getBaseUrl(request) + "stream?id=" + song.getId() + "&player=" + player.getId();
+        String uri = getBaseUrl(request) + "ext/stream?id=" + song.getId() + "&player=" + player.getId();
+        return jwtSecurityService.addJWTToken(uri);
     }
 
     private Player createPlayerIfNecessary(String username) {

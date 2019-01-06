@@ -107,6 +107,7 @@ public class SonosService implements SonosSoap {
     @Autowired
     private SonosLinkDao sonosLinkDao;
 
+
     /**
      * The context for the request. This is used to get the Auth information
      * form the headers as well as using the request url to build the correct
