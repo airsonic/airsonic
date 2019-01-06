@@ -52,6 +52,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static org.airsonic.player.domain.User.USERNAME_SONOS;
+
 /**
  * Provides security-related services for authentication and authorization.
  *
@@ -61,8 +63,6 @@ import java.util.UUID;
 public class SecurityService implements UserDetailsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityService.class);
-
-    public static final String SONOS_USER_USERNAME = "sonos";
 
     @Autowired
     private UserDao userDao;
@@ -446,22 +446,27 @@ public class SecurityService implements UserDetailsService {
         return jwtSecurityService.createSonosToken(link.getUsername(), link.getHouseholdid(), link.getLinkcode());
     }
 
-    public void setSonosUser(String sonosLinkToken) throws SonosSoapFault.LoginUnauthorized {
+    public SonosLink getSonosLink(String linkCode) {
+        return sonosLinkDao.findByLinkcode(linkCode);
+    }
+
+    public void authenticate(String sonosLinkToken) throws SonosSoapFault.LoginUnauthorized {
         SonosLink sonosLink =jwtSecurityService.verifySonosLink(sonosLinkToken);
 
-        if(sonosLinkDao.isExist(sonosLink)){
+        SonosLink saved = sonosLinkDao.findByLinkcode(sonosLink.getLinkcode());
+        if(saved != null && saved.identical(sonosLink)){
             setUser(sonosLink.getUsername());
         } else {
             throw new SonosSoapFault.LoginUnauthorized();
         }
     }
 
-    public void setSonosUser() throws SonosSoapFault.LoginUnauthorized {
-        setUser(SONOS_USER_USERNAME);
+    public void authenticate() throws SonosSoapFault.LoginUnauthorized {
+        setUser(USERNAME_SONOS);
     }
 
     private void setUser(String username) throws SonosSoapFault.LoginUnauthorized {
-        User user = getUserByName(SONOS_USER_USERNAME, true);
+        User user = getUserByName(USERNAME_SONOS, true);
         Authentication authentication = authenticate(user.getUsername(), user.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

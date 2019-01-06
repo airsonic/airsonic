@@ -618,6 +618,10 @@ public class SonosService implements SonosSoap {
             DeviceAuthTokenResult authTokenResult = new DeviceAuthTokenResult();
             authTokenResult.setAuthToken(authToken);
             authTokenResult.setPrivateKey("alwaysAuthenticate");
+
+            authTokenResult.setUserInfo(new UserInfo());
+            authTokenResult.getUserInfo().setNickname(securityService.getSonosLink(linkCode).getUsername());
+
             return authTokenResult;
         }
 

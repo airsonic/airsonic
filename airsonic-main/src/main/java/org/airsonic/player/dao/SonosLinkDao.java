@@ -32,11 +32,6 @@ public class SonosLinkDao extends AbstractDao {
         update(sql, sonosLink.getUsername(), sonosLink.getHouseholdid(), sonosLink.getLinkcode());
     }
 
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public boolean isExist(SonosLink sonosLink) {
-        return findByLinkcode(sonosLink.getLinkcode()) != null;
-    }
-
     @Transactional(propagation = Propagation.REQUIRED)
     public void removeAll(){
         String sql = "delete from sonoslink;";

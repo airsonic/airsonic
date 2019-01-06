@@ -72,10 +72,10 @@ public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
 
                 String sonosLinkToken = getToken(message);
                 if (sonosLinkToken != null) {
-                    securityService.setSonosUser(sonosLinkToken);
+                    securityService.authenticate(sonosLinkToken);
                 }
             } else if( action != null && authenticationType == AuthenticationType.ANONYMOUS){
-                securityService.setSonosUser();
+                securityService.authenticate();
             } else {
                 LOG.debug("Soap message not process : " + message.toString());
                 throw new SonosSoapFault.LoginUnauthorized();
