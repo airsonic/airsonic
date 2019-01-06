@@ -19,7 +19,7 @@
         <input type="hidden" name="linkCode" value="${model.linkCode}">
         <div id="loginframe" class="bgcolor2 shadow">
 
-            <img src="<spring:theme code="logoImage"/>" alt="">
+            <img src="<c:url value="/icons/sonoslink.png"/>" alt="">
 
             <div class="loginmessagetop"><sub:wiki text="${model.loginMessage}"/></div>
 
