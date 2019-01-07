@@ -562,6 +562,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <reuseForks>false</reuseForks>
+                        <classpathDependencyExcludes>
+                            <classpathDependencyExclude>org.apache.commons:commons-dbcp2</classpathDependencyExclude>
+                        </classpathDependencyExcludes>
                 </configuration>
             </plugin>
             <plugin>
