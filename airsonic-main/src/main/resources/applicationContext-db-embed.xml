@@ -12,3 +12,4 @@
         <property name="password" value="${DatabaseConfigEmbedPassword}" />
     </bean>
 </beans>
+
