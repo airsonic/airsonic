@@ -609,10 +609,6 @@
                 <artifactId>dependency-check-maven</artifactId>
                 <executions>
                     <execution>
-                        <id>analyze</id>
-                        <goals>
-                            <goal>analyze-only</goal>
-                        </goals>
                         <configuration>
                             <ignoredUnusedDeclaredDependencies>
                                 <ignoredUnusedDeclaredDependency>org.apache.commons:commons-dbcp2</ignoredUnusedDeclaredDependency>
