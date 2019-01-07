@@ -386,6 +386,20 @@
             <version>${cxf.version}</version>
         </dependency>
 
+        <!-- connection pool manager, fixes performance problems with external databases -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.5.0</version>
+            <!-- solve conflict with playlist depending on commons-logging 1.1.1 while this wants to pull in 1.2 -->
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
 
         <dependency>
             <groupId>org.apache.commons</groupId>
