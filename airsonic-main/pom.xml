@@ -616,7 +616,7 @@
                         <configuration>
                             <ignoredUnusedDeclaredDependencies>
                                 <ignoredUnusedDeclaredDependency>org.apache.commons:commons-dbcp2</ignoredUnusedDeclaredDependency>
-                            <ignoredUnusedDeclaredDependencies>
+                            </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
                 </executions>
