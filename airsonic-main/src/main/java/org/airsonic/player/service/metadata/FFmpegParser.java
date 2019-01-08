@@ -144,7 +144,7 @@ public class FFmpegParser extends MetaDataParser {
                 return true;
             }
         }
-        return false;
+        return "ape".equals(format);
     }
 
     public void setTranscodingService(TranscodingService transcodingService) {
