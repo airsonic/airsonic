@@ -7,7 +7,6 @@ import org.airsonic.player.service.jukebox.JavaPlayerFactory;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
