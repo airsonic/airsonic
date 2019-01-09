@@ -9,6 +9,10 @@
         </preConditions>
 
         <sql>
+          CHECKPOINT DEFRAG;
+          <comment>Defragment the database before enabling auto defrag, so that the biggest part of the work is done during migration.</comment>
+        </sql>
+        <sql>
           SET LOGSIZE 64;
           <comment>Automatically run a CHECKPOINT when the log is above 64MB.</comment>
         </sql>
