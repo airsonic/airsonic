@@ -148,6 +148,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-dbcp2</artifactId>
             <version>2.5.0</version>
+            <scope>runtime</scope>
             <!-- this wants to pull in commons-logging v1.2 which conflicts with other dependencies -->
             <exclusions>
                 <exclusion>
