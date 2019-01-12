@@ -17,9 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class JWTAuthenticationProvider implements AuthenticationProvider {
 
@@ -75,13 +73,22 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
                 return false;
             }
 
-            MapDifference<String, List<String>> difference = Maps.difference(expected.getQueryParams(),
-                    requested.getQueryParams());
+            Map<String, List<String>> left = new HashMap<>(expected.getQueryParams());
+            Map<String, List<String>> right = new HashMap<>(requested.getQueryParams());
+
+            // Remove size parameters, it's security important and sonos controller change it
+            // We must change all request to set in path all important for security and rest in param. But
+            // now is too much change.
+            left.remove("size");
+            right.remove("size");
+
+            MapDifference<String, List<String>> difference = Maps.difference(left, right);
 
             if(difference.entriesDiffering().size() != 0 ||
                     difference.entriesOnlyOnLeft().size() != 0 ||
                     difference.entriesOnlyOnRight().size() != 1 ||
                     difference.entriesOnlyOnRight().get(JWTSecurityService.JWT_PARAM_NAME) == null) {
+
                 logger.debug("False: expected query params [{}] do not match requested query params [{}]", expected.getQueryParams(), requested.getQueryParams());
                 return false;
             }
