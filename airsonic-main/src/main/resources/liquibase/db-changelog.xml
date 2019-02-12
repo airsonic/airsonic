@@ -11,4 +11,5 @@
     <include file="6.2/changelog.xml" relativeToChangelogFile="true"/>
     <include file="6.3/changelog.xml" relativeToChangelogFile="true"/>
     <include file="6.4/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="10.2/changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

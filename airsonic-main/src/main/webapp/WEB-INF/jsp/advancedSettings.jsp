@@ -91,7 +91,34 @@
                 <c:import url="helpToolTip.jsp"><c:param name="topic" value="smtpCredentials"/></c:import>
             </td>
         </tr>
+    </table>
 
+    <table class="indent">
+        <tr>
+            <td colspan="2">
+                <form:checkbox path="captchaEnabled" id="enablecaptcha" cssclass="checkbox"/>
+                <label for="enablecaptcha">
+                    <fmt:message key="advancedsettings.enableCaptcha"/>
+                </label>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="captcha"/></c:import>
+            </td>
+        </tr>
+
+        <tr>
+            <td><fmt:message key="advancedsettings.recaptchaSiteKey"/></td>
+            <td>
+                <form:input path="recaptchaSiteKey" size="50"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="recaptchaSiteKey"/></c:import>
+            </td>
+        </tr>
+
+        <tr>
+            <td><fmt:message key="advancedsettings.recaptchaSecretKey"/></td>
+            <td>
+                <form:input path="recaptchaSecretKey" size="50"/>
+                <c:import url="helpToolTip.jsp"><c:param name="topic" value="recaptchaSecretKey"/></c:import>
+            </td>
+        </tr>
     </table>
 
     <table class="indent"><tr><td>

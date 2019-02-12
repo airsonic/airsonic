@@ -15,6 +15,7 @@
     <properties>
         <metrics.version>3.1.0</metrics.version>
         <chameleon.version>1.2.1-RELEASE</chameleon.version>
+        <tomcat.server.scope>provided</tomcat.server.scope>
     </properties>
 
     <dependencies>
@@ -87,6 +88,16 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-ldap</artifactId>
         </dependency>
@@ -132,6 +143,23 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- connection pool manager, fixes #860 (external database performance) -->  
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.5.0</version>
+            <scope>runtime</scope>
+            <!-- this wants to pull in commons-logging v1.2 which conflicts with other dependencies -->
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -165,7 +193,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
         </dependency>
 
         <dependency>
@@ -303,6 +330,10 @@
             <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+        </dependency>
 
         <!-- UPNP / DLNA -->
         <dependency>
@@ -324,15 +355,15 @@
         </dependency>
 
         <dependency>
-            <groupId>net.tanesha.recaptcha4j</groupId>
-            <artifactId>recaptcha4j</artifactId>
-            <version>0.0.8</version>
-        </dependency>
-
-        <dependency>
             <groupId>de.u-mass</groupId>
             <artifactId>lastfm-java</artifactId>
             <version>0.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.triology.recaptchav2-java</groupId>
+            <artifactId>recaptchav2-java</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- SONOS API / WSDL SUPPORT -->
@@ -445,12 +476,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <scope>${tomcat.server.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
-            <scope>provided</scope>
+            <scope>${tomcat.server.scope}</scope>
         </dependency>
         <!-- Embedded Jetty -->
         <dependency>
@@ -530,7 +561,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
                 <configuration>
                     <reuseForks>false</reuseForks>
                 </configuration>
@@ -549,6 +579,7 @@
                 <configuration>
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>Unversioned</revisionOnScmFailure>
                 </configuration>
             </plugin>
             <plugin>
@@ -596,6 +627,12 @@
             <properties>
                 <boot.group.excludes>org.apache.tomcat.embed</boot.group.excludes>
                 <boot.artifact.excludes>spring-boot-starter-tomcat</boot.artifact.excludes>
+            </properties>
+        </profile>
+        <profile>
+            <id>ide-tomcat-embed</id>
+            <properties>
+                <tomcat.server.scope>compile</tomcat.server.scope>
             </properties>
         </profile>
     </profiles>

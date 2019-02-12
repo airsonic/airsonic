@@ -19,29 +19,26 @@
  */
 package org.airsonic.player.service;
 
-import org.airsonic.player.domain.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.domain.PlayerTechnology;
 import org.springframework.stereotype.Service;
 
 /**
- *
- *
- * @author R?mi Cocula
+ * @author Rémi Cocula
  */
 @Service
 public class JukeboxService {
 
-    private static final Logger log = LoggerFactory.getLogger(JukeboxService.class);
-
-    @Autowired
     private JukeboxLegacySubsonicService jukeboxLegacySubsonicService;
-    @Autowired
     private JukeboxJavaService jukeboxJavaService;
 
+    public JukeboxService(JukeboxLegacySubsonicService jukeboxLegacySubsonicService,
+                          JukeboxJavaService jukeboxJavaService) {
+        this.jukeboxLegacySubsonicService = jukeboxLegacySubsonicService;
+        this.jukeboxJavaService = jukeboxJavaService;
+    }
 
-    public void setGain(Player airsonicPlayer,float gain) {
+    public void setGain(Player airsonicPlayer, float gain) {
         switch (airsonicPlayer.getTechnology()) {
             case JUKEBOX:
                 jukeboxLegacySubsonicService.setGain(gain);
@@ -74,10 +71,6 @@ public class JukeboxService {
 
     /**
      * This method should be removed when the jukebox is controlled only through rest api.
-     *
-     * @param airsonicPlayer
-     * @param offset
-     * @throws Exception
      */
     @Deprecated
     public void updateJukebox(Player airsonicPlayer, int offset) throws Exception {
@@ -97,31 +90,7 @@ public class JukeboxService {
     }
 
     /**
-     * This method is only here due to legacy considerations and should be removed
-     * if the jukeboxLegacySubsonicService is removed.
-     * @param airsonicPlayer
-     * @return
-     */
-    @Deprecated
-    public boolean canControl(Player airsonicPlayer) {
-        switch (airsonicPlayer.getTechnology()) {
-            case JUKEBOX:
-                if (jukeboxLegacySubsonicService.getPlayer() == null) {
-                    return false;
-                } else {
-                    return jukeboxLegacySubsonicService.getPlayer().getId().equals(airsonicPlayer.getId());
-                }
-            case JAVA_JUKEBOX:
-                return true;
-        }
-        return false;
-    }
-
-    /**
      * Plays the playQueue of a jukebox player starting at the first item of the queue.
-     *
-     * @param airsonicPlayer
-     * @throws Exception
      */
     public void play(Player airsonicPlayer) throws Exception {
         switch (airsonicPlayer.getTechnology()) {
@@ -133,7 +102,6 @@ public class JukeboxService {
                 break;
         }
     }
-
 
     public void start(Player airsonicPlayer) throws Exception {
         switch (airsonicPlayer.getTechnology()) {
@@ -168,15 +136,22 @@ public class JukeboxService {
         }
     }
 
-
-    /* properties setters */
-
-    public void setJukeboxLegacySubsonicService(JukeboxLegacySubsonicService jukeboxLegacySubsonicService) {
-        this.jukeboxLegacySubsonicService = jukeboxLegacySubsonicService;
+    /**
+     * This method is only here due to legacy considerations and should be removed
+     * if the jukeboxLegacySubsonicService is removed.
+     */
+    @Deprecated
+    public boolean canControl(Player airsonicPlayer) {
+        switch (airsonicPlayer.getTechnology()) {
+            case JUKEBOX:
+                if (jukeboxLegacySubsonicService.getPlayer() == null) {
+                    return false;
+                } else {
+                    return jukeboxLegacySubsonicService.getPlayer().getId().equals(airsonicPlayer.getId());
+                }
+            case JAVA_JUKEBOX:
+                return true;
+        }
+        return false;
     }
-
-    public void setJukeboxJavaService(JukeboxJavaService jukeboxJavaService) {
-        this.jukeboxJavaService = jukeboxJavaService;
-    }
-
 }

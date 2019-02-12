@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
        profile="embed">
     <bean id="dataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+          class="org.apache.commons.dbcp2.BasicDataSource">
 
         <property name="driverClassName" value="${DatabaseConfigEmbedDriver}" />
         <property name="url" value="${DatabaseConfigEmbedUrl}" />

@@ -422,7 +422,7 @@ public class PodcastService {
         for (Element episodeElement : episodeElements) {
 
             String title = episodeElement.getChildTextTrim("title");
-            String duration = getITunesElement(episodeElement, "duration");
+            String duration = formatDuration(getITunesElement(episodeElement, "duration"));
             String description = episodeElement.getChildTextTrim("description");
             if (StringUtils.isBlank(description)) {
                 description = getITunesElement(episodeElement, "summary");
@@ -500,6 +500,19 @@ public class PodcastService {
         }
         LOG.warn("Failed to parse publish date: '" + s + "'.");
         return null;
+    }
+
+    private String formatDuration(String duration) {
+        if (duration == null) return null;
+        if (duration.matches("^\\d+$")) {
+            long seconds = Long.valueOf(duration);
+            if (seconds >= 3600)
+                return String.format("%02d:%02d:%02d", seconds / 3600, seconds / 60, seconds % 60);
+            else
+                return String.format("%02d:%02d", seconds / 60, seconds % 60);
+        } else {
+            return duration;
+        }
     }
 
     private String getITunesElement(Element element, String childName) {

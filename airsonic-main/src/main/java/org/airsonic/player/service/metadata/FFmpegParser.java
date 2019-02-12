@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Parses meta data from video files using FFmpeg (http://ffmpeg.org/).
@@ -77,12 +78,12 @@ public class FFmpegParser extends MetaDataParser {
                 ffprobe = "ffprobe";
             }
 
-            ArrayList<String> command = new ArrayList<>(FFPROBE_OPTIONS.length + 2);
+            List<String> command = new ArrayList<>();
             command.add(ffprobe);
             command.addAll(Arrays.asList(FFPROBE_OPTIONS));
             command.add(file.getAbsolutePath());
 
-            Process process = Runtime.getRuntime().exec((String[])command.toArray());
+            Process process = Runtime.getRuntime().exec(command.toArray(new String[0]));
             final JsonNode result = objectMapper.readTree(process.getInputStream());
 
             metaData.setDurationSeconds(result.at("/format/duration").asInt());

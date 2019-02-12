@@ -5,7 +5,13 @@
 <![endif]-->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <c:set var="styleSheet"><spring:theme code="styleSheet"/></c:set>
-<link rel="icon" type="image/png" href="<c:url value="/icons/favicon.png"/>"/>
+<link rel="apple-touch-icon" sizes="180x180" href="<c:url value="/icons/apple-touch-icon.png"/>"/>
+<link rel="icon" type="image/png" sizes="32x32" href="<c:url value="/icons/favicon-32x32.png"/>"/>
+<link rel="icon" type="image/png" sizes="16x16" href="<c:url value="/icons/favicon-16x16.png"/>"/>
+<link rel="manifest" href="<c:url value="/icons/site.webmanifest"/>"/>
+<link rel="mask-icon" href="<c:url value="/icons/safari-pinned-tab.svg"/>" color="#2f7bd9"/>
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
 <!-- Included before airsonic stylesheet to allow overriding -->
 <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/mediaelementplayer.min.css"/>">
 <link rel="stylesheet" href="<c:url value="/${styleSheet}"/>" type="text/css">
