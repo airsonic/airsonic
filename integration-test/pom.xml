@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.airsonic.player</groupId>
         <artifactId>airsonic</artifactId>
-        <version>10.2.0-SNAPSHOT</version>
+        <version>10.2.0-RELEASE</version>
     </parent>
 
     <properties>
