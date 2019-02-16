@@ -3,6 +3,57 @@
 # airsonic/airsonic
 # -->
 
+## v10.2.0
+
+Fixes:
+  * Fix #658 again: content type for unscaled images set based on jaudiotagger output
+  * Reverted a93a18a and properly re-encoded with 'native2ascii -encoding UTF-8'
+  * fix issues #638 and #574
+  * Fix #596 SubStandard theme includes old Subsonic Logo
+  * Fix themes using dark background with me\_js
+  * Remove potential cast exception
+  * Fixed github link opening in frame and not loading
+  * Correct corrupted downloaded zip
+  * Fix #778: Defragment embedded HSQLDB database more frequently
+  * PlayQueue: Fix broken keyboard shortcuts
+  * Fix #860 (external database performance) by using connection pooling … (#864)
+
+
+Changes:
+  * Made it easier to see current playing song for dark themes
+  * Spring Boot 1.5.18
+  * New add\_album to play queue
+  * Remove margin of media\_control bar
+  * Update to 3.3.0 java-jwt
+  * catch exceptions ClientAbortException display a short message and return, to avoid the massive useless traceback in log
+  * Update cxf to 3.1.15
+  * Issue #164: Show link to MusicBrainz release on album pages
+  * Handle player id as an Integer instead of Strin
+  * Add Docker health check
+  * Use dark media player theme on groove theme (#777)
+  * Change to optional reCAPTCHA v2
+  * Optionally parse podcast episode duration in seconds to [hh:]mm:ss
+  * Add option to disable seeking on transcodes. (Mitigates #548 & #723)
+  * White list jars that are scanned for tlds to prevent spurious logs
+  * Tweaked logging around servlet container and added warning about jetty
+  * Add extended favicons
+  * Display folders as a list in Settings-\>Users and include the path.
+  * Add 32x32 pixeled favicon / updated favicons in webapp
+  * Updated internal maven plugins
+
+
+Translation Updates:
+  * Fixed elipse in english translation
+
+Security:
+  * Fix #749 Ensure transcode settings are protected
+  * Bump version of guava to deal with CVE-2018-10237
+  * Update jackson version
+  * Fix #764 LDAP Login allows unauthenticated access
+
+Not Fixed:
+  * #685 - transcoding length issue
+
 ## v10.1.2
 
 Fixes:
