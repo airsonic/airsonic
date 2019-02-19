@@ -3,6 +3,11 @@
 # airsonic/airsonic
 # -->
 
+## v10.2.1
+
+Security:
+  * CVE-2018-20222 Prevent xxe during parse
+
 ## v10.2.0
 
 Fixes:
