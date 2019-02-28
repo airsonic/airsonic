@@ -5,7 +5,7 @@
        profile="legacy">
 
     <bean id="dataSource"
-          class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+          class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
         <property name="url"
                   value="#{T(org.airsonic.player.service.SettingsService).defaultJDBCUrl}" />
