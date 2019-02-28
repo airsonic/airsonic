@@ -70,7 +70,6 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
     private static String AIRSONIC_API_VERSION;
 
     private static boolean dataBasePopulated;
-    private static DaoHelper staticDaoHelper;
 
     @Autowired
     protected PlayerService playerService;
@@ -101,13 +100,6 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
         dataBasePopulated = false;
     }
 
-    @AfterClass
-    public static void cleanDataBase() {
-        staticDaoHelper.getJdbcTemplate().execute("DROP SCHEMA PUBLIC CASCADE");
-        staticDaoHelper = null;
-        dataBasePopulated = false;
-    }
-
     /**
      * Populate test datas in the database only once.
      *
@@ -119,7 +111,6 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
      */
     private void populateDatabase() {
         if (!dataBasePopulated) {
-            staticDaoHelper = daoHelper;
 
             assertThat(musicFolderDao.getAllMusicFolders().size()).isEqualTo(1);
             MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
@@ -147,6 +138,12 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
         testJukeboxPlayer.getPlayQueue().addFiles(true,
                 mediaFileDao.getSongsForAlbum("_DIR_ Ravel", "Complete Piano Works"));
         assertThat(testJukeboxPlayer.getPlayQueue().size()).isEqualTo(2);
+    }
+
+    @After
+    public void cleanDataBase() {
+        daoHelper.getJdbcTemplate().execute("DROP SCHEMA PUBLIC CASCADE");
+        dataBasePopulated = false;
     }
 
     protected abstract void createTestPlayer();
