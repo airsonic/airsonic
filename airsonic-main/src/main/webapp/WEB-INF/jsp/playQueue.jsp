@@ -167,15 +167,17 @@
     }
 
     /**
-     * Start playing from the current playlist
+     * Start/resume playing from the current playlist
      */
     function onStart() {
         if (CastPlayer.castSession) {
             CastPlayer.playCast();
         } else if ($('#audioPlayer').get(0)) {
-            var audioPlayer = $('#audioPlayer');
-            if(audioPlayer.paused) {
-                skip(0, audioPlayer.currentTime);
+            if ($('#audioPlayer').get(0).src) {
+                $('#audioPlayer').get(0).play();  // Resume playing if the player was paused
+            }
+            else {
+                skip(0);  // Start the first track if the player was not yet loaded
             }
         } else {
             playQueueService.start(playQueueCallback);
@@ -205,8 +207,9 @@
             var playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
             if (playing) onStop();
             else onStart();
-        } else if ($('#audioPlayer')) {
-            if (!$('#audioPlayer').get(0).paused) onStop();
+        } else if ($('#audioPlayer').get(0)) {
+            var playing = $("#audioPlayer").get(0).paused != null && !$("#audioPlayer").get(0).paused;
+            if (playing) onStop();
             else onStart();
         } else {
             playQueueService.toggleStartStop(playQueueCallback);
@@ -237,11 +240,11 @@
             if (volume < 0) volume = 0;
             CastPlayer.setCastVolume(volume / 100, false);
             $("#castVolume").slider("option", "value", volume); // Need to update UI
-        } else if ($('#audioPlayer')) {
-            var volume = parseInt($('#audioPlayer').get(0).volume) + gain;
+        } else if ($('#audioPlayer').get(0)) {
+            var volume = parseFloat($('#audioPlayer').get(0).volume)*100 + gain;
             if (volume > 100) volume = 100;
             if (volume < 0) volume = 0;
-            $('#audioPlayer').get(0).volume = volume;
+            $('#audioPlayer').get(0).volume = volume / 100;
         } else {
             var volume = parseInt($("#jukeboxVolume").slider("option", "value")) + gain;
             if (volume > 100) volume = 100;
@@ -360,7 +363,7 @@
         playQueueService.sortByAlbum(playQueueCallback);
     }
     function onSavePlayQueue() {
-        var positionMillis = $('#audioPlayer') ? Math.round(1000.0 * $('#audioPlayer').get(0).currentTime) : 0;
+        var positionMillis = $('#audioPlayer').get(0) ? Math.round(1000.0 * $('#audioPlayer').get(0).currentTime) : 0;
         playQueueService.savePlayQueue(getCurrentSongIndex(), positionMillis);
         $().toastmessage("showSuccessToast", "<fmt:message key="playlist.toast.saveplayqueue"/>");
     }
@@ -542,10 +545,13 @@
         if (CastPlayer.castSession) {
             CastPlayer.loadCastMedia(song, position);
         } else {
-            $('#audioPlayer').get(0).src = song.streamUrl;
-            $('#audioPlayer').get(0).load();
+            if ($('#audioPlayer').get(0).src != song.streamUrl) {
+                $('#audioPlayer').get(0).src = song.streamUrl;
+                $('#audioPlayer').get(0).load();
+                console.log(song.streamUrl);
+            }
+            $('#audioPlayer').get(0).currentTime = position ? position : 0;
             $('#audioPlayer').get(0).play();
-            console.log(song.streamUrl);
         }
 
         updateWindowTitle(song);
@@ -689,7 +695,7 @@
                     <c:if test="${model.player.web}">
                         <td>
                             <div id="player" style="width:340px; height:40px;padding-right:10px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": "true"}' width="340px" height"40px"/>
+                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">

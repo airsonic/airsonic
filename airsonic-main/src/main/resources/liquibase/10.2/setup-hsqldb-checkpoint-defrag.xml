@@ -1,0 +1,27 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="setup-hsqldb-checkpoint-defrag" author="fxthomas">
+
+        <preConditions onFail="MARK_RAN">
+          <dbms type="hsqldb" />
+        </preConditions>
+
+        <sql>
+          CHECKPOINT DEFRAG;
+          <comment>Defragment the database before enabling auto defrag, so that the biggest part of the work is done during migration.</comment>
+        </sql>
+        <sql>
+          SET LOGSIZE 64;
+          <comment>Automatically run a CHECKPOINT when the log is above 64MB.</comment>
+        </sql>
+        <sql>
+          SET CHECKPOINT DEFRAG 32;
+          <comment>Automatically defragment on CHECKPOINT when the wasted space is above 32MB.</comment>
+        </sql>
+
+        <rollback></rollback>
+
+    </changeSet>
+</databaseChangeLog>

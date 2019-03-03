@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.service.jukebox;
 
-import org.airsonic.player.service.JukeboxService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +45,7 @@ import static org.airsonic.player.service.jukebox.AudioPlayer.State.*;
 public class AudioPlayer {
 
     public static final float DEFAULT_GAIN = 0.75f;
-    private static final Logger LOG = LoggerFactory.getLogger(JukeboxService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AudioPlayer.class);
 
     private final InputStream in;
     private final Listener listener;
