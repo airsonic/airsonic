@@ -121,12 +121,12 @@ public class SonosServiceRegistration {
             // If you change /home/michel/externalDev/airsonic/airsonic-main/src/main/webapp/sonos/presentationMap.xml
             // Change the presentationMapVersion
             params.add(Pair.create("presentationMapVersion", "1"));
-            params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "/sonos/presentationMap.xml"));
+            params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
 
             // If you are change text in : /home/michel/externalDev/airsonic/airsonic-main/src/main/webapp/sonos/strings.xml
             // Change the stringsVersion
             params.add(Pair.create("stringsVersion", "11"));
-            params.add(Pair.create("stringsUri", airsonicBaseUrl + "/sonos/strings.xml"));
+            params.add(Pair.create("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
             params.add(Pair.create("authType", authenticationType.getFieldValue()));
 
         } else {
