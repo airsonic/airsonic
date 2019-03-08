@@ -96,6 +96,7 @@ public class MusicFolderSettingsController {
         artistDao.expunge();
         albumDao.expunge();
         mediaFileDao.expunge();
+        mediaFileDao.checkpoint();
     }
 
     private List<MusicFolderSettingsCommand.MusicFolderInfo> wrap(List<MusicFolder> musicFolders) {
