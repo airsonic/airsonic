@@ -2,7 +2,6 @@ package org.airsonic.player;
 
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
-import org.airsonic.player.spring.TerminateBean;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,11 +54,6 @@ public class Application extends SpringBootServletInitializer implements Embedde
         ServletRegistrationBean servlet = new ServletRegistrationBean(new DwrServlet(), "/dwr/*");
         servlet.addInitParameter("crossDomainSessionSecurity","false");
         return servlet;
-    }
-
-    @Bean
-    public TerminateBean terminateBean() {
-        return new TerminateBean();
     }
 
     @Bean
