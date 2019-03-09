@@ -26,6 +26,8 @@ import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +49,8 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/musicFolderSettings")
 public class MusicFolderSettingsController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(MusicFolderSettingsController.class);
 
     @Autowired
     private SettingsService settingsService;
@@ -93,9 +97,14 @@ public class MusicFolderSettingsController {
 
 
     private void expunge() {
+        LOG.info("Cleaning database...");
+        LOG.info("Deleting non-present artists...");
         artistDao.expunge();
+        LOG.info("Deleting non-present albums...");
         albumDao.expunge();
+        LOG.info("Deleting non-present media files...");
         mediaFileDao.expunge();
+        LOG.info("Database cleanup complete.");
         mediaFileDao.checkpoint();
     }
 
