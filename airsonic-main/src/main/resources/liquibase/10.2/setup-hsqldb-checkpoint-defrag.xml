@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet id="setup-hsqldb-2-checkpoint-defrag" author="fxthomas">
 
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
           <dbms type="hsqldb" />
           <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
             <param name="major" value="2" />
@@ -31,7 +31,7 @@
 
         <validCheckSum>7:890e52428bbc2a792fea1e026a4b7610</validCheckSum>
 
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
           <dbms type="hsqldb" />
           <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
             <param name="major" value="1" />
