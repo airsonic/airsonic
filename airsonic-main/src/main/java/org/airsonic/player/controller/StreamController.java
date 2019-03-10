@@ -108,7 +108,7 @@ public class StreamController  {
                 playQueue.addFiles(false, playlistService.getFilesInPlaylist(playlistId));
                 player.setPlayQueue(playQueue);
                 Util.setContentLength(response, playQueue.length());
-                LOG.info("Incoming Podcast request for playlist " + playlistId);
+                LOG.info("{}: Incoming Podcast request for playlist {}", request.getRemoteAddr(), playlistId);
             }
 
             response.setHeader("Access-Control-Allow-Origin", "*");
@@ -165,7 +165,7 @@ public class StreamController  {
 
                 range = getRange(request, file);
                 if (settingsService.isEnableSeek() && range != null && !file.isVideo()) {
-                    LOG.info("Got HTTP range: " + range);
+                    LOG.info("{}: Got HTTP range: {}", request.getRemoteAddr(), range);
                     response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                     Util.setContentLength(response, range.isClosed() ? range.size() : fileLength - range.getFirstBytePos());
                     long lastBytePos = range.getLastBytePos() != null ? range.getLastBytePos() : fileLength - 1;
