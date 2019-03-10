@@ -249,8 +249,8 @@ public class StreamController  {
                     }
                 }
             }
-        } catch (ClientAbortException err) {
-            LOG.info("org.apache.catalina.connector.ClientAbortException: Connection reset");
+        } catch (ClientAbortException e) {
+            LOG.info("{}: Client unexpectedly closed connection while loading {} ({})", request.getRemoteAddr(), Util.getURLForRequest(request), e.getCause().toString());
             return;
         } finally {
             if (status != null) {
@@ -426,5 +426,4 @@ public class StreamController  {
         out.write(buf);
         out.flush();
     }
-
 }
