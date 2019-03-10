@@ -297,6 +297,7 @@ public class JaudiotaggerParser extends MetaDataParser {
 
         return format.equals("mp3") ||
                 format.equals("m4a") ||
+                format.equals("m4b") ||
                 format.equals("aac") ||
                 format.equals("ogg") ||
                 format.equals("flac") ||
