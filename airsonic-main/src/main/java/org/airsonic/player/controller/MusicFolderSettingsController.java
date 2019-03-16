@@ -97,12 +97,12 @@ public class MusicFolderSettingsController {
 
 
     private void expunge() {
-        LOG.info("Cleaning database...");
-        LOG.info("Deleting non-present artists...");
+        LOG.debug("Cleaning database...");
+        LOG.debug("Deleting non-present artists...");
         artistDao.expunge();
-        LOG.info("Deleting non-present albums...");
+        LOG.debug("Deleting non-present albums...");
         albumDao.expunge();
-        LOG.info("Deleting non-present media files...");
+        LOG.debug("Deleting non-present media files...");
         mediaFileDao.expunge();
         LOG.debug("Database cleanup complete.");
         mediaFileDao.checkpoint();
