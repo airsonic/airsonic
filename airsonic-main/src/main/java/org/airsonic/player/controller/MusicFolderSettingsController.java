@@ -104,7 +104,7 @@ public class MusicFolderSettingsController {
         albumDao.expunge();
         LOG.info("Deleting non-present media files...");
         mediaFileDao.expunge();
-        LOG.info("Database cleanup complete.");
+        LOG.debug("Database cleanup complete.");
         mediaFileDao.checkpoint();
     }
 

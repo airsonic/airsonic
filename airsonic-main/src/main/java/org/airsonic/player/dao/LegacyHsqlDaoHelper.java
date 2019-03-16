@@ -26,9 +26,9 @@ public class LegacyHsqlDaoHelper extends GenericDaoHelper {
     public void checkpoint() {
         // HSQLDB (at least version 1) does not handle automatic checkpoints very well by default.
         // This makes sure the temporary log is actually written to more persistent storage.
-        LOG.info("Database checkpoint in progress...");
+        LOG.debug("Database checkpoint in progress...");
         getJdbcTemplate().execute("CHECKPOINT DEFRAG");
-        LOG.info("Database checkpoint complete.");
+        LOG.debug("Database checkpoint complete.");
     }
 
     @PreDestroy
@@ -36,12 +36,12 @@ public class LegacyHsqlDaoHelper extends GenericDaoHelper {
         Connection conn = null;
         try {
             // Properly shutdown the embedded HSQLDB database.
-            LOG.info("Database shutdown in progress...");
+            LOG.debug("Database shutdown in progress...");
             JdbcTemplate jdbcTemplate = getJdbcTemplate();
             conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
             conn.setAutoCommit(true);
             jdbcTemplate.execute("SHUTDOWN");
-            LOG.info("Database shutdown complete.");
+            LOG.debug("Database shutdown complete.");
 
         } catch (SQLException e) {
             LOG.error("Database shutdown failed: " + e);
