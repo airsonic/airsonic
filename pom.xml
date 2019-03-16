@@ -334,7 +334,7 @@
                         <version>1.6</version>
                         <executions>
                             <execution>
-                                <phase>package</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
