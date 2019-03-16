@@ -189,6 +189,6 @@ public class AbstractDao {
         this.daoHelper = daoHelper;
     }
 
-    public boolean checkpoint() { return daoHelper.checkpoint(); }
+    public void checkpoint() { daoHelper.checkpoint(); }
 
 }

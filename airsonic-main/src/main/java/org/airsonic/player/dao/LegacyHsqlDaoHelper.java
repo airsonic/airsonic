@@ -23,13 +23,12 @@ public class LegacyHsqlDaoHelper extends GenericDaoHelper {
     }
 
     @Override
-    public boolean checkpoint() {
+    public void checkpoint() {
         // HSQLDB (at least version 1) does not handle automatic checkpoints very well by default.
         // This makes sure the temporary log is actually written to more persistent storage.
         LOG.info("Database checkpoint in progress...");
         getJdbcTemplate().execute("CHECKPOINT DEFRAG");
         LOG.info("Database checkpoint complete.");
-        return true;
     }
 
     @PreDestroy

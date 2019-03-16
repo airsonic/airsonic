@@ -52,8 +52,6 @@ public interface DaoHelper {
      *
      * Database checkpoints will make sure that the database is written on the disk
      * and optimize on-disk storage.
-     *
-     * @return true if the checkpoint succeeded, false otherwise
      */
-    public default boolean checkpoint() { return false; }
+    public default void checkpoint() { }
 }
