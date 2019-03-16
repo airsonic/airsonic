@@ -32,8 +32,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
-import org.apache.tools.zip.ZipEntry;
-import org.apache.tools.zip.ZipFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +47,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Controller which receives uploaded files.
@@ -170,7 +170,7 @@ public class UploadController {
 
         try {
 
-            Enumeration<?> entries = zipFile.getEntries();
+            Enumeration<?> entries = zipFile.entries();
 
             while (entries.hasMoreElements()) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
@@ -231,10 +231,12 @@ public class UploadController {
             start = System.currentTimeMillis();
         }
 
+        @Override
         public void start(String fileName) {
             status.setFile(new File(fileName));
         }
 
+        @Override
         public void bytesRead(long bytesRead) {
 
             // Throttle bitrate.

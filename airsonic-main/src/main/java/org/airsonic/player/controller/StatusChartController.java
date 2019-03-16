@@ -22,7 +22,7 @@ package org.airsonic.player.controller;
 import org.airsonic.player.domain.TransferStatus;
 import org.airsonic.player.service.StatusService;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.ValueAxis;
@@ -79,7 +79,7 @@ public class StatusChartController extends AbstractChartController {
         }
         TransferStatus status = statuses.get(index);
 
-        TimeSeries series = new TimeSeries("Kbps", Millisecond.class);
+        TimeSeries series = new TimeSeries("Kbps");
         TransferStatus.SampleHistory history = status.getHistory();
         long to = System.currentTimeMillis();
         long from = to - status.getHistoryLengthMillis();
@@ -154,7 +154,7 @@ public class StatusChartController extends AbstractChartController {
         rangeAxis.setTickMarkPaint(fgColor);
         rangeAxis.setAxisLinePaint(fgColor);
 
-        ChartUtilities.writeChartAsPNG(response.getOutputStream(), chart, IMAGE_WIDTH, IMAGE_HEIGHT);
+        ChartUtils.writeChartAsPNG(response.getOutputStream(), chart, IMAGE_WIDTH, IMAGE_HEIGHT);
 
         return null;
     }
