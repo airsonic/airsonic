@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
@@ -41,11 +40,7 @@ public class JWTSecurityService {
     }
 
     public static Algorithm getAlgorithm(String jwtKey) {
-        try {
-            return Algorithm.HMAC256(jwtKey);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return Algorithm.HMAC256(jwtKey);
     }
 
     private static String createToken(String jwtKey, String path, Date expireDate) {

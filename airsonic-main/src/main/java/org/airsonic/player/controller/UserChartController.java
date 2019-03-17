@@ -22,7 +22,7 @@ package org.airsonic.player.controller;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.service.SecurityService;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
@@ -69,7 +69,7 @@ public class UserChartController extends AbstractChartController {
 
         int imageHeight = Math.max(IMAGE_MIN_HEIGHT, 15 * dataset.getColumnCount());
 
-        ChartUtilities.writeChartAsPNG(response.getOutputStream(), chart, IMAGE_WIDTH, imageHeight);
+        ChartUtils.writeChartAsPNG(response.getOutputStream(), chart, IMAGE_WIDTH, imageHeight);
         return null;
     }
 
