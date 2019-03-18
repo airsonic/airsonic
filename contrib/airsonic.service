@@ -20,6 +20,18 @@ ExecStart=/usr/bin/java \
           -jar ${JAVA_JAR} $JAVA_ARGS
 User=airsonic
 Group=airsonic
+NoNewPrivileges=yes
+PrivateTmp=yes
+PrivateDevices=yes
+DevicePolicy=closed
+ProtectSystem=true
+ProtectHome=true
+ProtectControlGroups=yes
+ProtectKernelModules=yes
+ProtectKernelTunables=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictRealtime=yes
+RestrictNamespaces=yes
 
 [Install]
 WantedBy=multi-user.target
