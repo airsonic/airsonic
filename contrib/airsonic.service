@@ -20,18 +20,24 @@ ExecStart=/usr/bin/java \
           -jar ${JAVA_JAR} $JAVA_ARGS
 User=airsonic
 Group=airsonic
-NoNewPrivileges=yes
-PrivateTmp=yes
-PrivateDevices=yes
+
 DevicePolicy=closed
-ProtectSystem=true
-ProtectHome=true
+MemoryDenyWriteExecute=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+PrivateUsers=yes
 ProtectControlGroups=yes
+ProtectHome=true
 ProtectKernelModules=yes
 ProtectKernelTunables=yes
-RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
-RestrictRealtime=yes
+ProtectSystem=full
+ReadWritePaths=/var/airsonic
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictNamespaces=yes
+RestrictRealtime=yes
+SystemCallFilter=~@clock,@debug,@module,@mount,@obsolete,@privileged,@reboot,@setuid,@swap
+
 
 [Install]
 WantedBy=multi-user.target
