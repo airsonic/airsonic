@@ -26,6 +26,8 @@ import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.TranscodingService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,6 +52,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/playerSettings")
 public class PlayerSettingsController  {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PlayerSettingsController.class);
 
     @Autowired
     private PlayerService playerService;
@@ -153,9 +157,21 @@ public class PlayerSettingsController  {
 
     private void handleRequestParameters(HttpServletRequest request) throws Exception {
         if (request.getParameter("delete") != null) {
-            playerService.removePlayerById(ServletRequestUtils.getIntParameter(request, "delete"));
+            Integer id = ServletRequestUtils.getIntParameter(request, "delete");
+            try {
+                playerService.removePlayerById(id);
+            } catch (java.lang.NumberFormatException x) {
+                LOG.warn("Invalid player id: " + id, x);
+                return;
+            }
         } else if (request.getParameter("clone") != null) {
-            playerService.clonePlayer(ServletRequestUtils.getIntParameter(request, "clone"));
+            Integer id = ServletRequestUtils.getIntParameter(request, "clone");
+            try {
+                playerService.clonePlayer(id);
+            } catch (java.lang.NumberFormatException x) {
+                LOG.warn("Invalid player id: " + id, x);
+                return;
+            }
         }
     }
 

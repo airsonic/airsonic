@@ -150,7 +150,12 @@ public class CoverArtController implements LastModified {
         if (id.startsWith(PODCAST_COVERART_PREFIX)) {
             return createPodcastCoverArtRequest(Integer.valueOf(id.replace(PODCAST_COVERART_PREFIX, "")), request);
         }
-        return createMediaFileCoverArtRequest(Integer.valueOf(id), request);
+        try {
+            return createMediaFileCoverArtRequest(Integer.valueOf(id), request);
+        } catch (java.lang.NumberFormatException x) {
+            LOG.warn("Invalid cover id: " + id, x.toString());
+            return null;
+        }
     }
 
     private CoverArtRequest createAlbumCoverArtRequest(int id) {
