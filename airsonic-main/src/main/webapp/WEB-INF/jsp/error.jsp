@@ -6,9 +6,6 @@
 
 <html><head>
      <%@ include file="head.jsp" %>
-    <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="script/pngfix.js"></script>
-    <![endif]-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 </head>
