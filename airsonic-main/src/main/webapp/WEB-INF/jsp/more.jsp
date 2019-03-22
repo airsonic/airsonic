@@ -60,6 +60,7 @@
             try {
                 var data = JSON.parse(localStorage.getItem("randomPlayQueue"));
             } catch(e) { return; }
+            if (data == null ) { return; }
             elements = form.getElementsByTagName("input");
             for (var i = 0; i < elements.length; i++) {
                 if (elements[i].type == "hidden") continue;
