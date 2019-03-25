@@ -464,7 +464,7 @@ public class SonosService implements SonosSoap {
             if (StringUtils.isNumeric(part)) {
                 result.add(Integer.parseInt(part));
             } else {
-                int dashIndex = part.indexOf("-");
+                int dashIndex = part.indexOf('-');
                 int from = Integer.parseInt(part.substring(0, dashIndex));
                 int to = Integer.parseInt(part.substring(dashIndex + 1));
                 for (int i = from; i <= to; i++) {

@@ -606,7 +606,7 @@ public class SettingsService {
      * @param limit The download bitrate limit in Kbit/s. Zero if unlimited.
      */
     public void setDownloadBitrateLimit(long limit) {
-        setProperty(KEY_DOWNLOAD_BITRATE_LIMIT, "" + limit);
+        setProperty(KEY_DOWNLOAD_BITRATE_LIMIT, String.valueOf(limit));
     }
 
     /**
