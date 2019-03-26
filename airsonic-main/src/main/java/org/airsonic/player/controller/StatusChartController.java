@@ -63,7 +63,7 @@ public class StatusChartController extends AbstractChartController {
     @RequestMapping(method = RequestMethod.GET)
     public synchronized ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String type = request.getParameter("type");
-        int index = ServletRequestUtils.getIntParameter(request, "index");
+        int index = ServletRequestUtils.getIntParameter(request, "index", 0);
 
         List<TransferStatus> statuses = Collections.emptyList();
         if ("stream".equals(type)) {
