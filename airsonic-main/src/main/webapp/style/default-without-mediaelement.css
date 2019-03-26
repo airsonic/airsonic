@@ -83,19 +83,6 @@ body {
     scrollbar-darkshadow-color: #98AAB1;
 }
 
-body, form, label, table, a {
-    font-family: arial, sans-serif;
-}
-
-h1, h1 a {
-    font-family: arial, sans-serif;
-    font-weight: normal;
-}
-
-h2, h2 a, .topHeader a {
-    font-family: arial, sans-serif;
-    font-weight: normal;
-}
 
 /* Login page */
 
@@ -156,6 +143,7 @@ body {
     padding:0;
     border:0;
     margin:0.75em;
+    font-family: Verdana, Tahoma, Geneva, arial, sans-serif;
     font-size: 10.5pt;
     line-height: 1.5em;
 }
