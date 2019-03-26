@@ -21,6 +21,8 @@ ExecStart=/usr/bin/java \
 User=airsonic
 Group=airsonic
 
+# See https://www.freedesktop.org/software/systemd/man/systemd.exec.html
+# for details
 DevicePolicy=closed
 MemoryDenyWriteExecute=yes
 NoNewPrivileges=yes
