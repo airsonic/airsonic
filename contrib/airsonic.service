@@ -31,12 +31,17 @@ ProtectControlGroups=yes
 ProtectHome=true
 ProtectKernelModules=yes
 ProtectKernelTunables=yes
-ProtectSystem=full
-ReadWritePaths=/var/airsonic
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictNamespaces=yes
 RestrictRealtime=yes
 SystemCallFilter=~@clock,@debug,@module,@mount,@obsolete,@privileged,@reboot,@setuid,@swap
+ProtectSystem=full
+
+# You can uncomment the following line if you don't want airsonic to be able to 
+# write anything on your filesystem outside of AIRSONIC_HOME.
+# Don't forget to remove the other `ProtectSystem` line above.
+#ProtectSystem=strict
+#ReadWritePaths=/var/airsonic
 
 
 [Install]
