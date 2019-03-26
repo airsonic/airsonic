@@ -1,8 +1,5 @@
 <%@ include file="include.jsp" %>
 
-<!--[if lt IE 7.]>
-<script defer type="text/javascript" src="<c:url value="/script/pngfix.js"/>"></script>
-<![endif]-->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <c:set var="styleSheet"><spring:theme code="styleSheet"/></c:set>
 <link rel="apple-touch-icon" sizes="180x180" href="<c:url value="/icons/apple-touch-icon.png"/>"/>
