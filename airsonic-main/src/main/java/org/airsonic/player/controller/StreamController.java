@@ -299,7 +299,7 @@ public class StreamController  {
             return file.getFileSize();
         }
 
-        return duration * maxBitRate * 1000L / 8L;
+        return duration * (long)maxBitRate * 1000L / 8L;
     }
 
     private HttpRange getRange(HttpServletRequest request, MediaFile file) {
