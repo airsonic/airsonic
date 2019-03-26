@@ -69,7 +69,7 @@ function updateJavaJukeboxPlayerControlBar(song){
 
 function songTimeAsString(timeInSeconds) {
     var minutes = Math.floor(timeInSeconds / 60);
-    var seconds = seconds - minutes * 60;
+    var seconds = timeInSeconds - minutes * 60;
 
     return minutes + ":" + ("00" + seconds).slice(-2);
 }
