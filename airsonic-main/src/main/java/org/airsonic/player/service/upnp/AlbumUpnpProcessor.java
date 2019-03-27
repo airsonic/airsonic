@@ -120,6 +120,8 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
                 albumList =  ap.getChildren(ap.getItemById(album.getComment().replaceAll(ALL_BY_ARTIST + "_", "")));
             } else if (album.getComment().equalsIgnoreCase(ALL_RECENT)) {
                 albumList = getDispatcher().getRecentAlbumProcessor().getAllItems();
+            } else {
+              return allFiles;
             }
             for (Album a: albumList) {
                 if (a.getId() != -1) {

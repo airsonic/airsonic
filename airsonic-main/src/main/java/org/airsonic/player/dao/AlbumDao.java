@@ -144,8 +144,10 @@ public class AlbumDao extends AbstractDao {
                    album.getComment(), album.getCreated(), album.getLastScanned(), album.isPresent(), album.getFolderId(), album.getMusicBrainzReleaseId());
         }
 
-        int id = queryForInt("select id from album where artist=? and name=?", null, album.getArtist(), album.getName());
-        album.setId(id);
+        Integer id = queryForInt("select id from album where artist=? and name=?", null, album.getArtist(), album.getName());
+        if (id != null) {
+          album.setId(id);
+        }
     }
 
     /**

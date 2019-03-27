@@ -196,7 +196,10 @@ public class MediaFileDao extends AbstractDao {
                    file.getChildrenLastUpdated(), file.isPresent(), VERSION, file.getMusicBrainzReleaseId());
         }
 
-        int id = queryForInt("select id from media_file where path=?", null, file.getPath());
+        Integer id = queryForInt("select id from media_file where path=?", null, file.getPath());
+        if (id == null) {
+          return;
+        }
         file.setId(id);
     }
 

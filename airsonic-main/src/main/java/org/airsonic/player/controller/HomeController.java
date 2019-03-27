@@ -142,7 +142,11 @@ public class HomeController  {
         List<Album> result = new ArrayList<>();
         for (MediaFile mediaFile : ratingService.getHighestRatedAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(mediaFile);
-            album.setRating((int) Math.round(ratingService.getAverageRating(mediaFile) * 10.0D));
+            Double averateRating = ratingService.getAverageRating(mediaFile);
+            if (averageRating == null) {
+              continue;
+            }
+            album.setRating((int) Math.round(averageRating * 10.0D));
             result.add(album);
         }
         return result;

@@ -107,8 +107,10 @@ public class ArtistDao extends AbstractDao {
                    artist.getName(), artist.getCoverArtPath(), artist.getAlbumCount(), artist.getLastScanned(), artist.isPresent(), artist.getFolderId());
         }
 
-        int id = queryForInt("select id from artist where name=?", null, artist.getName());
-        artist.setId(id);
+        Integer id = queryForInt("select id from artist where name=?", null, artist.getName());
+        if (id != null) {
+          artist.setId(id);
+        }
     }
 
     /**
