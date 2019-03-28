@@ -1,17 +1,4 @@
 language: java
-env:
-  global:
-    - secure: KicW3j93oUA9ZOI0eHmigNhNRQaZxbiIP0+RtBpwdTkac/PSBZ0k9tetIbEeo8VV8n2iDsN2EeWZBrH1fHh+eA2dgp3MiHnR5TqSStSH/mF4u5rVG9cFeBINcxm2eOxEZ9sKKoMfqrMepaIGdsaINJ7HAYbzYdOWKHbXFwfpQVf0BMRqqlmC7hk6t0dw2dTBtd8mkrXVYdtmx0Ujfpg3WL/nFBrnXKwpz1raEV/MTiy0Ee2zgSEaCJXaFmn3hWj2xJv6frkKBMLooM8Yye/6GFLzt9EP5f0I8Mpf0ODDZF95xCSQoWrwjROcipFrecUvE+O7o84fkL8Rzje5UFPT+O4nANwbfaTV1rvvzX9QCgx269RViHZiZjICmtJzDfq48WkalfFmbH6TMe8epoeEVL2rC4ebIKMEoQuexmp1beAQe/Sco7z4FxPrwp0pdf2r/pCaBsYqZfc+P9xC+287tDnoQ15shtBLY0A36bMaD5EJXZC/gpTFnSwszebBn4kF1OHog7cK5RU8/66dEF1Sj6ZNii3w1ODyHbIFEuM5ywHB0cBwRROxKjSOXgEYe/IKUmlqd8lT/QA/R8J0XzkEMkq3ae4iIW5J8pwQdaI9klqI7RDUZ7urHIVU0QCvB8wDYdonEY6QAYiHsUt4C8eygpC6guQQP56B6WpTVCcnc5Y=
-
-addons:
-  coverity_scan:
-    project:
-      name: airsonic/airsonic
-      version: HEAD
-      description: Subsonic
-    build_command: mvn -DskipTests=true clean package
-    branch_pattern: master
-
 jdk:
   - oraclejdk8
 services:
