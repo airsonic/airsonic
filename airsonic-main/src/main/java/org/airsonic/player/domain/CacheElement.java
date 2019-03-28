@@ -41,7 +41,12 @@ public class CacheElement {
     }
 
     public static long createId(int type, String key) {
-        return ((long) type << 32) | Math.abs(key.hashCode());
+        int hashcode = key.hashCode();
+        // http://findbugs.sourceforge.net/bugDescriptions.html#RV_ABSOLUTE_VALUE_OF_HASHCODE
+        if (hashcode == Integer.MIN_VALUE) {
+          hashcode++;
+        }
+        return ((long) type << 32) | Math.abs(hashcode);
     }
 
     public long getId() {

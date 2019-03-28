@@ -684,6 +684,10 @@ public class CoverArtController implements LastModified {
             this.height = height;
 
             int hash = key.hashCode();
+            // http://findbugs.sourceforge.net/bugDescriptions.html#RV_ABSOLUTE_VALUE_OF_HASHCODE
+            if (hash == Integer.MIN_VALUE) {
+              hash++;
+            }
             int rgb = COLORS[Math.abs(hash) % COLORS.length];
             this.color = new Color(rgb);
         }

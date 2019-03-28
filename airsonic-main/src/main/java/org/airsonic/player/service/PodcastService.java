@@ -743,7 +743,9 @@ public class PodcastService {
         if (episode.getPath() != null) {
             File file = new File(episode.getPath());
             if (file.exists()) {
-                file.delete();
+                if (!file.delete()) {
+                  LOG.warn("Failed to delete " + file.toString());
+                }
                 // TODO: Delete directory if empty?
             }
         }
