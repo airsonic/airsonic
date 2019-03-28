@@ -232,6 +232,15 @@
             <artifactId>yuicompressor</artifactId>
             <version>2.4.8</version>
             <scope>runtime</scope>
+            <!-- Necessary to avoid StringIndexOutOfBoundsException when running as a JAR -->
+            <!-- See: https://github.com/yui/yuicompressor/issues/161 -->
+            <!-- See also: https://stackoverflow.com/questions/8429095 -->
+            <exclusions>
+              <exclusion>
+                <artifactId>js</artifactId>
+                <groupId>rhino</groupId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
