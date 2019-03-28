@@ -1,4 +1,18 @@
 language: java
+env:
+  global:
+    # COVERITY_SCAN_TOKEN
+    - secure: "dQTcdeiGwSive7J9nQ8Ap25eKmqUn9dNRS7e4+2PzhErDiM+B35PheKPqPgNkRozfWmJcXgi+QZ9ZlalcajRAjULNJ7WUnLQmx0DCiNpdvY+5Gpf+yNT9bv10feLan25FP4OIo2lpuGK2NicNLmptGsy5XkeWEJnPkb6mBD20/Ei30xN02zV6dSfsaAfzvTTNaGaJnAURZTYVoTkdmyKzKxd4Suk3hZSne8rq+By2arg+dhAvKZoxpN1ecF+EEblCKfMLAP1P1kWn1d7UlWRyflZTu7+scWiBhQXkgE/YHT+Bs4t5vkN0xLn3lnrDf2vmFWoNeZb9oDUtRJJOmp4iw4hiJqcfQsyNiqECE82zQDJ5IlKeV9fxzNsMwJ4FT16Osrq1JTWTY39rBo42xkKge1VrvCwd9BVUJUundFW37xL5gSbyAEDqEuoewVS1LexkiHCzaH0GcSMAhWNS/pIbbJ3/O7op52UvE9i+JFiv8wH9GG0xmzPQuKAf9VISV9D+InDKrrh85ow7LISSjj/Xi32kdtHiYKXpj8//2Pl9X0AbBX/P7A+Io0yyV9+UIb3kYVkSjYDIdlb+GbhF03Avxo6kWTHUL1wqReI6sLir00HiaBLs2xQzhxeWnBSb0MX3QZ7cabtC9RtwJ7Q26z55BtBwW3Xu+5EPxCX9Ep9qEE="
+
+addons:
+  coverity_scan:
+    project:
+      name: airsonic/airsonic
+      version: HEAD
+      description: Subsonic
+    build_command: mvn -DskipTests=true clean package
+    branch_pattern: master
+
 jdk:
   - oraclejdk8
 services:
