@@ -3,12 +3,12 @@
 # airsonic/airsonic
 # -->
 
-## v10.2.1
+## v10.2.1 - 18 Feb 2019
 
 Security:
   * CVE-2018-20222 Prevent xxe during parse
 
-## v10.2.0
+## v10.2.0 - 16 Feb 2019
 
 Fixes:
   * Fix #658 again: content type for unscaled images set based on jaudiotagger output
@@ -59,12 +59,12 @@ Security:
 Not Fixed:
   * #685 - transcoding length issue
 
-## v10.1.2
+## v10.1.2 - 28 Aug 2018
 
 Fixes:
   * Fix LDAP authentication bypass
 
-## v10.1.1
+## v10.1.1 - 16 Dec 2017
 
 Changes:
   * Add show-all button on artist landing page
@@ -79,7 +79,7 @@ Fixes:
 Translation Updates:
   * English language cleanup
 
-## v10.1.0
+## v10.1.0 - 04 Nov 2017
 
 Changes:
   * New Jukebox player using javasound api
@@ -101,7 +101,7 @@ Security:
 Translation Updates:
   * English
 
-## v10.0.1
+## v10.0.1 - 23 Aug 2017
 
 Note that with this release, the jdbc-extra flavored war is now the default and only war.
 
@@ -111,7 +111,7 @@ Note that with this release, the jdbc-extra flavored war is now the default and 
   * Fixed password reset
   * Fixed broken liquibase when airsonic.defaultMusicFolder is modified
 
-## v10.0.0
+## v10.0.0 - 06 Aug 2017
 
   * Rebranded to Airsonic
   * Replaced JWplayer with MediaElement.js (HTML5 player)
@@ -125,29 +125,29 @@ Note that with this release, the jdbc-extra flavored war is now the default and 
   * DLNA browsing improvements
   * Small fixes and improvements
 
-## v6.2
+## v6.2 - 02 May 2017
 
   * Small fixes
   * Release only a month behind schedule! We're improving!
 
-## v6.2.beta4
+## v6.2.beta4 - 25 Apr 2017
 
   * Final fixes in Beta! Release soon
 
-## v6.2.beta3
+## v6.2.beta3 - 08 Apr 2017
 
   * API endpoint security tightening
   * More documentation
   * Less licensing code
   * More cowbell
 
-## v6.2.beta2
+## v6.2.beta2 - 24 Mar 2017
 
   * Add database settings UI
   * Documentation improvements
   * Lots of spit and polish
 
-## v6.2.beta1
+## v6.2.beta1 - 05 Mar 2017
 
   * Add external database support
   * Upgrade to new version of Spring
@@ -157,11 +157,11 @@ Note that with this release, the jdbc-extra flavored war is now the default and 
   * Add a demo site
   * Tests and bugfixes and documentation, oh my!
 
-## v6.1
+## v6.1 - 27 Nov 2016
 
   * First real stable release!
 
-## v6.1.beta2
+## v6.1.beta2 - 19 Nov 2016
 
   * Metaproject: Jenkins builds!
   * More documentation
@@ -169,22 +169,22 @@ Note that with this release, the jdbc-extra flavored war is now the default and 
   * Improve shuffling behaviour
   * Lots of small fixes, many more to come
 
-## v6.1.beta1
+## v6.1.beta1 - 15 May 2016
 
   * Meant as a release candidate; failed to make it past the Primary election.
 
-## v6.1-alpha1
+## v6.1-alpha1 - 14 May 2016
 
   * Search+replace subsonic-->libresonic
   * Move out of org.sourceforge.subsonic namespace
   * Develop becomes horribly unstable, you shouldn't be using this.
 
-## v6.0.1
+## v6.0.1 - 14 May 2016
 
   * First recommended release
   * Updated Help/About page text
 
-## v6.0
+## v6.0 - 1 May 2016
 
   * First release as Libresonic
   * Based upon Subsonic 5.3(stable)
