@@ -215,7 +215,7 @@
     </c:choose>
 
     <input type="submit" value="<fmt:message key="common.save"/>" style="margin-top:1.5em;margin-right:0.3em">
-    <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'" style="margin-top:1.5em">
+    <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-top:1.5em"></a>
 </form:form>
 
 </body></html>

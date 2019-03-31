@@ -58,7 +58,7 @@
 
     <p style="padding-top:1em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'" style="margin-right:2.0em">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-right:2.0em"></a>
         <input type="checkbox" id="deleteExpired" name="deleteExpired" class="checkbox"/>
         <label for="deleteExpired"><fmt:message key="sharesettings.deleteexpired"/></label>
     </p>
