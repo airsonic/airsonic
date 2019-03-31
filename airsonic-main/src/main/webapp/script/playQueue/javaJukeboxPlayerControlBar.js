@@ -68,13 +68,10 @@ function updateJavaJukeboxPlayerControlBar(song){
 }
 
 function songTimeAsString(timeInSeconds) {
-    var m = moment.duration(timeInSeconds, 'seconds');
-    var seconds = m.seconds();
-    var secondsAsString = seconds;
-    if (seconds < 10) {
-        secondsAsString = "0" + seconds;
-    }
-    return m.minutes() + ":" + secondsAsString;
+    var minutes = Math.floor(timeInSeconds / 60);
+    var seconds = timeInSeconds - minutes * 60;
+
+    return minutes + ":" + ("00" + seconds).slice(-2);
 }
 
 function newSongPlaying(song) {
