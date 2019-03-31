@@ -3,7 +3,6 @@
 <html>
 <head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 </head>
 <body class="mainframe bgcolor1">
 
@@ -21,9 +20,6 @@
 <p>
     <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
     <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><fmt:message key="share.twitter"/></a>
-</p>
-<p>
-    <g:plusone size="small" annotation="none" href="${model.playUrl}"></g:plusone>&nbsp;<fmt:message key="share.googleplus"/>
 </p>
 <p>
     <fmt:message key="share.link">
