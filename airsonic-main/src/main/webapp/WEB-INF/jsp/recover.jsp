@@ -5,7 +5,7 @@
 <head>
     <%@ include file="head.jsp" %>
 </head>
-<body class="mainframe bgcolor1" onload="document.getElementById('usernameOrEmail').focus()">
+<body class="mainframe bgcolor1">
 
 <form action="recover.view" method="POST">
     <sec:csrfInput />
@@ -17,7 +17,7 @@
             <p style="padding-top: 1em; padding-bottom: 0.5em"><fmt:message key="recover.text"/></p>
 
             <c:if test="${empty model.sentTo}">
-                <input type="text" id="usernameOrEmail" name="usernameOrEmail" style="width:18em;margin-right: 1em">
+                <input type="text" id="usernameOrEmail" autofocus name="usernameOrEmail" style="width:18em;margin-right: 1em">
                 <input name="submit" type="submit" value="<fmt:message key="recover.send"/>">
             </c:if>
 

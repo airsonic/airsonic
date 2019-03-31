@@ -10,7 +10,7 @@
     </script>
 
 </head>
-<body style="min-width:550px" class="mainframe bgcolor1" onload="document.getElementById('j_username').focus()">
+<body style="min-width:550px" class="mainframe bgcolor1">
 
     <form action="<c:url value="/login"/>" method="POST">
         <sec:csrfInput />
@@ -21,7 +21,7 @@
 
             <div class="loginmessagetop"><sub:wiki text="${model.loginMessage}"/></div>
 
-            <input type="text" id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
+            <input type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
 
             <input type="password" name="j_password" tabindex="2" placeholder="<fmt:message key="login.password"/>">
 
