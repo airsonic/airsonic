@@ -193,6 +193,11 @@ input[type=submit], input[type=button] {
     background: white;
     padding-left: 1em;
     padding-right: 1em;
+    color: black;
+}
+
+input[type=submit]:hover, input[type=button]:hover {
+    text-decoration: none;
 }
 
 input[type=submit]:active, input[type=button]:active {

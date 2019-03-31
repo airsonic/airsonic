@@ -208,7 +208,7 @@
 
     <p style="padding-top:1em;padding-bottom:1em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em"/>
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
     </p>
 
     <h2><fmt:message key="personalsettings.avatar.title"/></h2>

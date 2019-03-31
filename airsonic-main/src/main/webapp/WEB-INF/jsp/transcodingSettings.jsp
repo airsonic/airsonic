@@ -87,7 +87,7 @@
 
     <p style="padding-top:0.75em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'" style="margin-right:1.3em">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-right:1.3em"></a>
         <a href="https://airsonic.github.io/docs/transcode/" target="_blank"><fmt:message key="transcodingsettings.recommended"/></a>
     </p>
 
