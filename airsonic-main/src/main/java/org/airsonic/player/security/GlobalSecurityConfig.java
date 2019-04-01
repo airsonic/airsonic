@@ -22,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.security.SecureRandom;
+
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -30,6 +32,14 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     private static Logger logger = LoggerFactory.getLogger(GlobalSecurityConfig.class);
 
     static final String FAILURE_URL = "/login?error=1";
+
+    private static final String key;
+
+    static {
+      byte[] array = new byte[32];
+      new SecureRandom().nextBytes(array);
+      key = new String(array);
+    }
 
     @Autowired
     private SecurityService securityService;
@@ -162,7 +172,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(
                     "/login?logout")
-                    .and().rememberMe().key("airsonic");
+                    .and().rememberMe().key(key);
         }
 
     }
