@@ -3,7 +3,6 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
     <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
@@ -12,7 +11,6 @@
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
     <%@ include file="playQueueCast.jsp" %>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
