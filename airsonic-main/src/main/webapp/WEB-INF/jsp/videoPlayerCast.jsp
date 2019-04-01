@@ -602,11 +602,11 @@
     };
 
     CastPlayer.prototype.updateDebug = function () {
-        var debug = "<br>currentMediaOffset: " + this.currentMediaOffset + "<br>"
-                + "currentMediaTime: " + this.currentMediaTime + "<br>"
-                + "localPlayerState: " + this.localPlayerState + "<br>"
+        var debug = "\n" + this.currentMediaOffset + "\n"
+                + "currentMediaTime: " + this.currentMediaTime + "\n"
+                + "localPlayerState: " + this.localPlayerState + "\n"
                 + "castPlayerState: " + this.castPlayerState;
-        $("#debug").html(debug);
+        $("#debug").text(debug);
     };
 
     /**
