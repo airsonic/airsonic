@@ -49,7 +49,7 @@ public class MetricsManager {
                 }
             }
         }
-        return metricsActivatedByConfiguration.booleanValue();
+        return metricsActivatedByConfiguration;
     }
 
     /**

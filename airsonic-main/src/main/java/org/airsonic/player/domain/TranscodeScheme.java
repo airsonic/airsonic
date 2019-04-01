@@ -85,7 +85,7 @@ public enum TranscodeScheme {
         if (this == OFF) {
             return "No limit";
         }
-        return "" + getMaxBitRate() + " Kbps";
+        return getMaxBitRate() + " Kbps";
     }
 
     /**

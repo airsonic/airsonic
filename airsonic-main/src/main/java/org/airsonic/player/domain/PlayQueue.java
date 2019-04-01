@@ -215,9 +215,7 @@ public class PlayQueue {
         }
         files.remove(index);
 
-        if (index != -1) {
-            this.index = Math.max(0, Math.min(this.index, size() - 1));
-        }
+        this.index = Math.max(0, Math.min(this.index, size() - 1));
     }
 
     /**

@@ -450,7 +450,7 @@ public class PodcastService {
             if (getEpisodeByUrl(url) == null) {
                 Long length = null;
                 try {
-                    length = new Long(enclosure.getAttributeValue("length"));
+                    length = Long.valueOf(enclosure.getAttributeValue("length"));
                 } catch (Exception x) {
                     LOG.warn("Failed to parse enclosure length.", x);
                 }
@@ -470,13 +470,7 @@ public class PodcastService {
                 long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
                 long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
 
-                if (timeA < timeB) {
-                    return 1;
-                }
-                if (timeA > timeB) {
-                    return -1;
-                }
-                return 0;
+                return Long.compare(timeB, timeA);
             }
         });
 
