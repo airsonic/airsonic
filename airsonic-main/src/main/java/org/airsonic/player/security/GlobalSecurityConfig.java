@@ -33,14 +33,6 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
     static final String FAILURE_URL = "/login?error=1";
 
-    private static final String key;
-
-    static {
-      byte[] array = new byte[32];
-      new SecureRandom().nextBytes(array);
-      key = new String(array);
-    }
-
     @Autowired
     private SecurityService securityService;
 
@@ -79,6 +71,11 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
     }
 
+    private static String generateRememberMeKey() {
+      byte[] array = new byte[32];
+      new SecureRandom().nextBytes(array);
+      return new String(array);
+    }
 
     @Configuration
     @Order(1)
@@ -172,7 +169,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(
                     "/login?logout")
-                    .and().rememberMe().key(key);
+                    .and().rememberMe().key(generateRememberMeKey());
         }
 
     }
