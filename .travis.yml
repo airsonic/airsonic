@@ -1,10 +1,14 @@
 language: java
-jdk:
-  - oraclejdk8
-services:
-  - docker
 cache:
   directories:
     - $HOME/.m2
 script:
   - mvn verify -B -P integration-test
+
+matrix:
+  include:
+  - jdk: oraclejdk8
+  - jdk: oraclejdk9
+  allow_failures:
+  - jdk: oraclejdk9
+  
