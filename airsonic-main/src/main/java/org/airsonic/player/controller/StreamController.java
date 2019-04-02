@@ -29,7 +29,6 @@ import org.airsonic.player.service.sonos.SonosHelper;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
-import org.apache.catalina.connector.ClientAbortException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,9 +248,22 @@ public class StreamController  {
                     }
                 }
             }
-        } catch (ClientAbortException e) {
-            LOG.info("{}: Client unexpectedly closed connection while loading {} ({})", request.getRemoteAddr(), Util.getURLForRequest(request), e.getCause().toString());
-            return;
+        } catch (IOException e) {
+
+            // This happens often and outside of the control of the server, so
+            // we catch Tomcat/Jetty "connection aborted by client" exceptions
+            // and display a short error message.
+            boolean shouldCatch = false;
+            shouldCatch |= Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
+            shouldCatch |= Util.isInstanceOfClassName(e, "org.eclipse.jetty.io.EofException");
+            if (shouldCatch) {
+                LOG.info("{}: Client unexpectedly closed connection while loading {} ({})", request.getRemoteAddr(), Util.getURLForRequest(request), e.getCause().toString());
+                return;
+            }
+
+            // Rethrow the exception in all other cases
+            throw e;
+
         } finally {
             if (status != null) {
                 securityService.updateUserByteCounts(user, status.getBytesTransfered(), 0L, 0L);

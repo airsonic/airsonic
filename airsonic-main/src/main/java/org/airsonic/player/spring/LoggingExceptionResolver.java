@@ -18,11 +18,19 @@ public class LoggingExceptionResolver implements HandlerExceptionResolver, Order
     public ModelAndView resolveException(
             HttpServletRequest request, HttpServletResponse response, Object o, Exception e
     ) {
-        if (e instanceof org.apache.catalina.connector.ClientAbortException) {
+        // This happens often and outside of the control of the server, so
+        // we catch Tomcat/Jetty "connection aborted by client" exceptions
+        // and display a short error message.
+        boolean shouldCatch = false;
+        shouldCatch |= Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
+        shouldCatch |= Util.isInstanceOfClassName(e, "org.eclipse.jetty.io.EofException");
+        if (shouldCatch) {
             LOG.info("{}: Client unexpectedly closed connection while loading {} ({})", request.getRemoteAddr(), Util.getURLForRequest(request), e.getCause().toString());
-        } else {
-            LOG.error("{}: An exception occurred while loading {}", request.getRemoteAddr(), Util.getURLForRequest(request), e);
+            return null;
         }
+
+        // Display a full stack trace in all other cases
+        LOG.error("{}: An exception occurred while loading {}", request.getRemoteAddr(), Util.getURLForRequest(request), e);
         return null;
     }
 

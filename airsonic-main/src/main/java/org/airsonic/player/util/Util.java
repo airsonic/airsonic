@@ -132,4 +132,16 @@ public final class Util {
         if (queryString != null && queryString.length() > 0) url += "?" + queryString;
         return url;
     }
+
+    /**
+     * Return true if the given object is an instance of the class name in argument.
+     * If the class doesn't exist, returns false.
+     */
+    public static boolean isInstanceOfClassName(Object o, String className) {
+        try {
+            return Class.forName(className).isInstance(o);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }
