@@ -429,7 +429,7 @@
         }
 
         if (songs.length == 0) {
-            $("#songCountAndDuration").html("");
+            $("#songCountAndDuration").text("");
             $("#empty").show();
         } else {
             $("#songCountAndDuration").html(songs.length + " <fmt:message key="playlist2.songs"/> &ndash; " + playQueue.durationAsString);
@@ -447,7 +447,7 @@
             var id = i + 1;
             dwr.util.cloneNode("pattern", { idSuffix:id });
             if ($("#trackNumber" + id)) {
-                $("#trackNumber" + id).html(song.trackNumber);
+                $("#trackNumber" + id).text(song.trackNumber);
             }
             if (song.starred) {
                 $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
@@ -461,40 +461,40 @@
                 }
             }
             if ($("#title" + id)) {
-                $("#title" + id).html(song.title);
+                $("#title" + id).text(song.title);
                 $("#title" + id).attr("title", song.title);
             }
             if ($("#titleUrl" + id)) {
-                $("#titleUrl" + id).html(song.title);
+                $("#titleUrl" + id).text(song.title);
                 $("#titleUrl" + id).attr("title", song.title);
                 $("#titleUrl" + id).click(function () {onSkip(this.id.substring(8) - 1)});
             }
             if ($("#album" + id)) {
-                $("#album" + id).html(song.album);
+                $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", song.albumUrl);
             }
             if ($("#artist" + id)) {
-                $("#artist" + id).html(song.artist);
+                $("#artist" + id).text(song.artist);
                 $("#artist" + id).attr("title", song.artist);
             }
             if ($("#genre" + id)) {
-                $("#genre" + id).html(song.genre);
+                $("#genre" + id).text(song.genre);
             }
             if ($("#year" + id)) {
-                $("#year" + id).html(song.year);
+                $("#year" + id).text(song.year);
             }
             if ($("#bitRate" + id)) {
-                $("#bitRate" + id).html(song.bitRate);
+                $("#bitRate" + id).text(song.bitRate);
             }
             if ($("#duration" + id)) {
-                $("#duration" + id).html(song.durationAsString);
+                $("#duration" + id).text(song.durationAsString);
             }
             if ($("#format" + id)) {
-                $("#format" + id).html(song.format);
+                $("#format" + id).text(song.format);
             }
             if ($("#fileSize" + id)) {
-                $("#fileSize" + id).html(song.fileSize);
+                $("#fileSize" + id).text(song.fileSize);
             }
 
             $("#pattern" + id).addClass((i % 2 == 0) ? "bgcolor1" : "bgcolor2");

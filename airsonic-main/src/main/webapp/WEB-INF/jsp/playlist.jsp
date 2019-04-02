@@ -86,8 +86,8 @@
                 $("#empty").hide();
             }
 
-            $("#songCount").html(playlist.fileCount);
-            $("#duration").html(playlist.durationAsString);
+            $("#songCount").text(playlist.fileCount);
+            $("#duration").text(playlist.durationAsString);
 
             if (playlist.shared) {
                 $("#shared").html("<fmt:message key="playlist2.shared"/>");
@@ -113,15 +113,15 @@
                 if (!song.present) {
                     $("#missing" + id).show();
                 }
-                $("#index" + id).html(id);
-                $("#title" + id).html(song.title);
+                $("#index" + id).text(id);
+                $("#title" + id).text(song.title);
                 $("#title" + id).attr("title", song.title);
-                $("#album" + id).html(song.album);
+                $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", "main.view?id=" + song.id);
-                $("#artist" + id).html(song.artist);
+                $("#artist" + id).text(song.artist);
                 $("#artist" + id).attr("title", song.artist);
-                $("#songDuration" + id).html(song.durationAsString);
+                $("#songDuration" + id).text(song.durationAsString);
 
                 // Note: show() method causes page to scroll to top.
                 $("#pattern" + id).css("display", "table-row");
