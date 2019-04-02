@@ -21,9 +21,9 @@
 
             <div class="loginmessagetop"><sub:wiki text="${model.loginMessage}"/></div>
 
-            <input type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
+            <input required type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
 
-            <input type="password" autocomplete="off" name="j_password" tabindex="2" placeholder="<fmt:message key="login.password"/>">
+            <input required type="password" autocomplete="off"  name="j_password" tabindex="2" placeholder="<fmt:message key="login.password"/>">
 
             <input name="submit" type="submit" value="<fmt:message key="login.login"/>" tabindex="4"></td>
 
