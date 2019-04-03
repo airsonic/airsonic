@@ -30,6 +30,7 @@ import org.airsonic.player.domain.PodcastStatus;
 import org.airsonic.player.service.metadata.MetaData;
 import org.airsonic.player.service.metadata.MetaDataParser;
 import org.airsonic.player.service.metadata.MetaDataParserFactory;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -304,7 +305,6 @@ public class PodcastService {
     }
 
     private void doRefreshChannel(PodcastChannel channel, boolean downloadEpisodes) {
-        InputStream in = null;
 
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             channel.setStatus(PodcastStatus.DOWNLOADING);
@@ -318,28 +318,26 @@ public class PodcastService {
             method.setConfig(requestConfig);
 
             try (CloseableHttpResponse response = client.execute(method)) {
-                in = response.getEntity().getContent();
+                try (InputStream in = response.getEntity().getContent()) {
+                    Document document = createSAXBuilder().build(in);
+                    Element channelElement = document.getRootElement().getChild("channel");
 
-                Document document = createSAXBuilder().build(in);
-                Element channelElement = document.getRootElement().getChild("channel");
+                    channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
+                    channel.setDescription(StringUtil.removeMarkup(channelElement.getChildTextTrim("description")));
+                    channel.setImageUrl(getChannelImageUrl(channelElement));
+                    channel.setStatus(PodcastStatus.COMPLETED);
+                    channel.setErrorMessage(null);
+                    podcastDao.updateChannel(channel);
 
-                channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
-                channel.setDescription(StringUtil.removeMarkup(channelElement.getChildTextTrim("description")));
-                channel.setImageUrl(getChannelImageUrl(channelElement));
-                channel.setStatus(PodcastStatus.COMPLETED);
-                channel.setErrorMessage(null);
-                podcastDao.updateChannel(channel);
-
-                downloadImage(channel);
-                refreshEpisodes(channel, channelElement.getChildren("item"));
+                    downloadImage(channel);
+                    refreshEpisodes(channel, channelElement.getChildren("item"));
+                }
             }
         } catch (Exception x) {
             LOG.warn("Failed to get/parse RSS file for Podcast channel " + channel.getUrl(), x);
             channel.setStatus(PodcastStatus.ERROR);
             channel.setErrorMessage(getErrorMessage(x));
             podcastDao.updateChannel(channel);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
 
         if (downloadEpisodes) {
@@ -352,8 +350,6 @@ public class PodcastService {
     }
 
     private void downloadImage(PodcastChannel channel) {
-        InputStream in = null;
-        OutputStream out = null;
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             String imageUrl = channel.getImageUrl();
             if (imageUrl == null) {
@@ -370,16 +366,15 @@ public class PodcastService {
 
             HttpGet method = new HttpGet(imageUrl);
             try (CloseableHttpResponse response = client.execute(method)) {
-                in = response.getEntity().getContent();
-                out = new FileOutputStream(new File(dir, "cover." + getCoverArtSuffix(response)));
-                IOUtils.copy(in, out);
+                try (InputStream in = response.getEntity().getContent()) {
+                    try (OutputStream out = new FileOutputStream(new File(dir, "cover." + getCoverArtSuffix(response)))) {
+                        IOUtils.copy(in, out);
+                    }
+                }
                 mediaFileService.refreshMediaFile(channelMediaFile);
             }
         } catch (Exception x) {
             LOG.warn("Failed to download cover art for podcast channel '" + channel.getTitle() + "': " + x, x);
-        } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
         }
     }
 
@@ -590,14 +585,12 @@ public class PodcastService {
 
                 if (isEpisodeDeleted(episode)) {
                     LOG.info("Podcast " + episode.getUrl() + " was deleted. Aborting download.");
-                    IOUtils.closeQuietly(out);
                     file.delete();
                 } else {
                     addMediaFileIdToEpisodes(Arrays.asList(episode));
                     episode.setBytesDownloaded(bytesDownloaded);
                     podcastDao.updateEpisode(episode);
                     LOG.info("Downloaded " + bytesDownloaded + " bytes from Podcast " + episode.getUrl());
-                    IOUtils.closeQuietly(out);
                     updateTags(file, episode);
                     episode.setStatus(PodcastStatus.COMPLETED);
                     podcastDao.updateEpisode(episode);
@@ -610,8 +603,8 @@ public class PodcastService {
             episode.setErrorMessage(getErrorMessage(x));
             podcastDao.updateEpisode(episode);
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(out);
         }
     }
 

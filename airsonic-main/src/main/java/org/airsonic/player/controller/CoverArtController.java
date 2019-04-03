@@ -193,11 +193,8 @@ public class CoverArtController implements LastModified {
 
     private void sendImage(File file, HttpServletResponse response) throws IOException {
         response.setContentType(StringUtil.getMimeType(FilenameUtils.getExtension(file.getName())));
-        InputStream in = new FileInputStream(file);
-        try {
+        try ( InputStream in = new FileInputStream(file)) {
             IOUtils.copy(in, response.getOutputStream());
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 
@@ -205,29 +202,21 @@ public class CoverArtController implements LastModified {
         if (response.getContentType() == null) {
             response.setContentType(StringUtil.getMimeType("jpeg"));
         }
-        InputStream in = null;
-        try {
-            in = getClass().getResourceAsStream("default_cover.jpg");
+        try ( InputStream in = getClass().getResourceAsStream("default_cover.jpg")) {
             BufferedImage image = ImageIO.read(in);
             if (size != null) {
                 image = scale(image, size, size);
             }
             ImageIO.write(image, "jpeg", response.getOutputStream());
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 
     private void sendUnscaled(CoverArtRequest coverArtRequest, HttpServletResponse response) throws IOException {
         File file = coverArtRequest.getCoverArt();
-        InputStream in = null;
-        try {
-            Pair<InputStream, String> imageInputStreamWithType = getImageInputStreamWithType(file);
-            in = imageInputStreamWithType.getLeft();
+        Pair<InputStream, String> imageInputStreamWithType = getImageInputStreamWithType(file);
+        try ( InputStream in = imageInputStreamWithType.getLeft()) {
             response.setContentType(imageInputStreamWithType.getRight());
             IOUtils.copy(in, response.getOutputStream());
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 
@@ -242,26 +231,23 @@ public class CoverArtController implements LastModified {
             // Is cache missing or obsolete?
             if (!cachedImage.exists() || request.lastModified() > cachedImage.lastModified()) {
 //                LOG.info("Cache MISS - " + request + " (" + size + ")");
-                OutputStream out = null;
                 try {
                     semaphore.acquire();
                     BufferedImage image = request.createImage(size);
                     if (image == null) {
                         throw new Exception("Unable to decode image.");
                     }
-                    out = new FileOutputStream(cachedImage);
-                    ImageIO.write(image, encoding, out);
-
+                    try (OutputStream out = new FileOutputStream(cachedImage)) {
+                        ImageIO.write(image, encoding, out);
+                    }
                 } catch (Throwable x) {
                     // Delete corrupt (probably empty) thumbnail cache.
                     LOG.warn("Failed to create thumbnail for " + request, x);
-                    IOUtils.closeQuietly(out);
                     cachedImage.delete();
                     throw new IOException("Failed to create thumbnail for " + request + ". " + x.getMessage());
 
                 } finally {
                     semaphore.release();
-                    IOUtils.closeQuietly(out);
                 }
             } else {
 //                LOG.info("Cache HIT - " + request + " (" + size + ")");
@@ -378,14 +364,10 @@ public class CoverArtController implements LastModified {
 
         public BufferedImage createImage(int size) {
             if (coverArt != null) {
-                InputStream in = null;
-                try {
-                    in = getImageInputStream(coverArt);
+                try ( InputStream in = getImageInputStream(coverArt)) {
                     return scale(ImageIO.read(in), size, size);
                 } catch (Throwable x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
-                } finally {
-                    IOUtils.closeQuietly(in);
                 }
             }
             return createAutoCover(size, size);
@@ -624,9 +606,7 @@ public class CoverArtController implements LastModified {
             int height;
             height = size;
             int width = height * 16 / 9;
-            InputStream in = null;
-            try {
-                in = getImageInputStreamForVideo(mediaFile, width, height, offset);
+            try (InputStream in = getImageInputStreamForVideo(mediaFile, width, height, offset)) {
                 BufferedImage result = ImageIO.read(in);
                 if (result == null) {
                     throw new NullPointerException();
@@ -634,8 +614,6 @@ public class CoverArtController implements LastModified {
                 return result;
             } catch (Throwable x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
-            } finally {
-                IOUtils.closeQuietly(in);
             }
             return createAutoCover(width, height);
         }

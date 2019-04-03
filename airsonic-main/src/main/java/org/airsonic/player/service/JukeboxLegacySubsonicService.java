@@ -23,7 +23,6 @@ import org.airsonic.player.domain.*;
 import org.airsonic.player.service.jukebox.AudioPlayer;
 import org.airsonic.player.service.jukebox.AudioPlayerFactory;
 import org.airsonic.player.util.FileUtil;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,42 +90,36 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
     }
 
     private synchronized void play(MediaFile file, int offset) {
-        InputStream in = null;
-        try {
-
-            // Resume if possible.
-            boolean sameFile = file != null && file.equals(currentPlayingFile);
-            boolean paused = audioPlayer != null && audioPlayer.getState() == AudioPlayer.State.PAUSED;
-            if (sameFile && paused && offset == 0) {
-                audioPlayer.play();
-            } else {
-                this.offset = offset;
-                if (audioPlayer != null) {
-                    audioPlayer.close();
-                    if (currentPlayingFile != null) {
-                        onSongEnd(currentPlayingFile);
-                    }
-                }
-
-                if (file != null) {
-                    int duration = file.getDurationSeconds() == null ? 0 : file.getDurationSeconds() - offset;
-                    TranscodingService.Parameters parameters = new TranscodingService.Parameters(file, new VideoTranscodingSettings(0, 0, offset, duration, false));
-                    String command = settingsService.getJukeboxCommand();
-                    parameters.setTranscoding(new Transcoding(null, null, null, null, command, null, null, false));
-                    in = transcodingService.getTranscodedInputStream(parameters);
-                    audioPlayer = audioPlayerFactory.createAudioPlayer(in, this);
-                    audioPlayer.setGain(gain);
-                    audioPlayer.play();
-                    onSongStart(file);
+        // Resume if possible.
+        boolean sameFile = file != null && file.equals(currentPlayingFile);
+        boolean paused = audioPlayer != null && audioPlayer.getState() == AudioPlayer.State.PAUSED;
+        if (sameFile && paused && offset == 0) {
+            audioPlayer.play();
+        } else {
+            this.offset = offset;
+            if (audioPlayer != null) {
+                audioPlayer.close();
+                if (currentPlayingFile != null) {
+                    onSongEnd(currentPlayingFile);
                 }
             }
 
-            currentPlayingFile = file;
-
-        } catch (Exception x) {
-            LOG.error("Error in jukebox: " + x, x);
-            IOUtils.closeQuietly(in);
+            if (file != null) {
+              int duration = file.getDurationSeconds() == null ? 0 : file.getDurationSeconds() - offset;
+              TranscodingService.Parameters parameters = new TranscodingService.Parameters(file, new VideoTranscodingSettings(0, 0, offset, duration, false));
+              String command = settingsService.getJukeboxCommand();
+              parameters.setTranscoding(new Transcoding(null, null, null, null, command, null, null, false));
+              try ( InputStream in = transcodingService.getTranscodedInputStream(parameters) ) {
+                  audioPlayer = audioPlayerFactory.createAudioPlayer(in, this);
+                  audioPlayer.setGain(gain);
+                  audioPlayer.play();
+                  onSongStart(file);
+              } catch (Exception x) {
+                  LOG.error("Error in jukebox: " + x, x);
+              }
+            }
         }
+        currentPlayingFile = file;
     }
 
     public synchronized void stateChanged(AudioPlayer audioPlayer, AudioPlayer.State state) {

@@ -31,7 +31,6 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,26 +183,19 @@ public class UploadController {
                     }
 
                     entryFile.getParentFile().mkdirs();
-                    InputStream inputStream = null;
-                    OutputStream outputStream = null;
-                    try {
-                        inputStream = zipFile.getInputStream(entry);
-                        outputStream = new FileOutputStream(entryFile);
-
-                        byte[] buf = new byte[8192];
-                        while (true) {
-                            int n = inputStream.read(buf);
-                            if (n == -1) {
-                                break;
+                    try (InputStream inputStream = zipFile.getInputStream(entry)){
+                        try (OutputStream outputStream = new FileOutputStream(entryFile)) {
+                            byte[] buf = new byte[8192];
+                            while (true) {
+                                int n = inputStream.read(buf);
+                                if (n == -1) {
+                                    break;
+                                }
+                                outputStream.write(buf, 0, n);
                             }
-                            outputStream.write(buf, 0, n);
                         }
-
                         LOG.info("Unzipped " + entryFile);
                         unzippedFiles.add(entryFile);
-                    } finally {
-                        IOUtils.closeQuietly(inputStream);
-                        IOUtils.closeQuietly(outputStream);
                     }
                 }
             }

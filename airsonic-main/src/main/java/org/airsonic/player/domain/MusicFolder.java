@@ -34,6 +34,7 @@ import java.util.List;
  * @author Sindre Mehus
  * @version $Revision: 1.1 $ $Date: 2005/11/27 14:32:05 $
  */
+@SuppressWarnings("serial")
 public class MusicFolder implements Serializable {
 
     private Integer id;

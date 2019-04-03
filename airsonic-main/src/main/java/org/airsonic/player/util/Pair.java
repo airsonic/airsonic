@@ -26,6 +26,7 @@ import java.io.Serializable;
 /**
  * @author Sindre Mehus
  */
+@SuppressWarnings("serial")
 public class Pair<S, T> implements Serializable {
 
     private final S first;

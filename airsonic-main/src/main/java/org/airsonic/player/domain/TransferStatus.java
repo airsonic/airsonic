@@ -289,6 +289,7 @@ public class TransferStatus {
     /**
      * Contains recent history of samples.
      */
+    @SuppressWarnings("serial")
     public static class SampleHistory extends BoundedList<Sample> {
 
         public SampleHistory() {

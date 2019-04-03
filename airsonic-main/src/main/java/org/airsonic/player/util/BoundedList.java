@@ -28,6 +28,7 @@ import java.util.LinkedList;
  * @author Sindre Mehus
  * @version $Revision: 1.1 $ $Date: 2005/05/09 20:01:25 $
  */
+@SuppressWarnings("serial")
 public class BoundedList<E> extends LinkedList<E> {
     private int maxSize;
 

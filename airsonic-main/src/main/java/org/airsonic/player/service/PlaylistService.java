@@ -33,7 +33,6 @@ import org.airsonic.player.service.playlist.PlaylistImportHandler;
 import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,12 +76,12 @@ public class PlaylistService {
             List<PlaylistExportHandler> exportHandlers,
             List<PlaylistImportHandler> importHandlers
     ) {
-        Assert.notNull(mediaFileDao);
-        Assert.notNull(playlistDao);
-        Assert.notNull(securityService);
-        Assert.notNull(settingsService);
-        Assert.notNull(exportHandlers);
-        Assert.notNull(importHandlers);
+        Assert.notNull(mediaFileDao, "mediaFileDao is null");
+        Assert.notNull(playlistDao, "playlistDao is null");
+        Assert.notNull(securityService, "securityService is null");
+        Assert.notNull(settingsService, "settingsService is null");
+        Assert.notNull(exportHandlers, "exportHandlers is null");
+        Assert.notNull(importHandlers, "importHandlers is null");
         this.mediaFileDao = mediaFileDao;
         this.playlistDao = playlistDao;
         this.securityService = securityService;
@@ -294,12 +293,9 @@ public class PlaylistService {
                 }
             }
         }
-        InputStream in = new FileInputStream(file);
-        try {
+        try ( InputStream in = new FileInputStream(file)) {
             importPlaylist(User.USERNAME_ADMIN, FilenameUtils.getBaseName(fileName), fileName, in, existingPlaylist);
             LOG.info("Auto-imported playlist " + file);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 

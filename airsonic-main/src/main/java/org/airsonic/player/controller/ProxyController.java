@@ -19,6 +19,8 @@
  */
 package org.airsonic.player.controller;
 
+import org.airsonic.player.util.FileUtil;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -70,7 +72,7 @@ public class ProxyController  {
                 }
             }
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
         return null;
     }

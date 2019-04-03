@@ -20,7 +20,6 @@
 package org.airsonic.player.util;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -278,10 +277,7 @@ public final class StringUtil {
      * @throws IOException If an I/O error occurs.
      */
     public static String[] readLines(InputStream in) throws IOException {
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             List<String> result = new ArrayList<String>();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim();
@@ -290,11 +286,9 @@ public final class StringUtil {
                 }
             }
             return result.toArray(new String[result.size()]);
-
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(reader);
-        }
+            FileUtil.closeQuietly(in);
+				}
     }
 
     /**

@@ -84,9 +84,6 @@ public class CoverArtService {
     }
 
     private void saveCoverArt(String path, String url) throws Exception {
-        InputStream input = null;
-        OutputStream output = null;
-
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectTimeout(20 * 1000) // 20 seconds
@@ -95,7 +92,6 @@ public class CoverArtService {
             HttpGet method = new HttpGet(url);
             method.setConfig(requestConfig);
             try (CloseableHttpResponse response = client.execute(method)) {
-                input = response.getEntity().getContent();
 
                 // Attempt to resolve proper suffix.
                 String suffix = "jpg";
@@ -115,8 +111,11 @@ public class CoverArtService {
                 backup(newCoverFile, new File(path, "cover." + suffix + ".backup"));
 
                 // Write file.
-                output = new FileOutputStream(newCoverFile);
-                IOUtils.copy(input, output);
+                try (InputStream input = response.getEntity().getContent()) {
+                    try (OutputStream output = new FileOutputStream(newCoverFile)) {
+                        IOUtils.copy(input, output);
+                    }
+                }
 
                 MediaFile dir = mediaFileService.getMediaFile(path);
 
@@ -146,9 +145,6 @@ public class CoverArtService {
                     LOG.warn("Failed to rename existing cover file.", x);
                 }
             }
-        } finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(output);
         }
     }
 

@@ -19,6 +19,8 @@
  */
 package org.airsonic.player.io;
 
+import org.airsonic.player.util.FileUtil;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,8 +81,8 @@ public class TranscodeInputStream extends InputStream {
                     } catch (IOException x) {
                         // Intentionally ignored. Will happen if the remote player closes the stream.
                     } finally {
-                        IOUtils.closeQuietly(in);
-                        IOUtils.closeQuietly(processOutputStream);
+                        FileUtil.closeQuietly(in);
+                        FileUtil.closeQuietly(processOutputStream);
                     }
                 }
             }.start();
@@ -112,8 +114,16 @@ public class TranscodeInputStream extends InputStream {
      * @see InputStream#close()
      */
     public void close() throws IOException {
-        IOUtils.closeQuietly(processInputStream);
-        IOUtils.closeQuietly(processOutputStream);
+        try {
+            processInputStream.close();
+        } catch (Exception x) {
+            LOG.error("Error while closing the process input stream: " + x, x);
+        }
+        try {
+            processOutputStream.close();
+        } catch (Exception x) {
+            LOG.error("Error while closing the process output stream: " + x, x);
+        }
 
         if (process != null) {
             process.destroy();

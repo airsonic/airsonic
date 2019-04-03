@@ -26,7 +26,6 @@ import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.Util;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,9 +261,8 @@ public class DownloadController implements LastModified {
         LOG.info("Downloading '" + FileUtil.getShortPath(file) + "' to " + status.getPlayer());
 
         final int bufferSize = 16 * 1024; // 16 Kbit
-        InputStream in = new BufferedInputStream(new FileInputStream(file), bufferSize);
 
-        try {
+        try ( InputStream in = new BufferedInputStream(new FileInputStream(file), bufferSize)){
             byte[] buf = new byte[bufferSize];
             long bitrateLimit = 0;
             long lastLimitCheck = 0;
@@ -307,7 +305,6 @@ public class DownloadController implements LastModified {
             }
         } finally {
             out.flush();
-            IOUtils.closeQuietly(in);
         }
     }
 

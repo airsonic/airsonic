@@ -1138,9 +1138,9 @@ public class SubsonicRESTController {
         } else if ("newest".equals(type)) {
             albums = albumDao.getNewestAlbums(offset, size, musicFolders);
         } else if ("alphabeticalByArtist".equals(type)) {
-            albums = albumDao.getAlphabetialAlbums(offset, size, true, musicFolders);
+            albums = albumDao.getAlphabeticalAlbums(offset, size, true, true, musicFolders);
         } else if ("alphabeticalByName".equals(type)) {
-            albums = albumDao.getAlphabetialAlbums(offset, size, false, musicFolders);
+            albums = albumDao.getAlphabeticalAlbums(offset, size, false, true, musicFolders);
         } else if ("byGenre".equals(type)) {
             albums = albumDao.getAlbumsByGenre(offset, size, getRequiredStringParameter(request, "genre"), musicFolders);
         } else if ("byYear".equals(type)) {

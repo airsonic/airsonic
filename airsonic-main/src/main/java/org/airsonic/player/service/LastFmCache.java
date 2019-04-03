@@ -59,14 +59,10 @@ public class LastFmCache extends Cache {
 
     @Override
     public InputStream load(String cacheEntryName) {
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream(getXmlFile(cacheEntryName));
+        try (FileInputStream in = new FileInputStream(getXmlFile(cacheEntryName))) {
             return new ByteArrayInputStream(IOUtils.toByteArray(in));
         } catch (Exception e) {
             return null;
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 
@@ -80,11 +76,8 @@ public class LastFmCache extends Cache {
     public void store(String cacheEntryName, InputStream inputStream, long expirationDate) {
         createCache();
 
-        OutputStream xmlOut = null;
-        OutputStream metaOut = null;
-        try {
-            File xmlFile = getXmlFile(cacheEntryName);
-            xmlOut = new FileOutputStream(xmlFile);
+        File xmlFile = getXmlFile(cacheEntryName);
+        try ( OutputStream xmlOut = new FileOutputStream(xmlFile)) {
             IOUtils.copy(inputStream, xmlOut);
 
             File metaFile = getMetaFile(cacheEntryName);
@@ -92,14 +85,11 @@ public class LastFmCache extends Cache {
 
             // Note: Ignore the given expirationDate, since Last.fm sets it to just one day ahead.
             properties.setProperty("expiration-date", Long.toString(getExpirationDate()));
-
-            metaOut = new FileOutputStream(metaFile);
-            properties.store(metaOut, null);
+            try(OutputStream metaOut = new FileOutputStream(metaFile)) {
+                properties.store(metaOut, null);
+            }
         } catch (Exception e) {
             // we ignore the exception. if something went wrong we just don't cache it.
-        } finally {
-            IOUtils.closeQuietly(xmlOut);
-            IOUtils.closeQuietly(metaOut);
         }
     }
 
@@ -119,17 +109,12 @@ public class LastFmCache extends Cache {
         if (!f.exists()) {
             return false;
         }
-        InputStream in = null;
-        try {
+        try (InputStream in = new FileInputStream(f)) {
             Properties p = new Properties();
-            in = new FileInputStream(f);
             p.load(in);
-            long expirationDate = Long.valueOf(p.getProperty("expiration-date"));
-            return expirationDate < System.currentTimeMillis();
+            return Long.valueOf(p.getProperty("expiration-date")) < System.currentTimeMillis();
         } catch (Exception e) {
             return false;
-        } finally {
-            IOUtils.closeQuietly(in);
         }
     }
 

@@ -39,6 +39,7 @@ import java.util.Objects;
  *
  * @author Sindre Mehus
  */
+@SuppressWarnings("serial")
 public class MusicIndex implements Serializable {
 
     public static final MusicIndex OTHER = new MusicIndex("#");

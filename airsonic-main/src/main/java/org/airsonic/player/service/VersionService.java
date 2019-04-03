@@ -21,7 +21,6 @@ package org.airsonic.player.service;
 
 import com.jayway.jsonpath.JsonPath;
 import org.airsonic.player.domain.Version;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -188,21 +187,17 @@ public class VersionService {
      * @return The first line of the resource.
      */
     private String readLineFromResource(String resourceName) {
-        InputStream in = VersionService.class.getResourceAsStream(resourceName);
-        if (in == null) {
+        try(InputStream in = VersionService.class.getResourceAsStream(resourceName)) {
+            if (in == null) {
+                return null;
+            }
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))){
+                return reader.readLine();
+            } catch (IOException x) {
+                return null;
+            }
+        } catch (Exception x) {
             return null;
-        }
-        BufferedReader reader = null;
-        try {
-
-            reader = new BufferedReader(new InputStreamReader(in));
-            return reader.readLine();
-
-        } catch (IOException x) {
-            return null;
-        } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(in);
         }
     }
 
