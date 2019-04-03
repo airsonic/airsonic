@@ -1,6 +1,0 @@
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wetorrent</groupId>
-    <artifactId>weupnp</artifactId>
-    <version>2009-10-16</version>
-</project>
