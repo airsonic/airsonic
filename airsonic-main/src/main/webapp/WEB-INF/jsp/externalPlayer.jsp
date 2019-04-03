@@ -48,8 +48,11 @@
 
 <script type="text/javascript">
   new MediaElementPlayer('player', {
-    features: ['playpause','playlist','current','progress','duration','volume'],
+    features: ['playpause','playlist','prevtrack', 'nexttrack','shuffle','loop','current','progress','duration','volume'],
     currentMessage: "",
+    autoClosePlaylist: false,
+    showPlaylist: true,
+    defaultAudioHeight: "70%",
   });
 </script>
 <style>
