@@ -133,18 +133,11 @@
             <artifactId>lucene-core</artifactId>
             <version>3.0.3</version>
         </dependency>
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.2.10</version>
-            <scope>runtime</scope>
-        </dependency>
         
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.10.3</version>
+            <version>1.10.5</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -162,8 +155,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
 
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -526,6 +517,12 @@
             <artifactId>mariadb-java-client</artifactId>
             <version>2.1.2</version>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.2</version>
+            <scope>compiler</scope>
         </dependency>
     </dependencies>
 
