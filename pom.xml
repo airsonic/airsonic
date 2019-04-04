@@ -300,7 +300,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>4.0.0</version>
+                    <version>5.0.0-M2</version>
                     <inherited>true</inherited>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
