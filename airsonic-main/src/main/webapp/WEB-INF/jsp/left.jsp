@@ -143,7 +143,7 @@
                 <h2 style="padding:0;margin:0;border:0">${fn:escapeXml(entry.key.index)}</h2>
             </th>
             <th style="text-align:right;">
-                <a href="#top"><img src="<spring:theme code="upImage"/>" alt=""></a>
+                <a href="#top"><img src="<spring:theme code="upImage"/>" alt="" style="height:18px;"></a>
             </th>
         </tr>
     </table>

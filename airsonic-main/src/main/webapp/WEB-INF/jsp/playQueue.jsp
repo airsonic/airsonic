@@ -420,9 +420,11 @@
             if (radioEnabled) {
                 $("#toggleRepeat").html("<fmt:message key="playlist.repeat_radio"/>");
             } else if (repeatEnabled) {
-                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_on"/>");
+                $("#toggleRepeat").attr('src', '<spring:theme code="repeatOn"/>');
+                $("#toggleRepeat").attr('alt', 'Repeat On');
             } else {
-                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_off"/>");
+                $("#toggleRepeat").attr('src', '<spring:theme code="repeatOff"/>');
+                $("#toggleRepeat").attr('alt', 'Repeat Off');
             }
         }
 
@@ -691,8 +693,8 @@
                     </c:if>
                     <c:if test="${model.player.web}">
                         <td>
-                            <div id="player" style="width:340px; height:40px;padding-right:10px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height="40px" tabindex="-1" />
+                            <div id="player" style="width:340px; height:40px">
+                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
@@ -741,21 +743,47 @@
                             <img src="<spring:theme code="backImage"/>" alt="" onclick="onPrevious()" style="cursor:pointer"></span>
                         </td>
                         <td><span class="header">
-                            <img src="<spring:theme code="forwardImage"/>" alt="" onclick="onNext(false)" style="cursor:pointer"></span>
+                            <img src="<spring:theme code="forwardImage"/>" alt="" onclick="onNext(false)" style="cursor:pointer"></span> |
                         </td>
                     </c:if>
 
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onClear()"><fmt:message key="playlist.clear"/></a></span> |</td>
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onShuffle()"><fmt:message key="playlist.shuffle"/></a></span> |</td>
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onClear()">
+                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" style="cursor:pointer; height:18px">
+                        </a>
+                      </span> |</td>
+
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onShuffle()">
+                            <img src="<spring:theme code="shuffleImage"/>" alt="shuffle" style="cursor:pointer; height:18px">
+                        </a>
+                      </span> |</td>
 
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
-                        <td style="white-space:nowrap;"><span class="header"><a href="javascript:onToggleRepeat()"><span id="toggleRepeat"><fmt:message key="playlist.repeat_on"/></span></a></span>  |</td>
+                        <td style="white-space:nowrap;">
+                          <span class="header">
+                            <a href="javascript:onToggleRepeat()">
+                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="repeatOn" style="cursor:pointer; height:18px">
+                            </a>
+                          </span> |</td>
                     </c:if>
 
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onUndo()"><fmt:message key="playlist.undo"/></a></span>  |</td>
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onUndo()">
+                          <img src="<spring:theme code="undoImage"/>" alt="undo" style="cursor:pointer; height:18px">
+                        </a>
+                      </span>  |</td>
 
                     <c:if test="${model.user.settingsRole}">
-                        <td style="white-space:nowrap;"><span class="header"><a href="playerSettings.view?id=${model.player.id}" target="main"><fmt:message key="playlist.settings"/></a></span>  |</td>
+                        <td style="white-space:nowrap;">
+                          <span class="header">
+                            <a href="playerSettings.view?id=${model.player.id}" target="main">
+                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" style="cursor:pointer; height:18px">
+                            </a>
+                          </span> |</td>
                     </c:if>
 
                     <td style="white-space:nowrap;"><select id="moreActions" onchange="actionSelected(this.options[selectedIndex].id)">
@@ -802,11 +830,11 @@
         <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
             <td class="fit">
                 <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code="ratingOffImage"/>"
-                     style="cursor:pointer" alt="" title=""></td>
+                     style="cursor:pointer;height:18px;" alt="" title=""></td>
             <td class="fit">
                 <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
-                     style="cursor:pointer" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
-            <td class="fit"><input type="checkbox" id="songIndex"></td>
+                     style="cursor:pointer; height:18px;" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
+            <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">
                 <td class="fit rightalign"><span class="detail" id="trackNumber">1</span></td>

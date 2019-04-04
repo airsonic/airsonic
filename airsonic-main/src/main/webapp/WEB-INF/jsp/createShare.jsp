@@ -7,7 +7,7 @@
 <body class="mainframe bgcolor1">
 
 <h1>
-    <img src="<spring:theme code="shareImage"/>" alt="">
+    <img src="<spring:theme code="shareImage"/>" alt="" style="height:18px;">
     <span style="vertical-align: middle"><fmt:message key="share.title"/></span>
 </h1>
 

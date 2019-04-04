@@ -164,7 +164,7 @@
 <div style="float:left">
     <h1>
         <img id="starImage" src="<spring:theme code="${not empty model.dir.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"
-             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer" alt="">
+             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer;height:18px;" alt="">
 
         <span style="vertical-align: middle">
             <c:forEach items="${model.ancestors}" var="ancestor">
@@ -239,7 +239,7 @@
     </c:if>
 
     <c:if test="${model.user.shareRole}">
-        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" alt=""></a>
+        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" style="height:18px;" alt=""></a>
             <a href="${shareUrl}"><fmt:message key="main.sharealbum"/></a> </span> |
     </c:if>
 

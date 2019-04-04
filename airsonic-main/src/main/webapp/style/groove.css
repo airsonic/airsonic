@@ -66,11 +66,6 @@ table {
     background-image:url( "../icons/groove/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/groove/forward.png" );
-}
-
 
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
