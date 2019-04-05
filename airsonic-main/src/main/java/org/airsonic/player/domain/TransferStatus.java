@@ -234,8 +234,8 @@ public class TransferStatus {
         this.active = active;
 
         if (active) {
-            setBytesSkipped(0L);
-            setBytesTotal(0L);
+            bytesSkipped = 0L;
+            bytesTotal = 0L;
             setBytesTransfered(0L);
         } else {
             createSample(getBytesTransfered(), true);
@@ -281,10 +281,9 @@ public class TransferStatus {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TransferStatus-").append(hashCode()).append(" [player: ").append(player.getId()).append(", file: ");
-        builder.append(file).append(", terminated: ").append(terminated).append(", active: ").append(active).append("]");
-        return builder.toString();
+        String builder = "TransferStatus-" + hashCode() + " [player: " + player.getId() + ", file: " +
+                file + ", terminated: " + terminated + ", active: " + active + "]";
+        return builder;
     }
 
     /**

@@ -206,7 +206,7 @@ public class User {
 
     @Override
     public String toString() {
-        StringBuffer result = new StringBuffer(username);
+        StringBuilder result = new StringBuilder(username);
 
         if (isAdminRole) {
             result.append(" [admin]");

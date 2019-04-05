@@ -27,10 +27,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketException;
+
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 
 /**
  * Provides AJAX-enabled services for retrieving song lyrics from chartlyrics.com.
@@ -80,7 +82,7 @@ public class LyricsService {
     }
 
     private LyricsInfo parseSearchResult(String xml) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = createSAXBuilder();
         Document document = builder.build(new StringReader(xml));
 
         Element root = document.getRootElement();

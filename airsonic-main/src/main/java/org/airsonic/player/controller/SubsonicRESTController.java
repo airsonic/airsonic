@@ -30,6 +30,7 @@ import org.airsonic.player.dao.PlayQueueDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.domain.Bookmark;
 import org.airsonic.player.domain.PlayQueue;
+import org.airsonic.player.i18n.LocaleResolver;
 import org.airsonic.player.service.*;
 import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
@@ -135,6 +136,8 @@ public class SubsonicRESTController {
     private PlayQueueDao playQueueDao;
     @Autowired
     private MediaScannerService mediaScannerService;
+    @Autowired
+    private LocaleResolver localeResolver;
 
     private final Map<BookmarkKey, org.airsonic.player.domain.Bookmark> bookmarkCache = new ConcurrentHashMap<BookmarkKey, org.airsonic.player.domain.Bookmark>();
     private final JAXBWriter jaxbWriter = new JAXBWriter();
@@ -431,7 +434,7 @@ public class SubsonicRESTController {
         for (MediaFile similarArtist : similarArtists) {
             result.getSimilarArtist().add(createJaxbArtist(similarArtist, username));
         }
-        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile, getUserLocale(request));
+        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile, localeResolver.resolveLocale(request));
         if (artistBio != null) {
             result.setBiography(artistBio.getBiography());
             result.setMusicBrainzId(artistBio.getMusicBrainzId());
@@ -468,7 +471,7 @@ public class SubsonicRESTController {
         for (org.airsonic.player.domain.Artist similarArtist : similarArtists) {
             result.getSimilarArtist().add(createJaxbArtist(new ArtistID3(), similarArtist, username));
         }
-        ArtistBio artistBio = lastFmService.getArtistBio(artist, getUserLocale(request));
+        ArtistBio artistBio = lastFmService.getArtistBio(artist, localeResolver.resolveLocale(request));
         if (artistBio != null) {
             result.setBiography(artistBio.getBiography());
             result.setMusicBrainzId(artistBio.getMusicBrainzId());
@@ -2400,10 +2403,6 @@ public class SubsonicRESTController {
 
         // Return the player ID.
         return !players.isEmpty() ? String.valueOf(players.get(0).getId()) : null;
-    }
-
-    private Locale getUserLocale(HttpServletRequest request) {
-        return settingsService.getUserSettings(securityService.getCurrentUsername(request)).getLocale();
     }
 
     public enum ErrorCode {

@@ -4,6 +4,10 @@
 -->
 Airsonic
 ========
+[![Build Status](https://travis-ci.org/airsonic/airsonic.svg?branch=master)](https://travis-ci.org/airsonic/airsonic)
+[![Coverity scan](https://scan.coverity.com/projects/17971/badge.svg)](https://scan.coverity.com/projects/airsonic)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/airsonic/airsonic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/airsonic/airsonic/context:javascript)
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/airsonic/airsonic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/airsonic/airsonic/context:java)
 
 What is Airsonic?
 -----------------

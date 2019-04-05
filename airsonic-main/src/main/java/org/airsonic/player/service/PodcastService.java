@@ -42,10 +42,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +60,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
+
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 
 /**
  * Provides services for Podcast reception.
@@ -94,6 +95,7 @@ public class PodcastService {
 
     public PodcastService() {
         ThreadFactory threadFactory = new ThreadFactory() {
+            @Override
             public Thread newThread(Runnable r) {
                 Thread t = Executors.defaultThreadFactory().newThread(r);
                 t.setDaemon(true);
@@ -125,6 +127,7 @@ public class PodcastService {
 
     public synchronized void schedule() {
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 LOG.info("Starting scheduled Podcast refresh.");
                 refreshAllChannels(true);
@@ -232,7 +235,7 @@ public class PodcastService {
     }
 
     private List<PodcastEpisode> filterAllowed(List<PodcastEpisode> episodes) {
-        List<PodcastEpisode> result = new ArrayList<PodcastEpisode>(episodes.size());
+        List<PodcastEpisode> result = new ArrayList<>(episodes.size());
         for (PodcastEpisode episode : episodes) {
             if (episode.getPath() == null || securityService.isReadAllowed(new File(episode.getPath()))) {
                 result.add(episode);
@@ -291,6 +294,7 @@ public class PodcastService {
     private void refreshChannels(final List<PodcastChannel> channels, final boolean downloadEpisodes) {
         for (final PodcastChannel channel : channels) {
             Runnable task = new Runnable() {
+                @Override
                 public void run() {
                     doRefreshChannel(channel, downloadEpisodes);
                 }
@@ -299,7 +303,6 @@ public class PodcastService {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
     private void doRefreshChannel(PodcastChannel channel, boolean downloadEpisodes) {
         InputStream in = null;
 
@@ -317,7 +320,7 @@ public class PodcastService {
             try (CloseableHttpResponse response = client.execute(method)) {
                 in = response.getEntity().getContent();
 
-                Document document = new SAXBuilder().build(in);
+                Document document = createSAXBuilder().build(in);
                 Element channelElement = document.getRootElement().getChild("channel");
 
                 channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
@@ -408,6 +411,7 @@ public class PodcastService {
 
     public void downloadEpisode(final PodcastEpisode episode) {
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 doDownloadEpisode(episode);
             }
@@ -417,7 +421,7 @@ public class PodcastService {
 
     private void refreshEpisodes(PodcastChannel channel, List<Element> episodeElements) {
 
-        List<PodcastEpisode> episodes = new ArrayList<PodcastEpisode>();
+        List<PodcastEpisode> episodes = new ArrayList<>();
 
         for (Element episodeElement : episodeElements) {
 
@@ -446,7 +450,7 @@ public class PodcastService {
             if (getEpisodeByUrl(url) == null) {
                 Long length = null;
                 try {
-                    length = new Long(enclosure.getAttributeValue("length"));
+                    length = Long.valueOf(enclosure.getAttributeValue("length"));
                 } catch (Exception x) {
                     LOG.warn("Failed to parse enclosure length.", x);
                 }
@@ -461,17 +465,12 @@ public class PodcastService {
 
         // Sort episode in reverse chronological order (newest first)
         Collections.sort(episodes, new Comparator<PodcastEpisode>() {
+            @Override
             public int compare(PodcastEpisode a, PodcastEpisode b) {
                 long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
                 long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
 
-                if (timeA < timeB) {
-                    return 1;
-                }
-                if (timeA > timeB) {
-                    return -1;
-                }
-                return 0;
+                return Long.compare(timeB, timeA);
             }
         });
 

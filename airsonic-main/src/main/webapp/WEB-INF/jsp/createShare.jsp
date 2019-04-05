@@ -3,7 +3,6 @@
 <html>
 <head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 </head>
 <body class="mainframe bgcolor1">
 
@@ -14,16 +13,13 @@
 
 <fmt:message key="share.warning"/>
 <p>
-    <a href="http://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
-    <a href="http://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><fmt:message key="share.facebook"/></a>
+    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
+    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><fmt:message key="share.facebook"/></a>
 </p>
 
 <p>
-    <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
-    <a href="http://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><fmt:message key="share.twitter"/></a>
-</p>
-<p>
-    <g:plusone size="small" annotation="none" href="${model.playUrl}"></g:plusone>&nbsp;<fmt:message key="share.googleplus"/>
+    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
+    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><fmt:message key="share.twitter"/></a>
 </p>
 <p>
     <fmt:message key="share.link">

@@ -83,19 +83,6 @@ body {
     scrollbar-darkshadow-color: #98AAB1;
 }
 
-body, form, label, table, a {
-    font-family: 'Roboto', arial, sans-serif;
-}
-
-h1, h1 a {
-    font-family: 'Ubuntu', arial, sans-serif;
-    font-weight: normal;
-}
-
-h2, h2 a, .topHeader a {
-    font-family: 'Roboto', arial, sans-serif;
-    font-weight: normal;
-}
 
 /* Login page */
 
@@ -156,6 +143,7 @@ body {
     padding:0;
     border:0;
     margin:0.75em;
+    font-family: Verdana, Tahoma, Geneva, arial, sans-serif;
     font-size: 10.5pt;
     line-height: 1.5em;
 }
@@ -205,6 +193,11 @@ input[type=submit], input[type=button] {
     background: white;
     padding-left: 1em;
     padding-right: 1em;
+    color: black;
+}
+
+input[type=submit]:hover, input[type=button]:hover {
+    text-decoration: none;
 }
 
 input[type=submit]:active, input[type=button]:active {

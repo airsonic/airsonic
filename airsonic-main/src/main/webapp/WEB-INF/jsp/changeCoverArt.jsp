@@ -123,7 +123,7 @@
     <div style="clear:both;"></div>
     <div id="images"></div>
     <div style="clear:both;"></div>
-    <a href="http://last.fm/" target="_blank"><img src="<c:url value="/icons/lastfm.gif"/>"></a>
+    <a href="https://last.fm/" target="_blank"><img src="<c:url value="/icons/lastfm.gif"/>"></a>
     <span class="detail" style="padding-left:1em"><fmt:message key="changecoverart.courtesy"/></span>
 </div>
 
