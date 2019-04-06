@@ -22,6 +22,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.security.SecureRandom;
+
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
@@ -69,6 +71,11 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
     }
 
+    private static String generateRememberMeKey() {
+      byte[] array = new byte[32];
+      new SecureRandom().nextBytes(array);
+      return new String(array);
+    }
 
     @Configuration
     @Order(1)
@@ -162,7 +169,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(
                     "/login?logout")
-                    .and().rememberMe().key("airsonic");
+                    .and().rememberMe().key(generateRememberMeKey());
         }
 
     }
