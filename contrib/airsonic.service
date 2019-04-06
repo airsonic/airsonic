@@ -24,7 +24,6 @@ Group=airsonic
 # See https://www.freedesktop.org/software/systemd/man/systemd.exec.html
 # for details
 DevicePolicy=closed
-MemoryDenyWriteExecute=yes
 NoNewPrivileges=yes
 PrivateDevices=yes
 PrivateTmp=yes
@@ -44,6 +43,11 @@ ProtectSystem=full
 # Don't forget to remove the other `ProtectSystem` line above.
 #ProtectSystem=strict
 #ReadWritePaths=/var/airsonic
+
+# You can uncomment the following line if you're not using the OpenJDK.
+# This will prevent processes from having a memory zone that is both writeable
+# and executeable, making hacker's lifes a bit harder.
+#MemoryDenyWriteExecute=yes
 
 
 [Install]
