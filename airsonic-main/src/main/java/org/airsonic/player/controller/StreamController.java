@@ -29,7 +29,6 @@ import org.airsonic.player.service.sonos.SonosHelper;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
-import org.apache.catalina.connector.ClientAbortException;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,9 +248,12 @@ public class StreamController  {
                     }
                 }
             }
-        } catch (ClientAbortException err) {
-            LOG.info("org.apache.catalina.connector.ClientAbortException: Connection reset");
-            return;
+        } catch (Exception err) {
+            if("org.apache.catalina.connector.ClientAbortException".equals(err.getClass().getName())) {
+                LOG.info("org.apache.catalina.connector.ClientAbortException: Connection reset");
+                return;
+            }
+            LOG.error("Error occurred in handleRequest.", err);
         } finally {
             if (status != null) {
                 securityService.updateUserByteCounts(user, status.getBytesTransfered(), 0L, 0L);
