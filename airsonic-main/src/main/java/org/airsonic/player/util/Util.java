@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
@@ -115,6 +116,32 @@ public final class Util {
         } catch (JsonProcessingException e) {
             LOG.warn("Cant output debug object", e);
             return "";
+        }
+    }
+
+    /**
+     * Return a complete URL for the given HTTP request,
+     * including the query string.
+     *
+     * @param request An HTTP request instance
+     * @return The associated URL
+     */
+    public static String getURLForRequest(HttpServletRequest request) {
+        String url = request.getRequestURL().toString();
+        String queryString = request.getQueryString();
+        if (queryString != null && queryString.length() > 0) url += "?" + queryString;
+        return url;
+    }
+
+    /**
+     * Return true if the given object is an instance of the class name in argument.
+     * If the class doesn't exist, returns false.
+     */
+    public static boolean isInstanceOfClassName(Object o, String className) {
+        try {
+            return Class.forName(className).isInstance(o);
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 }
