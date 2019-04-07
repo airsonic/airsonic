@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
  */
 public final class StringUtil {
 
-    public static final String ENCODING_LATIN = "ISO-8859-1";
     public static final String ENCODING_UTF8 = "UTF-8";
     private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 

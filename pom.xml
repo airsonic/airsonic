@@ -15,7 +15,7 @@
 
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
-        <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cxf.version>3.2.6</cxf.version>
         <jackson.version>2.9.8</jackson.version>
     </properties>
@@ -242,7 +242,7 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <encoding>ISO-8859-1</encoding>
+                    <encoding>UTF-8</encoding>
                     <verbose>false</verbose>
                     <compilerVersion>1.8</compilerVersion>
                     <showWarnings>true</showWarnings>
