@@ -31,13 +31,30 @@
 <span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
 
 <script type="text/javascript" language="javascript">
+
+    // These variables store the media player state, received from DWR in the
+    // playQueueCallback function below.
+
+    // List of songs (of type PlayQueueInfo.Entry)
     var songs = null;
+
+    // Stream URL of the media being played
     var currentStreamUrl = null;
+
+    // Is autorepeat enabled?
     var repeatEnabled = false;
-    var radioEnabled = false;
+
+    // Is the "shuffle radio" playing? (More > Shuffle Radio)
+    var shuffleRadioEnabled = false;
+
+    // Is the "internet radio" playing?
+    var internetRadioEnabled = false;
+
+    // Is the play queue visible? (Initially hidden if set to "auto-hide" in the settings)
     var isVisible = ${model.autoHide ? 'false' : 'true'};
+
+    // Initialize the Cast player (ChromeCast support)
     var CastPlayer = new CastPlayer();
-    var ignore = false;
 
     function init() {
         <c:if test="${model.autoHide}">initAutoHide();</c:if>
@@ -267,7 +284,7 @@
     }
     function onNext(wrap) {
         var index = parseInt(getCurrentSongIndex()) + 1;
-        if (radioEnabled && index >= songs.length) {
+        if (shuffleRadioEnabled && index >= songs.length) {
             playQueueService.reloadSearchCriteria(function(playQueue) {
                 playQueueCallback(playQueue);
                 onSkip(index);
@@ -289,6 +306,9 @@
     }
     function onPlayPlaylist(id, index) {
         playQueueService.playPlaylist(id, index, playQueueCallback);
+    }
+    function onPlayInternetRadio(id, index) {
+        playQueueService.playInternetRadio(id, index, playQueueCallback);
     }
     function onPlayTopSong(id, index) {
         playQueueService.playTopSong(id, index, playQueueCallback);
@@ -410,14 +430,16 @@
     function playQueueCallback(playQueue) {
         songs = playQueue.entries;
         repeatEnabled = playQueue.repeatEnabled;
-        radioEnabled = playQueue.radioEnabled;
+        shuffleRadioEnabled = playQueue.shuffleRadioEnabled;
+        internetRadioEnabled = playQueue.internetRadioEnabled;
+
         if ($("#start")) {
             $("#start").toggle(!playQueue.stopEnabled);
             $("#stop").toggle(playQueue.stopEnabled);
         }
 
         if ($("#toggleRepeat")) {
-            if (radioEnabled) {
+            if (shuffleRadioEnabled) {
                 $("#toggleRepeat").html("<fmt:message key="playlist.repeat_radio"/>");
             } else if (repeatEnabled) {
                 $("#toggleRepeat").attr('src', '<spring:theme code="repeatOn"/>');
@@ -449,11 +471,24 @@
             if ($("#trackNumber" + id)) {
                 $("#trackNumber" + id).text(song.trackNumber);
             }
-            if (song.starred) {
-                $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
+
+            if (!internetRadioEnabled) {
+                // Show star/remove buttons in all cases...
+                $("#starSong" + id).show();
+                $("#removeSong" + id).show();
+
+                // Show star rating
+                if (song.starred) {
+                    $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
+                } else {
+                    $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
+                }
             } else {
-                $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
+                // ...except from when internet radio is playing.
+                $("#starSong" + id).hide();
+                $("#removeSong" + id).hide();
             }
+
             if ($("#currentImage" + id) && song.streamUrl == currentStreamUrl) {
                 $("#currentImage" + id).show();
                 if (isJavaJukeboxPresent()) {
@@ -473,6 +508,13 @@
                 $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", song.albumUrl);
+                // Open external internet radio links in new windows
+                if (internetRadioEnabled) {
+                    $("#albumUrl" + id).attr({
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                    });
+                }
             }
             if ($("#artist" + id)) {
                 $("#artist" + id).text(song.artist);
@@ -482,7 +524,13 @@
                 $("#genre" + id).text(song.genre);
             }
             if ($("#year" + id)) {
-                $("#year" + id).text(song.year);
+                // If song.year is not an int, this will return NaN, which
+                // conveniently returns false in all boolean operations.
+                if (parseInt(song.year) > 0) {
+                    $("#year" + id).text(song.year);
+                } else {
+                    $("#year" + id).text("");
+                }
             }
             if ($("#bitRate" + id)) {
                 $("#bitRate" + id).text(song.bitRate);
