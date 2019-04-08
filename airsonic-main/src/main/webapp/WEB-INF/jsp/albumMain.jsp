@@ -259,13 +259,13 @@
             <sub:param name="type" value="album"/>
         </sub:url>
         <span class="header"><fmt:message key="top.search"/> <a target="_blank" href="${googleUrl}">Google</a></span> |
-        <span class="header"><a target="_blank" href="${wikipediaUrl}">Wikipedia</a></span> |
-        <span class="header"><a target="_blank" href="${allmusicUrl}">allmusic</a></span> |
-        <span class="header"><a target="_blank" href="${lastFmUrl}">Last.fm</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${wikipediaUrl}">Wikipedia</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${allmusicUrl}">allmusic</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${lastFmUrl}">Last.fm</a></span> |
         <c:if test="${not empty model.musicBrainzReleaseId}">
           <sub:url value="https://musicbrainz.org/release/${model.musicBrainzReleaseId}" var="musicBrainzUrl" encoding="UTF-8">
           </sub:url>
-          <span class="header"><a target="_blank" href="${musicBrainzUrl}">MusicBrainz</a></span> |
+          <span class="header"><a target="_blank" rel="noopener noreferrer" href="${musicBrainzUrl}">MusicBrainz</a></span> |
         </c:if>
         <span class="header">
             <fmt:message key="main.playcount"><fmt:param value="${model.dir.playCount}"/></fmt:message>
@@ -406,7 +406,7 @@
                     Upgrade to Subsonic Premium and get:
                 </p>
                 <div style="font-size: 90%;padding-bottom: 1em">
-                    <p><a href="https://airsonic.github.io/docs/apps/" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
+                    <p><a href="https://airsonic.github.io/docs/apps/" target="_blank" rel="noopener noreferrer">Apps</a> for Android, iPhone, Windows Phone ++.</p>
                     <p>Video streaming.</p>
                     <p>Chromecast and Sonos support.</p>
                     <p>DLNA/UPnP support</p>

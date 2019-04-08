@@ -45,7 +45,7 @@
 </c:forEach>
 </audio>
 
-<div class="detail" style="text-align:center;">Streaming by <a href="https://airsonic.github.io/" target="_blank"><b>Airsonic</b></a></div>
+<div class="detail" style="text-align:center;">Streaming by <a href="https://airsonic.github.io/" target="_blank" rel="noopener noreferrer"><b>Airsonic</b></a></div>
 
 <script type="text/javascript">
   new MediaElementPlayer('player', {
