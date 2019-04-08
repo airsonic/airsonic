@@ -5,7 +5,6 @@
 <head>
     <%@ include file="head.jsp" %>
     <meta name="og:type" content="album"/>
-    <script type="text/javascript" src="<c:url value="/script/prototype.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/playlist.min.js"/>"></script>
     <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/playlist.min.css"/>">
