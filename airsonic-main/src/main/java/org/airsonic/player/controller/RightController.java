@@ -68,6 +68,7 @@ public class RightController  {
         map.put("brand", settingsService.getBrand());
         map.put("showNowPlaying", userSettings.isShowNowPlayingEnabled());
         map.put("user", securityService.getCurrentUser(request));
+        map.put("chartlyricsEnabled", settingsService.isExternalServicesChartlyricsEnabled());
 
         result.addObject("model", map);
         return result;

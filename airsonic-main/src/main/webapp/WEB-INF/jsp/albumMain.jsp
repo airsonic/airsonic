@@ -394,7 +394,7 @@
                     <c:param name="albumId" value="${model.dir.id}"/>
                     <c:param name="coverArtSize" value="${model.coverArtSizeLarge}"/>
                     <c:param name="showZoom" value="true"/>
-                    <c:param name="showChange" value="${model.user.coverArtRole}"/>
+                    <c:param name="showChange" value="${model.lastfmEnabled && model.user.coverArtRole}"/>
                 </c:import>
             </div>
         </td>

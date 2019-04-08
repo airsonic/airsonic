@@ -1029,6 +1029,7 @@
     <div id="dialog-select-playlist-list"></div>
 </div>
 
+<c:if test="${model.chromecastEnabled}">
 <script type="text/javascript">
     window['__onGCastApiAvailable'] = function(isAvailable) {
         if (isAvailable) {
@@ -1037,5 +1038,6 @@
     };
 </script>
 <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+</c:if>
 
 </body></html>
