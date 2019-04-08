@@ -59,7 +59,9 @@
 <a name="top"></a>
 
 <div style="padding-bottom:1.5em">
-    <a href="help.view?" target="main"><img src="<spring:theme code="logoImage"/>" style="width:196px" title="<fmt:message key="top.help"/>" alt=""></a>
+    <a href="home.view" target="main">
+      <img src="<spring:theme code="logoImage"/>" style="width:196px" title="<fmt:message key="top.help"/>" alt="">
+    </a>
 </div>
 
 <c:if test="${fn:length(model.musicFolders) > 1}">
