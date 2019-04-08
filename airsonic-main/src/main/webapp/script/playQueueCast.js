@@ -1,4 +1,3 @@
-<script type="text/javascript">
 (function () {
     'use strict';
 
@@ -274,5 +273,3 @@
 
     window.CastPlayer = CastPlayer;
 })();
-
-</script>
