@@ -399,24 +399,6 @@
                 </c:import>
             </div>
         </td>
-        <c:if test="${model.showAd}">
-            <td style="vertical-align:top;width:160px" rowspan="3">
-                <h2 style="padding-bottom: 1em">Subsonic Premium</h2>
-                <p style="font-size: 90%">
-                    Upgrade to Subsonic Premium and get:
-                </p>
-                <div style="font-size: 90%;padding-bottom: 1em">
-                    <p><a href="https://airsonic.github.io/docs/apps/" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
-                    <p>Video streaming.</p>
-                    <p>Chromecast and Sonos support.</p>
-                    <p>DLNA/UPnP support</p>
-                    <p>Share on Facebook, Twitter, Google+</p>
-                    <p>No ads.</p>
-                    <p>Your personal server address: <em>you</em>.airsonic.org</p>
-                    <p>Podcast receiver.</p>
-                </div>
-            </td>
-        </c:if>
     </tr>
 
     <tr>

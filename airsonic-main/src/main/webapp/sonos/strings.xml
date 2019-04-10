@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <stringtables xmlns="http://sonos.com/sonosapi">
 
-    <stringtable rev="5" xml:lang="en-US">
-        <string stringId="ServicePromo">Stream music from your own Airsonic server. Please log on with an existing Airsonic account. Requires Subsonic Premium.</string>
+    <stringtable rev="6" xml:lang="en-US">
         <string stringId="Error0Message">Sorry, wrong Airsonic username or password.</string>
-        <string stringId="Error1Message">Please upgrade to Subsonic Premium to continue to use this service.</string>
     </stringtable>
 
 </stringtables>
