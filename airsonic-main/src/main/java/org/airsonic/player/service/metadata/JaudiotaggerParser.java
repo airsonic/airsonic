@@ -97,8 +97,8 @@ public class JaudiotaggerParser extends MetaDataParser {
                 metaData.setTrackNumber(parseTrackNumber(getTagField(tag, FieldKey.TRACK)));
                 metaData.setMusicBrainzReleaseId(getTagField(tag, FieldKey.MUSICBRAINZ_RELEASEID));
 
-                String songArtist = getTagField(tag, FieldKey.ARTIST);
-                String albumArtist = getTagField(tag, FieldKey.ALBUM_ARTIST);
+                metaData.setArtist(getTagField(tag, FieldKey.ARTIST));
+                metaData.setAlbumArtist(getTagField(tag, FieldKey.ALBUM_ARTIST));
 
                 if (tag instanceof AbstractID3Tag && 0 < audioFile.getTag().getFieldCount()) {
 
@@ -140,7 +140,7 @@ public class JaudiotaggerParser extends MetaDataParser {
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_ARTIST:
-                                    if (null == metaData.getArtist() && null == songArtist) {
+                                    if (null == metaData.getArtist()) {
                                         metaData.setArtist(f.toString());
                                     }
                                     break;
@@ -155,11 +155,11 @@ public class JaudiotaggerParser extends MetaDataParser {
                         });
                     }
                 }
-                if(StringUtils.isBlank(metaData.getArtist())) {
-                    metaData.setArtist(StringUtils.isBlank(songArtist) ? albumArtist : songArtist);
+                if (StringUtils.isBlank(metaData.getArtist())) {
+                    metaData.setArtist(metaData.getAlbumArtist());
                 }
-                if(StringUtils.isBlank(metaData.getAlbumArtist())) {
-                    metaData.setAlbumArtist(StringUtils.isBlank(albumArtist) ? songArtist : albumArtist);
+                if (StringUtils.isBlank(metaData.getAlbumArtist())) {
+                    metaData.setAlbumArtist(metaData.getArtist());
                 }
 
             }
