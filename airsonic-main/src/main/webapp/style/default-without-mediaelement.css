@@ -221,6 +221,11 @@ table {
     margin: 0 0 0.4em 0;
 }
 
+frameset {
+  border: 0;
+  frameborder: 0;
+  framespacing: 0;
+}
 
 /* Table with some white space above it.*/
 table.indent {
