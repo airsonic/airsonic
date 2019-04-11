@@ -137,6 +137,13 @@
             <testResource>
                 <directory>src/test/resources</directory>
                 <filtering>true</filtering>
+                <includes>
+                    <include>**/application.properties</include>
+                </includes>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>false</filtering>
             </testResource>
         </testResources>
         <plugins>
@@ -199,6 +206,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <phase>none</phase>
