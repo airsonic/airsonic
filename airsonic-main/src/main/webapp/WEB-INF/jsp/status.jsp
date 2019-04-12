@@ -30,7 +30,7 @@
                 <fmt:message key="common.unknown" var="type"/>
             </c:when>
             <c:otherwise>
-                <c:set var="type" value="(${status.playerType})"/>
+            <c:set var="type" value="${fn:escapeXml(status.playerType)}"/>
             </c:otherwise>
         </c:choose>
 
@@ -51,7 +51,7 @@
                 <fmt:message key="common.unknown" var="user"/>
             </c:when>
             <c:otherwise>
-                <c:set var="user" value="${status.username}"/>
+            <c:set var="user" value="${fn:escapeXml(status.username)}"/>
             </c:otherwise>
         </c:choose>
 
@@ -60,7 +60,7 @@
                 <fmt:message key="common.unknown" var="current"/>
             </c:when>
             <c:otherwise>
-                <c:set var="current" value="${status.path}"/>
+            <c:set var="current" value="${fn:escapeXml(status.path)}"/>
             </c:otherwise>
         </c:choose>
 

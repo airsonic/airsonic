@@ -22,7 +22,7 @@ PARAMETERS
         <c:set var="size" value="auto"/>
     </c:when>
     <c:otherwise>
-        <c:set var="size" value="${param.coverArtSize}px"/>
+        <c:set var="size" value="${fn:escapeXml(param.coverArtSize)}px"/>
     </c:otherwise>
 </c:choose>
 

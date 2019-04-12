@@ -94,7 +94,7 @@
 </form>
 
 <c:if test="${not empty error}">
-    <p class="warning"><fmt:message key="${error}"/></p>
+    <p class="warning"><fmt:message key="${fn:escapeXml(error)}"/></p>
 </c:if>
 
 <div style="width:60%">
