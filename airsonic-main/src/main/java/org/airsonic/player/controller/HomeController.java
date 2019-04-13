@@ -114,6 +114,7 @@ public class HomeController  {
                 map.put("genres", genres);
                 if (!genres.isEmpty()) {
                     String genre = getStringParameter(request, "genre", genres.get(0).getName());
+                    genre = genre.replaceAll("[^\\p{IsAlphabetic}^\\p{IsDigit}]", "");
                     map.put("genre", genre);
                     albums = getByGenre(listOffset, LIST_SIZE, genre, musicFolders);
                 }
