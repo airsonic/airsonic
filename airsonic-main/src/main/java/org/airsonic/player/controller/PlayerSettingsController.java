@@ -72,7 +72,7 @@ public class PlayerSettingsController  {
         User user = securityService.getCurrentUser(request);
         PlayerSettingsCommand command = new PlayerSettingsCommand();
         Player player = null;
-        Integer playerId = ServletRequestUtils.getIntParameter(request, "id");
+        Integer playerId = ServletRequestUtils.getIntParameter(request, "id", null);
         if (playerId != null) {
             player = playerService.getPlayerById(playerId);
         } else if (!players.isEmpty()) {
@@ -153,9 +153,15 @@ public class PlayerSettingsController  {
 
     private void handleRequestParameters(HttpServletRequest request) throws Exception {
         if (request.getParameter("delete") != null) {
-            playerService.removePlayerById(ServletRequestUtils.getIntParameter(request, "delete"));
+            Integer id = ServletRequestUtils.getIntParameter(request, "delete", null);
+            if (id != null) {
+                playerService.removePlayerById(id);
+            }
         } else if (request.getParameter("clone") != null) {
-            playerService.clonePlayer(ServletRequestUtils.getIntParameter(request, "clone"));
+            Integer id = ServletRequestUtils.getIntParameter(request, "clone", null);
+            if (id != null) {
+                playerService.clonePlayer(id);
+            }
         }
     }
 

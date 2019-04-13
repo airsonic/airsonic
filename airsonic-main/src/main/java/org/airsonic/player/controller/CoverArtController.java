@@ -103,7 +103,7 @@ public class CoverArtController implements LastModified {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
         LOG.trace("handleRequest - " + coverArtRequest);
-        Integer size = ServletRequestUtils.getIntParameter(request, "size");
+        Integer size = ServletRequestUtils.getIntParameter(request, "size", null);
 
         // Send fallback image if no ID is given. (No need to cache it, since it will be cached in browser.)
         if (coverArtRequest == null) {
@@ -138,19 +138,23 @@ public class CoverArtController implements LastModified {
             return null;
         }
 
-        if (id.startsWith(ALBUM_COVERART_PREFIX)) {
+        try {
+          if (id.startsWith(ALBUM_COVERART_PREFIX)) {
             return createAlbumCoverArtRequest(Integer.valueOf(id.replace(ALBUM_COVERART_PREFIX, "")));
-        }
-        if (id.startsWith(ARTIST_COVERART_PREFIX)) {
+          }
+          if (id.startsWith(ARTIST_COVERART_PREFIX)) {
             return createArtistCoverArtRequest(Integer.valueOf(id.replace(ARTIST_COVERART_PREFIX, "")));
-        }
-        if (id.startsWith(PLAYLIST_COVERART_PREFIX)) {
+          }
+          if (id.startsWith(PLAYLIST_COVERART_PREFIX)) {
             return createPlaylistCoverArtRequest(Integer.valueOf(id.replace(PLAYLIST_COVERART_PREFIX, "")));
-        }
-        if (id.startsWith(PODCAST_COVERART_PREFIX)) {
+          }
+          if (id.startsWith(PODCAST_COVERART_PREFIX)) {
             return createPodcastCoverArtRequest(Integer.valueOf(id.replace(PODCAST_COVERART_PREFIX, "")), request);
+          }
+          return createMediaFileCoverArtRequest(Integer.valueOf(id), request);
+        } catch (NumberFormatException ) {
+          return null;
         }
-        return createMediaFileCoverArtRequest(Integer.valueOf(id), request);
     }
 
     private CoverArtRequest createAlbumCoverArtRequest(int id) {

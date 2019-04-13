@@ -63,7 +63,10 @@ public class PlaylistController {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
-        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
+        Integer id = ServletRequestUtils.getRequiredIntParameter(request, "id", null);
+        if (id == null) {
+            return new ModelAndView(new RedirectView("notFound"));
+        }
         User user = securityService.getCurrentUser(request);
         String username = user.getUsername();
         UserSettings userSettings = settingsService.getUserSettings(username);

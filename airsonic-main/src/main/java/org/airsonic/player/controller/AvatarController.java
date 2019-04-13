@@ -72,11 +72,11 @@ public class AvatarController implements LastModified {
     }
 
     private Avatar getAvatar(HttpServletRequest request) {
-        String id = request.getParameter("id");
+        Integer id = ServletRequestUtils.getIntParameter(request, "id", null);
         boolean forceCustom = ServletRequestUtils.getBooleanParameter(request, "forceCustom", false);
 
         if (id != null) {
-            return settingsService.getSystemAvatar(Integer.parseInt(id));
+            return settingsService.getSystemAvatar(id);
         }
 
         String username = request.getParameter("username");
