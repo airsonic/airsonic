@@ -19,8 +19,6 @@
  */
 package org.airsonic.player.ajax;
 
-import chameleon.playlist.*;
-import chameleon.playlist.Playlist;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.airsonic.player.dao.InternetRadioDao;
@@ -40,7 +38,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -83,6 +80,8 @@ public class PlayQueueService {
     private InternetRadioDao internetRadioDao;
     @Autowired
     private JWTSecurityService jwtSecurityService;
+    @Autowired
+    private InternetRadioService internetRadioService;
 
     private static final Logger LOG = LoggerFactory.getLogger(PlayQueueService.class);
 
@@ -711,7 +710,7 @@ public class PlayQueueService {
         Locale locale = RequestContextUtils.getLocale(request);
         PlayQueue playQueue = player.getPlayQueue();
 
-        List<PlayQueueInfo.Entry> entries = new ArrayList<PlayQueueInfo.Entry>();
+        List<PlayQueueInfo.Entry> entries = new ArrayList<>();
         for (MediaFile file : playQueue.getFiles()) {
 
             String albumUrl = url + "main.view?id=" + file.getId();
@@ -736,105 +735,43 @@ public class PlayQueueService {
 
     private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) throws Exception {
 
-        // Retrieve radio playlist and parse it
         PlayQueue playQueue = player.getPlayQueue();
         InternetRadio radio = playQueue.getInternetRadio();
-        URL playlistUrl = new URL(radio.getStreamUrl());
-        SpecificPlaylist inputPlaylist = null;
-        try {
-            LOG.info("Parsing playlist at {}...", playlistUrl.toString());
-            inputPlaylist = SpecificPlaylistFactory.getInstance().readFrom(playlistUrl);
-        } catch (Exception e) {
-            LOG.error("Unable to parse playlist: {}", playlistUrl.toString(), e);
-            throw e;
-        }
-        if (inputPlaylist == null) {
-            LOG.error("Unsupported playlist format: {}", playlistUrl.toString());
-            throw new Exception("Unsupported playlist format " + playlistUrl.toString());
-        }
 
-        // Retrieve stream URLs
-        List<PlayQueueInfo.Entry> entries = new ArrayList<>();
         final String radioHomepageUrl = radio.getHomepageUrl();
         final String radioName = radio.getName();
-        inputPlaylist.toPlaylist().acceptDown(new PlaylistVisitor() {
-            @Override
-            public void beginVisitPlaylist(Playlist playlist) throws Exception {
 
-            }
-
-            @Override
-            public void endVisitPlaylist(Playlist playlist) throws Exception {
-
-            }
-
-            @Override
-            public void beginVisitParallel(Parallel parallel) throws Exception {
-
-            }
-
-            @Override
-            public void endVisitParallel(Parallel parallel) throws Exception {
-
-            }
-
-            @Override
-            public void beginVisitSequence(Sequence sequence) throws Exception {
-
-            }
-
-            @Override
-            public void endVisitSequence(Sequence sequence) throws Exception {
-
-            }
-
-            @Override
-            public void beginVisitMedia(Media media) throws Exception {
-
-                // Retrieve stream URL
-                String streamUrl = media.getSource().getURI().toString();
-                // Fake stream title using the URL
-                String streamTitle = streamUrl;
-                String streamAlbum = radioName;
-                String streamGenre = "Internet Radio";
-                // Fake entry id so that the source can be selected
-                Integer streamId = -(1+entries.size());
-                Integer streamTrackNumber = entries.size();
-                Integer streamYear = 0;
-
-                LOG.info("Got source media at {}...", streamUrl);
-
-                entries.add(new PlayQueueInfo.Entry(
-                        streamId,          // Entry id
-                        streamTrackNumber, // Track number
-                        streamTitle,       // Use URL as stream title
-                        "",
-                        streamAlbum,       // Album name
-                        streamGenre,
-                        streamYear,
-                        "",
-                        0,
-                        "",
-                        "",
-                        "",
-                        "",
-                        false,
-                        radioHomepageUrl,  // Album URL
-                        streamUrl,         // Stream URL
-                        streamUrl,         // Remote stream URL
-                        null,
-                        null
-                ));
-            }
-
-            @Override
-            public void endVisitMedia(Media media) throws Exception {
-
-            }
-        });
-
-        if (entries.isEmpty()) {
-            LOG.error("Cannot fetch stream URLs from radio source {}", playlistUrl.toString());
+        List<PlayQueueInfo.Entry> entries = new ArrayList<>();
+        for (String streamUrl : internetRadioService.getStreamUrls(radio)) {
+            // Fake stream title using the URL
+            String streamTitle = streamUrl;
+            String streamAlbum = radioName;
+            String streamGenre = "Internet Radio";
+            // Fake entry id so that the source can be selected
+            Integer streamId = -(1+entries.size());
+            Integer streamTrackNumber = entries.size();
+            Integer streamYear = 0;
+            entries.add(new PlayQueueInfo.Entry(
+                    streamId,          // Entry id
+                    streamTrackNumber, // Track number
+                    streamTitle,       // Use URL as stream title
+                    "",
+                    streamAlbum,       // Album name
+                    streamGenre,
+                    streamYear,
+                    "",
+                    0,
+                    "",
+                    "",
+                    "",
+                    "",
+                    false,
+                    radioHomepageUrl,  // Album URL
+                    streamUrl,         // Stream URL
+                    streamUrl,         // Remote stream URL
+                    null,
+                    null
+            ));
         }
 
         return entries;
