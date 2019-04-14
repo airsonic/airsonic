@@ -2,21 +2,41 @@ package org.airsonic.player.service;
 
 import chameleon.playlist.*;
 import org.airsonic.player.domain.InternetRadio;
+import org.airsonic.player.domain.InternetRadioSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class InternetRadioService {
 
     private static final Logger LOG = LoggerFactory.getLogger(InternetRadioService.class);
 
-    public List<String> getStreamUrls(InternetRadio radio) throws Exception {
+    private Map<Integer, List<InternetRadioSource>> cachedSources;
 
+    public InternetRadioService() {
+        this.cachedSources = new HashMap<>();
+    }
+
+    public void clearInternetRadioSourceCache() {
+        cachedSources.clear();
+    }
+
+    public List<InternetRadioSource> getInternetRadioSources(InternetRadio radio) throws Exception {
+        List<InternetRadioSource> sources;
+        if (cachedSources.containsKey(radio.getId())) {
+            sources = cachedSources.get(radio.getId());
+        } else {
+            sources = retrieveInternetRadioSources(radio);
+            cachedSources.put(radio.getId(), sources);
+        }
+        return sources;
+    }
+
+    private List<InternetRadioSource> retrieveInternetRadioSources(InternetRadio radio) throws Exception {
         // Retrieve radio playlist and parse it
         URL playlistUrl = new URL(radio.getStreamUrl());
         SpecificPlaylist inputPlaylist = null;
@@ -33,7 +53,7 @@ public class InternetRadioService {
         }
 
         // Retrieve stream URLs
-        List<String> entries = new ArrayList<>();
+        List<InternetRadioSource> entries = new ArrayList<>();
         inputPlaylist.toPlaylist().acceptDown(new PlaylistVisitor() {
             @Override
             public void beginVisitPlaylist(Playlist playlist) throws Exception {
@@ -69,7 +89,9 @@ public class InternetRadioService {
             public void beginVisitMedia(Media media) throws Exception {
                 String streamUrl = media.getSource().getURI().toString();
                 LOG.info("Got source media at {}...", streamUrl);
-                entries.add(streamUrl);
+                entries.add(new InternetRadioSource(
+                    streamUrl
+                ));
             }
 
             @Override

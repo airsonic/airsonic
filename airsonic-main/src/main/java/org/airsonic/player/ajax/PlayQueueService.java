@@ -449,6 +449,7 @@ public class PlayQueueService {
     }
 
     private PlayQueueInfo doPlayInternetRadio(HttpServletRequest request, Player player, InternetRadio radio) throws Exception {
+        internetRadioService.clearInternetRadioSourceCache(radio.getId());
         player.getPlayQueue().clear();
         player.getPlayQueue().setRandomSearchCriteria(null);
         player.getPlayQueue().setInternetRadio(radio);
@@ -742,35 +743,31 @@ public class PlayQueueService {
         final String radioName = radio.getName();
 
         List<PlayQueueInfo.Entry> entries = new ArrayList<>();
-        for (String streamUrl : internetRadioService.getStreamUrls(radio)) {
-            // Fake stream title using the URL
-            String streamTitle = streamUrl;
-            String streamAlbum = radioName;
-            String streamGenre = "Internet Radio";
-            // Fake entry id so that the source can be selected
+        for (InternetRadioSource streamSource: internetRadioService.getInternetRadioSources(radio)) {
+            // Fake entry id so that the source can be selected in the UI
             Integer streamId = -(1+entries.size());
             Integer streamTrackNumber = entries.size();
-            Integer streamYear = 0;
+            String streamUrl = streamSource.getStreamUrl();
             entries.add(new PlayQueueInfo.Entry(
                     streamId,          // Entry id
                     streamTrackNumber, // Track number
-                    streamTitle,       // Use URL as stream title
-                    "",
-                    streamAlbum,       // Album name
-                    streamGenre,
-                    streamYear,
-                    "",
-                    0,
-                    "",
-                    "",
-                    "",
-                    "",
-                    false,
-                    radioHomepageUrl,  // Album URL
+                    streamUrl,         // Track title (use radio stream URL for now)
+                    "",                // Track artist
+                    radioName,         // Album name (use radio name)
+                    "Internet Radio",  // Genre
+                    0,                 // Year
+                    "",                // Bit rate
+                    0,                 // Duration
+                    "",                // Duration (as string)
+                    "",                // Format
+                    "",                // Content Type
+                    "",                // File size
+                    false,             // Starred
+                    radioHomepageUrl,  // Album URL (use radio home page URL)
                     streamUrl,         // Stream URL
                     streamUrl,         // Remote stream URL
-                    null,
-                    null
+                    null,              // Cover art URL
+                    null               // Remote cover art URL
             ));
         }
 
