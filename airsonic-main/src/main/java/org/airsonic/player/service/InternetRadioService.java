@@ -28,9 +28,15 @@ public class InternetRadioService {
     public List<InternetRadioSource> getInternetRadioSources(InternetRadio radio) throws Exception {
         List<InternetRadioSource> sources;
         if (cachedSources.containsKey(radio.getId())) {
+            LOG.debug("Got cached sources for internet radio {}!", radio.getStreamUrl());
             sources = cachedSources.get(radio.getId());
         } else {
+            LOG.debug("Retrieving sources for internet radio {}...", radio.getStreamUrl());
             sources = retrieveInternetRadioSources(radio);
+            if (sources.isEmpty()) {
+                LOG.warn("No entries found when parsing external playlist.");
+            }
+            LOG.info("Retrieved playlist for internet radio {}, got {} sources.", radio.getStreamUrl(), sources.size());
             cachedSources.put(radio.getId(), sources);
         }
         return sources;
@@ -41,10 +47,10 @@ public class InternetRadioService {
         URL playlistUrl = new URL(radio.getStreamUrl());
         SpecificPlaylist inputPlaylist = null;
         try {
-            LOG.info("Parsing playlist at {}...", playlistUrl.toString());
+            LOG.debug("Parsing internet radio playlist at {}...", playlistUrl.toString());
             inputPlaylist = SpecificPlaylistFactory.getInstance().readFrom(playlistUrl);
         } catch (Exception e) {
-            LOG.error("Unable to parse playlist: {}", playlistUrl.toString(), e);
+            LOG.error("Unable to parse internet radio playlist: {}", playlistUrl.toString(), e);
             throw e;
         }
         if (inputPlaylist == null) {
@@ -88,7 +94,7 @@ public class InternetRadioService {
             @Override
             public void beginVisitMedia(Media media) throws Exception {
                 String streamUrl = media.getSource().getURI().toString();
-                LOG.info("Got source media at {}...", streamUrl);
+                LOG.debug("Got source media at {}", streamUrl);
                 entries.add(new InternetRadioSource(
                     streamUrl
                 ));
@@ -99,10 +105,6 @@ public class InternetRadioService {
 
             }
         });
-
-        if (entries.isEmpty()) {
-            LOG.warn("No entries found when parsing external playlist.");
-        }
 
         return entries;
     }
