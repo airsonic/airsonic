@@ -9,8 +9,7 @@
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
@@ -24,7 +23,9 @@
 
 <script type="text/javascript" language="javascript">
     function init() {
-        setupZoom('<c:url value="/"/>');
+        $("a.fancy").fancyZoom({
+            minBorder: 30
+        });
 
         $("#dialog-select-playlist").dialog({resizable: true, height: 350, autoOpen: false,
             buttons: {

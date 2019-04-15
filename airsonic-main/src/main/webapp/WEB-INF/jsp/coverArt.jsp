@@ -85,7 +85,7 @@ PARAMETERS
 
         <c:choose>
         <c:when test="${param.showLink}"><a href="${targetUrl}" title="${param.caption1}"></c:when>
-        <c:when test="${param.showZoom}"><a href="${zoomCoverArtUrl}" rel="zoom" title="${param.caption1}"></c:when>
+        <c:when test="${param.showZoom}"><a href="${zoomCoverArtUrl}" class="fancy" rel="zoom" title="${param.caption1}"></c:when>
             </c:choose>
             <img src="${coverArtUrl}" id="${imgId}" alt="${param.caption1}"
                  style="display:none">
