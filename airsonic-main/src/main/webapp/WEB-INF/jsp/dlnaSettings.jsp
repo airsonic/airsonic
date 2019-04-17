@@ -37,8 +37,7 @@
     <sec:csrfInput />
 
     <div>
-        <input type="checkbox" name="dlnaEnabled" id="dlnaEnabled" class="checkbox"
-               <c:if test="${model.dlnaEnabled}">checked="checked"</c:if>/>
+        <input type="checkbox" name="dlnaEnabled" id="dlnaEnabled" {model.dlnaEnabled? "checked": ""}/>
         <label for="dlnaEnabled"><fmt:message key="dlnasettings.enabled"/></label>
     </div>
     <p class="detail" style="width:60%;white-space:normal">

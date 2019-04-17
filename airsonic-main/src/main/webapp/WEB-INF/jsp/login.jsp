@@ -30,7 +30,7 @@
             <div class="details">
                 <div id="loginremember">
                     <label for="remember"><fmt:message key="login.remember"/></label>
-                    <input type="checkbox" name="remember-me" id="remember" class="checkbox" tabindex="3">
+                    <input type="checkbox" name="remember-me" id="remember" tabindex="3">
                 </div>
 
                 <a href="recover.view"><fmt:message key="login.recover"/></a>

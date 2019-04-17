@@ -37,8 +37,7 @@
     <sec:csrfInput />
 
     <div>
-        <input type="checkbox" name="sonosEnabled" id="sonosEnabled" class="checkbox"
-               <c:if test="${model.sonosEnabled}">checked="checked"</c:if>/>
+        <input type="checkbox" name="sonosEnabled" id="sonosEnabled" ${model.sonosEnabled? "checked": ""}/>
         <label for="sonosEnabled"><fmt:message key="sonossettings.enabled"/></label>
     </div>
 
