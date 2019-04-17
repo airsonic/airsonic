@@ -693,6 +693,10 @@ public class PodcastService {
         File podcastDir = new File(settingsService.getPodcastFolder());
         File channelDir = new File(podcastDir, StringUtil.fileSystemSafe(channel.getTitle()));
 
+        if (!podcastDir.canWrite()) {
+          throw new RuntimeException("The podcasts directory " + podcastDir + " isn't writeable.");
+        }
+
         if (!channelDir.exists()) {
             boolean ok = channelDir.mkdirs();
             if (!ok) {
