@@ -13,13 +13,13 @@
 
 <fmt:message key="share.warning"/>
 <p>
-    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
-    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank"><fmt:message key="share.facebook"/></a>
+    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank" rel="noopener noreferrer"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
+    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank" rel="noopener noreferrer"><fmt:message key="share.facebook"/></a>
 </p>
 
 <p>
-    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
-    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank"><fmt:message key="share.twitter"/></a>
+    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank" rel="noopener noreferrer"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
+    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank" rel="noopener noreferrer"><fmt:message key="share.twitter"/></a>
 </p>
 <p>
     <fmt:message key="share.link">

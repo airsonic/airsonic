@@ -47,6 +47,7 @@
     </audio>
 
     <div class="detail" style="text-align:center;">Streaming by <a href="https://airsonic.github.io/"
+								   rel="noopener noreferrer"
                                                                    target="_blank"><b>Airsonic</b></a></div>
 
 </div>
