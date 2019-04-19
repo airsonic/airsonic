@@ -304,7 +304,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="checkbox" checked name="unzip" id="unzip" class="checkbox"/>
+                    <input type="checkbox" checked name="unzip" id="unzip"/>
                     <label for="unzip"><fmt:message key="more.upload.unzip"/></label>
                 </td>
             </tr>

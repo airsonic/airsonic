@@ -50,7 +50,7 @@
                     <label><input type="radio" name="expireIn[${share.id}]" value="365"><fmt:message key="sharesettings.expirein.year"/></label>
                     <label><input type="radio" name="expireIn[${share.id}]" value="0"><fmt:message key="sharesettings.expirein.never"/></label>
                 </td>
-                <td style="padding-left:1em" align="center" style="padding-left:1em"><input type="checkbox" name="delete[${share.id}]" class="checkbox"/></td>
+                <td style="padding-left:1em" align="center" style="padding-left:1em"><input type="checkbox" name="delete[${share.id}]"/></td>
             </tr>
         </c:forEach>
 
@@ -59,7 +59,7 @@
     <p style="padding-top:1em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
         <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-right:2.0em"></a>
-        <input type="checkbox" id="deleteExpired" name="deleteExpired" class="checkbox"/>
+        <input type="checkbox" id="deleteExpired" name="deleteExpired"/>
         <label for="deleteExpired"><fmt:message key="sharesettings.deleteexpired"/></label>
     </p>
 

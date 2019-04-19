@@ -317,7 +317,7 @@
                             <c:param name="asTable" value="true"/>
                         </c:import>
 
-                        <td class="fit"><input type="checkbox" class="checkbox" id="songIndex${loopStatus.count - 1}">
+                        <td class="fit"><input type="checkbox" id="songIndex${loopStatus.count - 1}">
                             <span id="songId${loopStatus.count - 1}" style="display: none">${song.id}</span></td>
 
                         <c:if test="${model.visibility.trackNumberVisible}">

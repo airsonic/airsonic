@@ -806,7 +806,7 @@
             <td class="fit">
                 <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
                      style="cursor:pointer" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
-            <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
+            <td class="fit"><input type="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">
                 <td class="fit rightalign"><span class="detail" id="trackNumber">1</span></td>
