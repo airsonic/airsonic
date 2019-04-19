@@ -1,6 +1,0 @@
-<project>
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sourceforge.jarbundler</groupId>
-    <artifactId>jarbundler</artifactId>
-    <version>2.1.0</version>
-</project>
