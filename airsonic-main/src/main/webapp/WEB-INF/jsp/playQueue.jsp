@@ -99,6 +99,40 @@
             }
         });
 
+        /** Toggle between <a> and <span> in order to disable play queue action buttons */
+        $.fn.toggleLink = function(newState) {
+            $(this).each(function(ix, elt) {
+
+                var node, currentState;
+                if (elt.tagName.toLowerCase() === "a") currentState = true;
+                else if (elt.tagName.toLowerCase() === "span") currentState = false;
+                else return true;
+                if (typeof newState === 'undefined') newState = !currentState;
+                if (newState === currentState) return true;
+
+                if (newState) node = document.createElement("a");
+                else node = document.createElement("span");
+
+                node.innerHTML = elt.innerHTML;
+                if (elt.hasAttribute("id")) node.setAttribute("id", elt.getAttribute("id"));
+                if (elt.hasAttribute("style")) node.setAttribute("style", elt.getAttribute("style"));
+                if (elt.hasAttribute("class")) node.setAttribute("class", elt.getAttribute("class"));
+
+                if (newState) {
+                    if (elt.hasAttribute("data-href")) node.setAttribute("href", elt.getAttribute("data-href"));
+                    node.classList.remove("disabled");
+                    node.removeAttribute("aria-disabled");
+                } else {
+                    if (elt.hasAttribute("href")) node.setAttribute("data-href", elt.getAttribute("href"));
+                    node.classList.add("disabled");
+                    node.setAttribute("aria-disabled", "true");
+                }
+
+                elt.parentNode.replaceChild(node, elt);
+                return true;
+            });
+        };
+
         getPlayQueue();
     }
 
@@ -450,6 +484,25 @@
             }
         }
 
+        // Disable some UI items if internet radio is playing
+        $("select#moreActions #loadPlayQueue").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #savePlayQueue").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #savePlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #downloadPlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sharePlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByTrack").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByAlbum").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByArtist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #selectAll").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #selectNone").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #removeSelected").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #download").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #appendPlaylist").prop("disabled", internetRadioEnabled);
+        $("#clearQueue").toggleLink(!internetRadioEnabled);
+        $("#shuffleQueue").toggleLink(!internetRadioEnabled);
+        $("#repeatQueue").toggleLink(!internetRadioEnabled);
+        $("#undoQueue").toggleLink(!internetRadioEnabled);
+
         if (songs.length == 0) {
             $("#songCountAndDuration").text("");
             $("#empty").show();
@@ -476,6 +529,7 @@
                 // Show star/remove buttons in all cases...
                 $("#starSong" + id).show();
                 $("#removeSong" + id).show();
+                $("#songIndex" + id).show();
 
                 // Show star rating
                 if (song.starred) {
@@ -487,6 +541,7 @@
                 // ...except from when internet radio is playing.
                 $("#starSong" + id).hide();
                 $("#removeSong" + id).hide();
+                $("#songIndex" + id).hide();
             }
 
             if ($("#currentImage" + id) && song.streamUrl == currentStreamUrl) {
@@ -804,7 +859,7 @@
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onShuffle()">
+                        <a href="javascript:onShuffle()" id="shuffleQueue">
                             <img src="<spring:theme code="shuffleImage"/>" alt="shuffle" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
@@ -812,7 +867,7 @@
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
                         <td style="white-space:nowrap;">
                           <span class="header">
-                            <a href="javascript:onToggleRepeat()">
+                            <a href="javascript:onToggleRepeat()" id="repeatQueue">
                               <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="repeatOn" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
@@ -820,7 +875,7 @@
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onUndo()">
+                        <a href="javascript:onUndo()" id="undoQueue">
                           <img src="<spring:theme code="undoImage"/>" alt="undo" style="cursor:pointer; height:18px">
                         </a>
                       </span>  |</td>
