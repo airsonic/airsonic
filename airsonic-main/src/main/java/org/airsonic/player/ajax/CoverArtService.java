@@ -130,10 +130,10 @@ public class CoverArtService {
                         File coverFile = mediaFileService.getCoverArt(dir);
                         if (coverFile != null && !isMediaFile(coverFile) && !newCoverFile.equals(coverFile)) {
                             if (!coverFile.renameTo(new File(coverFile.getCanonicalPath() + ".old"))) {
-                                LOG.warn("Unable to rename old image file " + coverFile);
+                                LOG.warn("Unable to rename old image file {0}", coverFile);
                                 break;
                             }
-                            LOG.info("Renamed old image file " + coverFile);
+                            LOG.info("Renamed old image file {0}", coverFile);
 
                             // Must refresh again.
                             mediaFileService.refreshMediaFile(dir);
@@ -162,9 +162,9 @@ public class CoverArtService {
                 backup.delete();
             }
             if (newCoverFile.renameTo(backup)) {
-                LOG.info("Backed up old image file to " + backup);
+                LOG.info("Backed up old image file to {0}", backup);
             } else {
-                LOG.warn("Failed to create image file backup " + backup);
+                LOG.warn("Failed to create image file backup {0}", backup);
             }
         }
     }

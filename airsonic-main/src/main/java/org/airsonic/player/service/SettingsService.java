@@ -867,7 +867,7 @@ public class SettingsService {
                     } else if (elements.length == 3) {
                         themes.add(new Theme(elements[0], elements[1], elements[2]));
                     } else {
-                        LOG.warn("Failed to parse theme from line: [" + line + "].");
+                        LOG.warn("Failed to parse theme from line: [{}].", line);
                     }
                 }
             } catch (IOException x) {

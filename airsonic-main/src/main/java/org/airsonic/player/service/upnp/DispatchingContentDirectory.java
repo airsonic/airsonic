@@ -93,7 +93,8 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
                                long maxResults, SortCriterion[] orderBy)
         throws ContentDirectoryException {
 
-        LOG.info("UPnP request - objectId: " + objectId + ", browseFlag: " + browseFlag + ", filter: " + filter + ", firstResult: " + firstResult + ", maxResults: " + maxResults);
+        LOG.info("UPnP request - objectId: {0}, browseFlag: {1}, filter: {2}, firstResult: {3}, maxResults: {4}",
+            objectId, browseFlag, filter, firstResult, maxResults);
 
         if (objectId == null)
             throw new ContentDirectoryException(ContentDirectoryErrorCode.CANNOT_PROCESS, "objectId is null");

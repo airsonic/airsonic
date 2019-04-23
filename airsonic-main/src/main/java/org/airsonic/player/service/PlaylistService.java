@@ -197,7 +197,7 @@ public class PlaylistService {
         }
 
         for (String error : result.getSecond()) {
-            LOG.warn("File in playlist '" + fileName + "' not found: " + error);
+            LOG.warn("File in playlist '{0}' not found: {1}", fileName, error);
         }
         Date now = new Date();
         Playlist playlist;
@@ -297,7 +297,7 @@ public class PlaylistService {
         InputStream in = new FileInputStream(file);
         try {
             importPlaylist(User.USERNAME_ADMIN, FilenameUtils.getBaseName(fileName), fileName, in, existingPlaylist);
-            LOG.info("Auto-imported playlist " + file);
+            LOG.info("Auto-imported playlist {}", file);
         } finally {
             IOUtils.closeQuietly(in);
         }

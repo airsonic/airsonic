@@ -63,7 +63,7 @@ public class RESTFilter implements Filter {
 
         SubsonicRESTController.ErrorCode code = (x instanceof ServletRequestBindingException) ? SubsonicRESTController.ErrorCode.MISSING_PARAMETER : SubsonicRESTController.ErrorCode.GENERIC;
         String msg = getErrorMessage(x);
-        LOG.warn("Error in REST API: " + msg, x);
+        LOG.warn("Error in REST API: {0}", msg, x);
 
         try {
             jaxbWriter.writeErrorResponse(request, response, code, msg);

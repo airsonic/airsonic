@@ -374,7 +374,7 @@ public class TranscodingService {
                     tmpFile = File.createTempFile("airsonic", "." + FilenameUtils.getExtension(path));
                     tmpFile.deleteOnExit();
                     FileUtils.copyFile(new File(path), tmpFile);
-                    LOG.debug("Created tmp file: " + tmpFile);
+                    LOG.debug("Created tmp file: {0}", tmpFile);
                     cmd = cmd.replace("%s", tmpFile.getPath());
                 } else {
                     cmd = cmd.replace("%s", path);
@@ -493,9 +493,9 @@ public class TranscodingService {
         if (!dir.exists()) {
             boolean ok = dir.mkdir();
             if (ok) {
-                LOG.info("Created directory " + dir);
+                LOG.info("Created directory {}", dir);
             } else {
-                LOG.warn("Failed to create directory " + dir);
+                LOG.warn("Failed to create directory {}", dir);
             }
         }
         return dir;

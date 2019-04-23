@@ -60,7 +60,7 @@ public class AudioPlayer {
         AudioFormat format = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100.0F, 16, 2, 4, 44100.0F, true);
         line = AudioSystem.getSourceDataLine(format);
         line.open(format);
-        LOG.debug("Opened line " + line);
+        LOG.debug("Opened line {}", line);
 
         if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
             gainControl = (FloatControl) line.getControl(FloatControl.Type.MASTER_GAIN);
@@ -109,7 +109,7 @@ public class AudioPlayer {
         try {
             if (line.isOpen()) {
                 line.close();
-                LOG.debug("Closed line " + line);
+                LOG.debug("Closed line {}", line);
             }
         } catch (Throwable x) {
             LOG.warn("Failed to close player: " + x, x);

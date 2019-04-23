@@ -118,7 +118,7 @@ public class MediaScannerService {
         long period = daysBetween * 24L * 3600L * 1000L;
         timer.schedule(task, firstTime, period);
 
-        LOG.info("Automatic media library scanning scheduled to run every " + daysBetween + " day(s), starting at " + firstTime);
+        LOG.info("Automatic media library scanning scheduled to run every {0} day(s), starting at {1}.", daysBetween, firstTime);
 
         // In addition, create index immediately if it doesn't exist on disk.
         if (settingsService.getLastScanned() == null) {
@@ -167,7 +167,7 @@ public class MediaScannerService {
     private void doScanLibrary() {
         LOG.info("Starting to scan media library.");
         Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
-        LOG.debug("New last scan date is " + lastScanned);
+        LOG.debug("New last scan date is {0}", lastScanned);
 
         try {
 
@@ -196,7 +196,7 @@ public class MediaScannerService {
                          lastScanned, albumCount, genres, true);
             }
 
-            LOG.info("Scanned media library with " + scanCount + " entries.");
+            LOG.info("Scanned media library with {0} entries.", scanCount,);
 
             LOG.info("Marking non-present files.");
             mediaFileDao.markNonPresent(lastScanned);
@@ -232,7 +232,7 @@ public class MediaScannerService {
                           Map<String, Integer> albumCount, Genres genres, boolean isPodcast) {
         scanCount++;
         if (scanCount % 250 == 0) {
-            LOG.info("Scanned media library with " + scanCount + " entries.");
+            LOG.info("Scanned media library with {0} entries.", scanCount);
         }
 
         LOG.trace("Scanning file {}", file.getPath());

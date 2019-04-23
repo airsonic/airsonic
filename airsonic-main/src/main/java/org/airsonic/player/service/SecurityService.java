@@ -191,7 +191,7 @@ public class SecurityService implements UserDetailsService {
      */
     public void deleteUser(String username) {
         userDao.deleteUser(username);
-        LOG.info("Deleted user " + username);
+        LOG.info("Deleted user {}", username);
         userCache.remove(username);
     }
 

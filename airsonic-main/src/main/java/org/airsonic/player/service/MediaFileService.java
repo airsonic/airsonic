@@ -449,12 +449,12 @@ public class MediaFileService {
      */
     private boolean isExcluded(File file) {
         if (settingsService.getIgnoreSymLinks() && Files.isSymbolicLink(file.toPath())) {
-            LOG.info("excluding symbolic link " + file.toPath());
+            LOG.info("excluding symbolic link {}", file.toPath());
             return true;
         }
         String name = file.getName();
         if (settingsService.getExcludePattern() != null && settingsService.getExcludePattern().matcher(name).find()) {
-            LOG.info("excluding file which matches exclude pattern " + settingsService.getExcludePatternString() + ": " + file.toPath());
+            LOG.info("excluding file which matches exclude pattern {0}: {1}.", settingsService.getExcludePatternString(), file.toPath());
             return true;
         }
 

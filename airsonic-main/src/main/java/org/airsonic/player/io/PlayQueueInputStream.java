@@ -135,7 +135,7 @@ public class PlayQueueInputStream extends InputStream {
     private void populateRandomPlaylist(PlayQueue playQueue) throws IOException {
         List<MediaFile> files = searchService.getRandomSongs(playQueue.getRandomSearchCriteria());
         playQueue.addFiles(false, files);
-        LOG.info("Recreated random playlist with " + playQueue.size() + " songs.");
+        LOG.info("Recreated random playlist with {0} songs.", playQueue.size());
     }
 
     @Override

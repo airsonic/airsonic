@@ -102,7 +102,7 @@ public class CoverArtController implements LastModified {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
-        LOG.trace("handleRequest - " + coverArtRequest);
+        LOG.trace("handleRequest - {0}", coverArtRequest);
         Integer size = ServletRequestUtils.getIntParameter(request, "size");
 
         // Send fallback image if no ID is given. (No need to cache it, since it will be cached in browser.)
@@ -114,7 +114,7 @@ public class CoverArtController implements LastModified {
         try {
             // Optimize if no scaling is required.
             if (size == null && coverArtRequest.getCoverArt() != null) {
-                LOG.trace("sendUnscaled - " + coverArtRequest);
+                LOG.trace("sendUnscaled - {0}", coverArtRequest);
                 sendUnscaled(coverArtRequest, response);
                 return;
             }
@@ -318,9 +318,9 @@ public class CoverArtController implements LastModified {
         dir = new File(dir, String.valueOf(size));
         if (!dir.exists()) {
             if (dir.mkdirs()) {
-                LOG.info("Created thumbnail cache " + dir);
+                LOG.info("Created thumbnail cache {0}", dir);
             } else {
-                LOG.error("Failed to create thumbnail cache " + dir);
+                LOG.error("Failed to create thumbnail cache {0}", dir);
             }
         }
 

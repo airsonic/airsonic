@@ -137,7 +137,7 @@ public class PlayerDao extends AbstractDao {
         String sql = "delete from player where name is null and client_id is null and (last_seen is null or last_seen < ?)";
         int n = update(sql, cal.getTime());
         if (n > 0) {
-            LOG.info("Deleted " + n + " player(s) that haven't been used after " + cal.getTime());
+            LOG.info("Deleted {0} player(s) that haven't been used after {1}.", n, cal.getTime());
         }
     }
 

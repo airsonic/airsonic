@@ -336,12 +336,12 @@ public class StreamController {
         Integer maxBitRate = parameters.getMaxBitRate();
 
         if (duration == null) {
-            LOG.warn("Unknown duration for " + file + ". Unable to estimate transcoded size.");
+            LOG.warn("Unknown duration for {0}. Unable to estimate transcoded size.", file);
             return file.getFileSize();
         }
 
         if (maxBitRate == null) {
-            LOG.error("Unknown bit rate for " + file + ". Unable to estimate transcoded size.");
+            LOG.error("Unknown bit rate for {0}. Unable to estimate transcoded size.", file);
             return file.getFileSize();
         }
 

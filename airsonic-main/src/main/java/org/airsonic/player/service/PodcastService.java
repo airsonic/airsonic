@@ -151,7 +151,7 @@ public class PodcastService {
 
         scheduledRefresh = scheduledExecutor.scheduleAtFixedRate(task, initialDelayMillis, periodMillis, TimeUnit.MILLISECONDS);
         Date firstTime = new Date(System.currentTimeMillis() + initialDelayMillis);
-        LOG.info("Automatic Podcast update scheduled to run every " + hoursBetween + " hour(s), starting at " + firstTime);
+        LOG.info("Automatic Podcast update scheduled to run every {0} hour(s), starting at {1}.", hoursBewteen, firstTime);
     }
 
     /**
@@ -436,14 +436,14 @@ public class PodcastService {
 
             Element enclosure = episodeElement.getChild("enclosure");
             if (enclosure == null) {
-                LOG.info("No enclosure found for episode " + title);
+                LOG.info("No enclosure found for episode {0}", title);
                 continue;
             }
 
             String url = enclosure.getAttributeValue("url");
             url = sanitizeUrl(url);
             if (url == null) {
-                LOG.info("No enclosure URL found for episode " + title);
+                LOG.info("No enclosure URL found for episode {0}", title);
                 continue;
             }
 
@@ -459,7 +459,7 @@ public class PodcastService {
                 PodcastEpisode episode = new PodcastEpisode(null, channel.getId(), url, null, title, description, date,
                         duration, length, 0L, PodcastStatus.NEW, null);
                 episodes.add(episode);
-                LOG.info("Created Podcast episode " + title);
+                LOG.info("Created Podcast episode {0}", title);
             }
         }
 
@@ -497,7 +497,7 @@ public class PodcastService {
                 // Ignored.
             }
         }
-        LOG.warn("Failed to parse publish date: '" + s + "'.");
+        LOG.warn("Failed to parse publish date: '{0}'.", s);
         return null;
     }
 
@@ -596,7 +596,7 @@ public class PodcastService {
                     addMediaFileIdToEpisodes(Arrays.asList(episode));
                     episode.setBytesDownloaded(bytesDownloaded);
                     podcastDao.updateEpisode(episode);
-                    LOG.info("Downloaded " + bytesDownloaded + " bytes from Podcast " + episode.getUrl());
+                    LOG.info("Downloaded {0} bytes from Podcast {1}", bytesDownloaded, episode.getUrl());
                     IOUtils.closeQuietly(out);
                     updateTags(file, episode);
                     episode.setStatus(PodcastStatus.COMPLETED);

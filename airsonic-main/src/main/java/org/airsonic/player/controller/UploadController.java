@@ -136,7 +136,7 @@ public class UploadController {
 
                         item.write(targetFile);
                         uploadedFiles.add(targetFile);
-                        LOG.info("Uploaded " + targetFile);
+                        LOG.info("Uploaded {}", targetFile);
 
                         if (unzip && targetFile.getName().toLowerCase().endsWith(".zip")) {
                             unzip(targetFile, unzippedFiles);
@@ -164,7 +164,7 @@ public class UploadController {
     }
 
     private void unzip(File file, List<File> unzippedFiles) throws Exception {
-        LOG.info("Unzipping " + file);
+        LOG.info("Unzipping {}", file);
 
         try (ZipFile zipFile = new ZipFile(file)) {
 
@@ -199,7 +199,7 @@ public class UploadController {
                             outputStream.write(buf, 0, n);
                         }
 
-                        LOG.info("Unzipped " + entryFile);
+                        LOG.info("Unzipped {}", entryFile);
                         unzippedFiles.add(entryFile);
                     } finally {
                         IOUtils.closeQuietly(inputStream);

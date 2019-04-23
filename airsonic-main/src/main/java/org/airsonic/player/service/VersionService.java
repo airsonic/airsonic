@@ -84,7 +84,7 @@ public class VersionService {
         if (localVersion == null) {
             try {
                 localVersion = new Version(readLineFromResource("/version.txt"));
-                LOG.info("Resolved local Airsonic version to: " + localVersion);
+                LOG.info("Resolved local Airsonic version to: {}", localVersion);
             } catch (Exception x) {
                 LOG.warn("Failed to resolve local Airsonic version.", x);
             }

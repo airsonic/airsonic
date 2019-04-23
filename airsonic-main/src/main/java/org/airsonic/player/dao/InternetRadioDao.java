@@ -71,7 +71,7 @@ public class InternetRadioDao extends AbstractDao {
     public void deleteInternetRadio(Integer id) {
         String sql = "delete from internet_radio where id=?";
         update(sql, id);
-        LOG.info("Deleted internet radio station with ID " + id);
+        LOG.info("Deleted internet radio station with ID {}", id);
     }
 
     /**
