@@ -66,7 +66,7 @@ public class HLSController {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         response.setHeader("Access-Control-Allow-Origin", "*");

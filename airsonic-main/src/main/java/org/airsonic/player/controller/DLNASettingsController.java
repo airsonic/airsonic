@@ -49,7 +49,7 @@ public class DLNASettingsController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String handleGet(Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -62,7 +62,7 @@ public class DLNASettingsController {
         return "dlnaSettings";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public String handlePost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         handleParameters(request);
         redirectAttributes.addFlashAttribute("settings_toast", true);

@@ -57,7 +57,7 @@ public class PlayerSettingsController  {
     @Autowired
     private TranscodingService transcodingService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "playerSettings";
     }
@@ -112,7 +112,7 @@ public class PlayerSettingsController  {
         model.addAttribute("command",command);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
         Player player = playerService.getPlayerById(command.getPlayerId());
         if (player != null) {

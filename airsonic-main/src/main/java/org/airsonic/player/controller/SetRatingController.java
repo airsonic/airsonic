@@ -50,7 +50,7 @@ public class SetRatingController {
     private MediaFileService mediaFileService;
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
         Integer rating = ServletRequestUtils.getIntParameter(request, "rating");

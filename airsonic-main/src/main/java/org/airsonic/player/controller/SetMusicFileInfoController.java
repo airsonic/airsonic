@@ -44,7 +44,7 @@ public class SetMusicFileInfoController {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
         String action = request.getParameter("action");

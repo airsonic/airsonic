@@ -61,7 +61,7 @@ public class UserChartController extends AbstractChartController {
     public static final int IMAGE_MIN_HEIGHT = 200;
     private static final long BYTES_PER_MB = 1024L * 1024L;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String type = request.getParameter("type");
         CategoryDataset dataset = createDataset(type);

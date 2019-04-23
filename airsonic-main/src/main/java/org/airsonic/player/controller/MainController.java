@@ -58,7 +58,7 @@ public class MainController  {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
                                                  HttpServletRequest request,
                                                  HttpServletResponse response) throws Exception {

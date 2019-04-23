@@ -57,7 +57,7 @@ public class RandomPlayQueueController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String handleRandomPlayQueue(
             ModelMap model,
             HttpServletRequest request,

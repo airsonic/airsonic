@@ -49,7 +49,7 @@ public class PlaylistsController {
     @Autowired
     private PlaylistService playlistService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String doGet(HttpServletRequest request, Model model) throws Exception {
         Map<String, Object> map = new HashMap<>();
 

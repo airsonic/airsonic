@@ -50,7 +50,7 @@ public class RightController  {
     @Autowired
     private VersionService versionService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
         ModelAndView result = new ModelAndView("right");

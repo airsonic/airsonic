@@ -39,7 +39,7 @@ public class DatabaseSettingsController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "databaseSettings";
     }
@@ -58,7 +58,7 @@ public class DatabaseSettingsController {
         model.addAttribute("command", command);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String onSubmit(@ModelAttribute("command") @Validated DatabaseSettingsCommand command,
                               BindingResult bindingResult,
                               RedirectAttributes redirectAttributes) throws Exception {

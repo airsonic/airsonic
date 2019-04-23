@@ -47,7 +47,7 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("/proxy")
 public class ProxyController  {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String url = ServletRequestUtils.getRequiredStringParameter(request, "url");
 

@@ -44,7 +44,7 @@ public class GeneralSettingsController  {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "generalSettings";
     }
@@ -91,7 +91,7 @@ public class GeneralSettingsController  {
         model.addAttribute("command",command);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String doSubmitAction(@ModelAttribute("command") GeneralSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         int themeIndex = Integer.parseInt(command.getThemeIndex());

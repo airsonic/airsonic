@@ -87,7 +87,7 @@ public class DownloadController implements LastModified {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);

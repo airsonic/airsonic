@@ -47,7 +47,7 @@ public class ChangeCoverArtController  {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         int id = ServletRequestUtils.getRequiredIntParameter(request, "id");

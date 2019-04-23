@@ -53,7 +53,7 @@ public class PlayQueueController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);

@@ -59,7 +59,7 @@ public class ShareManagementController  {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView createShare(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         List<MediaFile> files = getMediaFiles(request);

@@ -111,7 +111,7 @@ public class LeftController  {
         return lastModified;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean musicFolderChanged = saveSelectedMusicFolder(request);
         Map<String, Object> map = new HashMap<>();

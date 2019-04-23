@@ -42,7 +42,7 @@ public class SettingsController  {
     @Autowired
     private SecurityService securityService;
 
-@RequestMapping(method = RequestMethod.GET)
+@GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         User user = securityService.getCurrentUser(request);

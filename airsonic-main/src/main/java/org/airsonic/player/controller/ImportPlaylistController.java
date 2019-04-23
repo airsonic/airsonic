@@ -54,7 +54,7 @@ public class ImportPlaylistController {
     @Autowired
     private PlaylistService playlistService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String handlePost(RedirectAttributes redirectAttributes,
                                            HttpServletRequest request
                                            ) throws Exception {
@@ -91,7 +91,7 @@ public class ImportPlaylistController {
         return "redirect:importPlaylist";
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String handleGet() {
         return "importPlaylist";
     }

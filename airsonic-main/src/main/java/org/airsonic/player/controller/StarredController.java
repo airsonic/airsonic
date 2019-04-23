@@ -59,7 +59,7 @@ public class StarredController {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
 

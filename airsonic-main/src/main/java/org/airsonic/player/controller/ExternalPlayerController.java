@@ -64,7 +64,7 @@ public class ExternalPlayerController {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<>();

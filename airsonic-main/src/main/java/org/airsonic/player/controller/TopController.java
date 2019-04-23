@@ -49,7 +49,7 @@ public class TopController {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
 

@@ -39,7 +39,7 @@ public class GettingStartedController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView gettingStarted(HttpServletRequest request) {
 
         if (request.getParameter("hide") != null) {

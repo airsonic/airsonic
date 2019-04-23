@@ -98,7 +98,7 @@ public class CoverArtController implements LastModified {
         return coverArtRequest.lastModified();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);

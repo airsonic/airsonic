@@ -73,7 +73,7 @@ public class UserSettingsController {
         binder.addValidators(userSettingsValidator);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm(HttpServletRequest request, Model model) throws Exception {
         UserSettingsCommand command;
         if(!model.containsAttribute("command")) {
@@ -129,7 +129,7 @@ public class UserSettingsController {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
 
         if(!bindingResult.hasErrors()) {

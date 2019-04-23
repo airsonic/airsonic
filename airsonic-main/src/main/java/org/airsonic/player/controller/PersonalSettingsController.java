@@ -108,12 +108,12 @@ public class PersonalSettingsController  {
         model.addAttribute("command",command);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "personalSettings";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         int localeIndex = Integer.parseInt(command.getLocaleIndex());

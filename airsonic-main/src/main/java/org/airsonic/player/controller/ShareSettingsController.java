@@ -59,7 +59,7 @@ public class ShareSettingsController {
     private SettingsService settingsService;
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String doGet(HttpServletRequest request, Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -70,7 +70,7 @@ public class ShareSettingsController {
         return "shareSettings";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         handleParameters(request);
 

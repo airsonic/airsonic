@@ -66,7 +66,7 @@ public class AvatarUploadController  {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         String username = securityService.getCurrentUsername(request);

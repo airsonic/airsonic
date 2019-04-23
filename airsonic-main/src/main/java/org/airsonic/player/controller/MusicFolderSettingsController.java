@@ -63,7 +63,7 @@ public class MusicFolderSettingsController {
     @Autowired
     private MediaFileDao mediaFileDao;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "musicFolderSettings";
     }
@@ -112,7 +112,7 @@ public class MusicFolderSettingsController {
         return musicFolders.stream().map(MusicFolderSettingsCommand.MusicFolderInfo::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {

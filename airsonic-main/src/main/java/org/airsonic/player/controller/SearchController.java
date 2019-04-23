@@ -58,7 +58,7 @@ public class SearchController {
     @Autowired
     private SearchService searchService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "search";
     }
@@ -68,7 +68,7 @@ public class SearchController {
         model.addAttribute("command",new SearchCommand());
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String onSubmit(HttpServletRequest request, HttpServletResponse response,@ModelAttribute("command") SearchCommand command, Model model)
             throws Exception {
 

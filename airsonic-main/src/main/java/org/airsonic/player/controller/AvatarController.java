@@ -58,7 +58,7 @@ public class AvatarController implements LastModified {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Avatar avatar = getAvatar(request);
 

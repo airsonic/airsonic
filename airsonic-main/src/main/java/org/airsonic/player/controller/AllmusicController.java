@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/allmusic")
 public class AllmusicController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView result = new ModelAndView();
         result.addObject("album", request.getParameter("album"));

@@ -82,7 +82,7 @@ public class StreamController {
     @Autowired
     private SearchService searchService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TransferStatus status = null;

@@ -49,7 +49,7 @@ public class SonosSettingsController {
     @Autowired
     private SonosService sonosService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String doGet(Model model) throws Exception {
 
         Map<String, Object> map = new HashMap<String, Object>();
@@ -61,7 +61,7 @@ public class SonosSettingsController {
         return "sonosSettings";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         handleParameters(request);
 

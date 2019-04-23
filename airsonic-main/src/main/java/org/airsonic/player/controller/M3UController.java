@@ -56,7 +56,7 @@ public class M3UController  {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType("audio/x-mpegurl");
         response.setCharacterEncoding(StringUtil.ENCODING_UTF8);

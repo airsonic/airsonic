@@ -42,8 +42,7 @@ public class AdvancedSettingsController {
     @Autowired
     private SettingsService settingsService;
 
-    // TODO replace with @GetMapping in Spring 4
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String formBackingObject(Model model) throws Exception {
         AdvancedSettingsCommand command = new AdvancedSettingsCommand();
         command.setDownloadLimit(String.valueOf(settingsService.getDownloadBitrateLimit()));
@@ -68,7 +67,7 @@ public class AdvancedSettingsController {
         return "advancedSettings";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String doSubmitAction(@ModelAttribute AdvancedSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         redirectAttributes.addFlashAttribute("settings_reload", false);
