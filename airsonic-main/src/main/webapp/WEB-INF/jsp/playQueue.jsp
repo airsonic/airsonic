@@ -467,6 +467,12 @@
         shuffleRadioEnabled = playQueue.shuffleRadioEnabled;
         internetRadioEnabled = playQueue.internetRadioEnabled;
 
+        // If an internet radio has no sources, display a message to the user.
+        if (internetRadioEnabled && songs.length == 0) {
+            top.main.$().toastmessage("showErrorToast", "<fmt:message key="playlist.toast.radioerror"/>");
+            onStop();
+        }
+
         if ($("#start")) {
             $("#start").toggle(!playQueue.stopEnabled);
             $("#stop").toggle(playQueue.stopEnabled);
