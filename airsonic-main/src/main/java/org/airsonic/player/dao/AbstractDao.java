@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,26 +60,14 @@ public class AbstractDao {
     }
 
     protected String questionMarks(String columns) {
-        int count = columns.split(", ").length;
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < count; i++) {
-            builder.append('?');
-            if (i < count - 1) {
-                builder.append(", ");
-            }
-        }
-        return builder.toString();
+       int numberOfColumns =  StringUtils.countMatches(columns, ",") + 1;
+       return StringUtils.repeat("?", ", ", numberOfColumns);
     }
 
     protected String prefix(String columns, String prefix) {
-        StringBuilder builder = new StringBuilder();
-        for (String s : columns.split(", ")) {
-            builder.append(prefix).append(".").append(s).append(",");
-        }
-        if (builder.length() > 0) {
-            builder.setLength(builder.length() - 1);
-        }
-        return builder.toString();
+        List<String> l = Arrays.asList(columns.split(", "));
+        l.replaceAll(s -> prefix + "." + s);
+        return String.join(", ", l);
     }
 
     protected int update(String sql, Object... args) {
