@@ -4,8 +4,6 @@ import org.airsonic.player.domain.Playlist;
 import org.airsonic.player.service.PlaylistService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -22,9 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/exportPlaylist")
 public class ExportPlayListController {
-
-
-    private static final Logger LOG = LoggerFactory.getLogger(ExportPlayListController.class);
 
     @Autowired
     private PlaylistService playlistService;
