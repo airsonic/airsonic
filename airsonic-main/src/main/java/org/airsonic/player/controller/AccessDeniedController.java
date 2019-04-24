@@ -21,7 +21,7 @@ public class AccessDeniedController {
 
     @RequestMapping(method = {RequestMethod.GET})
     public ModelAndView accessDenied(HttpServletRequest request, HttpServletResponse response) {
-        LOG.info("The IP {0} tried to access the forbidden url {1}.", request.getRemoteAddr(), request.getRequestURL())
+        LOG.info("The IP {0} tried to access the forbidden url {1}.", request.getRemoteAddr(), request.getRequestURL());
         return new ModelAndView("accessDenied");
     }
 
