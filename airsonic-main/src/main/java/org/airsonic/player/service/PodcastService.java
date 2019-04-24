@@ -151,7 +151,7 @@ public class PodcastService {
 
         scheduledRefresh = scheduledExecutor.scheduleAtFixedRate(task, initialDelayMillis, periodMillis, TimeUnit.MILLISECONDS);
         Date firstTime = new Date(System.currentTimeMillis() + initialDelayMillis);
-        LOG.info("Automatic Podcast update scheduled to run every {0} hour(s), starting at {1}.", hoursBewteen, firstTime);
+        LOG.info("Automatic Podcast update scheduled to run every {0} hour(s), starting at {1}.", hoursBetween, firstTime);
     }
 
     /**
