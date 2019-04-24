@@ -196,7 +196,7 @@ public class MediaScannerService {
                          lastScanned, albumCount, genres, true);
             }
 
-            LOG.info("Scanned media library with {0} entries.", scanCount,);
+            LOG.info("Scanned media library with {0} entries.", scanCount);
 
             LOG.info("Marking non-present files.");
             mediaFileDao.markNonPresent(lastScanned);
