@@ -622,7 +622,7 @@ public class MediaFileDao extends AbstractDao {
         Map<String, Object> args = new HashMap<>();
         args.put("type", MediaFile.MediaType.ALBUM.name());
         args.put("folders", MusicFolder.toPathList(musicFolders));
-        args.put("username", uername);
+        args.put("username", username);
         return namedQueryForInt("select count(*) from starred_media_file, media_file " +
                                 "where media_file.id = starred_media_file.media_file_id " +
                                 "and media_file.type = :type " +
