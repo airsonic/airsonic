@@ -84,7 +84,7 @@ public class PodcastReceiverAdminController {
     }
 
     private void download(int[] episodeIds) {
-        for (Integer episodeId : episodeIds) {
+        for (int episodeId : episodeIds) {
             PodcastEpisode episode = podcastService.getEpisode(episodeId, false);
             if (episode != null && episode.getUrl() != null &&
                 (episode.getStatus() == PodcastStatus.NEW ||
