@@ -16,7 +16,7 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.2.6</cxf.version>
+        <cxf.version>3.2.8</cxf.version>
         <jackson.version>2.9.8</jackson.version>
     </properties>
 

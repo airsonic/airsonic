@@ -2,7 +2,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <property name="curr_date_expr" value="current_timestamp" />
+    <property name="curr_date_expr" value="NULL" />
     <changeSet id="schema37_001" author="muff1nman">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from version where version = 13</sqlCheck>
@@ -50,7 +50,7 @@
         </preConditions>
         <addColumn tableName="music_folder">
             <column name="changed" type="datetime" defaultValueComputed="${curr_date_expr}">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
         </addColumn>
     </changeSet>
@@ -62,7 +62,7 @@
         </preConditions>
         <addColumn tableName="internet_radio">
             <column name="changed" type="datetime" defaultValueComputed="${curr_date_expr}">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
         </addColumn>
     </changeSet>
@@ -74,7 +74,7 @@
         </preConditions>
         <addColumn tableName="user_settings">
             <column name="changed" type="datetime" defaultValueComputed="${curr_date_expr}">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
         </addColumn>
     </changeSet>
