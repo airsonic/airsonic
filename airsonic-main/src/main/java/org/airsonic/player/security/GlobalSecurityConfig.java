@@ -33,6 +33,8 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
     static final String FAILURE_URL = "/login?error=1";
 
+    static final String DEVELOPMENT_REMEMBER_ME_KEY = "airsonic";
+
     @Autowired
     private SecurityService securityService;
 
@@ -125,6 +127,32 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             restAuthenticationFilter.setEventPublisher(eventPublisher);
             http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+            // Try to load the 'remember me' key.
+            //
+            // Note that using a fixed key compromises security as perfect
+            // forward secrecy is not guaranteed anymore.
+            //
+            // An external entity can then re-use our authentication cookies before
+            // the expiration time, or even, given enough time, recover the password
+            // from the MD5 hash.
+            //
+            // See: https://docs.spring.io/spring-security/site/docs/3.0.x/reference/remember-me.html
+
+            String rememberMeKey = settingsService.getRememberMeKey();
+            boolean development = settingsService.isDevelopmentMode();
+            if (StringUtils.isBlank(rememberMeKey) && !development) {
+                // ...if it is empty, generate a random key on startup (default).
+                logger.debug("Generating a new ephemeral 'remember me' key in a secure way.");
+                rememberMeKey = generateRememberMeKey();
+            } else if (StringUtils.isBlank(rememberMeKey) && development) {
+                // ...if we are in development mode, we can use a fixed key.
+                logger.warn("Using a fixed 'remember me' key because we're in development mode, this is INSECURE.");
+                rememberMeKey = DEVELOPMENT_REMEMBER_ME_KEY;
+            } else {
+                // ...otherwise, use the custom key directly.
+                logger.info("Using a fixed 'remember me' key from system properties, this is insecure.");
+            }
+
             http
                     .csrf()
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
@@ -169,7 +197,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(
                     "/login?logout")
-                    .and().rememberMe().key(generateRememberMeKey());
+                    .and().rememberMe().key(rememberMeKey);
         }
 
     }
