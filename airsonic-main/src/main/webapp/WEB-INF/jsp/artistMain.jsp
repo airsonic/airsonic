@@ -69,7 +69,10 @@
             if (artistInfo.artistBio && artistInfo.artistBio.biography) {
                 $("#artistBio").append(artistInfo.artistBio.biography);
                 if (artistInfo.artistBio.largeImageUrl) {
-                    $("#artistImage").attr("src", artistInfo.artistBio.largeImageUrl);
+                    $("#artistImage").attr({
+                          "src", artistInfo.artistBio.largeImageUrl,
+                          "class": "fancy"
+                    });
                     $("#artistImageZoom").attr("href", artistInfo.artistBio.largeImageUrl);
                     $("#artistImage").show();
                     $("#artistInfoTable").show();
