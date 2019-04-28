@@ -27,7 +27,7 @@
 
     <c:forEach items="${model.transcodings}" var="transcoding">
         <tr>
-            <td><input class="monospace" name="name[${transcoding.id}]" size="10" value="${transcoding.name}"/></td>
+            <td><input class="monospace" name="name[${transcoding.id}]" size="10" value="${fn:escapeXml(transcoding.name)}"/></td>
             <td><input class="monospace" name="sourceFormats[${transcoding.id}]" size="36" value="${transcoding.sourceFormats}"/></td>
             <td><input class="monospace" name="targetFormat[${transcoding.id}]" size="10" value="${transcoding.targetFormat}"/></td>
             <td><input class="monospace" name="step1[${transcoding.id}]" size="60" value="${transcoding.step1}"/></td>
@@ -41,7 +41,7 @@
     </tr>
 
     <tr>
-        <td><input class="monospace" name="name" size="10" placeholder="<fmt:message key="transcodingsettings.name"/>" value="${newTranscoding.name}"/></td>
+        <td><input class="monospace" name="name" size="10" placeholder="<fmt:message key="transcodingsettings.name"/>" value="${fn:escapeXml(newTranscoding.name)}"/></td>
         <td><input class="monospace" name="sourceFormats" size="36" placeholder="<fmt:message key="transcodingsettings.sourceformat"/>" value="${newTranscoding.sourceFormats}"/></td>
         <td><input class="monospace" name="targetFormat" size="10" placeholder="<fmt:message key="transcodingsettings.targetformat"/>" value="${newTranscoding.targetFormat}"/></td>
         <td><input class="monospace" name="step1" size="60" placeholder="<fmt:message key="transcodingsettings.step1"/>" value="${newTranscoding.step1}"/></td>
