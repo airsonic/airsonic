@@ -142,7 +142,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .antMatchers("/generalSettings*", "/advancedSettings*", "/userSettings*",
                             "/musicFolderSettings*", "/databaseSettings*", "/transcodeSettings*", "/rest/startScan*")
                     .hasRole("ADMIN")
-                    .antMatchers("/deletePlaylist*", "/savePlaylist*", "/db*")
+                    .antMatchers("/deletePlaylist*", "/savePlaylist*")
                     .hasRole("PLAYLIST")
                     .antMatchers("/download*")
                     .hasRole("DOWNLOAD")
