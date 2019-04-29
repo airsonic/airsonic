@@ -21,8 +21,9 @@
                 }
             }
 
-            $('.radio-play').on('click', function() {
-               top.playQueue.onPlayInternetRadio($(this).data("id"), 0);
+            $('.radio-play').on('click', function(evt) {
+                top.playQueue.onPlayInternetRadio($(this).data("id"), 0);
+                evt.preventDefault();
             });
         }
 
