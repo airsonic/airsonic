@@ -77,6 +77,11 @@ a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
     color: #FFFFFF;
 }
 
+/* Button colors */
+input[type="button"] {
+    color: #000000;
+}
+
 /* Link hover colour */
 a:hover, a:hover * {
     text-decoration: underline;
