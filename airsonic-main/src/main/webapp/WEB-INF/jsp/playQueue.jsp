@@ -504,7 +504,6 @@
         $("select#moreActions #removeSelected").prop("disabled", internetRadioEnabled);
         $("select#moreActions #download").prop("disabled", internetRadioEnabled);
         $("select#moreActions #appendPlaylist").prop("disabled", internetRadioEnabled);
-        $("#clearQueue").toggleLink(!internetRadioEnabled);
         $("#shuffleQueue").toggleLink(!internetRadioEnabled);
         $("#repeatQueue").toggleLink(!internetRadioEnabled);
         $("#undoQueue").toggleLink(!internetRadioEnabled);

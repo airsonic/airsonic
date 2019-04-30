@@ -226,6 +226,8 @@ public class PlayQueue {
     public synchronized void clear() {
         makeBackup();
         files.clear();
+        setRandomSearchCriteria(null);
+        setInternetRadio(null);
         index = 0;
     }
 
