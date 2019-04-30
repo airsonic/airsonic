@@ -37,7 +37,7 @@ public class InternetRadioService {
     /**
      * A list of cached source URLs for remote playlists.
      */
-    private Map<Integer, List<InternetRadioSource>> cachedSources;
+    private final Map<Integer, List<InternetRadioSource>> cachedSources;
 
     /**
      * Generic exception class for playlists.
