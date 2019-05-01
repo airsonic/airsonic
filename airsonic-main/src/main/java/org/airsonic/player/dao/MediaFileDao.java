@@ -198,6 +198,7 @@ public class MediaFileDao extends AbstractDao {
 
         Integer id = queryForInt("select id from media_file where path=?", null, file.getPath());
         if (id == null) {
+          logger.error("Something went wrong during the creation/update of {}", file.getPath());
           return;
         }
         file.setId(id);
