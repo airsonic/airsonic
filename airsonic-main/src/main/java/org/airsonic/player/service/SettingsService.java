@@ -287,7 +287,7 @@ public class SettingsService {
     }
 
     public static String getDefaultJDBCUrl() {
-        return "jdbc:hsqldb:file:" + getAirsonicHome().getPath() + "/db/" + getFileSystemAppName();
+        return "jdbc:hsqldb:file:" + getAirsonicHome().getPath() + "/db/" + getFileSystemAppName() + ";sql.enforce_size=false";
     }
 
     public static int getDefaultUPnPPort() {
