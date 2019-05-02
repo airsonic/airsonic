@@ -120,7 +120,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         assertUserEquals(user, newUser);
 
         assertNull("Error in getUserByName().", userDao.getUserByName("sindre2", true));
-        assertNull("Error in getUserByName().", userDao.getUserByName("sindre ", true));
+        assertNotNull("Error in getUserByName().", userDao.getUserByName("sindre ", true));
         assertNull("Error in getUserByName().", userDao.getUserByName("bente", true));
         assertNull("Error in getUserByName().", userDao.getUserByName("", true));
         assertNull("Error in getUserByName().", userDao.getUserByName(null, true));
