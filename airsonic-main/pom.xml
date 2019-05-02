@@ -223,9 +223,9 @@
         </dependency>
 
         <dependency>
-            <groupId>hsqldb</groupId>
+            <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.7</version>
+            <version>2.5.0</version>
             <scope>runtime</scope>
         </dependency>
 
