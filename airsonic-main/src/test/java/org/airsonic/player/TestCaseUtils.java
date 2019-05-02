@@ -75,7 +75,7 @@ public class TestCaseUtils {
         List<String> tableNames = daoHelper.getJdbcTemplate().queryForList("" +
                       "select table_name " +
                       "from information_schema.system_tables " +
-                      "where table_name not like 'SYSTEM%'"
+                      "where table_type <> 'SYSTEM TABLE'"
               , String.class);
 
         return tableNames.stream()
