@@ -7,8 +7,21 @@ script:
 
 matrix:
   include:
-  - jdk: oraclejdk8
-  - jdk: oraclejdk9
+    - name: coverity
+      script:
+        - echo "coverity scan script"
+      install:
+        - echo "coverity scan install"
+      before_install:
+        - echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+      addons:
+        coverity_scan:
+          project:
+            name: "airsonic/airsonic"
+            description: "A Free and Open Source community driven media server"
+          build_command: "mvn -DskipTests=true clean package"
+    - jdk: oraclejdk8
+    - jdk: oraclejdk9
   allow_failures:
-  - jdk: oraclejdk9
+    - jdk: oraclejdk9
   
