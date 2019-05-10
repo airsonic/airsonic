@@ -22,6 +22,8 @@ matrix:
         build_command: mvn -B -q clean package -DskipTests=true
         branch_pattern: master
   - jdk: openjdk8
+    after_success:
+      - bash <(curl -s https://codecov.io/bash)
   - jdk: oraclejdk9
     before_install:
         # The OpenJDK9's CA bundle is outdated, so we're using the system's ones.
