@@ -1,7 +1,8 @@
 package org.airsonic.player.monitor;
 
-import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
+
 import org.airsonic.player.service.ApacheCommonsConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class MetricsManager {
 
             // Start a Metrics JMX reporter
             reporter = JmxReporter.forRegistry(metrics)
-                    .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                    .convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MILLISECONDS)
                     .build();
             reporter.start();

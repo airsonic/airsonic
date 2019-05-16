@@ -58,6 +58,10 @@
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
         </dependency>
+				<dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-jmx</artifactId>
+        </dependency>
         <!-- END Metrics -->
 
         <!-- Spring -->
@@ -423,6 +427,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
+            <version>1.9.3</version>
             <!-- commons-configuration2 requires during runtime -->
             <scope>runtime</scope>
         </dependency>
@@ -442,6 +447,12 @@
             <groupId>com.github.muff1nman.chameleon</groupId>
             <artifactId>core</artifactId>
             <version>${chameleon.version}</version>
+						<exclusions>
+							<exclusion>
+								<groupId>commons-logging</groupId>
+								<artifactId>commons-logging</artifactId>
+							</exclusion>
+						</exclusions>
         </dependency>
 
         <dependency>
@@ -449,14 +460,26 @@
             <artifactId>playlist-xspf</artifactId>
             <version>${chameleon.version}</version>
             <scope>compile</scope>
+						<exclusions>
+							<exclusion>
+								<groupId>commons-logging</groupId>
+								<artifactId>commons-logging</artifactId>
+							</exclusion>
+						</exclusions>
         </dependency>
 
         <dependency>
             <groupId>com.github.muff1nman.chameleon</groupId>
             <artifactId>playlist-all</artifactId>
             <version>${chameleon.version}</version>
-            <scope>runtime</scope>
-        </dependency>
+						<scope>runtime</scope>
+						<exclusions>
+							<exclusion>
+								<groupId>commons-logging</groupId>
+								<artifactId>commons-logging</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
 
         <dependency>
             <groupId>javax.validation</groupId>
@@ -489,6 +512,12 @@
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>apache-jsp</artifactId>
             <scope>provided</scope>
+						<exclusions>
+							<exclusion>
+								<groupId>org.eclipse.jdt</groupId>
+								<artifactId>ecj</artifactId>
+							</exclusion>
+						</exclusions>
         </dependency>
 
         <!-- Provided by the servlet container, but found by dependency:analyze even if used via reflection -->
@@ -538,19 +567,16 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.43</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>2.1.2</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
