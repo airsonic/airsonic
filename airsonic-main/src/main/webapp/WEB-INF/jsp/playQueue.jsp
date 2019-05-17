@@ -10,7 +10,7 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <%@ include file="playQueueCast.jsp" %>
+    <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
