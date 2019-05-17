@@ -2,90 +2,77 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
+    <%@ include file="jquery.jsp" %>
     <script type="text/javascript" src="<c:url value="/dwr/interface/coverArtService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/prototype.js"/>"></script>
 
     <script type="text/javascript" language="javascript">
-
         dwr.engine.setErrorHandler(function() {
-            $("wait").hide();
+            $("#wait").hide();
             dwr.util.setValue("errorDetails", "Sorry, an error occurred while searching for cover art.");
-            $("errorDetails").show();
+            $("#errorDetails").show();
         });
 
         function setImage(imageUrl) {
-            $("wait").show();
-            $("result").hide();
-            $("success").hide();
-            $("error").hide();
-            $("errorDetails").hide();
-            $("noImagesFound").hide();
+            $("#wait").show();
+            $("#result").hide();
+            $("#success").hide();
+            $("#error").hide();
+            $("#errorDetails").hide();
+            $("#noImagesFound").hide();
             coverArtService.setCoverArtImage(${model.id}, imageUrl, setImageComplete);
         }
 
         function setImageComplete(errorDetails) {
-            $("wait").hide();
+            $("#wait").hide();
             if (errorDetails != null) {
                 dwr.util.setValue("errorDetails", errorDetails, { escapeHtml:false });
-                $("error").show();
-                $("errorDetails").show();
+                $("#error").show();
+                $("#errorDetails").show();
             } else {
-                $("success").show();
+                $("#success").show();
             }
         }
 
         function searchComplete(searchResults) {
-            $("wait").hide();
+            $("#wait").hide();
 
             if (searchResults.length > 0) {
-
-                var images = $("images");
-                images.innerHTML = "";
+                var images = $("#images");
+                images.empty();
 
                 for (var i = 0; i < searchResults.length; i++) {
                     var result = searchResults[i];
-                    var node = $("template").cloneNode(true);
+                    var node = $("#template").clone();
 
-                    var link = node.getElementsByClassName("search-result-link")[0];
-                    link.href = "javascript:setImage('" + result.imageUrl + "');";
-
-                    var thumbnail = node.getElementsByClassName("search-result-image")[0];
-                    thumbnail.src = result.imageUrl;
-
-                    var title = node.getElementsByClassName("search-result-artist")[0];
-                    title.innerHTML = result.artist;
-
-                    var dimension = node.getElementsByClassName("search-result-album")[0];
-                    dimension.innerHTML = result.album;
+                    node.find(".search-result-link").attr("href", "javascript:setImage('" + result.imageUrl + "');");
+                    node.find(".search-result-image").attr("src", result.imageUrl);
+                    node.find(".search-result-artist").text(result.artist);
+                    node.find(".search-result-album").text(result.album);
 
                     node.show();
-                    images.appendChild(node);
+                    node.appendTo(images);
                 }
 
-                $("result").show();
-
-
+                $("#result").show();
             } else {
-                $("noImagesFound").show();
+                $("#noImagesFound").show();
             }
         }
 
         function search() {
-
-            $("wait").show();
-            $("result").hide();
-            $("success").hide();
-            $("error").hide();
-            $("errorDetails").hide();
-            $("noImagesFound").hide();
+            $("#wait").show();
+            $("#result").hide();
+            $("#success").hide();
+            $("#error").hide();
+            $("#errorDetails").hide();
+            $("#noImagesFound").hide();
 
             var artist = dwr.util.getValue("artist");
             var album = dwr.util.getValue("album");
             coverArtService.searchCoverArt(artist, album, searchComplete);
         }
-
     </script>
 </head>
 <body class="mainframe bgcolor1" onload="search()">
