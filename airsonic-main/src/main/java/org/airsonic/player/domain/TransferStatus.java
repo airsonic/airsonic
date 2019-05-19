@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import org.airsonic.player.util.BoundedList;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
 
 import java.io.File;
 
@@ -76,7 +76,7 @@ public class TransferStatus {
         if (history.isEmpty()) {
             history.add(new Sample(bytesTransfered, now));
         } else {
-            Sample lastSample = history.getLast();
+            Sample lastSample = (Sample) history.get();
             if (force || now - lastSample.getTimestamp() > TransferStatus.SAMPLE_INTERVAL_MILLIS) {
                 history.add(new Sample(bytesTransfered, now));
             }
@@ -92,7 +92,7 @@ public class TransferStatus {
         if (history.isEmpty()) {
             return 0L;
         }
-        return System.currentTimeMillis() - history.getLast().timestamp;
+        return System.currentTimeMillis() - ((Sample)history.get()).timestamp;
     }
 
     /**
@@ -288,8 +288,10 @@ public class TransferStatus {
 
     /**
      * Contains recent history of samples.
+     *
+     * TODO: Use a CircularFifoQueue once we move to Apache Commons 4
      */
-    public static class SampleHistory extends BoundedList<Sample> {
+    public static class SampleHistory extends CircularFifoBuffer {
 
         public SampleHistory() {
             super(HISTORY_LENGTH);
