@@ -224,7 +224,7 @@ public class InternetRadioService {
      * @param maxRedirects maximum number of redirects, or 0 if unlimited
      * @return the remote playlist data
      */
-    private SpecificPlaylist retrievePlaylist(URL url, long maxByteSize, int maxRedirects) throws IOException, PlaylistException {
+    protected SpecificPlaylist retrievePlaylist(URL url, long maxByteSize, int maxRedirects) throws IOException, PlaylistException {
 
         SpecificPlaylist playlist;
         HttpURLConnection urlConnection = connectToURLWithRedirects(url, maxRedirects);
@@ -252,7 +252,7 @@ public class InternetRadioService {
      * @param maxRedirects maximum number of redirects, or 0 if unlimited
      * @return an open connection
      */
-    private HttpURLConnection connectToURLWithRedirects(URL url, int maxRedirects) throws IOException, PlaylistException {
+    protected HttpURLConnection connectToURLWithRedirects(URL url, int maxRedirects) throws IOException, PlaylistException {
 
         int redirectCount = 0;
         URL currentURL = url;
@@ -269,7 +269,7 @@ public class InternetRadioService {
             redirectCount += 1;
             if (maxRedirects > 0 && redirectCount > maxRedirects) {
                 connection.disconnect();
-                throw new PlaylistHasTooManyRedirects(String.format("Too many redirects ({0}) for URL {1}", redirectCount, url));
+                throw new PlaylistHasTooManyRedirects(String.format("Too many redirects (%d) for URL %s", redirectCount, url));
             }
 
             // Reconnect to the new URL.
@@ -288,7 +288,7 @@ public class InternetRadioService {
      * @param url the remote URL
      * @return an open connection
      */
-    private HttpURLConnection connectToURL(URL url) throws IOException {
+    protected HttpURLConnection connectToURL(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         urlConnection.setAllowUserInteraction(false);
         urlConnection.setConnectTimeout(10000);
