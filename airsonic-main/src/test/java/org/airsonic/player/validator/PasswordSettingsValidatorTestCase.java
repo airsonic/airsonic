@@ -17,30 +17,30 @@ public class PasswordSettingsValidatorTestCase extends TestCase {
         psc.setPassword("1234");
     }
 
-    public void testValidateEmptyPassword() {
-        psc.setPassword("");
-
+    private Errors validatePassword(){
         PasswordSettingsValidator psv = new PasswordSettingsValidator();
         Errors errors = new BeanPropertyBindingResult(psc, "psv");
         psv.validate(psc, errors);
+        return  errors;
+    }
+
+    public void testValidateEmptyPassword() {
+        psc.setPassword("");
+        Errors errors = this.validatePassword();
         assertTrue(errors.hasErrors());
     }
 
     public void testValidateDifferentPasswords() {
         psc.setConfirmPassword("5678");
 
-        PasswordSettingsValidator psv = new PasswordSettingsValidator();
-        Errors errors = new BeanPropertyBindingResult(psc, "psv");
-        psv.validate(psc, errors);
+        Errors errors = this.validatePassword();
         assertTrue(errors.hasErrors());
     }
 
     public void testValidateEverythingOK() {
         psc.setConfirmPassword("1234");
 
-        PasswordSettingsValidator psv = new PasswordSettingsValidator();
-        Errors errors = new BeanPropertyBindingResult(psc, "psv");
-        psv.validate(psc, errors);
+        Errors errors = this.validatePassword();
         assertFalse(errors.hasErrors());
     }
 }
