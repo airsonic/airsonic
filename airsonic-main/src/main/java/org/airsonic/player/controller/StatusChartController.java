@@ -39,7 +39,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.awt.*;
 import java.util.Collections;
 import java.util.Date;
@@ -87,10 +86,10 @@ public class StatusChartController extends AbstractChartController {
 
         if (!history.isEmpty()) {
 
-            TransferStatus.Sample previous = history.get(0);
+            TransferStatus.Sample previous = (TransferStatus.Sample) history.get();
 
-            for (int i = 1; i < history.size(); i++) {
-                TransferStatus.Sample sample = history.get(i);
+            for (Object s : history) {
+                TransferStatus.Sample sample = (TransferStatus.Sample) s;
 
                 long elapsedTimeMilis = sample.getTimestamp() - previous.getTimestamp();
                 long bytesStreamed = Math.max(0L, sample.getBytesTransfered() - previous.getBytesTransfered());
