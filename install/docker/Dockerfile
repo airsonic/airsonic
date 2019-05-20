@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.9
 
 LABEL description="Airsonic is a free, web-based media streamer, providing ubiquitious access to your music." \
       url="https://github.com/airsonic/airsonic"
