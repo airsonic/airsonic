@@ -47,9 +47,9 @@ Changes:
 
 
 Security:
-  * Generate new passwords in a secure way
+  * CVE-2019-10908 Generate new passwords in a secure way
   * Fix a xss and clean up some js
-  * Use a random key to "encrypt" the remember-me cookie's value
+  * CVE-2019-10907 Use a random key to "encrypt" the remember-me cookie's value
   * Use https for external links
   * Fix a bunch of dom-based xss
   * Add a noopener and noreferrer to external urls
