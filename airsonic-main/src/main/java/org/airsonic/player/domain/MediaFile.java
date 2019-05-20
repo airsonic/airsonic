@@ -19,14 +19,14 @@
  */
 package org.airsonic.player.domain;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A media file (audio, video or directory) with an assortment of its meta data.
@@ -459,16 +459,11 @@ public class MediaFile {
     }
 
     public static List<Integer> toIdList(List<MediaFile> from) {
-        return Lists.transform(from, toId());
+        return from.stream().map(toId()).collect(Collectors.toList());
     }
 
     public static Function<MediaFile, Integer> toId() {
-        return new Function<MediaFile, Integer>() {
-            @Override
-            public Integer apply(MediaFile from) {
-                return from.getId();
-            }
-        };
+        return MediaFile::getId;
     }
 
     public static enum MediaType {

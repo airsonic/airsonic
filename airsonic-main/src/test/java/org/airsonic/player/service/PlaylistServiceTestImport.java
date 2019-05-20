@@ -1,6 +1,5 @@
 package org.airsonic.player.service;
 
-import com.google.common.collect.Lists;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.dao.PlaylistDao;
 import org.airsonic.player.domain.MediaFile;
@@ -25,6 +24,7 @@ import org.mockito.stubbing.Answer;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -72,7 +72,7 @@ public class PlaylistServiceTestImport {
                 securityService,
                 settingsService,
                 Collections.emptyList(),
-                Lists.newArrayList(defaultPlaylistImportHandler));
+                Arrays.asList(defaultPlaylistImportHandler));
 
     }
 

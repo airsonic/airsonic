@@ -1,10 +1,9 @@
 package org.airsonic.player.domain;
 
-import com.google.common.base.Function;
-
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 public class MediaFileWithUrlInfo {
 

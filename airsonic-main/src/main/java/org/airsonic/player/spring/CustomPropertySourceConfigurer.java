@@ -1,6 +1,5 @@
 package org.airsonic.player.spring;
 
-import com.google.common.collect.Lists;
 import org.airsonic.player.service.ApacheCommonsConfigurationService;
 import org.apache.commons.configuration2.ImmutableConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -8,6 +7,7 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.env.PropertySource;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class CustomPropertySourceConfigurer implements
@@ -37,7 +37,7 @@ public class CustomPropertySourceConfigurer implements
             dataSourceConfigType = DataSourceConfigType.LEGACY;
         }
         String dataSourceTypeProfile = StringUtils.lowerCase(dataSourceConfigType.name());
-        List<String> existingProfiles = Lists.newArrayList(ctx.getEnvironment().getActiveProfiles());
+        List<String> existingProfiles = Arrays.asList(ctx.getEnvironment().getActiveProfiles());
         existingProfiles.add(dataSourceTypeProfile);
         ctx.getEnvironment().setActiveProfiles(existingProfiles.toArray(new String[0]));
     }

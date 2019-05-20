@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.service.upnp;
 
-import com.google.common.collect.Lists;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.Player;
 import org.airsonic.player.service.JWTSecurityService;
@@ -40,6 +39,8 @@ import org.seamless.util.MimeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Arrays;
+
 /**
  * @author Sindre Mehus
  * @version $Id: TagBasedContentDirectory.java 3739 2013-12-03 11:55:01Z sindre_mehus $
@@ -58,7 +59,7 @@ public abstract class CustomContentDirectory extends AbstractContentDirectorySer
     protected JWTSecurityService jwtSecurityService;
 
     public CustomContentDirectory() {
-        super(Lists.newArrayList("*"), Lists.newArrayList());
+        super(Arrays.asList("*"), Arrays.asList());
     }
 
     protected Res createResourceForSong(MediaFile song) {

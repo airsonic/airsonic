@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.service;
 
-import com.google.common.collect.Lists;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.domain.*;
@@ -266,7 +265,7 @@ public class SearchService {
             query.add(new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])), BooleanClause.Occur.MUST);
 
             TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
-            List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
+            List<ScoreDoc> scoreDocs = Arrays.asList(topDocs.scoreDocs);
             Random random = new Random(System.currentTimeMillis());
 
             while (!scoreDocs.isEmpty() && result.size() < criteria.getCount()) {
@@ -314,7 +313,7 @@ public class SearchService {
             Query query = new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
 
             TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
-            List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
+            List<ScoreDoc> scoreDocs = Arrays.asList(topDocs.scoreDocs);
             Random random = new Random(System.currentTimeMillis());
 
             while (!scoreDocs.isEmpty() && result.size() < count) {
@@ -357,7 +356,7 @@ public class SearchService {
             }
             Query query = new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
             TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
-            List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
+            List<ScoreDoc> scoreDocs = Arrays.asList(topDocs.scoreDocs);
             Random random = new Random(System.currentTimeMillis());
 
             while (!scoreDocs.isEmpty() && result.size() < count) {
