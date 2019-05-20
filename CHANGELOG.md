@@ -3,6 +3,58 @@
 # airsonic/airsonic
 # -->
 
+## v10.3.0 - ?
+
+Fixes:
+  * Fix a javascript null-deref occuring when localstorage isn't available/supported by the browser
+  * Fix StringIndexOutOfBounds errors thrown by DWR/YUI
+  * Fix a small resource leak
+  * Fix #611 Add support for Java 9 and greater
+  * Fix typo in anonymous user name (#663)
+
+
+Changes:
+  * Maven Dependency Updates
+  * HSQL: Checkpoint/defrag/shutdown optimizations
+  * HSQL: Log tweaks
+  * Remove momentjs, pngfix
+  * Codebase modernization
+  * Systemd unit hardening
+  * Remove the external fonts usage
+  * Update mediaelement from 4.1.1 to 4.2.9
+  * Remove script.aculo.us dependency
+  * Add description and viewport meta tags
+  * Javascript cleanup/optimizations
+  * Remove Google+ relics
+  * Remove jquery-contextmenu since it's not used anywhere
+  * Remove webfx stuff, since they're apparently not used
+  * Remove WAP-related stuff
+  * Do not show stack trace for client-side connection errors
+  * Show more informative messages while streaming
+  * Replace latin encoding with utf-8
+  * Don't autocomplete the password field
+  * Clicking on the logo now redirects to home instead of about
+  * Remove mentions of subsonic premium
+  * Add a permission check for the podcast folder
+  * Replace the double-mustache anti-pattern
+  * Remove the /db page
+  * Bump jQuery/jquery-ui to the latest versions
+  * Replace the flash player with medialement.js for the shared media
+  * Add system properties for persisting the 'remember me' key
+  * Replace the usage of prototypejs with jquery in changeCoverArt.jsp
+  * Add the required keyword to some forms
+
+
+Security:
+  * Generate new passwords in a secure way
+  * Fix a xss and clean up some js
+  * Use a random key to "encrypt" the remember-me cookie's value
+  * Use https for external links
+  * Fix a bunch of dom-based xss
+  * Add a noopener and noreferrer to external urls
+  * Avoid logging sensitive URL parameters in the Subsonic API
+  * Fix various minor issues found by LGTM
+
 ## v10.2.1 - 18 Feb 2019
 
 Security:
