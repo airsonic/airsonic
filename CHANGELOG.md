@@ -43,6 +43,7 @@ Changes:
   * Add system properties for persisting the 'remember me' key
   * Replace the usage of prototypejs with jquery in changeCoverArt.jsp
   * Add the required keyword to some forms
+  * Update docker base image to alpine 3.9
 
 
 Security:
