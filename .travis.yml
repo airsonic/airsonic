@@ -9,6 +9,5 @@ matrix:
   include:
   - jdk: oraclejdk8
   - jdk: oraclejdk9
-  allow_failures:
-  - jdk: oraclejdk9
+  - jdk: oraclejdk11
   
