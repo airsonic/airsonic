@@ -3,6 +3,14 @@
 # airsonic/airsonic
 # -->
 
+## v10.3.1 - 21 May 2019
+
+Fixes:
+  * Fix utils.js naming issue
+
+Security:
+  * CVE-2019-12086 - bump jackson version
+
 ## v10.3.0 - 20 May 2019
 
 Fixes:
