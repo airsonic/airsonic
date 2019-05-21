@@ -3,7 +3,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
