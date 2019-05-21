@@ -3,7 +3,7 @@
 # airsonic/airsonic
 # -->
 
-## v10.3.0 - ?
+## v10.3.0 - 20 May 2019
 
 Fixes:
   * Fix a javascript null-deref occuring when localstorage isn't available/supported by the browser
