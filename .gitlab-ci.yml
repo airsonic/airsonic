@@ -1,3 +1,7 @@
+stages:
+  - test
+  - build
+
 include:
   template: Dependency-Scanning.gitlab-ci.yml
 
@@ -26,30 +30,45 @@ cache:
   paths:
     - .m2/repository
 
-# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
-# Because some enforcer rules might check dependency convergence and class duplications
-# we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
-.validate: &validate
-  stage: build
-  script:
-    - 'mvn $MAVEN_CLI_OPTS test-compile'
-
 # For merge requests do not `deploy` but only run `verify`.
 # See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 .verify: &verify
   stage: test
   script:
-    - 'mvn $MAVEN_CLI_OPTS verify -P integration-test'
+    - mvn ${MAVEN_CLI_OPTS} verify -P integration-test
   except:
     - master
 
-# Validate merge requests using JDK8
-validate:jdk8:
-  <<: *validate
-  image: maven:3.3.9-jdk-8
+# This will only validate and compile stuff and run e.g. maven-enforcer-plugin.
+# Because some enforcer rules might check dependency convergence and class duplications
+# we use `test-compile` here instead of `validate`, so the correct classpath is picked up.
+.validate: &validate
+  stage: test
+  script:
+    - mvn $MAVEN_CLI_OPTS test-compile
+
+# Build the war and store it for future downloads.
+.build: &build
+  stage: build
+  script:
+    - mvn $MAVEN_CLI_OPTS package
+  artifacts:
+    name: "airsonic_${CI_JOB_ID}_${CI_COMMIT_SHORT_SHA}"
+    paths:
+      - airsonic-main/target/airsonic.war
+    expire_in: 1 month
 
 # Verify merge requests using JDK8
 verify:jdk8:
   <<: *verify
   image: maven:3.3.9-jdk-8
 
+# Validate using JDK8
+validate:jdk8:
+  <<: *validate
+  image: maven:3.3.9-jdk-8
+
+# Build using JDK8
+build:jdk8:
+  <<: *build
+  image: maven:3.3.9-jdk-8
