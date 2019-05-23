@@ -41,6 +41,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -314,6 +315,7 @@ public class StreamController  {
         return duration * (long)maxBitRate * 1000L / 8L;
     }
 
+    @Nullable
     private HttpRange getRange(HttpServletRequest request, MediaFile file) {
 
         // First, look for "Range" HTTP header.
@@ -332,6 +334,7 @@ public class StreamController  {
         return null;
     }
 
+    @Nullable
     private HttpRange parseAndConvertOffsetSeconds(String offsetSeconds, MediaFile file) {
         if (offsetSeconds == null) {
             return null;
