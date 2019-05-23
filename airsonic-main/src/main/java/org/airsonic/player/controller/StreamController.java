@@ -153,28 +153,45 @@ public class StreamController {
                 playQueue.addFiles(true, file);
                 player.setPlayQueue(playQueue);
 
-                if (settingsService.isEnableSeek() && !file.isVideo()) {
-                    response.setIntHeader("ETag", file.getId());
-                    response.setHeader("Accept-Ranges", "bytes");
-                }
-
                 TranscodingService.Parameters parameters = transcodingService.getParameters(file, player, maxBitRate,
                         preferredTargetFormat, null);
-                long fileLength = getFileLength(parameters);
                 boolean isConversion = parameters.isDownsample() || parameters.isTranscode();
                 boolean estimateContentLength = ServletRequestUtils.getBooleanParameter(request,
                         "estimateContentLength", false);
                 boolean isHls = ServletRequestUtils.getBooleanParameter(request, "hls", false);
 
-                range = getRange(request, file);
-                if (settingsService.isEnableSeek() && range != null && !file.isVideo()) {
-                    LOG.info("{}: Got HTTP range: {}", request.getRemoteAddr(), range);
-                    response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-                    Util.setContentLength(response, range.isClosed() ? range.size() : fileLength - range.getFirstBytePos());
-                    long lastBytePos = range.getLastBytePos() != null ? range.getLastBytePos() : fileLength - 1;
-                    response.setHeader("Content-Range", "bytes " + range.getFirstBytePos() + "-" + lastBytePos + "/" + fileLength);
-                } else if (!isHls && (!isConversion || estimateContentLength)) {
-                    Util.setContentLength(response, fileLength);
+                // Wrangle response length and ranges.
+                //
+                // Support ranges as long as we're not transcoding; video is always assumed to transcode
+                if (isConversion || file.isVideo()) {
+                    // Use chunked transfer; do not accept range requests
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    response.setHeader("Accept-Ranges", "none");
+                } else {
+                    // Not transcoding, partial content permitted because we know the final size
+                    long contentLength;
+
+                    // If range was requested, respond in kind
+                    range = getRange(request, file);
+                    if (range != null) {
+                        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                        response.setHeader("Accept-Ranges", "bytes");
+
+                        // Both ends are inclusive
+                        long startByte = range.getFirstBytePos();
+                        long endByte = range.isClosed() ? range.getLastBytePos() : file.getFileSize() - 1;
+
+                        response.setHeader("Content-Range",
+                                String.format("bytes %d-%d/%d", startByte, endByte, file.getFileSize()));
+                        contentLength = endByte + 1 - startByte;
+                    } else {
+                        // No range was requested, give back the whole file
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        contentLength = file.getFileSize();
+                    }
+
+                    response.setIntHeader("ETag", file.getId());
+                    Util.setContentLength(response, contentLength);
                 }
 
                 // Set content type of response
