@@ -55,7 +55,8 @@ public class RangeOutputStream extends FilterOutputStream {
      * @return The possibly wrapped output stream.
      */
     public static OutputStream wrap(OutputStream out, HttpRange range) {
-        if (range == null) {
+        // Skip filtering if there's no range or it represents the entire stream.
+        if (range == null || (range.getFirstBytePos() == 0 && !range.isClosed())) {
             return out;
         }
         return new RangeOutputStream(out, range);
