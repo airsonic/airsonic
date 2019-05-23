@@ -53,14 +53,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A controller which streams the content of a {@link PlayQueue} to a remote
- * {@link Player}.
+ * A controller which streams the content of a {@link PlayQueue} to a remote {@link Player}.
  *
  * @author Sindre Mehus
  */
 @Controller
 @RequestMapping(value = {"/stream/**", "/ext/stream/**"})
-public class StreamController  {
+public class StreamController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StreamController.class);
 
@@ -95,7 +94,8 @@ public class StreamController  {
         try {
 
             if (!(authentication instanceof JWTAuthenticationToken) && !user.isStreamRole()) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Streaming is forbidden for user " + user.getUsername());
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                        "Streaming is forbidden for user " + user.getUsername());
                 return;
             }
 
@@ -133,9 +133,10 @@ public class StreamController  {
 
             if (isSingleFile) {
 
-                if (!(authentication instanceof JWTAuthenticationToken) && !securityService.isFolderAccessAllowed(file, user.getUsername())) {
+                if (!(authentication instanceof JWTAuthenticationToken) && !securityService.isFolderAccessAllowed(file,
+                        user.getUsername())) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                                       "Access to file " + file.getId() + " is forbidden for user " + user.getUsername());
+                            "Access to file " + file.getId() + " is forbidden for user " + user.getUsername());
                     return;
                 }
 
@@ -157,10 +158,12 @@ public class StreamController  {
                     response.setHeader("Accept-Ranges", "bytes");
                 }
 
-                TranscodingService.Parameters parameters = transcodingService.getParameters(file, player, maxBitRate, preferredTargetFormat, null);
+                TranscodingService.Parameters parameters = transcodingService.getParameters(file, player, maxBitRate,
+                        preferredTargetFormat, null);
                 long fileLength = getFileLength(parameters);
                 boolean isConversion = parameters.isDownsample() || parameters.isTranscode();
-                boolean estimateContentLength = ServletRequestUtils.getBooleanParameter(request, "estimateContentLength", false);
+                boolean estimateContentLength = ServletRequestUtils.getBooleanParameter(request,
+                        "estimateContentLength", false);
                 boolean isHls = ServletRequestUtils.getBooleanParameter(request, "hls", false);
 
                 range = getRange(request, file);
@@ -174,6 +177,7 @@ public class StreamController  {
                     Util.setContentLength(response, fileLength);
                 }
 
+                // Set content type of response
                 if (isHls) {
                     response.setContentType(StringUtil.getMimeType("ts")); // HLS is always MPEG TS.
                 } else {
@@ -188,6 +192,7 @@ public class StreamController  {
                 }
             }
 
+            // All headers are set, stop if that's all the client requested.
             if (request.getMethod().equals("HEAD")) {
                 return;
             }
@@ -258,7 +263,10 @@ public class StreamController  {
             shouldCatch |= Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
             shouldCatch |= Util.isInstanceOfClassName(e, "org.eclipse.jetty.io.EofException");
             if (shouldCatch) {
-                LOG.info("{}: Client unexpectedly closed connection while loading {} ({})", request.getRemoteAddr(), Util.getAnonymizedURLForRequest(request), e.getCause().toString());
+                LOG.info("{}: Client unexpectedly closed connection while loading {} ({})",
+                        request.getRemoteAddr(),
+                        Util.getAnonymizedURLForRequest(request),
+                        e.getCause().toString());
                 return;
             }
 
@@ -358,12 +366,14 @@ public class StreamController  {
         }
     }
 
-    private VideoTranscodingSettings createVideoTranscodingSettings(MediaFile file, HttpServletRequest request) throws ServletRequestBindingException {
+    private VideoTranscodingSettings createVideoTranscodingSettings(MediaFile file, HttpServletRequest request)
+            throws ServletRequestBindingException {
         Integer existingWidth = file.getWidth();
         Integer existingHeight = file.getHeight();
         Integer maxBitRate = ServletRequestUtils.getIntParameter(request, "maxBitRate");
         int timeOffset = ServletRequestUtils.getIntParameter(request, "timeOffset", 0);
-        int defaultDuration = file.getDurationSeconds() == null ? Integer.MAX_VALUE : file.getDurationSeconds() - timeOffset;
+        int defaultDuration = file.getDurationSeconds() == null ? Integer.MAX_VALUE :
+                file.getDurationSeconds() - timeOffset;
         int duration = ServletRequestUtils.getIntParameter(request, "duration", defaultDuration);
         boolean hls = ServletRequestUtils.getBooleanParameter(request, "hls", false);
 
