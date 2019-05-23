@@ -208,49 +208,32 @@ public class StreamController {
 
             status = statusService.createStreamStatus(player);
 
-            in = new PlayQueueInputStream(player, status, maxBitRate, preferredTargetFormat, videoTranscodingSettings, transcodingService,
-                    audioScrobblerService, mediaFileService, searchService);
-            OutputStream out = RangeOutputStream.wrap(response.getOutputStream(), range);
+            in = new PlayQueueInputStream(player, status, maxBitRate, preferredTargetFormat, videoTranscodingSettings,
+                    transcodingService, audioScrobblerService, mediaFileService, searchService);
 
-            // Enabled SHOUTcast, if requested.
-            boolean isShoutCastRequested = "1".equals(request.getHeader("icy-metadata"));
-            if (isShoutCastRequested && !isSingleFile) {
-                response.setHeader("icy-metaint", "" + ShoutCastOutputStream.META_DATA_INTERVAL);
-                response.setHeader("icy-notice1", "This stream is served using Airsonic");
-                response.setHeader("icy-notice2", "Airsonic - Free media streamer");
-                response.setHeader("icy-name", "Airsonic");
-                response.setHeader("icy-genre", "Mixed");
-                response.setHeader("icy-url", "https://airsonic.github.io/");
-                out = new ShoutCastOutputStream(out, player.getPlayQueue(), settingsService);
-            }
+            try (OutputStream out = makeOutputStream(request, response, range, isSingleFile, player, settingsService)) {
+                final int BUFFER_SIZE = 2048;
+                byte[] buf = new byte[BUFFER_SIZE];
 
-            final int BUFFER_SIZE = 2048;
-            byte[] buf = new byte[BUFFER_SIZE];
-
-            while (true) {
-
-                // Check if stream has been terminated.
-                if (status.terminated()) {
-                    return;
-                }
-
-                if (player.getPlayQueue().getStatus() == PlayQueue.Status.STOPPED) {
-                    if (isPodcast || isSingleFile) {
-                        break;
-                    } else {
-                        sendDummy(buf, out);
-                    }
-                } else {
-
-                    int n = in.read(buf);
-                    if (n == -1) {
+                while (!status.terminated()) {
+                    if (player.getPlayQueue().getStatus() == PlayQueue.Status.STOPPED) {
                         if (isPodcast || isSingleFile) {
                             break;
                         } else {
                             sendDummy(buf, out);
                         }
                     } else {
-                        out.write(buf, 0, n);
+
+                        int n = in.read(buf);
+                        if (n == -1) {
+                            if (isPodcast || isSingleFile) {
+                                break;
+                            } else {
+                                sendDummy(buf, out);
+                            }
+                        } else {
+                            out.write(buf, 0, n);
+                        }
                     }
                 }
             }
@@ -281,6 +264,31 @@ public class StreamController {
             IOUtils.closeQuietly(in);
         }
         return;
+    }
+
+    /**
+     * Construct an appropriate output stream based on the request.
+     * <p>
+     * This is responsible for limiting the output to the given range (if not null) and injecting Shoutcast metadata
+     * into the stream if requested.
+     */
+    private OutputStream makeOutputStream(HttpServletRequest request, HttpServletResponse response, HttpRange range,
+                                          boolean isSingleFile, Player player, SettingsService settingsService)
+            throws IOException {
+        OutputStream out = RangeOutputStream.wrap(response.getOutputStream(), range);
+
+        // Enabled SHOUTcast, if requested.
+        boolean isShoutCastRequested = "1".equals(request.getHeader("icy-metadata"));
+        if (isShoutCastRequested && !isSingleFile) {
+            response.setHeader("icy-metaint", "" + ShoutCastOutputStream.META_DATA_INTERVAL);
+            response.setHeader("icy-notice1", "This stream is served using Airsonic");
+            response.setHeader("icy-notice2", "Airsonic - Free media streamer");
+            response.setHeader("icy-name", "Airsonic");
+            response.setHeader("icy-genre", "Mixed");
+            response.setHeader("icy-url", "https://airsonic.github.io/");
+            out = new ShoutCastOutputStream(out, player.getPlayQueue(), settingsService);
+        }
+        return out;
     }
 
     private void setContentDuration(HttpServletResponse response, MediaFile file) {
