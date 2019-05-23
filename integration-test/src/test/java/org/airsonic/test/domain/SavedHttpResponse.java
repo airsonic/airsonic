@@ -28,7 +28,7 @@ public class SavedHttpResponse  {
                 Objects.equals(header.getName(), name))
                 .collect(Collectors.toList());
         if(matchingHeaders.size() != 1) {
-            throw new RuntimeException("Did not find one matching header with name " + name);
+            return null;
         }
         return matchingHeaders.iterator().next();
     }
