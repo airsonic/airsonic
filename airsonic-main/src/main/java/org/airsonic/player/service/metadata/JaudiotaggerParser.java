@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.io.File;
 import java.util.SortedSet;
@@ -110,42 +111,42 @@ public class JaudiotaggerParser extends MetaDataParser {
                         audioFile.getTag().getFields().forEachRemaining(f -> {
                             switch (f.getId()) {
                                 case ID3v24Frames.FRAME_ID_ALBUM:
-                                    if (null == metaData.getAlbumName()) {
+                                    if (StringUtils.isBlank(metaData.getAlbumName())) {
                                         metaData.setAlbumName(f.toString());
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_TITLE:
-                                    if (null == metaData.getTitle()) {
+                                    if (StringUtils.isBlank(metaData.getTitle())) {
                                         metaData.setTitle(f.toString());
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_YEAR:
-                                    if (null == metaData.getYear()) {
+                                    if (ObjectUtils.isEmpty(metaData.getYear())) {
                                         metaData.setYear(parseYear(f.toString()));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_GENRE:
-                                    if (null == metaData.getGenre()) {
+                                    if (StringUtils.isBlank(metaData.getGenre())) {
                                         metaData.setGenre(mapGenre(f.toString()));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_SET:
-                                    if (null == metaData.getDiscNumber()) {
+                                    if (ObjectUtils.isEmpty(metaData.getDiscNumber())) {
                                         metaData.setDiscNumber(parseInteger(f.toString()));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_TRACK:
-                                    if (null == metaData.getTrackNumber()) {
+                                    if (ObjectUtils.isEmpty(metaData.getTrackNumber())) {
                                         metaData.setTrackNumber(parseTrackNumber(f.toString()));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_ARTIST:
-                                    if (null == metaData.getArtist()) {
+                                    if (StringUtils.isBlank(metaData.getArtist())) {
                                         metaData.setArtist(f.toString());
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_ACCOMPANIMENT:
-                                    if (null == metaData.getAlbumArtist()) {
+                                    if (StringUtils.isBlank(metaData.getAlbumArtist())) {
                                         metaData.setAlbumArtist(f.toString());
                                     }
                                     break;
