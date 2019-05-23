@@ -343,11 +343,8 @@ public class StreamController {
         // Second, look for "offsetSeconds" request parameter.
         String offsetSeconds = request.getParameter("offsetSeconds");
         range = parseAndConvertOffsetSeconds(offsetSeconds, file);
-        if (range != null) {
-            return range;
-        }
+        return range;
 
-        return null;
     }
 
     @Nullable
