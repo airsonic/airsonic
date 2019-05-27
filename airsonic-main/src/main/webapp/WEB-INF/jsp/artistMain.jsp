@@ -70,7 +70,7 @@
                 $("#artistBio").append(artistInfo.artistBio.biography);
                 if (artistInfo.artistBio.largeImageUrl) {
                     $("#artistImage").attr({
-                          "src", artistInfo.artistBio.largeImageUrl,
+                          "src": artistInfo.artistBio.largeImageUrl,
                           "class": "fancy"
                     });
                     $("#artistImageZoom").attr("href", artistInfo.artistBio.largeImageUrl);
