@@ -134,12 +134,6 @@
             <version>3.0.3</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- connection pool manager, fixes #860 (external database performance) -->  
         <dependency>
             <groupId>org.apache.commons</groupId>
