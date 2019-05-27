@@ -121,7 +121,7 @@ public class TranscodeInputStream extends InputStream {
 
         if (tmpFile != null) {
             if (!tmpFile.delete()) {
-                LOG.warn("Failed to delete tmp file: {0}", tmpFile);
+                LOG.warn("Failed to delete tmp file: {}", tmpFile);
             }
         }
     }

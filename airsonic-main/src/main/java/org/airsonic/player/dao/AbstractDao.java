@@ -84,7 +84,7 @@ public class AbstractDao {
 
         // Log queries that take more than 2 seconds.
         if (millis > TimeUnit.SECONDS.toMillis(2L)) {
-            LOG.debug("{0} ms: {1}", millis, sql);
+            LOG.debug("{} ms: {}", millis, sql);
         }
     }
 

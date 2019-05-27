@@ -454,7 +454,7 @@ public class MediaFileService {
         }
         String name = file.getName();
         if (settingsService.getExcludePattern() != null && settingsService.getExcludePattern().matcher(name).find()) {
-            LOG.info("excluding file which matches exclude pattern {0}: {1}.", settingsService.getExcludePatternString(), file.toPath());
+            LOG.info("excluding file which matches exclude pattern {}: {}.", settingsService.getExcludePatternString(), file.toPath());
             return true;
         }
 

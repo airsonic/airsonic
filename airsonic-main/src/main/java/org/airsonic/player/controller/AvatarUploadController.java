@@ -130,7 +130,7 @@ public class AvatarUploadController  {
             }
             Avatar avatar = new Avatar(0, fileName, new Date(), mimeType, width, height, data);
             settingsService.setCustomAvatar(avatar, username);
-            LOG.info("Created avatar '{0}' ({1} bytes) for user {2}", fileName, data.length, username);
+            LOG.info("Created avatar '{}' ({} bytes) for user {}", fileName, data.length, username);
 
         } catch (Exception x) {
             LOG.warn("Failed to upload personal image: " + x, x);

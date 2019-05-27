@@ -474,7 +474,7 @@ public class SearchService {
                 dir = FSDirectory.open(getIndexDirectory(indexType));
                 if (IndexWriter.isLocked(dir)) {
                     IndexWriter.unlock(dir);
-                    LOG.info("Removed Lucene lock file in {0}", dir);
+                    LOG.info("Removed Lucene lock file in {}", dir);
                 }
             } catch (Exception x) {
                 LOG.warn("Failed to remove Lucene lock file in " + dir, x);

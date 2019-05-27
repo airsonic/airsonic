@@ -110,7 +110,7 @@ public class DownloadController implements LastModified {
             HttpRange range = HttpRange.valueOf(request.getHeader("Range"));
             if (range != null) {
                 response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-                LOG.info("Got HTTP range: {0}", range);
+                LOG.info("Got HTTP range: {}", range);
             }
 
             if (mediaFile != null) {
@@ -214,7 +214,7 @@ public class DownloadController implements LastModified {
             return;
         }
 
-        LOG.info("Starting to download '{0}' to {1}", zipFileName, status.getPlayer());
+        LOG.info("Starting to download '{}' to {}", zipFileName, status.getPlayer());
         response.setContentType("application/x-download");
         response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodeAsRFC5987(zipFileName));
 
@@ -246,7 +246,7 @@ public class DownloadController implements LastModified {
 
 
         out.close();
-        LOG.info("Downloaded '{0}' to {1}", zipFileName,  status.getPlayer());
+        LOG.info("Downloaded '{}' to {}", zipFileName,  status.getPlayer());
     }
 
     /**

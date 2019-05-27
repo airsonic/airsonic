@@ -1434,7 +1434,7 @@ public class SubsonicRESTController {
             int id = ids[i];
             MediaFile file = mediaFileService.getMediaFile(id);
             if (file == null) {
-                LOG.warn("File {0} to scrobble not found.", id);
+                LOG.warn("File {} to scrobble not found.", id);
                 continue;
             }
             Date time = times.length == 0 ? null : new Date(times[i]);

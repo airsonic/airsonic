@@ -374,7 +374,7 @@ public class TranscodingService {
                     tmpFile = File.createTempFile("airsonic", "." + FilenameUtils.getExtension(path));
                     tmpFile.deleteOnExit();
                     FileUtils.copyFile(new File(path), tmpFile);
-                    LOG.debug("Created tmp file: {0}", tmpFile);
+                    LOG.debug("Created tmp file: {}", tmpFile);
                     cmd = cmd.replace("%s", tmpFile.getPath());
                 } else {
                     cmd = cmd.replace("%s", path);

@@ -122,7 +122,7 @@ public class SonosService implements SonosSoap {
             LOG.info("No Sonos controller found");
             return;
         }
-        LOG.info("Found Sonos controllers: {0}", sonosControllers);
+        LOG.info("Found Sonos controllers: {}", sonosControllers);
 
         String sonosServiceName = settingsService.getSonosServiceName();
         int sonosServiceId = settingsService.getSonosServiceId();
@@ -236,7 +236,7 @@ public class SonosService implements SonosSoap {
 
     @Override
     public GetExtendedMetadataResponse getExtendedMetadata(GetExtendedMetadata parameters) {
-        LOG.debug("getExtendedMetadata: {0}", parameters.getId());
+        LOG.debug("getExtendedMetadata: {}", parameters.getId());
 
         int id = Integer.parseInt(parameters.getId());
         MediaFile mediaFile = mediaFileService.getMediaFile(id);
@@ -320,7 +320,7 @@ public class SonosService implements SonosSoap {
     public void getMediaURI(String id, MediaUriAction action, Integer secondsSinceExplicit, Holder<String> result,
                             Holder<HttpHeaders> httpHeaders, Holder<Integer> uriTimeout) {
         result.value = sonosHelper.getMediaURI(Integer.parseInt(id), getUsername(), getRequest());
-        LOG.debug("getMediaURI: {0} -> {1}", id, result.value);
+        LOG.debug("getMediaURI: {} -> {}", id, result.value);
     }
 
     @Override

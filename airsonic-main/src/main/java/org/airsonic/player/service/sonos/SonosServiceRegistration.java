@@ -50,7 +50,7 @@ public class SonosServiceRegistration {
         String localUrl = airsonicBaseUrl + "ws/Sonos";
         String controllerUrl = String.format("http://%s:1400/customsd", sonosControllerIp);
 
-        LOG.info("{0} Sonos music service, using Sonos controller IP {1}, SID {2}, and Airsonic URL {3}",
+        LOG.info("{} Sonos music service, using Sonos controller IP {}, SID {}, and Airsonic URL {}",
             (enabled? "Enabling" : "Disabling"), sonosControllerIp, sonosServiceId, localUrl);
 
         List<Pair<String, String>> params = new ArrayList<Pair<String, String>>();

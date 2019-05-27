@@ -63,7 +63,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
     public BrowseResult browse(String objectId, BrowseFlag browseFlag, String filter, long firstResult,
             long maxResults, SortCriterion[] orderby) throws ContentDirectoryException {
 
-        LOG.info("UPnP request - objectId: {0}, browseFlag: {1}, filter: {2}, firstResult: {3}, maxResults: {4}",
+        LOG.info("UPnP request - objectId: {}, browseFlag: {}, filter: {}, firstResult: {}, maxResults: {}",
             objectId, browseFlag, filter, firstResult, maxResults);
 
         // maxResult == 0 means all.

@@ -73,7 +73,7 @@ public class ExternalPlayerController {
         LOG.debug("Share name is {}", shareName);
 
         if(StringUtils.isBlank(shareName)) {
-            LOG.warn("Could not find share with shareName {0}", shareName);
+            LOG.warn("Could not find share with shareName {}", shareName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
@@ -81,7 +81,7 @@ public class ExternalPlayerController {
         Share share = shareService.getShareByName(shareName);
 
         if (share != null && share.getExpires() != null && share.getExpires().before(new Date())) {
-            LOG.warn("Share {0} is expired", shareName);
+            LOG.warn("Share {} is expired", shareName);
             share = null;
         }
 

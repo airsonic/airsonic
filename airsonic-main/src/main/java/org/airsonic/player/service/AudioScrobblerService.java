@@ -85,7 +85,7 @@ public class AudioScrobblerService {
         }
 
         if (queue.size() >= MAX_PENDING_REGISTRATION) {
-            LOG.warn("Last.fm scrobbler queue is full. Ignoring {0}", mediaFile);
+            LOG.warn("Last.fm scrobbler queue is full. Ignoring {}", mediaFile);
             return;
         }
 
@@ -151,11 +151,11 @@ public class AudioScrobblerService {
         }
 
         if (lines[0].startsWith("FAILED")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm: {1}.", registrationData.title, lines[0]);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm: {}.", registrationData.title, lines[0]);
         } else if (lines[0].startsWith("BADSESSION")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm. Invalid session.", registrationData.title);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm. Invalid session.", registrationData.title);
         } else if (lines[0].startsWith("OK")) {
-            LOG.info("Successfully registered {0} for song '{1}' for user {2} at Last.fm: {3}",
+            LOG.info("Successfully registered {} for song '{}' for user {} at Last.fm: {}",
                 (registrationData.submission ? "submission" : "now playing"), registrationData.title, registrationData.username,
                 registrationData.time);
         }
@@ -187,27 +187,27 @@ public class AudioScrobblerService {
         String[] lines = executeGetRequest(uri);
 
         if (lines[0].startsWith("BANNED")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm. Client version is banned.", registrationData.title);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm. Client version is banned.", registrationData.title);
             return null;
         }
 
         if (lines[0].startsWith("BADAUTH")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm. Wrong username or password.", registrationData.title);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm. Wrong username or password.", registrationData.title);
             return null;
         }
 
         if (lines[0].startsWith("BADTIME")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm. Bad timestamp, please check local clock.", registrationData.title);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm. Bad timestamp, please check local clock.", registrationData.title);
             return null;
         }
 
         if (lines[0].startsWith("FAILED")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm: {1}", registrationData.title,lines[0]);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm: {}", registrationData.title,lines[0]);
             return null;
         }
 
         if (!lines[0].startsWith("OK")) {
-            LOG.warn("Failed to scrobble song '{0}' at Last.fm.  Unknown response: {1}", registrationData.title, lines[0]);
+            LOG.warn("Failed to scrobble song '{}' at Last.fm.  Unknown response: {}", registrationData.title, lines[0]);
             return null;
         }
 

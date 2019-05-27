@@ -197,7 +197,7 @@ public class PlaylistService {
         }
 
         for (String error : result.getSecond()) {
-            LOG.warn("File in playlist '{0}' not found: {1}", fileName, error);
+            LOG.warn("File in playlist '{}' not found: {}", fileName, error);
         }
         Date now = new Date();
         Playlist playlist;
