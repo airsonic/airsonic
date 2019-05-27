@@ -101,7 +101,7 @@
         if (pImage.src !== href) {
           preloading = true;
           pImage = new Image();
-          $(pImage).load(function() {
+          $(pImage).on('load', function() {
             preloading = false;
           });
           pImage.src = href;
