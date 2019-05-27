@@ -71,7 +71,7 @@ public class UploadController {
     private SettingsService settingsService;
     public static final String UPLOAD_STATUS = "uploadStatus";
 
-		@PostMapping
+    @PostMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<>();
