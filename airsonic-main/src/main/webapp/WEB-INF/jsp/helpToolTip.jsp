@@ -8,20 +8,21 @@ PARAMETERS
   topic: Refers to a key in the resource bundle containing the text to display in the tool tip.
 --%>
 
-	<script>
-  $( function() {
-    $( document ).tooltip();
-  } );
-	</script>
-	  <style>
-  label {
-    display: inline-block;
-    width: 5em;
-  }
-	div.ui-tooltip {
-    max-width: 400px;
+<script>
+$( function() {
+	$( document ).tooltip();
+});
+</script>
+
+<style>
+	label {
+		display: inline-block;
+		width: 5em;
 	}
-  </style>
+	div.ui-tooltip {
+		max-width: 400px;
+	}
+</style>
 
 <spring:theme code="helpPopupImage" var="imageUrl"/>
 <fmt:message key="common.help" var="help"/>
