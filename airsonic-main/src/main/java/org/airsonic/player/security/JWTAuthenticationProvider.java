@@ -2,8 +2,6 @@ package org.airsonic.player.security;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.common.collect.MapDifference;
-import com.google.common.collect.Maps;
 import org.airsonic.player.service.JWTSecurityService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,7 +17,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class JWTAuthenticationProvider implements AuthenticationProvider {
 
@@ -75,13 +76,24 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
                 return false;
             }
 
-            MapDifference<String, List<String>> difference = Maps.difference(expected.getQueryParams(),
-                    requested.getQueryParams());
+            // expected and requested query params must be equal, but requested must also
+            // contain JWT_PARAM_NAME.
+            Map<String, List<String>> expectedParams = expected.getQueryParams();
+            Map<String, List<String>> requestedParams = requested.getQueryParams();
+            boolean allExpectedFound = expectedParams
+                .entrySet()
+                .stream()
+                .allMatch(exp -> requestedParams.containsKey(exp.getKey())
+                        && requestedParams.get(exp.getKey()).equals(exp.getValue()));
+            List<String> additionalKeys = requestedParams
+                .entrySet()
+                .stream()
+                .map(Entry::getKey)
+                .filter(key -> !expectedParams.containsKey(key))
+                .collect(Collectors.toList());
 
-            if(difference.entriesDiffering().size() != 0 ||
-                    difference.entriesOnlyOnLeft().size() != 0 ||
-                    difference.entriesOnlyOnRight().size() != 1 ||
-                    difference.entriesOnlyOnRight().get(JWTSecurityService.JWT_PARAM_NAME) == null) {
+            if (!allExpectedFound || additionalKeys.size() != 1
+                    || !additionalKeys.get(0).equals(JWTSecurityService.JWT_PARAM_NAME)) {
                 logger.debug("False: expected query params [{}] do not match requested query params [{}]", expected.getQueryParams(), requested.getQueryParams());
                 return false;
             }
