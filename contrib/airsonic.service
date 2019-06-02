@@ -29,7 +29,6 @@ PrivateDevices=yes
 PrivateTmp=yes
 PrivateUsers=yes
 ProtectControlGroups=yes
-ProtectHome=true
 ProtectKernelModules=yes
 ProtectKernelTunables=yes
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
@@ -43,6 +42,10 @@ ProtectSystem=full
 # Don't forget to remove the other `ProtectSystem` line above.
 #ProtectSystem=strict
 #ReadWritePaths=/var/airsonic
+
+# You can uncomment the following line if you don't have any media
+# in /home/…. This will prevent airsonic from ever read/write anything there.
+#ProtectHome=true
 
 # You can uncomment the following line if you're not using the OpenJDK.
 # This will prevent processes from having a memory zone that is both writeable
