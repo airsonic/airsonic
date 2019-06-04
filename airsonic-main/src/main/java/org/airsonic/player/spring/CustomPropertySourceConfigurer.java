@@ -7,9 +7,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.env.PropertySource;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class CustomPropertySourceConfigurer implements
         ApplicationContextInitializer<ConfigurableWebApplicationContext> {
 
@@ -37,8 +34,6 @@ public class CustomPropertySourceConfigurer implements
             dataSourceConfigType = DataSourceConfigType.LEGACY;
         }
         String dataSourceTypeProfile = StringUtils.lowerCase(dataSourceConfigType.name());
-        List<String> existingProfiles = Arrays.asList(ctx.getEnvironment().getActiveProfiles());
-        existingProfiles.add(dataSourceTypeProfile);
-        ctx.getEnvironment().setActiveProfiles(existingProfiles.toArray(new String[0]));
+        ctx.getEnvironment().addActiveProfile(dataSourceTypeProfile);
     }
 }
