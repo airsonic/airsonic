@@ -28,8 +28,7 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
@@ -39,7 +38,9 @@
     var topSongs;
 
     function init() {
-        setupZoom('<c:url value="/"/>');
+        $("a.fancy").fancyZoom({
+            minBorder: 30
+        });
 
         <c:if test="${model.showArtistInfo}">
         loadArtistInfo();
@@ -68,7 +69,10 @@
             if (artistInfo.artistBio && artistInfo.artistBio.biography) {
                 $("#artistBio").append(artistInfo.artistBio.biography);
                 if (artistInfo.artistBio.largeImageUrl) {
-                    $("#artistImage").attr("src", artistInfo.artistBio.largeImageUrl);
+                    $("#artistImage").attr({
+                          "src": artistInfo.artistBio.largeImageUrl,
+                          "class": "fancy"
+                    });
                     $("#artistImageZoom").attr("href", artistInfo.artistBio.largeImageUrl);
                     $("#artistImage").show();
                     $("#artistInfoTable").show();
