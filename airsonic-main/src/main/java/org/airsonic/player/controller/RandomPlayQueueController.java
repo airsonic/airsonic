@@ -62,7 +62,7 @@ public class RandomPlayQueueController {
             ModelMap model,
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(value = "size") int size,
+            @RequestParam(value = "size") Integer size,
             @RequestParam(value = "genre", required = false) String genre,
             @RequestParam(value = "year", required = false) String year,
             @RequestParam(value = "songRating", required = false) String songRating,
@@ -86,6 +86,10 @@ public class RandomPlayQueueController {
         Date maxLastPlayedDate = null;
         boolean doesShowStarredSongs = false;
         boolean doesShowUnstarredSongs = false;
+
+        if (size == null) {
+            size = 24;
+        }
 
         // Handle the genre filter
         if (StringUtils.equalsIgnoreCase("any", genre)) {
