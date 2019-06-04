@@ -230,7 +230,7 @@ public class TransferStatus {
      *
      * @param active Whether this transfer is active.
      */
-    public void setActive(boolean active) {
+    public synchronized void setActive(boolean active) {
         this.active = active;
 
         if (active) {

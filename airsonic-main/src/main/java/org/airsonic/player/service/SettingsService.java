@@ -415,7 +415,7 @@ public class SettingsService {
         setProperty(KEY_PLAYLIST_FOLDER, playlistFolder);
     }
 
-    public String getMusicFileTypes() {
+    public synchronized String getMusicFileTypes() {
         return getProperty(KEY_MUSIC_FILE_TYPES, DEFAULT_MUSIC_FILE_TYPES);
     }
 
@@ -431,7 +431,7 @@ public class SettingsService {
         return cachedMusicFileTypesArray;
     }
 
-    public String getVideoFileTypes() {
+    public synchronized String getVideoFileTypes() {
         return getProperty(KEY_VIDEO_FILE_TYPES, DEFAULT_VIDEO_FILE_TYPES);
     }
 
@@ -447,7 +447,7 @@ public class SettingsService {
         return cachedVideoFileTypesArray;
     }
 
-    public String getCoverArtFileTypes() {
+    public synchronized String getCoverArtFileTypes() {
         return getProperty(KEY_COVER_ART_FILE_TYPES, DEFAULT_COVER_ART_FILE_TYPES);
     }
 
