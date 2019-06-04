@@ -13,7 +13,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cucumber.version>4.2.0</cucumber.version>
+        <cucumber.version>4.3.1</cucumber.version>
     </properties>
 
     <dependencies>
@@ -89,7 +89,7 @@
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
-            <version>8.14.5</version>
+            <version>8.16</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -147,25 +147,6 @@
             </testResource>
         </testResources>
         <plugins>
-            <plugin>
-                <groupId>com.github.temyers</groupId>
-                <artifactId>cucumber-jvm-parallel-plugin</artifactId>
-                <version>5.0.0</version>
-                <executions>
-                    <execution>
-                        <id>generateRunners</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>generateRunners</goal>
-                        </goals>
-                        <configuration>
-                            <featuresDirectory>src/test/resources/features</featuresDirectory>
-                            <format>pretty</format>
-                            <glue>org.airsonic.test.cucumber.steps</glue>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
