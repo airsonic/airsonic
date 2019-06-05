@@ -154,7 +154,7 @@
         mediaInfo.metadata.albumName = song.album;
         mediaInfo.metadata.artist = song.artist;
         mediaInfo.metadata.trackNumber = song.trackNumber;
-        mediaInfo.metadata.images = [new chrome.cast.Image(song.remoteCoverArtUrl + "&size=384")];
+        mediaInfo.metadata.images = [new chrome.cast.Image(song.remoteCoverArtUrl)];
         mediaInfo.metadata.releaseYear = song.year;
 
         var request = new chrome.cast.media.LoadRequest(mediaInfo);
