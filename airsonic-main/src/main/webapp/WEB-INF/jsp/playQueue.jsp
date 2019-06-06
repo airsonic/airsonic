@@ -577,6 +577,12 @@
         // the 'createMediaElementPlayer()' function above.
         //
         // player.play();
+
+        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
+        //
+        // Instead, we're triggering a 'waiting' event so that the player shows
+        // a progress bar to indicate that it's loading the stream.
+        player.dispatchEvent(new Event("waiting"));
     }
 
     function skip(index, position) {
