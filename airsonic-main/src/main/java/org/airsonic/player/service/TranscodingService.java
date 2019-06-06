@@ -328,7 +328,7 @@ public class TranscodingService {
             title = "Unknown Song";
         }
         if (album == null) {
-            title = "Unknown Album";
+            album = "Unknown Album";
         }
         if (artist == null) {
             artist = "Unknown Artist";
