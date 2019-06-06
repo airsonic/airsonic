@@ -331,7 +331,7 @@ public class TranscodingService {
             title = "Unknown Album";
         }
         if (artist == null) {
-            title = "Unknown Artist";
+            artist = "Unknown Artist";
         }
 
         List<String> result = new LinkedList<String>(Arrays.asList(StringUtil.split(command)));
