@@ -77,7 +77,7 @@
         this.currentMediaTime = 0;
 
         // @type {Number} A number for current media duration
-        this.currentMediaDuration = ${empty model.duration ? 0: model.duration};
+        this.currentMediaDuration = model.duration;
 
         // @type {Boolean} A boolean to stop timer update of progress when triggered by media status event
         this.seekInProgress = false;
@@ -283,7 +283,7 @@
         this.currentMediaOffset = offset;
         this.currentMediaTime = 0;
 
-        var url = "${model.remoteStreamUrl}" + "&maxBitRate=" + this.getBitRate() + "&format=mkv&timeOffset=" + offset;
+        var url = model.remoteStreamUrl + "&maxBitRate=" + this.getBitRate() + "&format=mkv&timeOffset=" + offset;
         console.log("casting " + url);
         var mediaInfo = new chrome.cast.media.MediaInfo(url);
         mediaInfo.contentType = 'video/x-matroska';
@@ -291,8 +291,8 @@
         mediaInfo.duration = this.currentMediaDuration;
         mediaInfo.metadata = new chrome.cast.media.MovieMediaMetadata();
         mediaInfo.metadata.metadataType = chrome.cast.media.MetadataType.MOVIE;
-        mediaInfo.metadata.title = "${model.video.title}";
-        mediaInfo.metadata.images = [new chrome.cast.Image("${model.remoteCoverArtUrl}&size=384")];
+        mediaInfo.metadata.title = model.video_title;
+        mediaInfo.metadata.images = [new chrome.cast.Image(model.remoteCoverArtUrl + "&size=384")];
 
         var request = new chrome.cast.media.LoadRequest(mediaInfo);
         request.autoplay = this.autoplay;
@@ -446,7 +446,7 @@
             this.currentMediaOffset = offset;
             this.currentMediaTime = 0;
 
-            var url = "${model.streamUrl}" + "&maxBitRate=" + this.getBitRate() + "&timeOffset=" + offset;
+            var url = model.streamUrl + "&maxBitRate=" + this.getBitRate() + "&timeOffset=" + offset;
             console.log("playing local: " + url);
 
             this.localPlayer.src = url;
@@ -491,14 +491,14 @@
      * Share the video.
      */
     CastPlayer.prototype.share = function () {
-        location.href = "createShare.view?id=${model.video.id}";
+        location.href = "createShare.view?id=" + model.video_id;
     };
 
     /**
      * Download the video.
      */
     CastPlayer.prototype.download = function () {
-        location.href = "download.view?id=${model.video.id}";
+        location.href = "download.view?id=" + model.video_id;
     };
 
     /**
@@ -678,12 +678,12 @@
         $("#share").on('click', this.share.bind(this));
         $("#download").on('click', this.download.bind(this));
 
-        <c:if test="${not model.user.shareRole}">
-        $("#share").hide();
-        </c:if>
-        <c:if test="${not model.user.downloadRole}">
-        $("#download").hide();
-        </c:if>
+        if (model.hide_share) {
+          $("#share").hide();
+        }
+        if (model.hide_download) {
+          $("#download").hide();
+        }
 
 //        setInterval(this.updateDebug.bind(this), 100);
     };
