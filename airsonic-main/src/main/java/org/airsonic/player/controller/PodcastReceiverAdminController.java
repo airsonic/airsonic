@@ -56,11 +56,11 @@ public class PodcastReceiverAdminController {
             podcastService.createChannel(url);
             return new ModelAndView(new RedirectView("podcastChannels.view"));
         }
-        if (request.getParameter("downloadEpisode") != null) {
+        if (request.getParameter("downloadEpisode") != null && channelId != null) {
             download(StringUtil.parseInts(request.getParameter("downloadEpisode")));
             return new ModelAndView(new RedirectView("podcastChannel.view?id=" + channelId));
         }
-        if (request.getParameter("deleteChannel") != null) {
+        if (request.getParameter("deleteChannel") != null && channelId != null) {
             podcastService.deleteChannel(channelId);
             return new ModelAndView(new RedirectView("podcastChannels.view"));
         }
