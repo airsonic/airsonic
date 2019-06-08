@@ -33,8 +33,8 @@ import org.jfree.data.time.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,10 +60,10 @@ public class StatusChartController extends AbstractChartController {
     public static final int IMAGE_WIDTH = 350;
     public static final int IMAGE_HEIGHT = 150;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public synchronized ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String type = request.getParameter("type");
-        int index = ServletRequestUtils.getIntParameter(request, "index");
+        int index = ServletRequestUtils.getIntParameter(request, "index", 0);
 
         List<TransferStatus> statuses = Collections.emptyList();
         if ("stream".equals(type)) {
@@ -134,7 +134,7 @@ public class StatusChartController extends AbstractChartController {
 
         XYItemRenderer renderer = plot.getRendererForDataset(dataset);
         renderer.setSeriesPaint(0, Color.blue.darker());
-        renderer.setSeriesStroke(0, new BasicStroke(2f));
+        renderer.setSeriesStroke(0, new BasicStroke(2.0f));
 
         // Set theme-specific colors.
         Color bgColor = getBackground(request);

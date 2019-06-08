@@ -115,10 +115,9 @@ public class ShareDao extends AbstractDao {
         if (musicFolders.isEmpty()) {
             return Collections.emptyList();
         }
-        Map<String, Object> args = new HashMap<String, Object>() {{
-            put("shareId", shareId);
-            put("folders", MusicFolder.toPathList(musicFolders));
-        }};
+        Map<String, Object> args = new HashMap<>();
+        args.put("shareId", shareId);
+        args.put("folders", MusicFolder.toPathList(musicFolders));
         return namedQuery("select share_file.path from share_file, media_file where share_id = :shareId and " +
                           "share_file.path = media_file.path and media_file.present and media_file.folder in (:folders)",
                           shareFileRowMapper, args);

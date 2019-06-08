@@ -18,20 +18,18 @@
   ~  Copyright 2014 (C) Sindre Mehus
   --%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <%--@elvariable id="model" type="java.util.Map"--%>
 
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
     <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -40,7 +38,9 @@
     var topSongs;
 
     function init() {
-        setupZoom('<c:url value="/"/>');
+        $("a.fancy").fancyZoom({
+            minBorder: 30
+        });
 
         <c:if test="${model.showArtistInfo}">
         loadArtistInfo();
@@ -69,7 +69,10 @@
             if (artistInfo.artistBio && artistInfo.artistBio.biography) {
                 $("#artistBio").append(artistInfo.artistBio.biography);
                 if (artistInfo.artistBio.largeImageUrl) {
-                    $("#artistImage").attr("src", artistInfo.artistBio.largeImageUrl);
+                    $("#artistImage").attr({
+                          "src": artistInfo.artistBio.largeImageUrl,
+                          "class": "fancy"
+                    });
                     $("#artistImageZoom").attr("href", artistInfo.artistBio.largeImageUrl);
                     $("#artistImage").show();
                     $("#artistInfoTable").show();
@@ -97,15 +100,15 @@
                     } else {
                         $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
                     }
-                    $("#rank" + id).html(i + 1);
-                    $("#title" + id).html(song.title);
+                    $("#rank" + id).text(i + 1);
+                    $("#title" + id).text(song.title);
                     $("#title" + id).attr("title", song.title);
-                    $("#album" + id).html(song.album);
+                    $("#album" + id).text(song.album);
                     $("#album" + id).attr("title", song.album);
                     $("#albumUrl" + id).attr("href", "main.view?id=" + song.id);
-                    $("#artist" + id).html(song.artist);
+                    $("#artist" + id).text(song.artist);
                     $("#artist" + id).attr("title", song.artist);
-                    $("#songDuration" + id).html(song.durationAsString);
+                    $("#songDuration" + id).text(song.durationAsString);
 
                     // Note: show() method causes page to scroll to top.
                     $("#pattern" + id).css("display", "table-row");

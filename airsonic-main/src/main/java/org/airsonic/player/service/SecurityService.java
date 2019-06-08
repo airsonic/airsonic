@@ -96,8 +96,8 @@ public class SecurityService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("IS_AUTHENTICATED_ANONYMOUSLY"));
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        for (int i = 0; i < roles.length; i++) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + roles[i].toUpperCase()));
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
         }
         return authorities;
     }

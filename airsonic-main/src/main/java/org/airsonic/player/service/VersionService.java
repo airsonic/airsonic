@@ -257,7 +257,7 @@ public class VersionService {
 
         Predicate<Version> finalVersionPredicate = version -> !version.isPreview();
 
-        Optional<Version> betaV = unsortedTags.stream().map(convertToVersion).sorted(Comparator.reverseOrder()).findFirst();
+        Optional<Version> betaV = unsortedTags.stream().map(convertToVersion).max(Comparator.naturalOrder());
         Optional<Version> finalV = unsortedTags.stream().map(convertToVersion).sorted(Comparator.reverseOrder()).filter(finalVersionPredicate).findFirst();
 
         LOG.debug("Got {} for beta version", betaV);

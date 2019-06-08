@@ -20,7 +20,7 @@ public class MetricsManager {
     // Main metrics registry
     private static final MetricRegistry metrics = new MetricRegistry();
 
-    private static Boolean metricsActivatedByConfiguration = null;
+    private static volatile Boolean metricsActivatedByConfiguration = null;
     private static Object _lock = new Object();
 
     // Potential metrics reporters
@@ -49,7 +49,7 @@ public class MetricsManager {
                 }
             }
         }
-        return metricsActivatedByConfiguration.booleanValue();
+        return metricsActivatedByConfiguration;
     }
 
     /**

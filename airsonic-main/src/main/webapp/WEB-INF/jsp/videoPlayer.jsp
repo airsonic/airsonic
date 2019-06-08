@@ -8,7 +8,7 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/cast_sender-v1.js"/>"></script>
-    <%@ include file="videoPlayerCast.jsp" %>
+    <script type="text/javascript" src="<c:url value="/script/videoPlayerCast.js"/>"></script>
 
     <script type="text/javascript" language="javascript">
         function toggleStar(mediaFileId, imageId) {

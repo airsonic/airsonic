@@ -23,8 +23,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
@@ -39,6 +42,7 @@ import java.util.List;
 public final class Util {
 
     private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+    private static final String URL_SENSITIVE_REPLACEMENT_STRING = "<hidden>";
 
     /**
      * Disallow external instantiation.
@@ -115,6 +119,53 @@ public final class Util {
         } catch (JsonProcessingException e) {
             LOG.warn("Cant output debug object", e);
             return "";
+        }
+    }
+
+    /**
+     * Return a complete URL for the given HTTP request,
+     * including the query string.
+     *
+     * @param request An HTTP request instance
+     * @return The associated URL
+     */
+    public static String getURLForRequest(HttpServletRequest request) {
+        String url = request.getRequestURL().toString();
+        String queryString = request.getQueryString();
+        if (queryString != null && queryString.length() > 0) url += "?" + queryString;
+        return url;
+    }
+
+    /**
+     * Return an URL for the given HTTP request, with anonymized sensitive parameters.
+     *
+     * @param request An HTTP request instance
+     * @return The associated anonymized URL
+     */
+    public static String getAnonymizedURLForRequest(HttpServletRequest request) {
+
+        String url = getURLForRequest(request);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url);
+        MultiValueMap<String, String> components = builder.build().getQueryParams();
+
+        // Subsonic REST API authentication (see RESTRequestParameterProcessingFilter)
+        if (components.containsKey("p")) builder.replaceQueryParam("p", URL_SENSITIVE_REPLACEMENT_STRING);  // Cleartext password
+        if (components.containsKey("t")) builder.replaceQueryParam("t", URL_SENSITIVE_REPLACEMENT_STRING);  // Token
+        if (components.containsKey("s")) builder.replaceQueryParam("s", URL_SENSITIVE_REPLACEMENT_STRING);  // Salt
+        if (components.containsKey("u")) builder.replaceQueryParam("u", URL_SENSITIVE_REPLACEMENT_STRING);  // Username
+
+        return builder.build().toUriString();
+    }
+
+    /**
+     * Return true if the given object is an instance of the class name in argument.
+     * If the class doesn't exist, returns false.
+     */
+    public static boolean isInstanceOfClassName(Object o, String className) {
+        try {
+            return Class.forName(className).isInstance(o);
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 }

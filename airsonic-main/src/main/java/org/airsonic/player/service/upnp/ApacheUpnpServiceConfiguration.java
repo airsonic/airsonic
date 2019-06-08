@@ -20,10 +20,10 @@
 package org.airsonic.player.service.upnp;
 
 import org.fourthline.cling.DefaultUpnpServiceConfiguration;
-import org.fourthline.cling.transport.impl.StreamClientConfigurationImpl;
-import org.fourthline.cling.transport.impl.StreamClientImpl;
-import org.fourthline.cling.transport.impl.StreamServerConfigurationImpl;
-import org.fourthline.cling.transport.impl.StreamServerImpl;
+import org.fourthline.cling.transport.impl.apache.StreamClientConfigurationImpl;
+import org.fourthline.cling.transport.impl.apache.StreamClientImpl;
+import org.fourthline.cling.transport.impl.apache.StreamServerConfigurationImpl;
+import org.fourthline.cling.transport.impl.apache.StreamServerImpl;
 import org.fourthline.cling.transport.spi.NetworkAddressFactory;
 import org.fourthline.cling.transport.spi.StreamClient;
 import org.fourthline.cling.transport.spi.StreamServer;

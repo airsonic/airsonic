@@ -21,6 +21,8 @@ package org.airsonic.player.domain;
 
 import org.airsonic.player.util.StringUtil;
 
+import java.util.Objects;
+
 /**
  * Contains the configuration for a transcoding, i.e., a specification of how a given media format
  * should be converted to another.
@@ -213,7 +215,7 @@ public class Transcoding {
         }
 
         Transcoding that = (Transcoding) o;
-        return !(id != null ? !id.equals(that.id) : that.id != null);
+        return Objects.equals(id, that.id);
     }
 
     public int hashCode() {

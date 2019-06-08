@@ -25,8 +25,8 @@ import org.airsonic.player.service.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -49,7 +49,7 @@ public class PlaylistsController {
     @Autowired
     private PlaylistService playlistService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String doGet(HttpServletRequest request, Model model) throws Exception {
         Map<String, Object> map = new HashMap<>();
 

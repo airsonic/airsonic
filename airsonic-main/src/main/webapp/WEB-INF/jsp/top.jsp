@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
 <html><head>
     <%@ include file="head.jsp" %>
@@ -125,7 +125,7 @@
 
         <td style="padding-left:1em">
             <form method="post" action="search.view" target="main" name="searchForm">
-                <td><input type="text" name="query" id="query" size="28" placeholder="${search}" onclick="select();"
+                <td><input required type="text" name="query" id="query" size="28" placeholder="${search}" onclick="select();"
                            onkeyup="triggerInstantSearch();"></td>
                 <td><a href="javascript:document.searchForm.submit()"><img src="<spring:theme code="searchImage"/>" alt="${search}" title="${search}"></a></td>
             </form>

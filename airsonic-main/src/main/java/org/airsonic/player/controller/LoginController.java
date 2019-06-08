@@ -4,13 +4,11 @@ import org.airsonic.player.domain.User;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -24,17 +22,15 @@ import java.util.Map;
  * Spring MVC Controller that serves the login page.
  */
 @Controller
+@RequestMapping("/login")
 public class LoginController {
-
-
-    private static final Logger LOG = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
     private SecurityService securityService;
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // Auto-login if "user" and "password" parameters are given.
@@ -62,5 +58,4 @@ public class LoginController {
 
         return new ModelAndView("login", "model", map);
     }
-
 }

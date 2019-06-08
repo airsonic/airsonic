@@ -19,8 +19,6 @@
     </script>
 </head>
 <body class="mainframe bgcolor1" onload="init()">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
 
 
 <c:import url="settingsHeader.jsp">
@@ -139,7 +137,7 @@
 
     <p >
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
     </p>
 
 </form:form>

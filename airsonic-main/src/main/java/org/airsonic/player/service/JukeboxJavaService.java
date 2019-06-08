@@ -18,7 +18,7 @@ import java.util.Map;
 
 
 /**
- * @author Rémi Cocula
+ * @author RÃ©mi Cocula
  */
 @Service
 public class JukeboxJavaService {

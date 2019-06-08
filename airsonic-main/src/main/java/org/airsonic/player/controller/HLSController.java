@@ -31,8 +31,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,12 +66,12 @@ public class HLSController {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         response.setHeader("Access-Control-Allow-Origin", "*");
 
-        int id = ServletRequestUtils.getIntParameter(request, "id");
+        int id = ServletRequestUtils.getIntParameter(request, "id", 0);
         MediaFile mediaFile = mediaFileService.getMediaFile(id);
         Player player = playerService.getPlayer(request, response);
         String username = player.getUsername();

@@ -1,19 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/moment-2.18.1.min.js"/>"></script>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <%@ include file="playQueueCast.jsp" %>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
+    <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -430,7 +427,7 @@
         }
 
         if (songs.length == 0) {
-            $("#songCountAndDuration").html("");
+            $("#songCountAndDuration").text("");
             $("#empty").show();
         } else {
             $("#songCountAndDuration").html(songs.length + " <fmt:message key="playlist2.songs"/> &ndash; " + playQueue.durationAsString);
@@ -448,7 +445,7 @@
             var id = i + 1;
             dwr.util.cloneNode("pattern", { idSuffix:id });
             if ($("#trackNumber" + id)) {
-                $("#trackNumber" + id).html(song.trackNumber);
+                $("#trackNumber" + id).text(song.trackNumber);
             }
             if (song.starred) {
                 $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
@@ -462,40 +459,40 @@
                 }
             }
             if ($("#title" + id)) {
-                $("#title" + id).html(song.title);
+                $("#title" + id).text(song.title);
                 $("#title" + id).attr("title", song.title);
             }
             if ($("#titleUrl" + id)) {
-                $("#titleUrl" + id).html(song.title);
+                $("#titleUrl" + id).text(song.title);
                 $("#titleUrl" + id).attr("title", song.title);
                 $("#titleUrl" + id).click(function () {onSkip(this.id.substring(8) - 1)});
             }
             if ($("#album" + id)) {
-                $("#album" + id).html(song.album);
+                $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", song.albumUrl);
             }
             if ($("#artist" + id)) {
-                $("#artist" + id).html(song.artist);
+                $("#artist" + id).text(song.artist);
                 $("#artist" + id).attr("title", song.artist);
             }
             if ($("#genre" + id)) {
-                $("#genre" + id).html(song.genre);
+                $("#genre" + id).text(song.genre);
             }
             if ($("#year" + id)) {
-                $("#year" + id).html(song.year);
+                $("#year" + id).text(song.year);
             }
             if ($("#bitRate" + id)) {
-                $("#bitRate" + id).html(song.bitRate);
+                $("#bitRate" + id).text(song.bitRate);
             }
             if ($("#duration" + id)) {
-                $("#duration" + id).html(song.durationAsString);
+                $("#duration" + id).text(song.durationAsString);
             }
             if ($("#format" + id)) {
-                $("#format" + id).html(song.format);
+                $("#format" + id).text(song.format);
             }
             if ($("#fileSize" + id)) {
-                $("#fileSize" + id).html(song.fileSize);
+                $("#fileSize" + id).text(song.fileSize);
             }
 
             $("#pattern" + id).addClass((i % 2 == 0) ? "bgcolor1" : "bgcolor2");
@@ -695,7 +692,7 @@
                     <c:if test="${model.player.web}">
                         <td>
                             <div id="player" style="width:340px; height:40px;padding-right:10px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
+                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height="40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
@@ -809,7 +806,7 @@
             <td class="fit">
                 <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
                      style="cursor:pointer" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
-            <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
+            <td class="fit"><input type="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">
                 <td class="fit rightalign"><span class="detail" id="trackNumber">1</span></td>

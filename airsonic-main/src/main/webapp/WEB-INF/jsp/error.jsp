@@ -6,9 +6,6 @@
 
 <html><head>
      <%@ include file="head.jsp" %>
-    <!--[if lt IE 7.]>
-    <script defer type="text/javascript" src="script/pngfix.js"></script>
-    <![endif]-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 </head>
@@ -21,7 +18,7 @@
 
 <p>
     Airsonic encountered an internal error. You can report this error in the
-    <a href="https://www.reddit.com/r/airsonic" target="_blank">Airsonic Forum</a>.
+    <a href="https://www.reddit.com/r/airsonic" target="_blank" rel="noopener noreferrer">Airsonic Forum</a>.
     Please include the information below.
 </p>
 

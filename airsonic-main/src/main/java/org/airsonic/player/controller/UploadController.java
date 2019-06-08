@@ -35,8 +35,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +71,7 @@ public class UploadController {
     private SettingsService settingsService;
     public static final String UPLOAD_STATUS = "uploadStatus";
 
-    @RequestMapping(method = { RequestMethod.POST })
+    @PostMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<>();
@@ -166,15 +166,16 @@ public class UploadController {
     private void unzip(File file, List<File> unzippedFiles) throws Exception {
         LOG.info("Unzipping " + file);
 
-        ZipFile zipFile = new ZipFile(file);
-
-        try {
+        try (ZipFile zipFile = new ZipFile(file)) {
 
             Enumeration<?> entries = zipFile.entries();
 
             while (entries.hasMoreElements()) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 File entryFile = new File(file.getParentFile(), entry.getName());
+                if (!entryFile.toPath().normalize().startsWith(file.getParentFile().toPath())) {
+                  throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
+                }
 
                 if (!entry.isDirectory()) {
 
@@ -210,8 +211,6 @@ public class UploadController {
             zipFile.close();
             file.delete();
 
-        } finally {
-            zipFile.close();
         }
     }
 

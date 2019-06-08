@@ -38,6 +38,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -120,6 +121,8 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
                 albumList =  ap.getChildren(ap.getItemById(album.getComment().replaceAll(ALL_BY_ARTIST + "_", "")));
             } else if (album.getComment().equalsIgnoreCase(ALL_RECENT)) {
                 albumList = getDispatcher().getRecentAlbumProcessor().getAllItems();
+            } else {
+                albumList = new ArrayList<>();
             }
             for (Album a: albumList) {
                 if (a.getId() != -1) {

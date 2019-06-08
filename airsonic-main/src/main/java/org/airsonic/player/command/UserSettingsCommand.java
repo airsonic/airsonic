@@ -295,7 +295,7 @@ public class UserSettingsCommand {
         isSettingsRole = user != null && user.isSettingsRole();
         isShareRole = user != null && user.isShareRole();
         isLdapAuthenticated = user != null && user.isLdapAuthenticated();
-        setNewUser(false);
+        isNewUser = false;
     }
 
 }

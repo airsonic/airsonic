@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript" language="javascript">
         function enableLdapFields() {
             $("#ldap").is(":checked") ? $("#ldapTable").show() : $("#ldapTable").hide();
@@ -13,8 +13,6 @@
 </head>
 
 <body class="mainframe bgcolor1" onload="enableLdapFields()">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="advanced"/>
@@ -96,7 +94,7 @@
     <table class="indent">
         <tr>
             <td colspan="2">
-                <form:checkbox path="captchaEnabled" id="enablecaptcha" cssclass="checkbox"/>
+                <form:checkbox path="captchaEnabled" id="enablecaptcha"/>
                 <label for="enablecaptcha">
                     <fmt:message key="advancedsettings.enableCaptcha"/>
                 </label>
@@ -122,7 +120,7 @@
     </table>
 
     <table class="indent"><tr><td>
-        <form:checkbox path="ldapEnabled" id="ldap" cssClass="checkbox" onclick="enableLdapFields()"/>
+        <form:checkbox path="ldapEnabled" id="ldap" onclick="enableLdapFields()"/>
         <label for="ldap"><fmt:message key="advancedsettings.ldapenabled"/></label>
         <c:import url="helpToolTip.jsp"><c:param name="topic" value="ldap"/></c:import>
     </td></tr></table>
@@ -168,7 +166,7 @@
     <p class="warning"><fmt:message key="advancedsettings.ldapRequiresRestart"/></p>
 
     <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-    <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+    <a href="nowPlaying.view"><input type="button" value="<fmt:message key="common.cancel"/>"></a>
 
 </form:form>
 
