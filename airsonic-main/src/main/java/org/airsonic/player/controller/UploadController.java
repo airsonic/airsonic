@@ -122,7 +122,7 @@ public class UploadController {
 
                 if (!item.isFormField()) {
                     String fileName = item.getName();
-                    if (fileName.trim().length() > 0) {
+                    if (!fileName.trim().isEmpty()) {
 
                         File targetFile = new File(dir, new File(fileName).getName());
 

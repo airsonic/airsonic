@@ -67,7 +67,7 @@ public class MoreController  {
 
         String uploadDirectory = null;
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(user.getUsername());
-        if (musicFolders.size() > 0) {
+        if (!musicFolders.isEmpty()) {
             uploadDirectory = new File(musicFolders.get(0).getPath(), "Incoming").getPath();
         }
 

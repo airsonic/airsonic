@@ -78,8 +78,8 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
             MapDifference<String, List<String>> difference = Maps.difference(expected.getQueryParams(),
                     requested.getQueryParams());
 
-            if(difference.entriesDiffering().size() != 0 ||
-                    difference.entriesOnlyOnLeft().size() != 0 ||
+            if(!difference.entriesDiffering().isEmpty() ||
+                    !difference.entriesOnlyOnLeft().isEmpty() ||
                     difference.entriesOnlyOnRight().size() != 1 ||
                     difference.entriesOnlyOnRight().get(JWTSecurityService.JWT_PARAM_NAME) == null) {
                 logger.debug("False: expected query params [{}] do not match requested query params [{}]", expected.getQueryParams(), requested.getQueryParams());

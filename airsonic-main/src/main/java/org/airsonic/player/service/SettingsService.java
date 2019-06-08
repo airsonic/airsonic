@@ -764,7 +764,7 @@ public class SettingsService {
     }
 
     private void compileExcludePattern() {
-        if (getExcludePatternString() != null && getExcludePatternString().trim().length() > 0) {
+        if (getExcludePatternString() != null && !getExcludePatternString().trim().isEmpty()) {
             excludePattern = Pattern.compile(getExcludePatternString());
         } else {
             excludePattern = null;
