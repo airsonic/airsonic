@@ -62,7 +62,7 @@ public class RandomPlayQueueController {
             ModelMap model,
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(value = "size") Integer size,
+            @RequestParam("size") Integer size,
             @RequestParam(value = "genre", required = false) String genre,
             @RequestParam(value = "year", required = false) String year,
             @RequestParam(value = "songRating", required = false) String songRating,

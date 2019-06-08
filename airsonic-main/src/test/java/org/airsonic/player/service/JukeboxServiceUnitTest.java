@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(value = MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class JukeboxServiceUnitTest {
 
     private JukeboxService jukeboxService;
