@@ -692,7 +692,7 @@
                     <c:if test="${model.player.web}">
                         <td>
                             <div id="player" style="width:340px; height:40px;padding-right:10px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
+                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height="40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
