@@ -118,7 +118,7 @@ public class AvatarUploadController  {
 
             // Scale down image if necessary.
             if (width > MAX_AVATAR_SIZE || height > MAX_AVATAR_SIZE) {
-                double scaleFactor = (double) MAX_AVATAR_SIZE / (double) Math.max(width, height);
+                double scaleFactor = MAX_AVATAR_SIZE / (double) Math.max(width, height);
                 height = (int) (height * scaleFactor);
                 width = (int) (width * scaleFactor);
                 image = CoverArtController.scale(image, width, height);

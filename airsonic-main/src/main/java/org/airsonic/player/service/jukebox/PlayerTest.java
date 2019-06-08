@@ -48,7 +48,7 @@ public class PlayerTest implements AudioPlayer.Listener {
         });
         gainSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                float gain = (float) gainSlider.getValue() / 1000.0F;
+                float gain = gainSlider.getValue() / 1000.0F;
                 player.setGain(gain);
             }
         });
