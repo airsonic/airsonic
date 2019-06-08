@@ -59,7 +59,7 @@ import java.util.concurrent.Semaphore;
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping(value = {"/coverArt", "/ext/coverArt"})
+@RequestMapping({"/coverArt", "/ext/coverArt"})
 public class CoverArtController implements LastModified {
 
     public static final String ALBUM_COVERART_PREFIX = "al-";
