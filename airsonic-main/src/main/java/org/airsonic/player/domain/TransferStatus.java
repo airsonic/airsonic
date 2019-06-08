@@ -281,9 +281,8 @@ public class TransferStatus {
 
     @Override
     public String toString() {
-        String builder = "TransferStatus-" + hashCode() + " [player: " + player.getId() + ", file: " +
+        return "TransferStatus-" + hashCode() + " [player: " + player.getId() + ", file: " +
                 file + ", terminated: " + terminated + ", active: " + active + "]";
-        return builder;
     }
 
     /**

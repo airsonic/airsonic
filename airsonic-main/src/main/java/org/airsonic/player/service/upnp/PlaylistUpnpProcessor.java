@@ -56,8 +56,7 @@ public class PlaylistUpnpProcessor extends UpnpContentProcessor <Playlist, Media
     }
 
     public List<Playlist> getAllItems() {
-        List<Playlist> playlists = getPlaylistService().getAllPlaylists();
-        return playlists;
+        return getPlaylistService().getAllPlaylists();
     }
 
     public Playlist getItemById(String id) throws Exception {

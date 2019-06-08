@@ -12,8 +12,7 @@ public class MusicFolderTestData {
   private static String baseResources = "/MEDIAS/";
 
   public static String resolveBaseMediaPath() {
-    String baseDir = MusicFolderTestData.class.getResource(baseResources).toString().replace("file:","");
-    return baseDir;
+    return MusicFolderTestData.class.getResource(baseResources).toString().replace("file:","");
   }
 
   public static String resolveMusicFolderPath() {
