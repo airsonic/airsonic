@@ -32,7 +32,6 @@ import org.airsonic.player.domain.Bookmark;
 import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.i18n.LocaleResolver;
 import org.airsonic.player.service.*;
-import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
 import org.apache.commons.lang.StringUtils;
