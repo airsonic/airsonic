@@ -172,7 +172,7 @@ public class MediaScannerService {
         try {
 
             // Maps from artist name to album count.
-            Map<String, Integer> albumCount = new HashMap<String, Integer>();
+            Map<String, Integer> albumCount = new HashMap<>();
             Genres genres = new Genres();
 
             scanCount = 0;
