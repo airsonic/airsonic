@@ -195,27 +195,50 @@ public class TranscodingService {
 
         Parameters parameters = new Parameters(mediaFile, videoTranscodingSettings);
 
-        TranscodeScheme transcodeScheme = getTranscodeScheme(player);
-        if (maxBitRate == null && transcodeScheme != TranscodeScheme.OFF) {
-            maxBitRate = transcodeScheme.getMaxBitRate();
+        if (maxBitRate == null) {
+            maxBitRate = TranscodeScheme.OFF.getMaxBitRate();
         }
+
+        TranscodeScheme transcodeScheme = getTranscodeScheme(player).strictest(TranscodeScheme.fromMaxBitRate(maxBitRate));
+        maxBitRate = transcodeScheme.getMaxBitRate();
 
         boolean hls = videoTranscodingSettings != null && videoTranscodingSettings.isHls();
         Transcoding transcoding = getTranscoding(mediaFile, player, preferredTargetFormat, hls);
-        if (transcoding != null) {
-            parameters.setTranscoding(transcoding);
-            if (maxBitRate == null) {
-                maxBitRate = mediaFile.isVideo() ? VideoPlayerController.DEFAULT_BIT_RATE : TranscodeScheme.MAX_192.getMaxBitRate();
+        Integer bitRate = mediaFile.getBitRate();
+        if (bitRate == null) {
+            // Assume unlimited bitrate
+            bitRate = TranscodeScheme.OFF.getMaxBitRate();
+        }
+
+        if (mediaFile.isVideo()) {
+            if (maxBitRate == 0) {
+                maxBitRate = VideoPlayerController.DEFAULT_BIT_RATE;
             }
-        } else if (maxBitRate != null) {
-            boolean supported = isDownsamplingSupported(mediaFile);
-            Integer bitRate = mediaFile.getBitRate();
-            if (supported && bitRate != null && bitRate > maxBitRate) {
+        } else {
+            if (mediaFile.isVariableBitRate()) {
+                // Assume VBR needs approx 20% more bandwidth to maintain equivalent quality in CBR
+                bitRate = bitRate * 6 / 5;
+            }
+            // Make sure bitrate is quantized to valid values for CBR
+            if (TranscodeScheme.fromMaxBitRate(bitRate) != null) {
+                bitRate = TranscodeScheme.fromMaxBitRate(bitRate).getMaxBitRate();
+            }
+        }
+
+        if (maxBitRate == 0 || (bitRate != 0 && bitRate < maxBitRate)) {
+            maxBitRate = bitRate;
+        }
+
+        if (transcoding != null && ((maxBitRate != 0 && (bitRate == 0 || bitRate > maxBitRate)) ||
+            (preferredTargetFormat != null && ! mediaFile.getFormat().equalsIgnoreCase(preferredTargetFormat)))) {
+            parameters.setTranscoding(transcoding);
+        } else if (isDownsamplingSupported(mediaFile)) {
+            if (bitRate > maxBitRate) {
                 parameters.setDownsample(true);
             }
         }
 
-        parameters.setMaxBitRate(maxBitRate);
+        parameters.setMaxBitRate(maxBitRate == 0 ? null : maxBitRate);
         parameters.setExpectedLength(getExpectedLength(parameters));
         parameters.setRangeAllowed(isRangeAllowed(parameters));
         return parameters;
