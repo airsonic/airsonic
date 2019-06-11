@@ -109,6 +109,7 @@ public class MediaScannerServiceTestCase {
      */
     @Test
     public void testScanLibrary() {
+        musicFolderDao.getAllMusicFolders().forEach(musicFolder -> musicFolderDao.deleteMusicFolder(musicFolder.getId()));
         MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
         settingsService.clearMusicFolderCache();
 
