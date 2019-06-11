@@ -162,7 +162,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .and().authorizeRequests()
                     .antMatchers("/recover*", "/accessDenied*",
                             "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/crossdomain.xml", "/login", "/error")
+                            "/sonos/**", "/login", "/error")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")

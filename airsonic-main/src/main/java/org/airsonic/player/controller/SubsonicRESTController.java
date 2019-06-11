@@ -1938,40 +1938,6 @@ public class SubsonicRESTController {
         return result;
     }
 
-    @SuppressWarnings("UnusedParameters")
-    public ModelAndView videoPlayer(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        request = wrapRequest(request);
-
-        Map<String, Object> map = new HashMap<String, Object>();
-        int id = getRequiredIntParameter(request, "id");
-        MediaFile file = mediaFileService.getMediaFile(id);
-
-        int timeOffset = getIntParameter(request, "timeOffset", 0);
-        timeOffset = Math.max(0, timeOffset);
-        Integer duration = file.getDurationSeconds();
-        if (duration != null) {
-            map.put("skipOffsets", VideoPlayerController.createSkipOffsets(duration));
-            timeOffset = Math.min(duration, timeOffset);
-            duration -= timeOffset;
-        }
-
-        map.put("id", request.getParameter("id"));
-        map.put("u", request.getParameter("u"));
-        map.put("p", request.getParameter("p"));
-        map.put("c", request.getParameter("c"));
-        map.put("v", request.getParameter("v"));
-        map.put("video", file);
-        map.put("maxBitRate", getIntParameter(request, "maxBitRate", VideoPlayerController.DEFAULT_BIT_RATE));
-        map.put("duration", duration);
-        map.put("timeOffset", timeOffset);
-        map.put("bitRates", VideoPlayerController.BIT_RATES);
-        map.put("autoplay", getBooleanParameter(request, "autoplay", true));
-
-        ModelAndView result = new ModelAndView("rest/videoPlayer");
-        result.addObject("model", map);
-        return result;
-    }
-
     @RequestMapping(value = "/getCoverArt")
     public void getCoverArt(HttpServletRequest request, HttpServletResponse response) throws Exception {
         request = wrapRequest(request);
