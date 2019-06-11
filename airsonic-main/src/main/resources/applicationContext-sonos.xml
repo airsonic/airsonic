@@ -20,7 +20,7 @@
         <property name="playerService" ref="playerService"/>
         <property name="transcodingService" ref="transcodingService"/>
         <property name="musicIndexService" ref="musicIndexService"/>
-        <property name="searchService" ref="searchService"/>
+        <property name="searchService" ref="searchServiceImpl"/>
         <property name="ratingService" ref="ratingService"/>
         <property name="lastFmService" ref="lastFmService"/>
         <property name="podcastService" ref="podcastService"/>
