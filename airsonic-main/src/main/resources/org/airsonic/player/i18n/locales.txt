@@ -64,7 +64,7 @@ ko
 # Dutch
 nl
 
-# Norwegian (bokmål)
+# Norwegian (bokmÃ¥l)
 no
 
 # Norwegian (nynorsk)

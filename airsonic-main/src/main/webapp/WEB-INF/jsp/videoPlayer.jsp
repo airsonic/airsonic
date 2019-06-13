@@ -8,7 +8,6 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/cast_sender-v1.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/videoPlayerCast.js"/>"></script>
 
     <script type="text/javascript" language="javascript">
         function toggleStar(mediaFileId, imageId) {
@@ -21,7 +20,18 @@
                 starService.star(mediaFileId);
             }
         }
+        var model = {
+          duration: ${empty model.duration ? 0: model.duration},
+          remoteStreamUrl: "${model.remoteStreamUrl}",
+          video_title: "${model.video.title}",
+          remoteCoverArtUrl: "${model.remoteCoverArtUrl}",
+          streamUrl: "${model.streamUrl}",
+          video_id: "${model.video.id}",
+          hide_share: ${model.user.shareRole ? 1: 0},
+          hide_download: ${model.user.downloadRole ? 1: 0}
+        }
     </script>
+    <script type="text/javascript" src="<c:url value="/script/videoPlayerCast.js"/>"></script>
 </head>
 
 <body class="mainframe bgcolor1" style="padding-bottom:0.5em">

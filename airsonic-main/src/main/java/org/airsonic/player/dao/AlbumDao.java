@@ -154,20 +154,6 @@ public class AlbumDao extends AbstractDao {
      * @param count        Maximum number of albums to return.
      * @param byArtist     Whether to sort by artist name
      * @param musicFolders Only return albums from these folders.
-     * @return Albums in alphabetical order.
-     */
-    @Deprecated
-    public List<Album> getAlphabetialAlbums(final int offset, final int count, boolean byArtist, final List<MusicFolder> musicFolders) {
-        return getAlphabeticalAlbums(offset, count, byArtist, false, musicFolders);
-    }
-
-    /**
-     * Returns albums in alphabetical order.
-     *
-     * @param offset       Number of albums to skip.
-     * @param count        Maximum number of albums to return.
-     * @param byArtist     Whether to sort by artist name
-     * @param musicFolders Only return albums from these folders.
      * @param ignoreCase   Use case insensitive sorting
      * @return Albums in alphabetical order.
      */
