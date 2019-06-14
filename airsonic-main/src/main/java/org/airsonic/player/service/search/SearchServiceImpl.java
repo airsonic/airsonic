@@ -26,7 +26,6 @@ import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.FileUtil;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
@@ -39,8 +38,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static org.airsonic.player.service.search.IndexType.*;
@@ -57,8 +54,6 @@ public class SearchServiceImpl implements SearchService {
 
   private static final Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
 
-  private static final String  LUCENE_DIR     = "lucene2";
-
   @Autowired
   private MediaFileService mediaFileService;
   @Autowired
@@ -66,17 +61,9 @@ public class SearchServiceImpl implements SearchService {
   @Autowired
   private AlbumDao         albumDao;
   @Autowired
-  private DocumentFactory documentFactory;
-  @Autowired
-  private AnalyzerFactory analyzerFactory;
-  @Autowired
   private QueryFactory queryFactory;
-
-  private IndexWriter artistWriter;
-  private IndexWriter artistId3Writer;
-  private IndexWriter albumWriter;
-  private IndexWriter albumId3Writer;
-  private IndexWriter songWriter;
+  @Autowired
+  private IndexManager indexManager;
 
   public SearchServiceImpl() {
     removeLocks();
@@ -84,67 +71,27 @@ public class SearchServiceImpl implements SearchService {
 
   @Override
   public void startIndexing() {
-    try {
-      artistWriter = createIndexWriter(ARTIST);
-      artistId3Writer = createIndexWriter(ARTIST_ID3);
-      albumWriter = createIndexWriter(ALBUM);
-      albumId3Writer = createIndexWriter(ALBUM_ID3);
-      songWriter = createIndexWriter(SONG);
-    } catch (Exception x) {
-      LOG.error("Failed to create search index.", x);
-    }
+    indexManager.startIndexing();
   }
 
   @Override
   public void index(MediaFile mediaFile) {
-    try {
-      if (mediaFile.isFile()) {
-        songWriter.addDocument(documentFactory.createSongDocument(mediaFile));
-      } else if (mediaFile.isAlbum()) {
-        albumWriter.addDocument(documentFactory.createAlbumDocument(mediaFile));
-      } else {
-        artistWriter.addDocument(documentFactory.createArtistDocument(mediaFile));
-      }
-    } catch (Exception x) {
-      LOG.error("Failed to create search index for " + mediaFile, x);
-    }
+    indexManager.index(mediaFile);
   }
 
   @Override
   public void index(Artist artist, MusicFolder musicFolder) {
-    try {
-      artistId3Writer.addDocument(documentFactory.createDocument(artist, musicFolder));
-    } catch (Exception x) {
-      LOG.error("Failed to create search index for " + artist, x);
-    }
+    indexManager.index(artist, musicFolder);
   }
 
   @Override
   public void index(Album album) {
-    try {
-      albumId3Writer.addDocument(documentFactory.createDocument(album));
-    } catch (Exception x) {
-      LOG.error("Failed to create search index for " + album, x);
-    }
+    indexManager.index(album);
   }
 
   @Override
   public void stopIndexing() {
-    try {
-      artistWriter.optimize();
-      artistId3Writer.optimize();
-      albumWriter.optimize();
-      albumId3Writer.optimize();
-      songWriter.optimize();
-    } catch (Exception x) {
-      LOG.error("Failed to create search index.", x);
-    } finally {
-      FileUtil.closeQuietly(artistId3Writer);
-      FileUtil.closeQuietly(artistWriter);
-      FileUtil.closeQuietly(albumWriter);
-      FileUtil.closeQuietly(albumId3Writer);
-      FileUtil.closeQuietly(songWriter);
-    }
+    indexManager.stopIndexing();
   }
 
   @Override
@@ -160,7 +107,7 @@ public class SearchServiceImpl implements SearchService {
 
     IndexReader reader = null;
     try {
-      reader = createIndexReader(indexType);
+      reader = indexManager.createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
       Query query = queryFactory.search(criteria, musicFolders, indexType);
       TopDocs topDocs = searcher.search(query, null, offset + count);
@@ -204,7 +151,7 @@ public class SearchServiceImpl implements SearchService {
 
     IndexReader reader = null;
     try {
-      reader = createIndexReader(SONG);
+      reader = indexManager.createIndexReader(SONG);
       Searcher searcher = new IndexSearcher(reader);
       Query query = queryFactory.getRandomSongs(criteria);
       TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
@@ -236,7 +183,7 @@ public class SearchServiceImpl implements SearchService {
 
     IndexReader reader = null;
     try {
-      reader = createIndexReader(ALBUM);
+      reader = indexManager.createIndexReader(ALBUM);
       Searcher searcher = new IndexSearcher(reader);
       Query query = queryFactory.getRandomAlbums(musicFolders);
       TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
@@ -268,7 +215,7 @@ public class SearchServiceImpl implements SearchService {
 
     IndexReader reader = null;
     try {
-      reader = createIndexReader(ALBUM_ID3);
+      reader = indexManager.createIndexReader(ALBUM_ID3);
       Searcher searcher = new IndexSearcher(reader);
       Query query = queryFactory.getRandomAlbumsId3(musicFolders);
       TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
@@ -320,7 +267,7 @@ public class SearchServiceImpl implements SearchService {
     IndexReader reader = null;
 
     try {
-      reader = createIndexReader(indexType);
+      reader = indexManager.createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
       Query query = queryFactory.searchByName(field, name);
       Sort sort = new Sort(new SortField(field, SortField.STRING));
@@ -361,35 +308,21 @@ public class SearchServiceImpl implements SearchService {
     }
   }
 
-  private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
-    File dir = getIndexDirectory(indexType);
-    return new IndexWriter(FSDirectory.open(dir), analyzerFactory.getAnalyzer(), true,
-        new IndexWriter.MaxFieldLength(10));
-  }
-
-  private IndexReader createIndexReader(IndexType indexType) throws IOException {
-    File dir = getIndexDirectory(indexType);
-    return IndexReader.open(FSDirectory.open(dir), true);
-  }
-
-  private File getIndexRootDirectory() {
-    return new File(SettingsService.getAirsonicHome(), LUCENE_DIR);
-  }
-
-  private File getIndexDirectory(IndexType indexType) {
-    return new File(getIndexRootDirectory(), indexType.toString().toLowerCase());
-  }
-
   /**
    * Locks are managed automatically by the framework.
+   * 
    * @deprecated It becomes unnecessary at the time of version upgrade.
    */
   @Deprecated
-  private void removeLocks() {
+  public void removeLocks() {
     for (IndexType indexType : IndexType.values()) {
       Directory dir = null;
       try {
-        dir = FSDirectory.open(getIndexDirectory(indexType));
+        /*
+         * Static access to the accompanying method is performed as a transition period.
+         * (Unnecessary processing after updating Lucene.)
+         */
+        dir = FSDirectory.open(IndexManager.getIndexDirectory(indexType));
         if (IndexWriter.isLocked(dir)) {
           IndexWriter.unlock(dir);
           LOG.info("Removed Lucene lock file in " + dir);
@@ -401,6 +334,5 @@ public class SearchServiceImpl implements SearchService {
       }
     }
   }
-
 
 }
