@@ -28,23 +28,12 @@ import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SearchService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.FileUtil;
-import org.apache.lucene.analysis.*;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.*;
-import org.apache.lucene.search.spans.SpanOrQuery;
-import org.apache.lucene.search.spans.SpanQuery;
-import org.apache.lucene.search.spans.SpanTermQuery;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.NumericUtils;
-import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +41,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.*;
 
 import static org.airsonic.player.service.search.IndexType.*;
@@ -69,7 +57,6 @@ public class SearchServiceImpl implements SearchService {
 
   private static final Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
 
-  private static final Version LUCENE_VERSION = Version.LUCENE_30;
   private static final String  LUCENE_DIR     = "lucene2";
 
   @Autowired
@@ -82,6 +69,8 @@ public class SearchServiceImpl implements SearchService {
   private DocumentFactory documentFactory;
   @Autowired
   private AnalyzerFactory analyzerFactory;
+  @Autowired
+  private QueryFactory queryFactory;
 
   private IndexWriter artistWriter;
   private IndexWriter artistId3Writer;
@@ -173,28 +162,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
-      Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
-
-      MultiFieldQueryParser queryParser = new MultiFieldQueryParser(LUCENE_VERSION,
-          indexType.getFields(), analyzer, indexType.getBoosts());
-
-      BooleanQuery query = new BooleanQuery();
-      query.add(queryParser.parse(analyzeQuery(criteria.getQuery())), BooleanClause.Occur.MUST);
-
-      List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-      for (MusicFolder musicFolder : musicFolders) {
-        if (indexType == ALBUM_ID3 || indexType == ARTIST_ID3) {
-          musicFolderQueries.add(new SpanTermQuery(
-              new Term( FieldNames.FOLDER_ID, NumericUtils.intToPrefixCoded(musicFolder.getId()))));
-        } else {
-          musicFolderQueries
-              .add(new SpanTermQuery(new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-        }
-      }
-      query.add(
-          new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
-          BooleanClause.Occur.MUST);
-
+      Query query = queryFactory.search(criteria, musicFolders, indexType);
       TopDocs topDocs = searcher.search(query, null, offset + count);
       result.setTotalHits(topDocs.totalHits);
 
@@ -230,17 +198,6 @@ public class SearchServiceImpl implements SearchService {
     return result;
   }
 
-  private String analyzeQuery(String query) throws IOException {
-    StringBuilder result = new StringBuilder();
-    ASCIIFoldingFilter filter = new ASCIIFoldingFilter(
-        new StandardTokenizer(LUCENE_VERSION, new StringReader(query)));
-    TermAttribute termAttribute = filter.getAttribute(TermAttribute.class);
-    while (filter.incrementToken()) {
-      result.append(termAttribute.term()).append("* ");
-    }
-    return result.toString();
-  }
-
   @Override
   public List<MediaFile> getRandomSongs(RandomSearchCriteria criteria) {
     List<MediaFile> result = new ArrayList<MediaFile>();
@@ -249,30 +206,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(SONG);
       Searcher searcher = new IndexSearcher(reader);
-
-      BooleanQuery query = new BooleanQuery();
-      query.add(
-          new TermQuery(new Term(FieldNames.MEDIA_TYPE, MediaFile.MediaType.MUSIC.name().toLowerCase())),
-          BooleanClause.Occur.MUST);
-      if (criteria.getGenre() != null) {
-        String genre = normalizeGenre(criteria.getGenre());
-        query.add(new TermQuery(new Term(FieldNames.GENRE, genre)), BooleanClause.Occur.MUST);
-      }
-      if (criteria.getFromYear() != null || criteria.getToYear() != null) {
-        NumericRangeQuery<Integer> rangeQuery = NumericRangeQuery.newIntRange(FieldNames.YEAR,
-            criteria.getFromYear(), criteria.getToYear(), true, true);
-        query.add(rangeQuery, BooleanClause.Occur.MUST);
-      }
-
-      List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-      for (MusicFolder musicFolder : criteria.getMusicFolders()) {
-        musicFolderQueries
-            .add(new SpanTermQuery(new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-      }
-      query.add(
-          new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
-          BooleanClause.Occur.MUST);
-
+      Query query = queryFactory.getRandomSongs(criteria);
       TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
       List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
       Random random = new Random(System.currentTimeMillis());
@@ -296,10 +230,6 @@ public class SearchServiceImpl implements SearchService {
     return result;
   }
 
-  private static String normalizeGenre(String genre) {
-    return genre.toLowerCase().replace(" ", "").replace("-", "");
-  }
-
   @Override
   public List<MediaFile> getRandomAlbums(int count, List<MusicFolder> musicFolders) {
     List<MediaFile> result = new ArrayList<MediaFile>();
@@ -308,15 +238,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(ALBUM);
       Searcher searcher = new IndexSearcher(reader);
-
-      List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-      for (MusicFolder musicFolder : musicFolders) {
-        musicFolderQueries
-            .add(new SpanTermQuery(new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-      }
-      Query query = new SpanOrQuery(
-          musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
-
+      Query query = queryFactory.getRandomAlbums(musicFolders);
       TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
       List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
       Random random = new Random(System.currentTimeMillis());
@@ -348,14 +270,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(ALBUM_ID3);
       Searcher searcher = new IndexSearcher(reader);
-
-      List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-      for (MusicFolder musicFolder : musicFolders) {
-        musicFolderQueries.add(new SpanTermQuery(
-            new Term(FieldNames.FOLDER_ID, NumericUtils.intToPrefixCoded(musicFolder.getId()))));
-      }
-      Query query = new SpanOrQuery(
-          musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
+      Query query = queryFactory.getRandomAlbumsId3(musicFolders);
       TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
       List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
       Random random = new Random(System.currentTimeMillis());
@@ -407,15 +322,10 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
-      Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
-      QueryParser queryParser = new QueryParser(LUCENE_VERSION, field, analyzer);
-
-      Query q = queryParser.parse(name + "*");
-
+      Query query = queryFactory.searchByName(field, name);
       Sort sort = new Sort(new SortField(field, SortField.STRING));
-      TopDocs topDocs = searcher.search(q, null, offset + count, sort);
+      TopDocs topDocs = searcher.search(query, null, offset + count, sort);
       result.setTotalHits(topDocs.totalHits);
-
       int start = Math.min(offset, topDocs.totalHits);
       int end = Math.min(start + count, topDocs.totalHits);
       for (int i = start; i < end; i++) {
