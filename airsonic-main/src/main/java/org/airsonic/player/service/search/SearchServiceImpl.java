@@ -29,8 +29,6 @@ import org.airsonic.player.service.SearchService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.FileUtil;
 import org.apache.lucene.analysis.*;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.Document;
@@ -54,7 +52,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
 
@@ -83,6 +80,8 @@ public class SearchServiceImpl implements SearchService {
   private AlbumDao         albumDao;
   @Autowired
   private DocumentFactory documentFactory;
+  @Autowired
+  private AnalyzerFactory analyzerFactory;
 
   private IndexWriter artistWriter;
   private IndexWriter artistId3Writer;
@@ -174,7 +173,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
-      Analyzer analyzer = new CustomAnalyzer();
+      Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
 
       MultiFieldQueryParser queryParser = new MultiFieldQueryParser(LUCENE_VERSION,
           indexType.getFields(), analyzer, indexType.getBoosts());
@@ -408,7 +407,7 @@ public class SearchServiceImpl implements SearchService {
     try {
       reader = createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
-      Analyzer analyzer = new CustomAnalyzer();
+      Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
       QueryParser queryParser = new QueryParser(LUCENE_VERSION, field, analyzer);
 
       Query q = queryParser.parse(name + "*");
@@ -454,7 +453,7 @@ public class SearchServiceImpl implements SearchService {
 
   private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
     File dir = getIndexDirectory(indexType);
-    return new IndexWriter(FSDirectory.open(dir), new CustomAnalyzer(), true,
+    return new IndexWriter(FSDirectory.open(dir), analyzerFactory.getAnalyzer(), true,
         new IndexWriter.MaxFieldLength(10));
   }
 
@@ -493,40 +492,5 @@ public class SearchServiceImpl implements SearchService {
     }
   }
 
-  private class CustomAnalyzer extends StandardAnalyzer {
-    private CustomAnalyzer() {
-      super(LUCENE_VERSION);
-    }
 
-    @Override
-    public TokenStream tokenStream(String fieldName, Reader reader) {
-      TokenStream result = super.tokenStream(fieldName, reader);
-      return new ASCIIFoldingFilter(result);
-    }
-
-    @Override
-    public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-      class SavedStreams {
-        StandardTokenizer tokenStream;
-        TokenStream       filteredTokenStream;
-      }
-
-      SavedStreams streams = (SavedStreams) getPreviousTokenStream();
-      if (streams == null) {
-        streams = new SavedStreams();
-        setPreviousTokenStream(streams);
-        streams.tokenStream = new StandardTokenizer(LUCENE_VERSION, reader);
-        streams.filteredTokenStream = new StandardFilter(streams.tokenStream);
-        streams.filteredTokenStream = new LowerCaseFilter(streams.filteredTokenStream);
-        streams.filteredTokenStream = new StopFilter(true, streams.filteredTokenStream,
-            STOP_WORDS_SET);
-        streams.filteredTokenStream = new ASCIIFoldingFilter(streams.filteredTokenStream);
-      } else {
-        streams.tokenStream.reset(reader);
-      }
-      streams.tokenStream.setMaxTokenLength(DEFAULT_MAX_TOKEN_LENGTH);
-
-      return streams.filteredTokenStream;
-    }
-  }
 }
