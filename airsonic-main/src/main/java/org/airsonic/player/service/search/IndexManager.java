@@ -71,7 +71,7 @@ public class IndexManager {
 
   public void index(Album album) {
     try {
-      albumId3Writer.addDocument(documentFactory.createDocument(album));
+      albumId3Writer.addDocument(documentFactory.createAlbumId3Document(album));
     } catch (Exception x) {
       LOG.error("Failed to create search index for " + album, x);
     }
@@ -79,7 +79,7 @@ public class IndexManager {
 
   public void index(Artist artist, MusicFolder musicFolder) {
     try {
-      artistId3Writer.addDocument(documentFactory.createDocument(artist, musicFolder));
+      artistId3Writer.addDocument(documentFactory.createArtistId3Document(artist, musicFolder));
     } catch (Exception x) {
       LOG.error("Failed to create search index for " + artist, x);
     }

@@ -104,7 +104,7 @@ public class DocumentFactory {
    * @return document
    * @since legacy
    */
-  public Document createDocument(Album album) {
+  public Document createAlbumId3Document(Album album) {
     Document doc = new Document();
     doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(album.getId()));
 
@@ -129,7 +129,7 @@ public class DocumentFactory {
    * @return document
    * @since legacy
    */
-  public Document createDocument(Artist artist, MusicFolder musicFolder) {
+  public Document createArtistId3Document(Artist artist, MusicFolder musicFolder) {
     Document doc = new Document();
     doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(artist.getId()));
     doc.add(new Field(FieldNames.ARTIST, artist.getName(), Field.Store.YES, Field.Index.ANALYZED));
