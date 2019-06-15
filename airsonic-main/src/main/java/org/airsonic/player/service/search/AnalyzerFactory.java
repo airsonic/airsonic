@@ -29,8 +29,6 @@ import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -46,8 +44,6 @@ import java.io.Reader;
  */
 @Component
 public final class AnalyzerFactory {
-  
-  private static final Logger LOG = LoggerFactory.getLogger(AnalyzerFactory.class);
 
   private Analyzer analyzer;
 
@@ -60,15 +56,7 @@ public final class AnalyzerFactory {
    */
   public Analyzer getAnalyzer() {
     if (null == analyzer) {
-      try {
-        analyzer = new CustomAnalyzer();
-      } catch (Exception e) {
-        /*
-         * It is a transient description, and it is appropriate to detect an IOException at Lucene
-         * version upgrade. Do not throw exceptions in Lucene 3.x
-         */
-        LOG.error("Error when initializing Analyzer.", e);
-      }
+      analyzer = new CustomAnalyzer();
     }
     return analyzer;
   }
@@ -80,15 +68,7 @@ public final class AnalyzerFactory {
    */
   public Analyzer getQueryAnalyzer() {
     if (null == queryAnalyzer) {
-      try {
-        queryAnalyzer = new CustomAnalyzer();
-      } catch (Exception e) {
-        /*
-         * It is a transient description, and it is appropriate to detect an IOException at Lucene
-         * version upgrade. Do not throw exceptions in Lucene 3.x
-         */
-        LOG.error("Error when initializing Analyzer.", e);
-      }
+      queryAnalyzer = new CustomAnalyzer();
     }
     return queryAnalyzer;
   }
