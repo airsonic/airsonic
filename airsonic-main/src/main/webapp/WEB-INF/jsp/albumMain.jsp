@@ -5,12 +5,12 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script src="<c:url value="/dwr/engine.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/starService.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/multiService.js"/>"></script>
+    <script src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
+    <script src="<c:url value="/script/utils.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -21,7 +21,7 @@
     <sub:param name="id" value="${model.dir.id}"/>
 </sub:url>
 
-<script type="text/javascript" language="javascript">
+<script>
     function init() {
         $("a.fancy").fancyZoom({
             minBorder: 30

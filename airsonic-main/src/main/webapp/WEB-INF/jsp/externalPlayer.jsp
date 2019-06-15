@@ -5,8 +5,8 @@
 <head>
     <%@ include file="head.jsp" %>
     <meta name="og:type" content="album"/>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/playlist.min.js"/>"></script>
+    <script src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
+    <script src="<c:url value="/script/mediaelement/playlist.min.js"/>"></script>
     <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/playlist.min.css"/>">
     <c:if test="${not empty model.songs}">
         <meta name="og:title"
@@ -51,7 +51,7 @@
 
 </div>
 
-<script type="text/javascript">
+<script>
     new MediaElementPlayer('player', {
         features: ['playpause', 'playlist', 'current', 'progress', 'duration', 'volume'],
         currentMessage: "",

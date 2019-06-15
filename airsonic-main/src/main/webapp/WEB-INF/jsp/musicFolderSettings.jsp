@@ -5,7 +5,7 @@
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
 
-    <script type="text/javascript">
+    <script>
         function init() {
             $("#newMusicFolderName").attr("placeholder", "<fmt:message key="musicfoldersettings.name"/>");
             $("#newMusicFolderPath").attr("placeholder", "<fmt:message key="musicfoldersettings.path"/>");

@@ -4,10 +4,10 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
+    <script src="<c:url value="/dwr/engine.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/multiService.js"/>"></script>
 
-    <script type="text/javascript">
+    <script>
         var previousQuery = "";
         var instantSearchTimeout;
         var showSideBar = ${model.showSideBar ? 'true' : 'false'};

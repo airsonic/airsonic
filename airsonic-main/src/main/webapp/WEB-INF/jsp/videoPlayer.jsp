@@ -5,11 +5,11 @@
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
     <link rel="stylesheet" type="text/css" href="<c:url value="/style/videoPlayer.css"/>">
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/cast_sender-v1.js"/>"></script>
+    <script src="<c:url value="/dwr/engine.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/starService.js"/>"></script>
+    <script src="<c:url value="/script/cast_sender-v1.js"/>"></script>
 
-    <script type="text/javascript" language="javascript">
+    <script>
         function toggleStar(mediaFileId, imageId) {
             if ($(imageId).attr("src").indexOf("<spring:theme code="ratingOnImage"/>") != -1) {
                 $(imageId).attr("src", "<spring:theme code="ratingOffImage"/>");
@@ -31,7 +31,7 @@
           hide_download: ${model.user.downloadRole ? 1: 0}
         }
     </script>
-    <script type="text/javascript" src="<c:url value="/script/videoPlayerCast.js"/>"></script>
+    <script src="<c:url value="/script/videoPlayerCast.js"/>"></script>
 </head>
 
 <body class="mainframe bgcolor1" style="padding-bottom:0.5em">
@@ -70,7 +70,7 @@
     </div>
     <div id="debug"></div>
 
-    <script type="text/javascript">
+    <script>
         var CastPlayer = new CastPlayer();
     </script>
 

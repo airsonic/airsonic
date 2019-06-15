@@ -3,7 +3,7 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script src="<c:url value="/script/utils.js"/>"></script>
 </head>
 <body class="mainframe bgcolor1">
 

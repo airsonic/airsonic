@@ -5,7 +5,7 @@
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
 
-    <script type="text/javascript" language="javascript">
+    <script>
 
         function showMoreArtists() {
             $('.artistRow').show(); $('#moreArtists').hide();

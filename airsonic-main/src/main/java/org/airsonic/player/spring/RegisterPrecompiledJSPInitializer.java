@@ -66,7 +66,7 @@ public class RegisterPrecompiledJSPInitializer implements ServletContextInitiali
             WebApp webapp = (WebApp) unmarshaller.unmarshal(webXmlIS);
             try {
                 webXmlIS.close();
-            } catch (java.io.IOException e) {}
+            } catch (java.io.IOException ignored) {}
             return webapp;
         } catch (JAXBException e) {
             throw new RuntimeException("Could not parse precompiled-jsp-web.xml", e);

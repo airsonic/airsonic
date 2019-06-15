@@ -3,7 +3,7 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript">
+    <script>
         if (window != window.top) {
             top.location.href = location.href;
         }

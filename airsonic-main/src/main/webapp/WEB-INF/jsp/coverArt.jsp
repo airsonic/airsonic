@@ -122,7 +122,7 @@ PARAMETERS
     </div>
 </c:if>
 
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         setTimeout("$('#${imgId}').fadeIn(500)", ${empty param.appearAfter ? 0 : param.appearAfter});
     });

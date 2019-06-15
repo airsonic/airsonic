@@ -3,11 +3,11 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/coverArtService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/coverArtService.js"/>"></script>
+    <script src="<c:url value="/dwr/engine.js"/>"></script>
+    <script src="<c:url value="/dwr/util.js"/>"></script>
 
-    <script type="text/javascript" language="javascript">
+    <script>
         dwr.engine.setErrorHandler(function() {
             $("#wait").hide();
             dwr.util.setValue("errorDetails", "Sorry, an error occurred while searching for cover art.");

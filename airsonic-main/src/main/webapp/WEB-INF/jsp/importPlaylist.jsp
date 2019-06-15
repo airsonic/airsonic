@@ -13,7 +13,7 @@
 <c:if test="${not empty model.playlist}">
     <p>
         <fmt:message key="importPlaylist.success"><fmt:param value="${model.playlist.name}"/></fmt:message>
-        <script type="text/javascript" language="javascript">
+        <script>
             top.left.updatePlaylists();
             top.main.location.href = "playlist.view?id=${model.playlist.id}";
         </script>

@@ -4,9 +4,9 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script src="<c:url value="/script/utils.js"/>"></script>
 
-    <script type="text/javascript" language="javascript">
+    <script>
         function enableLastFmFields() {
             $("#lastFm").is(":checked") ? $("#lastFmTable").show() : $("#lastFmTable").hide();
         }

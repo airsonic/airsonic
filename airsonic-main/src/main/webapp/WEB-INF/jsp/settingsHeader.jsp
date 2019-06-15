@@ -2,7 +2,7 @@
 <%@ include file="include.jsp" %>
 
 <c:if test="${param.toast}">
-    <script type="text/javascript">
+    <script>
         $(document).ready(function () {
             $().toastmessage("showSuccessToast", "<fmt:message key="common.settingssaved"/>");
         });

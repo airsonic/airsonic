@@ -23,7 +23,7 @@
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
 
-    <script type="text/javascript" language="javascript">
+    <script>
         function init() {
             $("#dialog-delete").dialog({resizable: false, height: 170, autoOpen: false,
                 buttons: {

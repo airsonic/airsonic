@@ -3,7 +3,7 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript" language="javascript">
+    <script>
         function hideGettingStarted() {
             alert("<fmt:message key="gettingStarted.hidealert"/>");
             location.href = "gettingStarted.view?hide";

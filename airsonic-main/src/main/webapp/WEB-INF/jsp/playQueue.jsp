@@ -3,14 +3,14 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
+    <script src="<c:url value="/script/utils.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
+    <script src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
+    <script src="<c:url value="/dwr/engine.js"/>"></script>
+    <script src="<c:url value="/dwr/util.js"/>"></script>
+    <script src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
+    <script src="<c:url value="/script/playQueueCast.js"/>"></script>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -30,7 +30,7 @@
 
 <span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
 
-<script type="text/javascript" language="javascript">
+<script>
 
     // These variables store the media player state, received from DWR in the
     // playQueueCallback function below.
@@ -847,7 +847,7 @@
                                 </div>
                                 <div style="float:left">
                                     <div id="castVolume" style="width:80px;height:4px;margin-left:10px;margin-right:10px;margin-top:8px"></div>
-                                    <script type="text/javascript">
+                                    <script>
                                         $("#castVolume").slider({max: 100, value: 50, animate: "fast", range: "min"});
                                         $("#castVolume").on("slidestop", onCastVolumeChanged);
                                     </script>
@@ -873,7 +873,7 @@
                         </td>
                         <td style="white-space:nowrap;">
                             <div id="jukeboxVolume" style="width:80px;height:4px"></div>
-                            <script type="text/javascript">
+                            <script>
                                 $("#jukeboxVolume").slider({max: 100, value: 50, animate: "fast", range: "min"});
                                 $("#jukeboxVolume").on("slidestop", onJukeboxVolumeChanged);
                             </script>
@@ -1029,13 +1029,13 @@
     <div id="dialog-select-playlist-list"></div>
 </div>
 
-<script type="text/javascript">
+<script>
     window['__onGCastApiAvailable'] = function(isAvailable) {
         if (isAvailable) {
             CastPlayer.initializeCastPlayer();
         }
     };
 </script>
-<script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
 </body></html>

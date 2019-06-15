@@ -5,7 +5,7 @@
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
 
-    <script type="text/javascript" language="javascript">
+    <script>
         function init() {
             <c:if test="${model.listReloadDelay gt 0}">
             setTimeout("refresh()", ${model.listReloadDelay * 1000});

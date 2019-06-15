@@ -21,7 +21,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts.js"/>"></script>
+    <script src="<c:url value="/script/scripts.js"/>"></script>
 </head>
 
 <body class="mainframe bgcolor1">

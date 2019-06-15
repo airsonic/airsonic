@@ -29,7 +29,7 @@
     </table>
 </div>
 
-<script type="text/javascript" src="<c:url value='/script/playQueue/javaJukeboxPlayerControlBar.js'/>"></script>
-<script type="text/javascript">
+<script src="<c:url value='/script/playQueue/javaJukeboxPlayerControlBar.js'/>"></script>
+<script>
     initJavaJukeboxPlayerControlBar();
 </script>
