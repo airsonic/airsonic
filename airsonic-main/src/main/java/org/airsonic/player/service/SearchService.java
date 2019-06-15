@@ -32,6 +32,13 @@ import org.airsonic.player.service.search.IndexType;
 
 import java.util.List;
 
+/**
+ * Performs Lucene-based searching and indexing.
+ *
+ * @author Sindre Mehus
+ * @version $Id$
+ * @see MediaScannerService
+ */
 public interface SearchService {
 
   void startIndexing();

@@ -20,50 +20,44 @@
 
 package org.airsonic.player.service.search;
 
-import com.google.common.collect.Lists;
-import org.airsonic.player.dao.AlbumDao;
-import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.domain.*;
-import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SearchService;
 import org.airsonic.player.util.FileUtil;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import static org.airsonic.player.service.search.IndexType.*;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
-/**
- * Performs Lucene-based searching and indexing.
- *
- * @author Sindre Mehus
- * @version $Id$
- * @see MediaScannerService
- */
 @Service
 public class SearchServiceImpl implements SearchService {
 
   private static final Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
 
   @Autowired
-  private MediaFileService mediaFileService;
-  @Autowired
-  private ArtistDao        artistDao;
-  @Autowired
-  private AlbumDao         albumDao;
-  @Autowired
   private QueryFactory queryFactory;
   @Autowired
   private IndexManager indexManager;
+  @Autowired
+  private SearchServiceTermination termination;
+
+  // TODO Should be changed to SecureRandom?
+  private final Random random = new Random(System.currentTimeMillis());
 
   public SearchServiceImpl() {
     removeLocks();
@@ -97,6 +91,7 @@ public class SearchServiceImpl implements SearchService {
   @Override
   public SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders,
       IndexType indexType) {
+
     SearchResult result = new SearchResult();
     int offset = criteria.getOffset();
     int count = criteria.getCount();
@@ -107,205 +102,170 @@ public class SearchServiceImpl implements SearchService {
 
     IndexReader reader = null;
     try {
+
       reader = indexManager.createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
       Query query = queryFactory.search(criteria, musicFolders, indexType);
+
       TopDocs topDocs = searcher.search(query, null, offset + count);
       result.setTotalHits(topDocs.totalHits);
-
       int start = Math.min(offset, topDocs.totalHits);
       int end = Math.min(start + count, topDocs.totalHits);
+
       for (int i = start; i < end; i++) {
-        Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-        switch (indexType) {
-          case SONG:
-          case ARTIST:
-          case ALBUM:
-            MediaFile mediaFile = mediaFileService.getMediaFile(Integer.valueOf(doc.get(FieldNames.ID)));
-            addIfNotNull(mediaFile, result.getMediaFiles());
-            break;
-          case ARTIST_ID3:
-            Artist artist = artistDao.getArtist(Integer.valueOf(doc.get(FieldNames.ID)));
-            addIfNotNull(artist, result.getArtists());
-            break;
-          case ALBUM_ID3:
-            Album album = albumDao.getAlbum(Integer.valueOf(doc.get(FieldNames.ID)));
-            addIfNotNull(album, result.getAlbums());
-            break;
-          default:
-            break;
-        }
+        termination.addIfAnyMatch(result, indexType, searcher.doc(topDocs.scoreDocs[i].doc));
       }
 
-    } catch (Throwable x) {
-      LOG.error("Failed to execute Lucene search.", x);
+    } catch (IOException | ParseException e) {
+      LOG.error("Failed to execute Lucene search.", e);
     } finally {
       FileUtil.closeQuietly(reader);
     }
     return result;
   }
 
+  /**
+   * Common processing of random method.
+   * @param count Number of albums to return.
+   * @param searcher
+   * @param query
+   * @param id2ListCallBack Callback to get D from id and store it in List
+   * @return result
+   * @throws IOException
+   */
+  private final <D> List<D> createRandomFiles(
+          int count,
+          Searcher searcher,
+          Query query,
+          BiConsumer<List<D>, Integer> id2ListCallBack) throws IOException{
+
+      List<Integer> docs = Arrays.stream(searcher.search(query, Integer.MAX_VALUE).scoreDocs)
+              .map(sd -> sd.doc)
+              .collect(Collectors.toList());
+
+      List<D> result = new ArrayList<>();
+      while (!docs.isEmpty() && result.size() < count) {
+          int randomPos = random.nextInt(docs.size());
+          Document document = searcher.doc(docs.get(randomPos));
+          id2ListCallBack.accept(result, termination.getId.apply(document));
+          docs.remove(randomPos);
+      }
+
+      return result;
+  }
+
   @Override
   public List<MediaFile> getRandomSongs(RandomSearchCriteria criteria) {
-    List<MediaFile> result = new ArrayList<MediaFile>();
 
     IndexReader reader = null;
     try {
       reader = indexManager.createIndexReader(SONG);
       Searcher searcher = new IndexSearcher(reader);
-      Query query = queryFactory.getRandomSongs(criteria);
-      TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
-      List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
-      Random random = new Random(System.currentTimeMillis());
-
-      while (!scoreDocs.isEmpty() && result.size() < criteria.getCount()) {
-        int index = random.nextInt(scoreDocs.size());
-        Document doc = searcher.doc(scoreDocs.remove(index).doc);
-        int id = Integer.valueOf(doc.get(FieldNames.ID));
-        try {
-          addIfNotNull(mediaFileService.getMediaFile(id), result);
-        } catch (Exception x) {
-          LOG.warn("Failed to get media file " + id);
-        }
+      if (isEmpty(searcher)) {
+        // At first start
+        return Collections.emptyList();
       }
 
-    } catch (Throwable x) {
-      LOG.error("Failed to search or random songs.", x);
+      Query query = queryFactory.getRandomSongs(criteria);
+      return createRandomFiles(criteria.getCount(), searcher, query,
+          (dist, id) -> termination.addIgnoreNull(dist, SONG, id));
+
+    } catch (IOException e) {
+      LOG.error("Failed to search or random songs.", e);
     } finally {
       FileUtil.closeQuietly(reader);
     }
-    return result;
+    return Collections.emptyList();
   }
 
   @Override
   public List<MediaFile> getRandomAlbums(int count, List<MusicFolder> musicFolders) {
-    List<MediaFile> result = new ArrayList<MediaFile>();
 
     IndexReader reader = null;
     try {
       reader = indexManager.createIndexReader(ALBUM);
       Searcher searcher = new IndexSearcher(reader);
-      Query query = queryFactory.getRandomAlbums(musicFolders);
-      TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
-      List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
-      Random random = new Random(System.currentTimeMillis());
-
-      while (!scoreDocs.isEmpty() && result.size() < count) {
-        int index = random.nextInt(scoreDocs.size());
-        Document doc = searcher.doc(scoreDocs.remove(index).doc);
-        int id = Integer.valueOf(doc.get(FieldNames.ID));
-        try {
-          addIfNotNull(mediaFileService.getMediaFile(id), result);
-        } catch (Exception x) {
-          LOG.warn("Failed to get media file " + id, x);
-        }
+      if (isEmpty(searcher)) {
+        return Collections.emptyList();
       }
 
-    } catch (Throwable x) {
-      LOG.error("Failed to search for random albums.", x);
+      Query query = queryFactory.getRandomAlbums(musicFolders);
+      return createRandomFiles(count, searcher, query,
+          (dist, id) -> termination.addIgnoreNull(dist, ALBUM, id));
+
+    } catch (IOException e) {
+      LOG.error("Failed to search for random albums.", e);
     } finally {
       FileUtil.closeQuietly(reader);
     }
-    return result;
+    return Collections.emptyList();
   }
 
   @Override
   public List<Album> getRandomAlbumsId3(int count, List<MusicFolder> musicFolders) {
-    List<Album> result = new ArrayList<Album>();
 
     IndexReader reader = null;
     try {
       reader = indexManager.createIndexReader(ALBUM_ID3);
       Searcher searcher = new IndexSearcher(reader);
-      Query query = queryFactory.getRandomAlbumsId3(musicFolders);
-      TopDocs topDocs = searcher.search(query, null, Integer.MAX_VALUE);
-      List<ScoreDoc> scoreDocs = Lists.newArrayList(topDocs.scoreDocs);
-      Random random = new Random(System.currentTimeMillis());
-
-      while (!scoreDocs.isEmpty() && result.size() < count) {
-        int index = random.nextInt(scoreDocs.size());
-        Document doc = searcher.doc(scoreDocs.remove(index).doc);
-        int id = Integer.valueOf(doc.get(FieldNames.ID));
-        try {
-          addIfNotNull(albumDao.getAlbum(id), result);
-        } catch (Exception x) {
-          LOG.warn("Failed to get album file " + id, x);
-        }
+      if (isEmpty(searcher)) {
+        return Collections.emptyList();
       }
 
-    } catch (Throwable x) {
-      LOG.error("Failed to search for random albums.", x);
+      Query query = queryFactory.getRandomAlbumsId3(musicFolders);
+      return createRandomFiles(count, searcher, query,
+          (dist, id) -> termination.addIgnoreNull(dist, ALBUM_ID3, id));
+
+    } catch (IOException e) {
+      LOG.error("Failed to search for random albums.", e);
     } finally {
       FileUtil.closeQuietly(reader);
     }
-    return result;
+    return Collections.emptyList();
   }
 
   @Override
   public <T> ParamSearchResult<T> searchByName(String name, int offset, int count,
-      List<MusicFolder> folderList, Class<T> clazz) {
-    IndexType indexType = null;
-    String field = null;
-    if (clazz.isAssignableFrom(Album.class)) {
-      indexType = IndexType.ALBUM_ID3;
-      field = FieldNames.ALBUM;
-    } else if (clazz.isAssignableFrom(Artist.class)) {
-      indexType = IndexType.ARTIST_ID3;
-      field = FieldNames.ARTIST;
-    } else if (clazz.isAssignableFrom(MediaFile.class)) {
-      indexType = IndexType.SONG;
-      field = FieldNames.TITLE;
-    }
-    ParamSearchResult<T> result = new ParamSearchResult<T>();
+      List<MusicFolder> folderList, Class<T> assignableClass) {
+
     // we only support album, artist, and song for now
-    if (indexType == null || field == null) {
+    @Nullable
+    IndexType indexType = termination.getIndexType.apply(assignableClass);
+    @Nullable
+    String fieldName = termination.getFieldName.apply(assignableClass);
+
+    ParamSearchResult<T> result = new ParamSearchResult<T>();
+    result.setOffset(offset);
+
+    if (isEmpty(indexType) || isEmpty(fieldName) || count <= 0) {
       return result;
     }
-
-    result.setOffset(offset);
 
     IndexReader reader = null;
 
     try {
       reader = indexManager.createIndexReader(indexType);
       Searcher searcher = new IndexSearcher(reader);
-      Query query = queryFactory.searchByName(field, name);
-      Sort sort = new Sort(new SortField(field, SortField.STRING));
+      Query query = queryFactory.searchByName(fieldName, name);
+
+      Sort sort = new Sort(new SortField(fieldName, SortField.STRING));
       TopDocs topDocs = searcher.search(query, null, offset + count, sort);
+
       result.setTotalHits(topDocs.totalHits);
       int start = Math.min(offset, topDocs.totalHits);
       int end = Math.min(start + count, topDocs.totalHits);
+
       for (int i = start; i < end; i++) {
         Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-        switch (indexType) {
-          case SONG:
-            MediaFile mediaFile = mediaFileService.getMediaFile(Integer.valueOf(doc.get(FieldNames.ID)));
-            addIfNotNull(clazz.cast(mediaFile), result.getItems());
-            break;
-          case ARTIST_ID3:
-            Artist artist = artistDao.getArtist(Integer.valueOf(doc.get(FieldNames.ID)));
-            addIfNotNull(clazz.cast(artist), result.getItems());
-            break;
-          case ALBUM_ID3:
-            Album album = albumDao.getAlbum(Integer.valueOf(doc.get(FieldNames.ID)));
-            addIfNotNull(clazz.cast(album), result.getItems());
-            break;
-          default:
-            break;
-        }
+        termination.addIgnoreNull(result, indexType, termination.getId.apply(doc), assignableClass);
       }
-    } catch (Throwable x) {
-      LOG.error("Failed to execute Lucene search.", x);
+
+    } catch (IOException | ParseException e) {
+      LOG.error("Failed to execute Lucene search.", e);
     } finally {
       FileUtil.closeQuietly(reader);
     }
     return result;
-  }
-
-  private <T> void addIfNotNull(T value, List<T> list) {
-    if (value != null) {
-      list.add(value);
-    }
   }
 
   /**
