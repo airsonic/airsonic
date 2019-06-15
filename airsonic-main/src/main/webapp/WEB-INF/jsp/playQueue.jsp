@@ -228,7 +228,7 @@
     /**
      * Increase or decrease volume by a certain amount
      *
-     * @param amount to add or remove from the current volume
+     * @param gain amount to add or remove from the current volume
      */
     function onGainAdd(gain) {
         if (CastPlayer.castSession) {
