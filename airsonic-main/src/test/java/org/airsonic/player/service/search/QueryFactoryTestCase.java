@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
-import org.airsonic.player.service.search.IndexType.FieldNames;
 import org.airsonic.player.util.HomeRule;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.lucene.queryParser.ParseException;

@@ -51,7 +51,6 @@ import java.util.List;
 
 import static org.airsonic.player.service.search.IndexType.ALBUM_ID3;
 import static org.airsonic.player.service.search.IndexType.ARTIST_ID3;
-import static org.airsonic.player.service.search.IndexType.FieldNames;
 
 /**
  * Factory class of Lucene Query.

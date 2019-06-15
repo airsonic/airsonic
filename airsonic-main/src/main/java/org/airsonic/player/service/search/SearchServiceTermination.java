@@ -29,7 +29,6 @@ import org.airsonic.player.domain.ParamSearchResult;
 import org.airsonic.player.domain.SearchResult;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SettingsService;
-import org.airsonic.player.service.search.IndexType.FieldNames;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
