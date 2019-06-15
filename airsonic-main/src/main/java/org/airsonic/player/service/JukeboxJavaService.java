@@ -215,8 +215,6 @@ public class JukeboxJavaService {
 
     /**
      * Plays the playqueue of a jukebox player starting at the beginning.
-     *
-     * @param airsonicPlayer
      */
     public void play(Player airsonicPlayer) {
         log.debug("begin play jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
@@ -295,11 +293,6 @@ public class JukeboxJavaService {
         audioPlayer.pause();
     }
 
-    /**
-     * @param airsonicPlayer
-     * @param index
-     * @throws Exception
-     */
     public void skip(Player airsonicPlayer, int index, int offset) throws Exception {
         log.debug("begin skip jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
 

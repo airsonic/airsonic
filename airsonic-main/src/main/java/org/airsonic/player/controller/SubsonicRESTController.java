@@ -160,10 +160,6 @@ public class SubsonicRESTController {
 
     /**
      * CAUTION : this method is required by mobile applications and must not be removed.
-     *
-     * @param request
-     * @param response
-     * @throws Exception
      */
     @RequestMapping(value = "/getLicense")
     public void getLicense(HttpServletRequest request, HttpServletResponse response) throws Exception {

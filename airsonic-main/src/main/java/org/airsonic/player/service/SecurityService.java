@@ -135,9 +135,9 @@ public class SecurityService implements UserDetailsService {
 
     /**
      * Returns the user with the given username
-     * @param username
+     * @param username The username to look for
      * @param caseSensitive If false, will do a case insensitive search
-     * @return
+     * @return The corresponding User
      */
     public User getUserByName(String username, boolean caseSensitive) {
         return userDao.getUserByName(username, caseSensitive);
