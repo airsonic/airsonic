@@ -99,7 +99,7 @@ public class PlayerSettingsController {
             command.setActiveTranscodingIds(activeTranscodingIds);
         }
 
-        command.setTranscodingSupported(transcodingService.isDownsamplingSupported(null));
+        command.setTranscodingSupported(transcodingService.isTranscodingSupported(null));
         command.setTranscodeDirectory(transcodingService.getTranscodeDirectory().getPath());
         command.setTranscodeSchemes(TranscodeScheme.values());
         command.setTechnologies(PlayerTechnology.values());

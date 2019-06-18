@@ -57,7 +57,6 @@ public class TranscodingSettingsController {
 
         map.put("transcodings", transcodingService.getAllTranscodings());
         map.put("transcodeDirectory", transcodingService.getTranscodeDirectory());
-        map.put("downsampleCommand", settingsService.getDownsamplingCommand());
         map.put("hlsCommand", settingsService.getHlsCommand());
         map.put("brand", settingsService.getBrand());
 
@@ -133,7 +132,6 @@ public class TranscodingSettingsController {
                 return error;
             }
         }
-        settingsService.setDownsamplingCommand(StringUtils.trim(request.getParameter("downsampleCommand")));
         settingsService.setHlsCommand(StringUtils.trim(request.getParameter("hlsCommand")));
         settingsService.save();
         return null;
