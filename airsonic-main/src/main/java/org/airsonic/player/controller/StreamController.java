@@ -159,13 +159,13 @@ public class StreamController {
 
                 // Wrangle response length and ranges.
                 //
-                // Support ranges as long as we're not transcoding; video is always assumed to transcode
-                if (file.isVideo()) {
+                // Support ranges as long as we're not transcoding blindly; video is always assumed to transcode
+                if (file.isVideo() || ! parameters.isRangeAllowed()) {
                     // Use chunked transfer; do not accept range requests
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setHeader("Accept-Ranges", "none");
                 } else {
-                    // Not transcoding, partial content permitted because we know the final size
+                    // Partial content permitted because either know or expect to be able to predict the final size
                     long contentLength;
                     // If range was requested, respond in kind
                     range = getRange(request, file.getDurationSeconds(), fileLengthExpected);

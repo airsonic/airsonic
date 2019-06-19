@@ -216,6 +216,7 @@ public class TranscodingService {
         }
 
         parameters.setMaxBitRate(maxBitRate);
+        parameters.setRangeAllowed(isRangeAllowed(parameters));
         return parameters;
     }
 
@@ -487,6 +488,28 @@ public class TranscodingService {
         return matches != null && matches.length > 0;
     }
 
+    private boolean isRangeAllowed(Parameters parameters) {
+        Transcoding transcoding = parameters.getTranscoding();
+        List<String> steps = Arrays.asList();
+        if (transcoding != null) {
+            steps = Arrays.asList(transcoding.getStep3(), transcoding.getStep2(), transcoding.getStep1());
+        }
+        else if (parameters.isDownsample()) {
+            steps = Arrays.asList(settingsService.getDownsamplingCommand());
+        }
+        else {
+            return true;  // neither transcoding or downsampling
+        }
+
+        // Check if last configured step uses the bitrate, if so, range should be pretty safe
+        for (String step : steps) {
+            if (step != null) {
+                return step.contains("%b");
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns the directory in which all transcoders are installed.
      */
@@ -517,6 +540,7 @@ public class TranscodingService {
 
     public static class Parameters {
         private boolean downsample;
+        private boolean rangeAllowed;
         private final MediaFile mediaFile;
         private final VideoTranscodingSettings videoTranscodingSettings;
         private Integer maxBitRate;
@@ -541,6 +565,14 @@ public class TranscodingService {
 
         public boolean isTranscode() {
             return transcoding != null;
+        }
+
+        public boolean isRangeAllowed() {
+            return this.rangeAllowed;
+        }
+
+        public void setRangeAllowed(boolean rangeAllowed) {
+            this.rangeAllowed = rangeAllowed;
         }
 
         public void setTranscoding(Transcoding transcoding) {
