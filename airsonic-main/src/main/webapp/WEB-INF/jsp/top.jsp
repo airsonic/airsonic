@@ -81,8 +81,8 @@
 <table style="margin:0;padding-top:5px">
     <tr>
         <td style="padding-right:4.5em;">
-            <img id="show-left-frame" src="<spring:theme code="viewAsListImage"/>" onclick="showLeftFrame()" alt="" style="display:${model.showSideBar ? 'none' : 'inline'};cursor:pointer">
-            <img id="hide-left-frame" src="<spring:theme code="viewAsListImage"/>" onclick="hideLeftFrame()" alt="" style="display:${model.showSideBar ? 'inline' : 'none'};cursor:pointer">
+            <img id="show-left-frame" src="<spring:theme code="sidebarImage"/>" onclick="showLeftFrame()" alt="" style="display:${model.showSideBar ? 'none' : 'inline'};cursor:pointer">
+            <img id="hide-left-frame" src="<spring:theme code="sidebarImage"/>" onclick="hideLeftFrame()" alt="" style="display:${model.showSideBar ? 'inline' : 'none'};cursor:pointer">
         </td>
         <td style="min-width:3em;padding-right:1em;text-align: center">
             <a href="home.view?" target="main"><img src="<spring:theme code="homeImage"/>" title="${home}" alt="${home}"></a>
@@ -133,7 +133,8 @@
 
         <td style="padding-left:15pt;padding-right:5pt;vertical-align: middle;width: 100%;text-align: center">
 
-            <c:if test="${model.showAvatar}">
+          <c:choose>
+            <c:when test="${model.showAvatar}">
             <sub:url value="avatar.view" var="avatarUrl">
                 <sub:param name="username" value="${model.user.username}"/>
             </sub:url>
@@ -142,10 +143,15 @@
                         <img src="${avatarUrl}" alt="" width="30" height="30">
                         <c:if test="${model.user.settingsRole}"></a></c:if>
                 </div>
-            </c:if>
+            </c:when>
+            <c:otherwise>
+            <img src="<spring:theme code="logoutImage"/>" alt="logout" height="24">
+            </c:otherwise>
+          </c:choose>
 
             <div class="detail">
-                <fmt:message key="top.logout" var="logout"><fmt:param value="${model.user.username}"/></fmt:message>
+              <fmt:message key="top.logout" var="logout"><br/>
+              <fmt:param value="${model.user.username}"/></fmt:message>
                 <a href="<c:url value="/logout"/>" target="_top">${fn:escapeXml(logout)}</a>
             </div>
         </td>

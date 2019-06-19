@@ -56,11 +56,6 @@ table {
     background-image:url( "../icons/coolandclean/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/coolandclean/forward.png" );
-}
-
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
     color: #656569;

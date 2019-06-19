@@ -31,11 +31,6 @@ h2, b, tr {
     background-image:url("../icons/default_dark/back.png");
 }
 
-.forward {
-    background-image:url("../icons/default_dark/forward.png");
-}
-
-/* Table sizing */
 table {
     margin: 0 0 0 0;
 }

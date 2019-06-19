@@ -54,6 +54,8 @@ The [Subsonic source code](https://github.com/airsonic/subsonic-svn) was release
 The cover zooming feature is provided by [jquery.fancyzoom](https://github.com/keegnotrub/jquery.fancyzoom),
 released under [MIT License](http://www.opensource.org/licenses/mit-license.php).
 
+The icons are from the amazing [feather](https://feathericons.com/) project,
+and are licensed under [MIT license](https://github.com/feathericons/feather/blob/master/LICENSE).
 
 Usage
 -----
