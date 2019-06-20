@@ -255,6 +255,12 @@ public class StreamController {
                                 sendDummyDelayed(buf, out);
                             }
                         } else {
+                            if (fileLengthExpected != null && bytesWritten <= fileLengthExpected
+                                && bytesWritten + n > fileLengthExpected) {
+                                LOG.warn("Stream output exceeded expected length of {}. It is likely that "
+                                    + "the transcoder is not adhering to the bitrate limit or the media "
+                                    + "source is corrupted or has grown larger", fileLengthExpected);
+                            }
                             out.write(buf, 0, n);
                             bytesWritten += n;
                         }
