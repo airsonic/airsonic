@@ -21,6 +21,7 @@ package org.airsonic.player.ajax;
 
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -73,7 +74,13 @@ public class LyricsService {
             String xml = executeGetRequest(url);
             lyrics = parseSearchResult(xml);
 
+        } catch (HttpResponseException x) {
+            LOG.warn("Failed to get lyrics for song '{}'. Request failed: {}", song, x.toString());
+            if (x.getStatusCode() == 503) {
+                lyrics.setTryLater(true);
+            }
         } catch (SocketException x) {
+            LOG.warn("Failed to get lyrics for song '{}': {}", song, x.toString());
             lyrics.setTryLater(true);
         } catch (Exception x) {
             LOG.warn("Failed to get lyrics for song '" + song + "'.", x);
