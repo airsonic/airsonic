@@ -437,7 +437,7 @@
                     </tr>
                 </c:forEach>
                 <c:if test="${model.viewAsList}">
-                    <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
+                    <c:forEach items="${model.siblingAlbums}" var="album" varStatus="loopStatus">
                         <tr>
                             <c:import url="playButtons.jsp">
                                 <c:param name="id" value="${album.id}"/>
@@ -461,7 +461,7 @@
 
 <c:if test="${not model.viewAsList}">
     <div style="float: left">
-        <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
+        <c:forEach items="${model.siblingAlbums}" var="album" varStatus="loopStatus">
             <div class="albumThumb">
                 <c:import url="coverArt.jsp">
                     <c:param name="albumId" value="${album.id}"/>
