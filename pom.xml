@@ -308,6 +308,7 @@
                         <suppressionFiles>
                             <suppressionFile>${project.basedir}/cve-suppressed.xml</suppressionFile>
                         </suppressionFiles>
+                        <!-- disabled due to the poor quality of the data from this analyzer -->
                         <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
                     </configuration>
                     <executions>
