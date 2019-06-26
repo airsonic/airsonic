@@ -15,10 +15,6 @@ $( function() {
 </script>
 
 <style>
-	label {
-		display: inline-block;
-		width: 5em;
-	}
 	div.ui-tooltip {
 		max-width: 400px;
 	}
