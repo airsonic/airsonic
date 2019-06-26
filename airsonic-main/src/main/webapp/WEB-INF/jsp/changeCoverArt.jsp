@@ -110,13 +110,17 @@
     <div style="clear:both;"></div>
     <div id="images"></div>
     <div style="clear:both;"></div>
-    <a href="https://last.fm/" target="_blank" rel="noopener noreferrer"><img src="<c:url value="/icons/lastfm.gif"/>"></a>
+    <a href="https://last.fm/" target="_blank" rel="noopener noreferrer">
+        <img alt="Lastfm icon" src="<c:url value="/icons/lastfm.gif"/>">
+    </a>
     <span class="detail" style="padding-left:1em"><fmt:message key="changecoverart.courtesy"/></span>
 </div>
 
 <div id="template" class="coverart dropshadow" style="float:left;margin-right:2.0em;margin-bottom:2.0em;width:250px;display:none">
     <div>
-        <a class="search-result-link"><img class="search-result-image" style="width:250px;height:250px"></a>
+        <a class="search-result-link">
+            <img alt="Search result" class="search-result-image" style="width:250px;height:250px">
+        </a>
         <div class="search-result-artist caption1"></div>
         <div class="search-result-album caption2"></div>
     </div>
