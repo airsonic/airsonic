@@ -66,6 +66,7 @@
             <tr style="${command.currentUser ? 'display:none' : ''}">
                 <td><form:checkbox path="adminRole" id="admin" cssClass="checkbox"/></td>
                 <td><label for="admin"><fmt:message key="usersettings.admin"/></label></td>
+                <td class="warning"><form:errors path="adminRole"/></td>
             </tr>
             <tr>
                 <td><form:checkbox path="settingsRole" id="settings" cssClass="checkbox"/></td>
@@ -141,6 +142,7 @@
             <tr>
                 <td><form:checkbox path="deleteUser" id="delete" cssClass="checkbox"/></td>
                 <td><label for="delete"><fmt:message key="usersettings.delete"/></label></td>
+                <td class="warning"><form:errors path="deleteUser"/></td>
             </tr>
         </table>
     </c:if>
