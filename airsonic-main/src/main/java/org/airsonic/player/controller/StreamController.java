@@ -329,29 +329,6 @@ public class StreamController {
         return null;
     }
 
-    private long getFileLength(TranscodingService.Parameters parameters) {
-        MediaFile file = parameters.getMediaFile();
-
-        if (!parameters.isDownsample() && !parameters.isTranscode()) {
-            return file.getFileSize();
-        }
-        Integer duration = file.getDurationSeconds();
-        Integer maxBitRate = parameters.getMaxBitRate();
-
-        if (duration == null) {
-            LOG.warn("Unknown duration for " + file + ". Unable to estimate transcoded size.");
-            return file.getFileSize();
-        }
-
-        if (maxBitRate == null) {
-            LOG.error("Unknown bit rate for " + file + ". Unable to estimate transcoded size.");
-            return file.getFileSize();
-        }
-
-        // Over-estimate size a bit (2 seconds) so don't cut off early in case of small calculation differences
-        return (duration + 2) * (long)maxBitRate * 1000L / 8L;
-    }
-
     @Nullable
     private HttpRange getRange(HttpServletRequest request, Integer fileDuration, Long fileSize) {
 

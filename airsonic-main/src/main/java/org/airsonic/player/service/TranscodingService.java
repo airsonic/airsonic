@@ -216,6 +216,7 @@ public class TranscodingService {
         }
 
         parameters.setMaxBitRate(maxBitRate);
+        parameters.setExpectedLength(getExpectedLength(parameters));
         parameters.setRangeAllowed(isRangeAllowed(parameters));
         return parameters;
     }
@@ -488,6 +489,32 @@ public class TranscodingService {
         return matches != null && matches.length > 0;
     }
 
+    /**
+     * Returns the length (or predicted/expected length) of a (possibly padded) media stream
+     */
+    private Long getExpectedLength(Parameters parameters) {
+        MediaFile file = parameters.getMediaFile();
+
+        if (!parameters.isDownsample() && !parameters.isTranscode()) {
+            return file.getFileSize();
+        }
+        Integer duration = file.getDurationSeconds();
+        Integer maxBitRate = parameters.getMaxBitRate();
+
+        if (duration == null) {
+            LOG.warn("Unknown duration for " + file + ". Unable to estimate transcoded size.");
+            return null;
+        }
+
+        if (maxBitRate == null) {
+            LOG.error("Unknown bit rate for " + file + ". Unable to estimate transcoded size.");
+            return null;
+        }
+
+        // Over-estimate size a bit (2 seconds) so don't cut off early in case of small calculation differences
+        return (duration + 2) * (long)maxBitRate * 1000L / 8L;
+    }
+
     private boolean isRangeAllowed(Parameters parameters) {
         Transcoding transcoding = parameters.getTranscoding();
         List<String> steps = Arrays.asList();
@@ -498,7 +525,12 @@ public class TranscodingService {
             steps = Arrays.asList(settingsService.getDownsamplingCommand());
         }
         else {
-            return true;  // neither transcoding or downsampling
+            return true;  // neither transcoding nor downsampling
+        }
+
+        // Verify that were able to predict the length
+        if (parameters.getExpectedLength() == null) {
+            return false;
         }
 
         // Check if last configured step uses the bitrate, if so, range should be pretty safe
@@ -540,6 +572,7 @@ public class TranscodingService {
 
     public static class Parameters {
         private boolean downsample;
+        private Long expectedLength;
         private boolean rangeAllowed;
         private final MediaFile mediaFile;
         private final VideoTranscodingSettings videoTranscodingSettings;
@@ -573,6 +606,14 @@ public class TranscodingService {
 
         public void setRangeAllowed(boolean rangeAllowed) {
             this.rangeAllowed = rangeAllowed;
+        }
+
+        public Long getExpectedLength() {
+            return this.expectedLength;
+        }
+
+        public void setExpectedLength(Long expectedLength) {
+            this.expectedLength = expectedLength;
         }
 
         public void setTranscoding(Transcoding transcoding) {
