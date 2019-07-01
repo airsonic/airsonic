@@ -139,7 +139,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             // See: https://docs.spring.io/spring-security/site/docs/3.0.x/reference/remember-me.html
 
             String rememberMeKey = settingsService.getRememberMeKey();
-            boolean development = settingsService.isDevelopmentMode();
+            boolean development = SettingsService.isDevelopmentMode();
             if (StringUtils.isBlank(rememberMeKey) && !development) {
                 // ...if it is empty, generate a random key on startup (default).
                 logger.debug("Generating a new ephemeral 'remember me' key in a secure way.");
