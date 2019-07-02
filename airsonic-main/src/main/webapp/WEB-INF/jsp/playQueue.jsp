@@ -52,7 +52,7 @@
                 }
             }});
 
-        <c:if test="${model.player.web}">createPlayer();</c:if>
+        <c:if test="${model.player.web}">createMediaElementPlayer();</c:if>
 
         $("#playlistBody").sortable({
             stop: function(event, ui) {
@@ -145,8 +145,21 @@
         onNext(repeatEnabled);
     }
 
-    function createPlayer() {
-        $('#audioPlayer').get(0).addEventListener("ended", onEnded);
+    function createMediaElementPlayer() {
+
+        var player = $('#audioPlayer').get(0);
+
+        // Once playback reaches the end, go to the next song, if any.
+        player.addEventListener("ended", onEnded);
+
+        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
+        //
+        // Once a media is loaded, we can start playback, but not before.
+        //
+        // Trying to start playback after a song has endred but before the
+        // 'canplay' event for the next song currently causes a race condition
+        // in the MediaElement.js player (4.2.10).
+        player.addEventListener("canplay", function() { player.play(); });
     }
 
     function getPlayQueue() {
@@ -532,6 +545,46 @@
         }
     }
 
+    function loadMediaElementPlayer(song, position) {
+        var player = $('#audioPlayer').get(0);
+
+        // Is this a new song?
+        if (player.src != song.streamUrl) {
+            // Stop the current playing song and change the media source.
+            player.src = song.streamUrl;
+            // Inform MEJS that we need to load a new media source. The
+            // 'canplay' event will be fired once playback is possible.
+            player.load();
+            // The 'skip' function takes a 'position' argument. We don't
+            // usually send it, and in this case it's better to do nothing.
+            // Otherwise, the 'canplay' event will also be fired after
+            // setting 'currentTime'.
+            if (position && position > 0) {
+                player.currentTime = position;
+            }
+
+        // Are we seeking on an already-playing song?
+        } else {
+            // Seeking also starts playing. The 'canplay' event will be
+            // fired after setting 'currentTime'.
+            player.currentTime = position || 0;
+        }
+
+        // FIXME: Uncomment once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
+        //
+        // Calling 'player.play()' at this point may work by chance, but it's
+        // not guaranteed in the current MediaElement.js player (4.2.10).  See
+        // the 'createMediaElementPlayer()' function above.
+        //
+        // player.play();
+
+        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
+        //
+        // Instead, we're triggering a 'waiting' event so that the player shows
+        // a progress bar to indicate that it's loading the stream.
+        player.dispatchEvent(new Event("waiting"));
+    }
+
     function skip(index, position) {
         if (index < 0 || index >= songs.length) {
             return;
@@ -541,16 +594,12 @@
         currentStreamUrl = song.streamUrl;
         updateCurrentImage();
 
+        // Handle ChromeCast player.
         if (CastPlayer.castSession) {
             CastPlayer.loadCastMedia(song, position);
+        // Handle MediaElement (HTML5) player.
         } else {
-            if ($('#audioPlayer').get(0).src != song.streamUrl) {
-                $('#audioPlayer').get(0).src = song.streamUrl;
-                $('#audioPlayer').get(0).load();
-                console.log(song.streamUrl);
-            }
-            $('#audioPlayer').get(0).currentTime = position ? position : 0;
-            $('#audioPlayer').get(0).play();
+            loadMediaElementPlayer(song, position);
         }
 
         updateWindowTitle(song);
