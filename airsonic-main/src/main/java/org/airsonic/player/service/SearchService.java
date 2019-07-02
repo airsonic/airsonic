@@ -41,45 +41,46 @@ import java.util.List;
  */
 public interface SearchService {
 
-  void startIndexing();
+    void startIndexing();
 
-  void index(MediaFile mediaFile);
+    void index(MediaFile mediaFile);
 
-  void index(Artist artist, MusicFolder musicFolder);
+    void index(Artist artist, MusicFolder musicFolder);
 
-  void index(Album album);
+    void index(Album album);
 
-  void stopIndexing();
+    void stopIndexing();
 
-  SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders, IndexType indexType);
+    SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders,
+            IndexType indexType);
 
-  /**
-   * Returns a number of random songs.
-   *
-   * @param criteria Search criteria.
-   * @return List of random songs.
-   */
-  List<MediaFile> getRandomSongs(RandomSearchCriteria criteria);
+    /**
+     * Returns a number of random songs.
+     *
+     * @param criteria Search criteria.
+     * @return List of random songs.
+     */
+    List<MediaFile> getRandomSongs(RandomSearchCriteria criteria);
 
-  /**
-   * Returns a number of random albums.
-   *
-   * @param count        Number of albums to return.
-   * @param musicFolders Only return albums from these folders.
-   * @return List of random albums.
-   */
-  List<MediaFile> getRandomAlbums(int count, List<MusicFolder> musicFolders);
+    /**
+     * Returns a number of random albums.
+     *
+     * @param count Number of albums to return.
+     * @param musicFolders Only return albums from these folders.
+     * @return List of random albums.
+     */
+    List<MediaFile> getRandomAlbums(int count, List<MusicFolder> musicFolders);
 
-  /**
-   * Returns a number of random albums, using ID3 tag.
-   *
-   * @param count        Number of albums to return.
-   * @param musicFolders Only return albums from these folders.
-   * @return List of random albums.
-   */
-  List<Album> getRandomAlbumsId3(int count, List<MusicFolder> musicFolders);
+    /**
+     * Returns a number of random albums, using ID3 tag.
+     *
+     * @param count Number of albums to return.
+     * @param musicFolders Only return albums from these folders.
+     * @return List of random albums.
+     */
+    List<Album> getRandomAlbumsId3(int count, List<MusicFolder> musicFolders);
 
-  <T> ParamSearchResult<T> searchByName(
-      String name, int offset, int count, List<MusicFolder> folderList, Class<T> clazz);
+    <T> ParamSearchResult<T> searchByName(
+            String name, int offset, int count, List<MusicFolder> folderList, Class<T> clazz);
 
 }

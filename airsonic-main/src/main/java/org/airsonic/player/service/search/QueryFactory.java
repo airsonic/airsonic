@@ -64,161 +64,168 @@ import static org.airsonic.player.service.search.IndexType.ARTIST_ID3;
  **/
 @Component
 public class QueryFactory {
-  
-  @Autowired
-  private AnalyzerFactory analyzerFactory;
 
-  private String analyzeQuery(String query) throws IOException {
-    StringBuilder result = new StringBuilder();
-    /*
-     * Version.LUCENE_30 It is a transient description and will be deleted when upgrading the
-     * version. SearchService variables are not used because the reference direction conflicts.
+    @Autowired
+    private AnalyzerFactory analyzerFactory;
+
+    private String analyzeQuery(String query) throws IOException {
+        StringBuilder result = new StringBuilder();
+        /*
+         * Version.LUCENE_30
+         * It is a transient description and will be deleted when upgrading the version.
+         * SearchService variables are not used because the reference direction conflicts.
+         */
+        @SuppressWarnings("resource")
+        ASCIIFoldingFilter filter = new ASCIIFoldingFilter(
+                new StandardTokenizer(Version.LUCENE_30, new StringReader(query)));
+        TermAttribute termAttribute = filter.getAttribute(TermAttribute.class);
+        while (filter.incrementToken()) {
+            result.append(termAttribute.term()).append("* ");
+        }
+        return result.toString();
+    }
+
+    /**
+     * Normalize the genre string.
+     * 
+     * @param genre genre string
+     * @return genre string normalized
+     * @deprecated should be resolved with tokenizer or filter
      */
-    @SuppressWarnings("resource")
-    ASCIIFoldingFilter filter = new ASCIIFoldingFilter(
-        new StandardTokenizer(Version.LUCENE_30, new StringReader(query)));
-    TermAttribute termAttribute = filter.getAttribute(TermAttribute.class);
-    while (filter.incrementToken()) {
-      result.append(termAttribute.term()).append("* ");
+    @Deprecated
+    private String normalizeGenre(String genre) {
+        return genre.toLowerCase().replace(" ", "").replace("-", "");
     }
-    return result.toString();
-  }
 
-  /**
-   * Normalize the genre string.
-   * @param genre genre string
-   * @return genre string normalized
-   * @deprecated should be resolved with tokenizer or filter
-   */
-  @Deprecated
-  private String normalizeGenre(String genre) {
-    return genre.toLowerCase().replace(" ", "").replace("-", "");
-  }
-  
-  /**
-   * Query generation expression extracted from
-   * {@link org.airsonic.player.service.SearchService#search(SearchCriteria, List, IndexType)}.
-   * @param criteria criteria
-   * @param musicFolders musicFolders
-   * @param indexType {@link IndexType}
-   * @return Query
-   * @throws IOException When parsing of MultiFieldQueryParser fails
-   * @throws ParseException When parsing of MultiFieldQueryParser fails
-   */
-  public Query search(SearchCriteria criteria, List<MusicFolder> musicFolders, IndexType indexType)
-      throws ParseException, IOException {
-    /*
-     * Version.LUCENE_30 It is a transient description and will be deleted when upgrading the
-     * version. SearchService variables are not used because the reference direction conflicts.
+    /**
+     * Query generation expression extracted from
+     * {@link org.airsonic.player.service.SearchService#search(SearchCriteria, List, IndexType)}.
+     * 
+     * @param criteria criteria
+     * @param musicFolders musicFolders
+     * @param indexType {@link IndexType}
+     * @return Query
+     * @throws IOException When parsing of MultiFieldQueryParser fails
+     * @throws ParseException When parsing of MultiFieldQueryParser fails
      */
-    MultiFieldQueryParser queryParser = new MultiFieldQueryParser(Version.LUCENE_30,
-        indexType.getFields(), analyzerFactory.getQueryAnalyzer(), indexType.getBoosts());
+    public Query search(SearchCriteria criteria, List<MusicFolder> musicFolders,
+            IndexType indexType) throws ParseException, IOException {
+        /*
+         * Version.LUCENE_30
+         * It is a transient description and will be deleted when upgrading the version.
+         * SearchService variables are not used because the reference direction conflicts.
+         */
+        MultiFieldQueryParser queryParser = new MultiFieldQueryParser(Version.LUCENE_30,
+                indexType.getFields(), analyzerFactory.getQueryAnalyzer(), indexType.getBoosts());
 
-    BooleanQuery query = new BooleanQuery();
-    query.add(queryParser.parse(analyzeQuery(criteria.getQuery())), BooleanClause.Occur.MUST);
-    List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-    for (MusicFolder musicFolder : musicFolders) {
-      if (indexType == ALBUM_ID3 || indexType == ARTIST_ID3) {
-        musicFolderQueries.add(new SpanTermQuery(
-            new Term(FieldNames.FOLDER_ID, NumericUtils.intToPrefixCoded(musicFolder.getId()))));
-      } else {
-        musicFolderQueries
-            .add(new SpanTermQuery(new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-      }
-    }
-    query.add(new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
-        BooleanClause.Occur.MUST);
-    return query;
-  }
-
-  /**
-   * Query generation expression extracted from
-   * {@link org.airsonic.player.service.SearchService#getRandomSongs(RandomSearchCriteria)}.
-   * 
-   * @param criteria
-   *        criteria
-   * @return Query
-   */
-  public Query getRandomSongs(RandomSearchCriteria criteria) {
-    BooleanQuery query = new BooleanQuery();
-    query.add(
-        new TermQuery(
-            new Term(FieldNames.MEDIA_TYPE, MediaFile.MediaType.MUSIC.name().toLowerCase())),
-        BooleanClause.Occur.MUST);
-    if (criteria.getGenre() != null) {
-      String genre = normalizeGenre(criteria.getGenre());
-      query.add(new TermQuery(new Term(FieldNames.GENRE, genre)), BooleanClause.Occur.MUST);
-    }
-    if (criteria.getFromYear() != null || criteria.getToYear() != null) {
-      NumericRangeQuery<Integer> rangeQuery = NumericRangeQuery.newIntRange(FieldNames.YEAR,
-          criteria.getFromYear(), criteria.getToYear(), true, true);
-      query.add(rangeQuery, BooleanClause.Occur.MUST);
+        BooleanQuery query = new BooleanQuery();
+        query.add(queryParser.parse(analyzeQuery(criteria.getQuery())), BooleanClause.Occur.MUST);
+        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+        for (MusicFolder musicFolder : musicFolders) {
+            if (indexType == ALBUM_ID3 || indexType == ARTIST_ID3) {
+                musicFolderQueries.add(new SpanTermQuery(new Term(FieldNames.FOLDER_ID,
+                        NumericUtils.intToPrefixCoded(musicFolder.getId()))));
+            } else {
+                musicFolderQueries.add(new SpanTermQuery(
+                        new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
+            }
+        }
+        query.add(
+                new SpanOrQuery(
+                        musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
+                BooleanClause.Occur.MUST);
+        return query;
     }
 
-    List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-    for (MusicFolder musicFolder : criteria.getMusicFolders()) {
-      musicFolderQueries
-          .add(new SpanTermQuery(new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-    }
-    query.add(new SpanOrQuery(musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
-        BooleanClause.Occur.MUST);
-    return query;
-  }
-
-  /**
-   * Query generation expression extracted from
-   * {@link org.airsonic.player.service.SearchService#searchByName(
-   * String, String, int, int, List, Class)}.
-   * @param fieldName {@link FieldNames}
-   * @return Query
-   * @throws ParseException When parsing of QueryParser fails
-   */
-  public Query searchByName(String fieldName, String name) throws ParseException {
-    /*
-     * Version.LUCENE_30 It is a transient description and will be deleted when upgrading the
-     * version. SearchService variables are not used because the reference direction conflicts.
+    /**
+     * Query generation expression extracted from
+     * {@link org.airsonic.player.service.SearchService#getRandomSongs(RandomSearchCriteria)}.
+     * 
+     * @param criteria criteria
+     * @return Query
      */
-    QueryParser queryParser = new QueryParser(Version.LUCENE_30, fieldName,
-        analyzerFactory.getQueryAnalyzer());
-    Query query = queryParser.parse(name + "*");
-    return query;
-  }
+    public Query getRandomSongs(RandomSearchCriteria criteria) {
+        BooleanQuery query = new BooleanQuery();
+        query.add(new TermQuery(
+                new Term(FieldNames.MEDIA_TYPE, MediaFile.MediaType.MUSIC.name().toLowerCase())),
+                BooleanClause.Occur.MUST);
+        if (criteria.getGenre() != null) {
+            String genre = normalizeGenre(criteria.getGenre());
+            query.add(new TermQuery(new Term(FieldNames.GENRE, genre)), BooleanClause.Occur.MUST);
+        }
+        if (criteria.getFromYear() != null || criteria.getToYear() != null) {
+            NumericRangeQuery<Integer> rangeQuery = NumericRangeQuery.newIntRange(FieldNames.YEAR,
+                    criteria.getFromYear(), criteria.getToYear(), true, true);
+            query.add(rangeQuery, BooleanClause.Occur.MUST);
+        }
 
-  /**
-   * Query generation expression extracted from
-   * {@link org.airsonic.player.service.SearchService#getRandomAlbums(int, List)}.
-   * 
-   * @param musicFolders musicFolders
-   * @return Query
-   */
-  public Query getRandomAlbums(List<MusicFolder> musicFolders) {
-    List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-    for (MusicFolder musicFolder : musicFolders) {
-      musicFolderQueries
-          .add(new SpanTermQuery(new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
+        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+        for (MusicFolder musicFolder : criteria.getMusicFolders()) {
+            musicFolderQueries.add(new SpanTermQuery(
+                    new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
+        }
+        query.add(
+                new SpanOrQuery(
+                        musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
+                BooleanClause.Occur.MUST);
+        return query;
     }
-    Query query = new SpanOrQuery(
-        musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
-    return query;
-  }
 
-  /**
-   * Query generation expression extracted from
-   * {@link org.airsonic.player.service.SearchService#getRandomAlbumsId3(int, List)}.
-   * 
-   * @param musicFolders musicFolders
-   * @return Query
-   */
-  public Query getRandomAlbumsId3(List<MusicFolder> musicFolders) {
-
-    List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-    for (MusicFolder musicFolder : musicFolders) {
-      musicFolderQueries.add(new SpanTermQuery(
-          new Term(FieldNames.FOLDER_ID, NumericUtils.intToPrefixCoded(musicFolder.getId()))));
+    /**
+     * Query generation expression extracted from
+     * {@link org.airsonic.player.service.SearchService#searchByName( String, String, int, int, List, Class)}.
+     * 
+     * @param fieldName {@link FieldNames}
+     * @return Query
+     * @throws ParseException When parsing of QueryParser fails
+     */
+    public Query searchByName(String fieldName, String name) throws ParseException {
+        /*
+         * Version.LUCENE_30
+         * It is a transient description and will be deleted when upgrading the version.
+         * SearchService variables are not used because the reference direction conflicts.
+         */
+        QueryParser queryParser = new QueryParser(Version.LUCENE_30, fieldName,
+                analyzerFactory.getQueryAnalyzer());
+        Query query = queryParser.parse(name + "*");
+        return query;
     }
-    Query query = new SpanOrQuery(
-        musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
-    return query;
-  }
-    
+
+    /**
+     * Query generation expression extracted from
+     * {@link org.airsonic.player.service.SearchService#getRandomAlbums(int, List)}.
+     * 
+     * @param musicFolders musicFolders
+     * @return Query
+     */
+    public Query getRandomAlbums(List<MusicFolder> musicFolders) {
+        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+        for (MusicFolder musicFolder : musicFolders) {
+            musicFolderQueries.add(new SpanTermQuery(
+                    new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
+        }
+        Query query = new SpanOrQuery(
+                musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
+        return query;
+    }
+
+    /**
+     * Query generation expression extracted from
+     * {@link org.airsonic.player.service.SearchService#getRandomAlbumsId3(int, List)}.
+     * 
+     * @param musicFolders musicFolders
+     * @return Query
+     */
+    public Query getRandomAlbumsId3(List<MusicFolder> musicFolders) {
+
+        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
+        for (MusicFolder musicFolder : musicFolders) {
+            musicFolderQueries.add(new SpanTermQuery(new Term(FieldNames.FOLDER_ID,
+                    NumericUtils.intToPrefixCoded(musicFolder.getId()))));
+        }
+        Query query = new SpanOrQuery(
+                musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
+        return query;
+    }
+
 }

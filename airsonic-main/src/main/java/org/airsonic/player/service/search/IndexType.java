@@ -75,63 +75,64 @@ public enum IndexType {
 
     ;
 
-  @SafeVarargs
-  private static final Map<String, Float> boosts(SimpleEntry<String, Float>... entry) {
-    Map<String, Float> m = new HashMap<>();
-    Arrays.stream(entry).forEach(kv -> m.put(kv.getKey(), kv.getValue()));
-    return Collections.unmodifiableMap(m);
-  }
+    @SafeVarargs
+    private static final Map<String, Float> boosts(SimpleEntry<String, Float>... entry) {
+        Map<String, Float> m = new HashMap<>();
+        Arrays.stream(entry).forEach(kv -> m.put(kv.getKey(), kv.getValue()));
+        return Collections.unmodifiableMap(m);
+    }
 
-  /*
-   * The current state is implemented to set the same value as legacy.
-   * However unlike legacy, it has been changed
-   * so that different values ​​can be set for each field.
-   * When setting two or more boost values, it is desirable to differentiate the values.
-   */
-  private static final SimpleEntry<String, Float> entry(String k, float v) {
-    return new AbstractMap.SimpleEntry<>(k, v);
-  }
+    /*
+     * The current state is implemented to set the same value as legacy.
+     * However unlike legacy, it has been changed
+     * so that different values ​​can be set for each field.
+     * When setting two or more boost values,
+     * it is desirable to differentiate the values.
+     */
+    private static final SimpleEntry<String, Float> entry(String k, float v) {
+        return new AbstractMap.SimpleEntry<>(k, v);
+    }
 
-  private static final String[] fieldNames(String... names) {
-    return Arrays.stream(names).toArray(String[]::new);
-  }
+    private static final String[] fieldNames(String... names) {
+        return Arrays.stream(names).toArray(String[]::new);
+    }
 
-  private final Map<String, Float> boosts;
+    private final Map<String, Float> boosts;
 
-  private final String[] fields;
+    private final String[] fields;
 
-  private IndexType(String[] fieldNames, Map<String, Float> boosts) {
-    this.fields = fieldNames;
-    this.boosts = boosts;
-  }
+    private IndexType(String[] fieldNames, Map<String, Float> boosts) {
+        this.fields = fieldNames;
+        this.boosts = boosts;
+    }
 
-  /**
-   * Returns a map of fields and boost values.
-   * 
-   * @return map of fields and boost values
-   * @since legacy
-   */
-  /*
-   * See the lucene documentation for boost specifications.
-   */
-  public Map<String, Float> getBoosts() {
-    return boosts;
-  }
+    /**
+     * Returns a map of fields and boost values.
+     * 
+     * @return map of fields and boost values
+     * @since legacy
+     */
+    /*
+     * See the lucene documentation for boost specifications.
+     */
+    public Map<String, Float> getBoosts() {
+        return boosts;
+    }
 
-  /**
-   * Return some of the fields defined in the index.
-   * 
-   * @return Fields mainly used in multi-field search
-   * @since legacy
-   */
-  /*
-   * It maintains a fairly early implementation
-   * and can be considered as an argument of MultiFieldQueryParser.
-   * In fact, the fields and boosts used in the search are difficult topics
-   * that can be determined by the search requirements.
-   */
-  public String[] getFields() {
-    return fields;
-  }
+    /**
+     * Return some of the fields defined in the index.
+     * 
+     * @return Fields mainly used in multi-field search
+     * @since legacy
+     */
+    /*
+     * It maintains a fairly early implementation
+     * and can be considered as an argument of MultiFieldQueryParser.
+     * In fact, the fields and boosts used in the search are difficult topics
+     * that can be determined by the search requirements.
+     */
+    public String[] getFields() {
+        return fields;
+    }
 
 }

@@ -45,76 +45,77 @@ import java.io.Reader;
 @Component
 public final class AnalyzerFactory {
 
-  private Analyzer analyzer;
+    private Analyzer analyzer;
 
-  private Analyzer queryAnalyzer;
+    private Analyzer queryAnalyzer;
 
-  /**
-   * Return analyzer.
-   * 
-   * @return analyzer for index
-   */
-  public Analyzer getAnalyzer() {
-    if (null == analyzer) {
-      analyzer = new CustomAnalyzer();
-    }
-    return analyzer;
-  }
-
-  /**
-   * Return analyzer.
-   * 
-   * @return analyzer for index
-   */
-  public Analyzer getQueryAnalyzer() {
-    if (null == queryAnalyzer) {
-      queryAnalyzer = new CustomAnalyzer();
-    }
-    return queryAnalyzer;
-  }
-
-  /*
-   * The legacy CustomAnalyzer implementation is kept as it is.
-   */
-  private class CustomAnalyzer extends StandardAnalyzer {
-    private CustomAnalyzer() {
-      /*
-       * Version.LUCENE_30 It is a transient description and will be deleted when upgrading the
-       * version. SearchService variables are not used because the reference direction conflicts.
-       */
-      super(Version.LUCENE_30);
+    /**
+     * Return analyzer.
+     * 
+     * @return analyzer for index
+     */
+    public Analyzer getAnalyzer() {
+        if (null == analyzer) {
+            analyzer = new CustomAnalyzer();
+        }
+        return analyzer;
     }
 
-    @Override
-    public TokenStream tokenStream(String fieldName, Reader reader) {
-      TokenStream result = super.tokenStream(fieldName, reader);
-      return new ASCIIFoldingFilter(result);
+    /**
+     * Return analyzer.
+     * 
+     * @return analyzer for index
+     */
+    public Analyzer getQueryAnalyzer() {
+        if (null == queryAnalyzer) {
+            queryAnalyzer = new CustomAnalyzer();
+        }
+        return queryAnalyzer;
     }
 
-    @Override
-    public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-      class SavedStreams {
-        StandardTokenizer tokenStream;
-        TokenStream       filteredTokenStream;
-      }
+    /*
+     * The legacy CustomAnalyzer implementation is kept as it is.
+     */
+    private class CustomAnalyzer extends StandardAnalyzer {
+        private CustomAnalyzer() {
+            /*
+             * Version.LUCENE_30
+             * It is a transient description and will be deleted when upgrading the version.
+             * SearchService variables are not used because the reference direction conflicts.
+             */
+            super(Version.LUCENE_30);
+        }
 
-      SavedStreams streams = (SavedStreams) getPreviousTokenStream();
-      if (streams == null) {
-        streams = new SavedStreams();
-        setPreviousTokenStream(streams);
-        streams.tokenStream = new StandardTokenizer(Version.LUCENE_30, reader);
-        streams.filteredTokenStream = new StandardFilter(streams.tokenStream);
-        streams.filteredTokenStream = new LowerCaseFilter(streams.filteredTokenStream);
-        streams.filteredTokenStream = new StopFilter(true, streams.filteredTokenStream,
-            STOP_WORDS_SET);
-        streams.filteredTokenStream = new ASCIIFoldingFilter(streams.filteredTokenStream);
-      } else {
-        streams.tokenStream.reset(reader);
-      }
-      streams.tokenStream.setMaxTokenLength(DEFAULT_MAX_TOKEN_LENGTH);
+        @Override
+        public TokenStream tokenStream(String fieldName, Reader reader) {
+            TokenStream result = super.tokenStream(fieldName, reader);
+            return new ASCIIFoldingFilter(result);
+        }
 
-      return streams.filteredTokenStream;
+        @Override
+        public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
+            class SavedStreams {
+                StandardTokenizer tokenStream;
+                TokenStream       filteredTokenStream;
+            }
+
+            SavedStreams streams = (SavedStreams) getPreviousTokenStream();
+            if (streams == null) {
+                streams = new SavedStreams();
+                setPreviousTokenStream(streams);
+                streams.tokenStream = new StandardTokenizer(Version.LUCENE_30, reader);
+                streams.filteredTokenStream = new StandardFilter(streams.tokenStream);
+                streams.filteredTokenStream = new LowerCaseFilter(streams.filteredTokenStream);
+                streams.filteredTokenStream = new StopFilter(true, streams.filteredTokenStream,
+                        STOP_WORDS_SET);
+                streams.filteredTokenStream = new ASCIIFoldingFilter(streams.filteredTokenStream);
+            } else {
+                streams.tokenStream.reset(reader);
+            }
+            streams.tokenStream.setMaxTokenLength(DEFAULT_MAX_TOKEN_LENGTH);
+
+            return streams.filteredTokenStream;
+        }
     }
-  }
 
 }

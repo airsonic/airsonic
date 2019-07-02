@@ -35,140 +35,147 @@ import org.springframework.stereotype.Component;
 @Component
 public class DocumentFactory {
 
-  /**
-   * Normalize the genre string.
-   * @param genre genre string
-   * @return genre string normalized
-   * @deprecated should be resolved with tokenizer or filter
-   */
-  @Deprecated
-  private String normalizeGenre(String genre) {
-    return genre.toLowerCase().replace(" ", "").replace("-", "");
-  }
+    /**
+     * Normalize the genre string.
+     * 
+     * @param genre genre string
+     * @return genre string normalized
+     * @deprecated should be resolved with tokenizer or filter
+     */
+    @Deprecated
+    private String normalizeGenre(String genre) {
+        return genre.toLowerCase().replace(" ", "").replace("-", "");
+    }
 
-  /**
-   * Create a document.
-   * 
-   * @param mediaFile target of document
-   * @return document
-   * @since legacy
-   */
-  public Document createAlbumDocument(MediaFile mediaFile) {
-    Document doc = new Document();
-    doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(mediaFile.getId()));
+    /**
+     * Create a document.
+     * 
+     * @param mediaFile target of document
+     * @return document
+     * @since legacy
+     */
+    public Document createAlbumDocument(MediaFile mediaFile) {
+        Document doc = new Document();
+        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
+                .setIntValue(mediaFile.getId()));
 
-    if (mediaFile.getArtist() != null) {
-      doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
-          Field.Index.ANALYZED));
+        if (mediaFile.getArtist() != null) {
+            doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (mediaFile.getAlbumName() != null) {
+            doc.add(new Field(FieldNames.ALBUM, mediaFile.getAlbumName(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (mediaFile.getFolder() != null) {
+            doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
+                    Field.Index.NOT_ANALYZED_NO_NORMS));
+        }
+        return doc;
     }
-    if (mediaFile.getAlbumName() != null) {
-      doc.add(new Field(FieldNames.ALBUM, mediaFile.getAlbumName(), Field.Store.YES,
-          Field.Index.ANALYZED));
-    }
-    if (mediaFile.getFolder() != null) {
-      doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
-          Field.Index.NOT_ANALYZED_NO_NORMS));
-    }
-    return doc;
-  }
 
-  /**
-   * Create a document.
-   * 
-   * @param mediaFile
-   *        target of document
-   * @return document
-   * @since legacy
-   */
-  public Document createArtistDocument(MediaFile mediaFile) {
-    Document doc = new Document();
-    doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(mediaFile.getId()));
+    /**
+     * Create a document.
+     * 
+     * @param mediaFile target of document
+     * @return document
+     * @since legacy
+     */
+    public Document createArtistDocument(MediaFile mediaFile) {
+        Document doc = new Document();
+        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
+                .setIntValue(mediaFile.getId()));
 
-    if (mediaFile.getArtist() != null) {
-      doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
-          Field.Index.ANALYZED));
+        if (mediaFile.getArtist() != null) {
+            doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (mediaFile.getFolder() != null) {
+            doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
+                    Field.Index.NOT_ANALYZED_NO_NORMS));
+        }
+        return doc;
     }
-    if (mediaFile.getFolder() != null) {
-      doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
-          Field.Index.NOT_ANALYZED_NO_NORMS));
-    }
-    return doc;
-  }
 
-  /**
-   * Create a document.
-   * 
-   * @param album
-   *        target of document
-   * @return document
-   * @since legacy
-   */
-  public Document createAlbumId3Document(Album album) {
-    Document doc = new Document();
-    doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(album.getId()));
+    /**
+     * Create a document.
+     * 
+     * @param album target of document
+     * @return document
+     * @since legacy
+     */
+    public Document createAlbumId3Document(Album album) {
+        Document doc = new Document();
+        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(album.getId()));
 
-    if (album.getArtist() != null) {
-      doc.add(
-          new Field(FieldNames.ARTIST, album.getArtist(), Field.Store.YES, Field.Index.ANALYZED));
+        if (album.getArtist() != null) {
+            doc.add(new Field(FieldNames.ARTIST, album.getArtist(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (album.getName() != null) {
+            doc.add(new Field(FieldNames.ALBUM, album.getName(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (album.getFolderId() != null) {
+            doc.add(new NumericField(FieldNames.FOLDER_ID, Field.Store.NO, true)
+                    .setIntValue(album.getFolderId()));
+        }
+        return doc;
     }
-    if (album.getName() != null) {
-      doc.add(new Field(FieldNames.ALBUM, album.getName(), Field.Store.YES, Field.Index.ANALYZED));
-    }
-    if (album.getFolderId() != null) {
-      doc.add(new NumericField(FieldNames.FOLDER_ID, Field.Store.NO, true)
-          .setIntValue(album.getFolderId()));
-    }
-    return doc;
-  }
 
-  /**
-   * Create a document.
-   * @param artist target of document
-   * @param musicFolder target folder exists
-   * @return document
-   * @since legacy
-   */
-  public Document createArtistId3Document(Artist artist, MusicFolder musicFolder) {
-    Document doc = new Document();
-    doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(artist.getId()));
-    doc.add(new Field(FieldNames.ARTIST, artist.getName(), Field.Store.YES, Field.Index.ANALYZED));
-    doc.add(new NumericField(FieldNames.FOLDER_ID, Field.Store.NO, true)
-        .setIntValue(musicFolder.getId()));
-    return doc;
-  }
+    /**
+     * Create a document.
+     * 
+     * @param artist target of document
+     * @param musicFolder target folder exists
+     * @return document
+     * @since legacy
+     */
+    public Document createArtistId3Document(Artist artist, MusicFolder musicFolder) {
+        Document doc = new Document();
+        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
+                .setIntValue(artist.getId()));
+        doc.add(new Field(FieldNames.ARTIST, artist.getName(), Field.Store.YES,
+                Field.Index.ANALYZED));
+        doc.add(new NumericField(FieldNames.FOLDER_ID, Field.Store.NO, true)
+                .setIntValue(musicFolder.getId()));
+        return doc;
+    }
 
-  /**
-   * Create a document.
-   * @param mediaFile target of document
-   * @return document
-   * @since legacy
-   */
-  public Document createSongDocument(MediaFile mediaFile) {
-    Document doc = new Document();
-    doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(mediaFile.getId()));
-    doc.add(new Field(FieldNames.MEDIA_TYPE, mediaFile.getMediaType().name(), Field.Store.NO,
-        Field.Index.ANALYZED_NO_NORMS));
-    if (mediaFile.getTitle() != null) {
-      doc.add(
-          new Field(FieldNames.TITLE, mediaFile.getTitle(), Field.Store.YES, Field.Index.ANALYZED));
+    /**
+     * Create a document.
+     * 
+     * @param mediaFile target of document
+     * @return document
+     * @since legacy
+     */
+    public Document createSongDocument(MediaFile mediaFile) {
+        Document doc = new Document();
+        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
+                .setIntValue(mediaFile.getId()));
+        doc.add(new Field(FieldNames.MEDIA_TYPE, mediaFile.getMediaType().name(), Field.Store.NO,
+                Field.Index.ANALYZED_NO_NORMS));
+        if (mediaFile.getTitle() != null) {
+            doc.add(new Field(FieldNames.TITLE, mediaFile.getTitle(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (mediaFile.getArtist() != null) {
+            doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
+                    Field.Index.ANALYZED));
+        }
+        if (mediaFile.getGenre() != null) {
+            doc.add(new Field(FieldNames.GENRE, normalizeGenre(mediaFile.getGenre()),
+                    Field.Store.NO, Field.Index.ANALYZED));
+        }
+        if (mediaFile.getYear() != null) {
+            doc.add(new NumericField(FieldNames.YEAR, Field.Store.NO, true)
+                    .setIntValue(mediaFile.getYear()));
+        }
+        if (mediaFile.getFolder() != null) {
+            doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
+                    Field.Index.NOT_ANALYZED_NO_NORMS));
+        }
+        return doc;
     }
-    if (mediaFile.getArtist() != null) {
-      doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
-          Field.Index.ANALYZED));
-    }
-    if (mediaFile.getGenre() != null) {
-      doc.add(new Field(FieldNames.GENRE, normalizeGenre(mediaFile.getGenre()), Field.Store.NO,
-          Field.Index.ANALYZED));
-    }
-    if (mediaFile.getYear() != null) {
-      doc.add(
-          new NumericField(FieldNames.YEAR, Field.Store.NO, true).setIntValue(mediaFile.getYear()));
-    }
-    if (mediaFile.getFolder() != null) {
-      doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
-          Field.Index.NOT_ANALYZED_NO_NORMS));
-    }
-    return doc;
-  }
 
 }

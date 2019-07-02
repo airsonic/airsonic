@@ -58,142 +58,143 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Component
 public class SearchServiceUtilities {
 
-  /* Search by id only. */
-  @Autowired
-  private ArtistDao artistDao;
+    /* Search by id only. */
+    @Autowired
+    private ArtistDao artistDao;
 
-  /* Search by id only. */
-  @Autowired
-  private AlbumDao albumDao;
+    /* Search by id only. */
+    @Autowired
+    private AlbumDao albumDao;
 
-  /*
-   * Search by id only.
-   * Although there is no influence at present,
-   * mediaFileService has a caching mechanism.
-   * Service is used instead of Dao
-   * until you are sure you need to use mediaFileDao.
-   * */
-  @Autowired
-  private MediaFileService mediaFileService;
+    /*
+     * Search by id only.
+     * Although there is no influence at present,
+     * mediaFileService has a caching mechanism.
+     * Service is used instead of Dao until you are sure you need to use mediaFileDao.
+     */
+    @Autowired
+    private MediaFileService mediaFileService;
 
-  public final Function<Long, Integer> round = (i) -> {
-    // return
-    // NumericUtils.floatToSortableInt(i);
-    return i.intValue();
-  };
+    public final Function<Long, Integer> round = (i) -> {
+        // return
+        // NumericUtils.floatToSortableInt(i);
+        return i.intValue();
+    };
 
-  public final Function<Document, Integer> getId = d -> {
-    return Integer.valueOf(d.get(FieldNames.ID));
-  };
+    public final Function<Document, Integer> getId = d -> {
+        return Integer.valueOf(d.get(FieldNames.ID));
+    };
 
-  public final BiConsumer<List<MediaFile>, Integer> addMediaFileIfAnyMatch = (dist, id) -> {
-    if (!dist.stream().anyMatch(m -> id == m.getId())) {
-      MediaFile mediaFile = mediaFileService.getMediaFile(id);
-      if (!isEmpty(mediaFile)) {
-        dist.add(mediaFile);
-      }
+    public final BiConsumer<List<MediaFile>, Integer> addMediaFileIfAnyMatch = (dist, id) -> {
+        if (!dist.stream().anyMatch(m -> id == m.getId())) {
+            MediaFile mediaFile = mediaFileService.getMediaFile(id);
+            if (!isEmpty(mediaFile)) {
+                dist.add(mediaFile);
+            }
+        }
+    };
+
+    public final BiConsumer<List<Artist>, Integer> addArtistId3IfAnyMatch = (dist, id) -> {
+        if (!dist.stream().anyMatch(a -> id == a.getId())) {
+            Artist artist = artistDao.getArtist(id);
+            if (!isEmpty(artist)) {
+                dist.add(artist);
+            }
+        }
+    };
+
+    public final Function<Class<?>, @Nullable IndexType> getIndexType = (assignableClass) -> {
+        IndexType indexType = null;
+        if (assignableClass.isAssignableFrom(Album.class)) {
+            indexType = IndexType.ALBUM_ID3;
+        } else if (assignableClass.isAssignableFrom(Artist.class)) {
+            indexType = IndexType.ARTIST_ID3;
+        } else if (assignableClass.isAssignableFrom(MediaFile.class)) {
+            indexType = IndexType.SONG;
+        }
+        return indexType;
+    };
+
+    public final Function<Class<?>, @Nullable String> getFieldName = (assignableClass) -> {
+        String fieldName = null;
+        if (assignableClass.isAssignableFrom(Album.class)) {
+            fieldName = FieldNames.ALBUM;
+        } else if (assignableClass.isAssignableFrom(Artist.class)) {
+            fieldName = FieldNames.ARTIST;
+        } else if (assignableClass.isAssignableFrom(MediaFile.class)) {
+            fieldName = FieldNames.TITLE;
+        }
+        return fieldName;
+    };
+
+    public final BiConsumer<List<Album>, Integer> addAlbumId3IfAnyMatch = (dist, subjectId) -> {
+        if (!dist.stream().anyMatch(a -> subjectId == a.getId())) {
+            Album album = albumDao.getAlbum(subjectId);
+            if (!isEmpty(album)) {
+                dist.add(album);
+            }
+        }
+    };
+
+    private final Function<String, File> getRootDirectory = (version) -> {
+        return new File(SettingsService.getAirsonicHome(), version);
+    };
+
+    public final BiFunction<String, IndexType, File> getDirectory = (version, indexType) -> {
+        return new File(getRootDirectory.apply(version), indexType.toString().toLowerCase());
+    };
+
+    public final Term createPrimarykey(Album album) {
+        return new Term(FieldNames.ID, Integer.toString(album.getId()));
+    };
+
+    public final Term createPrimarykey(Artist artist) {
+        return new Term(FieldNames.ID, Integer.toString(artist.getId()));
+    };
+
+    public final Term createPrimarykey(MediaFile mediaFile) {
+        return new Term(FieldNames.ID, Integer.toString(mediaFile.getId()));
+    };
+
+    public final boolean addIgnoreNull(Collection<?> collection, Object object) {
+        return CollectionUtils.addIgnoreNull(collection, object);
     }
-  };
 
-  public final BiConsumer<List<Artist>, Integer> addArtistId3IfAnyMatch = (dist, id) -> {
-    if (!dist.stream().anyMatch(a -> id == a.getId())) {
-      Artist artist = artistDao.getArtist(id);
-      if (!isEmpty(artist)) {
-        dist.add(artist);
-      }
+    public final boolean addIgnoreNull(Collection<?> collection, IndexType indexType,
+            int subjectId) {
+        if (indexType == IndexType.ALBUM | indexType == IndexType.SONG) {
+            return addIgnoreNull(collection, mediaFileService.getMediaFile(subjectId));
+        } else if (indexType == IndexType.ALBUM_ID3) {
+            return addIgnoreNull(collection, albumDao.getAlbum(subjectId));
+        }
+        return false;
     }
-  };
 
-  public final Function<Class<?>, @Nullable IndexType> getIndexType = (assignableClass) -> {
-    IndexType indexType = null;
-    if (assignableClass.isAssignableFrom(Album.class)) {
-      indexType = IndexType.ALBUM_ID3;
-    } else if (assignableClass.isAssignableFrom(Artist.class)) {
-      indexType = IndexType.ARTIST_ID3;
-    } else if (assignableClass.isAssignableFrom(MediaFile.class)) {
-      indexType = IndexType.SONG;
+    public final <T> void addIgnoreNull(ParamSearchResult<T> dist, IndexType indexType,
+            int subjectId, Class<T> subjectClass) {
+        if (indexType == IndexType.SONG) {
+            MediaFile mediaFile = mediaFileService.getMediaFile(subjectId);
+            addIgnoreNull(dist.getItems(), subjectClass.cast(mediaFile));
+        } else if (indexType == IndexType.ARTIST_ID3) {
+            Artist artist = artistDao.getArtist(subjectId);
+            addIgnoreNull(dist.getItems(), subjectClass.cast(artist));
+        } else if (indexType == IndexType.ALBUM_ID3) {
+            Album album = albumDao.getAlbum(subjectId);
+            addIgnoreNull(dist.getItems(), subjectClass.cast(album));
+        }
     }
-    return indexType;
-  };
 
-  public final Function<Class<?>, @Nullable String> getFieldName = (assignableClass) -> {
-    String fieldName = null;
-    if (assignableClass.isAssignableFrom(Album.class)) {
-      fieldName = FieldNames.ALBUM;
-    } else if (assignableClass.isAssignableFrom(Artist.class)) {
-      fieldName = FieldNames.ARTIST;
-    } else if (assignableClass.isAssignableFrom(MediaFile.class)) {
-      fieldName = FieldNames.TITLE;
+    public final void addIfAnyMatch(SearchResult dist, IndexType subjectIndexType,
+            Document subject) {
+        int documentId = getId.apply(subject);
+        if (subjectIndexType == IndexType.ARTIST | subjectIndexType == IndexType.ALBUM
+                | subjectIndexType == IndexType.SONG) {
+            addMediaFileIfAnyMatch.accept(dist.getMediaFiles(), documentId);
+        } else if (subjectIndexType == IndexType.ARTIST_ID3) {
+            addArtistId3IfAnyMatch.accept(dist.getArtists(), documentId);
+        } else if (subjectIndexType == IndexType.ALBUM_ID3) {
+            addAlbumId3IfAnyMatch.accept(dist.getAlbums(), documentId);
+        }
     }
-    return fieldName;
-  };
-
-  public final BiConsumer<List<Album>, Integer> addAlbumId3IfAnyMatch = (dist, subjectId) -> {
-    if (!dist.stream().anyMatch(a -> subjectId == a.getId())) {
-      Album album = albumDao.getAlbum(subjectId);
-      if (!isEmpty(album)) {
-        dist.add(album);
-      }
-    }
-  };
-
-  private final Function<String, File> getRootDirectory = (version) -> {
-    return new File(SettingsService.getAirsonicHome(), version);
-  };
-
-  public final BiFunction<String, IndexType, File> getDirectory = (version, indexType) -> {
-    return new File(getRootDirectory.apply(version), indexType.toString().toLowerCase());
-  };
-
-  public final Term createPrimarykey(Album album) {
-    return new Term(FieldNames.ID, Integer.toString(album.getId()));
-  };
-
-  public final Term createPrimarykey(Artist artist) {
-    return new Term(FieldNames.ID, Integer.toString(artist.getId()));
-  };
-
-  public final Term createPrimarykey(MediaFile mediaFile) {
-    return new Term(FieldNames.ID, Integer.toString(mediaFile.getId()));
-  };
-
-  public final boolean addIgnoreNull(Collection<?> collection, Object object) {
-    return CollectionUtils.addIgnoreNull(collection, object);
-  }
-
-  public final boolean addIgnoreNull(Collection<?> collection, IndexType indexType, int subjectId) {
-    if (indexType == IndexType.ALBUM | indexType == IndexType.SONG) {
-      return addIgnoreNull(collection, mediaFileService.getMediaFile(subjectId));
-    } else if (indexType == IndexType.ALBUM_ID3) {
-      return addIgnoreNull(collection, albumDao.getAlbum(subjectId));
-    }
-    return false;
-  }
-
-  public final <T> void addIgnoreNull(ParamSearchResult<T> dist, IndexType indexType, int subjectId,
-      Class<T> subjectClass) {
-    if (indexType == IndexType.SONG) {
-      MediaFile mediaFile = mediaFileService.getMediaFile(subjectId);
-      addIgnoreNull(dist.getItems(), subjectClass.cast(mediaFile));
-    } else if (indexType == IndexType.ARTIST_ID3) {
-      Artist artist = artistDao.getArtist(subjectId);
-      addIgnoreNull(dist.getItems(), subjectClass.cast(artist));
-    } else if (indexType == IndexType.ALBUM_ID3) {
-      Album album = albumDao.getAlbum(subjectId);
-      addIgnoreNull(dist.getItems(), subjectClass.cast(album));
-    }
-  }
-
-  public final void addIfAnyMatch(SearchResult dist, IndexType subjectIndexType, Document subject) {
-    int documentId = getId.apply(subject);
-    if (subjectIndexType == IndexType.ARTIST | subjectIndexType == IndexType.ALBUM
-        | subjectIndexType == IndexType.SONG) {
-      addMediaFileIfAnyMatch.accept(dist.getMediaFiles(), documentId);
-    } else if (subjectIndexType == IndexType.ARTIST_ID3) {
-      addArtistId3IfAnyMatch.accept(dist.getArtists(), documentId);
-    } else if (subjectIndexType == IndexType.ALBUM_ID3) {
-      addAlbumId3IfAnyMatch.accept(dist.getAlbums(), documentId);
-    }
-  }
 
 }

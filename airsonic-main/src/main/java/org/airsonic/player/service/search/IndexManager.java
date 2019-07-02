@@ -55,114 +55,115 @@ import static org.airsonic.player.service.search.IndexType.SONG;
 @Component
 public class IndexManager {
 
-  private static final Logger LOG = LoggerFactory.getLogger(IndexManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IndexManager.class);
 
-  @Autowired
-  private AnalyzerFactory analyzerFactory;
+    @Autowired
+    private AnalyzerFactory analyzerFactory;
 
-  @Autowired
-  private DocumentFactory documentFactory;
+    @Autowired
+    private DocumentFactory documentFactory;
 
-  private IndexWriter artistWriter;
-  private IndexWriter artistId3Writer;
-  private IndexWriter albumWriter;
-  private IndexWriter albumId3Writer;
-  private IndexWriter songWriter;
+    private IndexWriter artistWriter;
+    private IndexWriter artistId3Writer;
+    private IndexWriter albumWriter;
+    private IndexWriter albumId3Writer;
+    private IndexWriter songWriter;
 
-  public void index(Album album) {
-    try {
-      albumId3Writer.addDocument(documentFactory.createAlbumId3Document(album));
-    } catch (Exception x) {
-      LOG.error("Failed to create search index for " + album, x);
+    public void index(Album album) {
+        try {
+            albumId3Writer.addDocument(documentFactory.createAlbumId3Document(album));
+        } catch (Exception x) {
+            LOG.error("Failed to create search index for " + album, x);
+        }
     }
-  }
 
-  public void index(Artist artist, MusicFolder musicFolder) {
-    try {
-      artistId3Writer.addDocument(documentFactory.createArtistId3Document(artist, musicFolder));
-    } catch (Exception x) {
-      LOG.error("Failed to create search index for " + artist, x);
+    public void index(Artist artist, MusicFolder musicFolder) {
+        try {
+            artistId3Writer
+                    .addDocument(documentFactory.createArtistId3Document(artist, musicFolder));
+        } catch (Exception x) {
+            LOG.error("Failed to create search index for " + artist, x);
+        }
     }
-  }
 
-  public void index(MediaFile mediaFile) {
-    try {
-      if (mediaFile.isFile()) {
-        songWriter.addDocument(documentFactory.createSongDocument(mediaFile));
-      } else if (mediaFile.isAlbum()) {
-        albumWriter.addDocument(documentFactory.createAlbumDocument(mediaFile));
-      } else {
-        artistWriter.addDocument(documentFactory.createArtistDocument(mediaFile));
-      }
-    } catch (Exception x) {
-      LOG.error("Failed to create search index for " + mediaFile, x);
+    public void index(MediaFile mediaFile) {
+        try {
+            if (mediaFile.isFile()) {
+                songWriter.addDocument(documentFactory.createSongDocument(mediaFile));
+            } else if (mediaFile.isAlbum()) {
+                albumWriter.addDocument(documentFactory.createAlbumDocument(mediaFile));
+            } else {
+                artistWriter.addDocument(documentFactory.createArtistDocument(mediaFile));
+            }
+        } catch (Exception x) {
+            LOG.error("Failed to create search index for " + mediaFile, x);
+        }
     }
-  }
 
-  private static final String LUCENE_DIR = "lucene2";
+    private static final String LUCENE_DIR = "lucene2";
 
-  public IndexReader createIndexReader(IndexType indexType) throws IOException {
-    File dir = getIndexDirectory(indexType);
-    return IndexReader.open(FSDirectory.open(dir), true);
-  }
-
-  /**
-   * It is static as an intermediate response of the transition period.
-   * (It is called before injection
-   * because it is called by SearchService constructor)
-   * @return
-   */
-  private static File getIndexRootDirectory() {
-    return new File(SettingsService.getAirsonicHome(), LUCENE_DIR);
-  }
-
-  /**
-   * Make it public as an interim response of the transition period.
-   * (It is called before the injection
-   * because it is called in the SearchService constructor.)
-   * @param indexType
-   * @return
-   * @deprecated It should not be called from outside.
-   */
-  @Deprecated
-  public static File getIndexDirectory(IndexType indexType) {
-    return new File(getIndexRootDirectory(), indexType.toString().toLowerCase());
-  }
-
-  private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
-    File dir = getIndexDirectory(indexType);
-    return new IndexWriter(FSDirectory.open(dir), analyzerFactory.getAnalyzer(), true,
-        new IndexWriter.MaxFieldLength(10));
-  }
-
-  public final void startIndexing() {
-    try {
-      artistWriter = createIndexWriter(ARTIST);
-      artistId3Writer = createIndexWriter(ARTIST_ID3);
-      albumWriter = createIndexWriter(ALBUM);
-      albumId3Writer = createIndexWriter(ALBUM_ID3);
-      songWriter = createIndexWriter(SONG);
-    } catch (Exception x) {
-      LOG.error("Failed to create search index.", x);
+    public IndexReader createIndexReader(IndexType indexType) throws IOException {
+        File dir = getIndexDirectory(indexType);
+        return IndexReader.open(FSDirectory.open(dir), true);
     }
-  }
 
-  public void stopIndexing() {
-    try {
-      artistWriter.optimize();
-      artistId3Writer.optimize();
-      albumWriter.optimize();
-      albumId3Writer.optimize();
-      songWriter.optimize();
-    } catch (Exception x) {
-      LOG.error("Failed to create search index.", x);
-    } finally {
-      FileUtil.closeQuietly(artistId3Writer);
-      FileUtil.closeQuietly(artistWriter);
-      FileUtil.closeQuietly(albumWriter);
-      FileUtil.closeQuietly(albumId3Writer);
-      FileUtil.closeQuietly(songWriter);
+    /**
+     * It is static as an intermediate response of the transition period.
+     * (It is called before injection because it is called by SearchService constructor)
+     * 
+     * @return
+     */
+    private static File getIndexRootDirectory() {
+        return new File(SettingsService.getAirsonicHome(), LUCENE_DIR);
     }
-  }
+
+    /**
+     * Make it public as an interim response of the transition period.
+     * (It is called before the injection because it is called in the SearchService constructor.)
+     * 
+     * @param indexType
+     * @return
+     * @deprecated It should not be called from outside.
+     */
+    @Deprecated
+    public static File getIndexDirectory(IndexType indexType) {
+        return new File(getIndexRootDirectory(), indexType.toString().toLowerCase());
+    }
+
+    private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
+        File dir = getIndexDirectory(indexType);
+        return new IndexWriter(FSDirectory.open(dir), analyzerFactory.getAnalyzer(), true,
+                new IndexWriter.MaxFieldLength(10));
+    }
+
+    public final void startIndexing() {
+        try {
+            artistWriter = createIndexWriter(ARTIST);
+            artistId3Writer = createIndexWriter(ARTIST_ID3);
+            albumWriter = createIndexWriter(ALBUM);
+            albumId3Writer = createIndexWriter(ALBUM_ID3);
+            songWriter = createIndexWriter(SONG);
+        } catch (Exception x) {
+            LOG.error("Failed to create search index.", x);
+        }
+    }
+
+    public void stopIndexing() {
+        try {
+            artistWriter.optimize();
+            artistId3Writer.optimize();
+            albumWriter.optimize();
+            albumId3Writer.optimize();
+            songWriter.optimize();
+        } catch (Exception x) {
+            LOG.error("Failed to create search index.", x);
+        } finally {
+            FileUtil.closeQuietly(artistId3Writer);
+            FileUtil.closeQuietly(artistWriter);
+            FileUtil.closeQuietly(albumWriter);
+            FileUtil.closeQuietly(albumId3Writer);
+            FileUtil.closeQuietly(songWriter);
+        }
+    }
 
 }
