@@ -133,7 +133,7 @@ public class SearchServiceImpl implements SearchService {
    * @return result
    * @throws IOException
    */
-  private final <D> List<D> createRandomFiles(
+  private final <D> List<D> createRandomDocsList(
           int count,
           Searcher searcher,
           Query query,
@@ -167,7 +167,7 @@ public class SearchServiceImpl implements SearchService {
       }
 
       Query query = queryFactory.getRandomSongs(criteria);
-      return createRandomFiles(criteria.getCount(), searcher, query,
+      return createRandomDocsList(criteria.getCount(), searcher, query,
           (dist, id) -> termination.addIgnoreNull(dist, SONG, id));
 
     } catch (IOException e) {
@@ -190,7 +190,7 @@ public class SearchServiceImpl implements SearchService {
       }
 
       Query query = queryFactory.getRandomAlbums(musicFolders);
-      return createRandomFiles(count, searcher, query,
+      return createRandomDocsList(count, searcher, query,
           (dist, id) -> termination.addIgnoreNull(dist, ALBUM, id));
 
     } catch (IOException e) {
@@ -213,7 +213,7 @@ public class SearchServiceImpl implements SearchService {
       }
 
       Query query = queryFactory.getRandomAlbumsId3(musicFolders);
-      return createRandomFiles(count, searcher, query,
+      return createRandomDocsList(count, searcher, query,
           (dist, id) -> termination.addIgnoreNull(dist, ALBUM_ID3, id));
 
     } catch (IOException e) {
