@@ -86,12 +86,12 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.ARTIST);
         assertEquals("SearchArtist",
-                "+((art:abc* f:abc*) (art:def* f:def*)) +spanOr([f:" + PATH1 + "])",
+                "+((artist:abc* folder:abc*) (artist:def* folder:def*)) +spanOr([folder:" + PATH1 + "])",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.ARTIST);
-        assertEquals("SearchArtist", "+((art:abc* f:abc*) (art:def* f:def*)) +spanOr([f:" + PATH1
-                + ", f:" + PATH2 + "])", query.toString());
+        assertEquals("SearchArtist", "+((artist:abc* folder:abc*) (artist:def* folder:def*)) +spanOr([folder:" + PATH1
+                + ", folder:" + PATH2 + "])", query.toString());
     }
 
     @Test
@@ -103,14 +103,14 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.ALBUM);
         assertEquals("SearchAlbum",
-                "+((alb:abc* art:abc* f:abc*) (alb:def* art:def* f:def*)) +spanOr([f:" + PATH1
+                "+((album:abc* artist:abc* folder:abc*) (album:def* artist:def* folder:def*)) +spanOr([folder:" + PATH1
                         + "])",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.ALBUM);
         assertEquals("SearchAlbum",
-                "+((alb:abc* art:abc* f:abc*) (alb:def* art:def* f:def*)) +spanOr([f:" + PATH1
-                        + ", f:" + PATH2 + "])",
+                "+((album:abc* artist:abc* folder:abc*) (album:def* artist:def* folder:def*)) +spanOr([folder:" + PATH1
+                        + ", folder:" + PATH2 + "])",
                 query.toString());
     }
 
@@ -123,12 +123,12 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.SONG);
         assertEquals("SearchSong",
-                "+((tit:abc* art:abc*) (tit:def* art:def*)) +spanOr([f:" + PATH1 + "])",
+                "+((title:abc* artist:abc*) (title:def* artist:def*)) +spanOr([folder:" + PATH1 + "])",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.SONG);
-        assertEquals("SearchSong", "+((tit:abc* art:abc*) (tit:def* art:def*)) +spanOr([f:" + PATH1
-                + ", f:" + PATH2 + "])", query.toString());
+        assertEquals("SearchSong", "+((title:abc* artist:abc*) (title:def* artist:def*)) +spanOr([folder:" + PATH1
+                + ", folder:" + PATH2 + "])", query.toString());
     }
 
     @Test
@@ -139,13 +139,13 @@ public class QueryFactoryTestCase {
         criteria.setQuery(QUERY_ENG_ONLY);
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.ARTIST_ID3);
-        assertEquals("SearchSong", "+((art:abc*) (art:def*)) +spanOr([fId:"
+        assertEquals("SearchSong", "+((artist:abc*) (artist:def*)) +spanOr([folderId:"
                 + NumericUtils.intToPrefixCoded(FID1) + "])", query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.ARTIST_ID3);
         assertEquals("SearchSong",
-                "+((art:abc*) (art:def*)) +spanOr([fId:" + NumericUtils.intToPrefixCoded(FID1)
-                        + ", fId:" + NumericUtils.intToPrefixCoded(FID2) + "])",
+                "+((artist:abc*) (artist:def*)) +spanOr([folderId:" + NumericUtils.intToPrefixCoded(FID1)
+                        + ", folderId:" + NumericUtils.intToPrefixCoded(FID2) + "])",
                 query.toString());
     }
 
@@ -158,14 +158,14 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.ALBUM_ID3);
         assertEquals(
-                "SearchAlbumId3", "+((alb:abc* art:abc* fId:abc*) (alb:def* art:def* fId:def*)) "
-                        + "+spanOr([fId:" + NumericUtils.intToPrefixCoded(FID1) + "])",
+                "SearchAlbumId3", "+((album:abc* artist:abc* folderId:abc*) (album:def* artist:def* folderId:def*)) "
+                        + "+spanOr([folderId:" + NumericUtils.intToPrefixCoded(FID1) + "])",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.ALBUM_ID3);
         assertEquals("SearchAlbumId3",
-                "+((alb:abc* art:abc* fId:abc*) (alb:def* art:def* fId:def*)) +spanOr([fId:"
-                        + NumericUtils.intToPrefixCoded(FID1) + ", fId:"
+                "+((album:abc* artist:abc* folderId:abc*) (album:def* artist:def* folderId:def*)) +spanOr([folderId:"
+                        + NumericUtils.intToPrefixCoded(FID1) + ", folderId:"
                         + NumericUtils.intToPrefixCoded(FID2) + "])",
                 query.toString());
     }
@@ -173,19 +173,19 @@ public class QueryFactoryTestCase {
     @Test
     public void testSearchByNameArtist() throws ParseException {
         Query query = queryFactory.searchByName(FieldNames.ARTIST, QUERY_ENG_ONLY);
-        assertEquals("SearchByNameArtist", "art:abc art:def*", query.toString());
+        assertEquals("SearchByNameArtist", "artist:abc artist:def*", query.toString());
     }
 
     @Test
     public void testSearchByNameAlbum() throws ParseException {
         Query query = queryFactory.searchByName(FieldNames.ALBUM, QUERY_ENG_ONLY);
-        assertEquals("SearchByNameAlbum", "alb:abc alb:def*", query.toString());
+        assertEquals("SearchByNameAlbum", "album:abc album:def*", query.toString());
     }
 
     @Test
     public void testSearchByNameTitle() throws ParseException {
         Query query = queryFactory.searchByName(FieldNames.TITLE, QUERY_ENG_ONLY);
-        assertEquals("SearchByNameTitle", "tit:abc tit:def*", query.toString());
+        assertEquals("SearchByNameTitle", "title:abc title:def*", query.toString());
     }
 
     @Test
@@ -195,28 +195,28 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
-                "+m:music +g:classicrock +y:[1900 TO 2000] +spanOr([f:" + PATH1 + "])",
+                "+mediaType:music +genre:classicrock +year:[1900 TO 2000] +spanOr([folder:" + PATH1 + "])",
                 query.toString());
 
         criteria = new RandomSearchCriteria(50, "Classic Rock", Integer.valueOf(1900),
                 Integer.valueOf(2000), MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
-                "+m:music +g:classicrock +y:[1900 TO 2000] +spanOr([f:" + PATH1 + ", f:" + PATH2
+                "+mediaType:music +genre:classicrock +year:[1900 TO 2000] +spanOr([folder:" + PATH1 + ", folder:" + PATH2
                         + "])",
                 query.toString());
 
         criteria = new RandomSearchCriteria(50, "Classic Rock", null, null, MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
-                "+m:music +g:classicrock +spanOr([f:" + PATH1 + ", f:" + PATH2 + "])",
+                "+mediaType:music +genre:classicrock +spanOr([folder:" + PATH1 + ", folder:" + PATH2 + "])",
                 query.toString());
 
         criteria = new RandomSearchCriteria(50, "Classic Rock", Integer.valueOf(1900), null,
                 MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
-                "+m:music +g:classicrock +y:[1900 TO *] +spanOr([f:" + PATH1 + ", f:" + PATH2
+                "+mediaType:music +genre:classicrock +year:[1900 TO *] +spanOr([folder:" + PATH1 + ", folder:" + PATH2
                         + "])",
                 query.toString());
 
@@ -224,7 +224,7 @@ public class QueryFactoryTestCase {
                 MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
-                "+m:music +g:classicrock +y:[* TO 2000] +spanOr([f:" + PATH1 + ", f:" + PATH2
+                "+mediaType:music +genre:classicrock +year:[* TO 2000] +spanOr([folder:" + PATH1 + ", folder:" + PATH2
                         + "])",
                 query.toString());
     }
@@ -233,22 +233,22 @@ public class QueryFactoryTestCase {
     public void testGetRandomAlbums() {
         Query query = queryFactory.getRandomAlbums(SINGLE_FOLDERS);
         assertEquals(ToStringBuilder.reflectionToString(SINGLE_FOLDERS),
-                "spanOr([f:" + PATH1 + "])", query.toString());
+                "spanOr([folder:" + PATH1 + "])", query.toString());
 
         query = queryFactory.getRandomAlbums(MULTI_FOLDERS);
         assertEquals(ToStringBuilder.reflectionToString(MULTI_FOLDERS),
-                "spanOr([f:" + PATH1 + ", f:" + PATH2 + "])", query.toString());
+                "spanOr([folder:" + PATH1 + ", folder:" + PATH2 + "])", query.toString());
     }
 
     @Test
     public void testGetRandomAlbumsId3() {
         Query query = queryFactory.getRandomAlbumsId3(SINGLE_FOLDERS);
         assertEquals(ToStringBuilder.reflectionToString(SINGLE_FOLDERS),
-                "spanOr([fId:" + NumericUtils.intToPrefixCoded(FID1) + "])", query.toString());
+                "spanOr([folderId:" + NumericUtils.intToPrefixCoded(FID1) + "])", query.toString());
 
         query = queryFactory.getRandomAlbumsId3(MULTI_FOLDERS);
         assertEquals(ToStringBuilder.reflectionToString(MULTI_FOLDERS),
-                "spanOr([fId:" + NumericUtils.intToPrefixCoded(FID1) + ", fId:"
+                "spanOr([folderId:" + NumericUtils.intToPrefixCoded(FID1) + ", folderId:"
                         + NumericUtils.intToPrefixCoded(FID2) + "])",
                 query.toString());
     }

@@ -41,55 +41,55 @@ class FieldNames {
      * 
      * @since legacy
      **/
-    public static final String FOLDER_ID = "fId";
+    public static final String FOLDER_ID = "folderId";
 
     /**
      * A field same to a legacy server, numeric field.
      * 
      * @since legacy
      **/
-    public static final String YEAR = "y";
+    public static final String YEAR = "year";
 
     /**
      * A field same to a legacy server, key field.
      * 
      * @since legacy
      **/
-    public static final String GENRE = "g";
+    public static final String GENRE = "genre";
 
     /**
      * A field same to a legacy server, key field.
      * 
      * @since legacy
      **/
-    public static final String MEDIA_TYPE = "m";
+    public static final String MEDIA_TYPE = "mediaType";
 
     /**
      * A field same to a legacy server, key field.
      * 
      * @since legacy
      **/
-    public static final String FOLDER = "f";
+    public static final String FOLDER = "folder";
 
     /**
      * A field same to a legacy server, usually with common word parsing.
      * 
      * @since legacy
      **/
-    public static final String ARTIST = "art";
+    public static final String ARTIST = "artist";
 
     /**
      * A field same to a legacy server, usually with common word parsing.
      * 
      * @since legacy
      **/
-    public static final String ALBUM = "alb";
+    public static final String ALBUM = "album";
 
     /**
      * A field same to a legacy server, usually with common word parsing.
      * 
      * @since legacy
      **/
-    public static final String TITLE = "tit";
+    public static final String TITLE = "title";
 
 }
