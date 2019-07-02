@@ -19,9 +19,9 @@
  */
 package org.airsonic.player.domain;
 
-/**
- * Unit test of {@link Version}.
- * @author Sindre Mehus
+/*
+  Unit test of {@link Version}.
+  @author Sindre Mehus
  */
 
 import junit.framework.TestCase;

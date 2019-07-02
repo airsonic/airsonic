@@ -72,13 +72,13 @@ PARAMETERS
         </c:url>
 
         <div style="position: relative; width: 0; height: 0">
-            <img src="<spring:theme code="playOverlayImage"/>" id="${playId}"
+            <img alt="Play overlay" src="<spring:theme code="playOverlayImage"/>" id="${playId}"
                  style="position: relative; top: 8px; left: 8px; z-index: 2; display:none" >
         </div>
 
         <c:if test="${not empty param.albumId}">
           <div style="position: relative; width: 0; height: 0">
-              <img src="<spring:theme code="addOverlayImage"/>" id="${addId}"
+              <img alt="Add overlay" src="<spring:theme code="addOverlayImage"/>" id="${addId}"
                    style="position: relative; top: 8px; left: 48px; z-index: 2; display:none" >
           </div>
         </c:if>

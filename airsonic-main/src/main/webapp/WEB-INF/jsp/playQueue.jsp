@@ -228,7 +228,7 @@
     /**
      * Increase or decrease volume by a certain amount
      *
-     * @param amount to add or remove from the current volume
+     * @param gain amount to add or remove from the current volume
      */
     function onGainAdd(gain) {
         if (CastPlayer.castSession) {
@@ -420,9 +420,11 @@
             if (radioEnabled) {
                 $("#toggleRepeat").html("<fmt:message key="playlist.repeat_radio"/>");
             } else if (repeatEnabled) {
-                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_on"/>");
+                $("#toggleRepeat").attr('src', '<spring:theme code="repeatOn"/>');
+                $("#toggleRepeat").attr('alt', 'Repeat On');
             } else {
-                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_off"/>");
+                $("#toggleRepeat").attr('src', '<spring:theme code="repeatOff"/>');
+                $("#toggleRepeat").attr('alt', 'Repeat Off');
             }
         }
 
@@ -691,15 +693,15 @@
                     </c:if>
                     <c:if test="${model.player.web}">
                         <td>
-                            <div id="player" style="width:340px; height:40px;padding-right:10px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height="40px" tabindex="-1" />
+                            <div id="player" style="width:340px; height:40px">
+                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
-                                    <img id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
-                                    <img id="castPause" src="<spring:theme code="castPauseImage"/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
-                                    <img id="castMuteOn" src="<spring:theme code="volumeImage"/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
-                                    <img id="castMuteOff" src="<spring:theme code="muteImage"/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
+                                    <img alt="Play" id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
+                                    <img alt="Pause" id="castPause" src="<spring:theme code="castPauseImage"/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
+                                    <img alt="Mute on" id="castMuteOn" src="<spring:theme code="volumeImage"/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
+                                    <img alt="Mute off" id="castMuteOff" src="<spring:theme code="muteImage"/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
                                 </div>
                                 <div style="float:left">
                                     <div id="castVolume" style="width:80px;height:4px;margin-left:10px;margin-right:10px;margin-top:8px"></div>
@@ -711,15 +713,15 @@
                             </div>
                         </td>
                         <td>
-                            <img id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
-                            <img id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast on" id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast off" id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
                     <c:if test="${model.user.streamRole and not model.player.web}">
                         <td>
-                            <img id="start" src="<spring:theme code="castPlayImage"/>" onclick="onStart()" style="cursor:pointer">
-                            <img id="stop" src="<spring:theme code="castPauseImage"/>" onclick="onStop()" style="cursor:pointer; display:none">
+                            <img alt="Start" id="start" src="<spring:theme code="castPlayImage"/>" onclick="onStart()" style="cursor:pointer">
+                            <img alt="Stop" id="stop" src="<spring:theme code="castPauseImage"/>" onclick="onStop()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
@@ -741,21 +743,47 @@
                             <img src="<spring:theme code="backImage"/>" alt="" onclick="onPrevious()" style="cursor:pointer"></span>
                         </td>
                         <td><span class="header">
-                            <img src="<spring:theme code="forwardImage"/>" alt="" onclick="onNext(false)" style="cursor:pointer"></span>
+                            <img src="<spring:theme code="forwardImage"/>" alt="" onclick="onNext(false)" style="cursor:pointer"></span> |
                         </td>
                     </c:if>
 
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onClear()"><fmt:message key="playlist.clear"/></a></span> |</td>
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onShuffle()"><fmt:message key="playlist.shuffle"/></a></span> |</td>
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onClear()">
+                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" style="cursor:pointer; height:18px">
+                        </a>
+                      </span> |</td>
+
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onShuffle()">
+                            <img src="<spring:theme code="shuffleImage"/>" alt="shuffle" style="cursor:pointer; height:18px">
+                        </a>
+                      </span> |</td>
 
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
-                        <td style="white-space:nowrap;"><span class="header"><a href="javascript:onToggleRepeat()"><span id="toggleRepeat"><fmt:message key="playlist.repeat_on"/></span></a></span>  |</td>
+                        <td style="white-space:nowrap;">
+                          <span class="header">
+                            <a href="javascript:onToggleRepeat()">
+                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="repeatOn" style="cursor:pointer; height:18px">
+                            </a>
+                          </span> |</td>
                     </c:if>
 
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onUndo()"><fmt:message key="playlist.undo"/></a></span>  |</td>
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onUndo()">
+                          <img src="<spring:theme code="undoImage"/>" alt="undo" style="cursor:pointer; height:18px">
+                        </a>
+                      </span>  |</td>
 
                     <c:if test="${model.user.settingsRole}">
-                        <td style="white-space:nowrap;"><span class="header"><a href="playerSettings.view?id=${model.player.id}" target="main"><fmt:message key="playlist.settings"/></a></span>  |</td>
+                        <td style="white-space:nowrap;">
+                          <span class="header">
+                            <a href="playerSettings.view?id=${model.player.id}" target="main">
+                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" style="cursor:pointer; height:18px">
+                            </a>
+                          </span> |</td>
                     </c:if>
 
                     <td style="white-space:nowrap;"><select id="moreActions" onchange="actionSelected(this.options[selectedIndex].id)">
@@ -802,11 +830,11 @@
         <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
             <td class="fit">
                 <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code="ratingOffImage"/>"
-                     style="cursor:pointer" alt="" title=""></td>
+                     style="cursor:pointer;height:18px;" alt="" title=""></td>
             <td class="fit">
                 <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
-                     style="cursor:pointer" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
-            <td class="fit"><input type="checkbox" id="songIndex"></td>
+                     style="cursor:pointer; height:18px;" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
+            <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">
                 <td class="fit rightalign"><span class="detail" id="trackNumber">1</span></td>

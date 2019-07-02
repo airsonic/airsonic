@@ -462,11 +462,6 @@ public class PlayQueueService {
 
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
-     * @param playQueue
-     * @param ids
-     * @param index
-     * @return
-     * @throws Exception
      */
     public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer index, boolean removeVideoFiles) throws Exception {
         List<MediaFile> files = new ArrayList<MediaFile>(ids.length);
@@ -498,10 +493,6 @@ public class PlayQueueService {
 
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
-     * @param playQueue
-     * @param ids
-     * @return
-     * @throws Exception
      */
     public PlayQueue resetPlayQueue(PlayQueue playQueue,int[] ids, boolean removeVideoFiles) throws Exception {
         MediaFile currentFile = playQueue.getCurrentFile();

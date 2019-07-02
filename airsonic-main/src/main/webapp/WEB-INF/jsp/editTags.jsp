@@ -13,48 +13,48 @@
     var fileCount = ${fn:length(model.songs)};
     function setArtist() {
         var artist = dwr.util.getValue("artistAll");
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             dwr.util.setValue("artist" + i, artist);
         }
     }
     function setAlbum() {
         var album = dwr.util.getValue("albumAll");
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             dwr.util.setValue("album" + i, album);
         }
     }
     function setYear() {
         var year = dwr.util.getValue("yearAll");
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             dwr.util.setValue("year" + i, year);
         }
     }
     function setGenre() {
         var genre = dwr.util.getValue("genreAll");
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             dwr.util.setValue("genre" + i, genre);
         }
     }
     function suggestTitle() {
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             var title = dwr.util.getValue("suggestedTitle" + i);
             dwr.util.setValue("title" + i, title);
         }
     }
     function resetTitle() {
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             var title = dwr.util.getValue("originalTitle" + i);
             dwr.util.setValue("title" + i, title);
         }
     }
     function suggestTrack() {
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             var track = dwr.util.getValue("suggestedTrack" + i);
             dwr.util.setValue("track" + i, track);
         }
     }
     function resetTrack() {
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             var track = dwr.util.getValue("originalTrack" + i);
             dwr.util.setValue("track" + i, track);
         }
@@ -63,7 +63,7 @@
         document.getElementById("save").disabled = true;
         index = 0;
         dwr.util.setValue("errors", "");
-        for (i = 0; i < fileCount; i++) {
+        for (var i = 0; i < fileCount; i++) {
             dwr.util.setValue("status" + i, "");
         }
         updateNextTag();
@@ -86,7 +86,7 @@
         } else if (result == "UPDATED") {
             message = "<b><fmt:message key="edittags.updated"/></b>";
         } else {
-            message = "<div class='warning'><fmt:message key="edittags.error"/></div>"
+            message = "<div class='warning'><fmt:message key="edittags.error"/></div>";
             var errors = dwr.util.getValue("errors");
             errors += "<br>" + result + "<br>";
             dwr.util.setValue("errors", errors, { escapeHtml:false });
@@ -159,6 +159,6 @@
 
 </table>
 
-<p><input type="submit" id="save" value="<fmt:message key="common.save"/>" onclick="javascript:updateTags()"/></p>
+<p><input type="submit" id="save" value="<fmt:message key="common.save"/>" onclick="updateTags()"/></p>
 <div class="warning" id="errors"/>
 </body></html>

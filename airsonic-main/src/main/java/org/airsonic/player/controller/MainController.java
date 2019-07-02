@@ -129,9 +129,9 @@ public class MainController  {
         map.put("brand", settingsService.getBrand());
         map.put("viewAsList", isViewAsList(request, userSettings));
         if (dir.isAlbum()) {
-            List<MediaFile> sieblingAlbums = getSieblingAlbums(dir);
-            thereIsMoreSAlbums = trimToSize(showAll, sieblingAlbums, userPaginationPreference);
-            map.put("sieblingAlbums", sieblingAlbums);
+            List<MediaFile> siblingAlbums = getSiblingAlbums(dir);
+            thereIsMoreSAlbums = trimToSize(showAll, siblingAlbums, userPaginationPreference);
+            map.put("siblingAlbums", siblingAlbums);
             map.put("artist", guessArtist(children));
             map.put("album", guessAlbum(children));
             map.put("musicBrainzReleaseId", guessMusicBrainzReleaseId(children));
@@ -277,13 +277,13 @@ public class MainController  {
         return result;
     }
 
-    private List<MediaFile> getSieblingAlbums(MediaFile dir) {
+    private List<MediaFile> getSiblingAlbums(MediaFile dir) {
         List<MediaFile> result = new ArrayList<>();
 
         MediaFile parent = mediaFileService.getParentOf(dir);
         if (!mediaFileService.isRoot(parent)) {
-            List<MediaFile> sieblings = mediaFileService.getChildrenOf(parent, false, true, true);
-            result.addAll(sieblings.stream().filter(siebling -> siebling.isAlbum() && !siebling.equals(dir)).collect(Collectors.toList()));
+            List<MediaFile> siblings = mediaFileService.getChildrenOf(parent, false, true, true);
+            result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && !sibling.equals(dir)).collect(Collectors.toList()));
         }
         return result;
     }

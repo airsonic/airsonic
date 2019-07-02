@@ -53,11 +53,6 @@ table {
     background-image:url( "../icons/denim/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/denim/forward.png" );
-}
-
 
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {

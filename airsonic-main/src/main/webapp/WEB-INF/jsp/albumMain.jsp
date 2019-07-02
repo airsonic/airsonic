@@ -164,7 +164,7 @@
 <div style="float:left">
     <h1>
         <img id="starImage" src="<spring:theme code="${not empty model.dir.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"
-             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer" alt="">
+             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer;height:18px;" alt="">
 
         <span style="vertical-align: middle">
             <c:forEach items="${model.ancestors}" var="ancestor">
@@ -239,7 +239,7 @@
     </c:if>
 
     <c:if test="${model.user.shareRole}">
-        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" alt=""></a>
+        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" style="height:18px;" alt=""></a>
             <a href="${shareUrl}"><fmt:message key="main.sharealbum"/></a> </span> |
     </c:if>
 
@@ -437,7 +437,7 @@
                     </tr>
                 </c:forEach>
                 <c:if test="${model.viewAsList}">
-                    <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
+                    <c:forEach items="${model.siblingAlbums}" var="album" varStatus="loopStatus">
                         <tr>
                             <c:import url="playButtons.jsp">
                                 <c:param name="id" value="${album.id}"/>
@@ -461,7 +461,7 @@
 
 <c:if test="${not model.viewAsList}">
     <div style="float: left">
-        <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
+        <c:forEach items="${model.siblingAlbums}" var="album" varStatus="loopStatus">
             <div class="albumThumb">
                 <c:import url="coverArt.jsp">
                     <c:param name="albumId" value="${album.id}"/>

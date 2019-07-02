@@ -26,8 +26,7 @@
 
             if (uploadInfo.bytesTotal > 0) {
                 var percent = Math.ceil((uploadInfo.bytesUploaded / uploadInfo.bytesTotal) * 100);
-                var width = parseInt(percent * 3.5) + 'px';
-                progressBarContent.style.width = width;
+                progressBarContent.style.width = parseInt(percent * 3.5) + 'px';
                 progressText.innerHTML = percent + "<fmt:message key="more.upload.progress"/>";
                 progressBar.style.display = "block";
                 progressText.style.display = "block";
@@ -61,7 +60,7 @@
                 var data = JSON.parse(localStorage.getItem("randomPlayQueue"));
             } catch(e) { return; }
             if (data == null ) { return; }
-            elements = form.getElementsByTagName("input");
+            var elements = form.getElementsByTagName("input");
             for (var i = 0; i < elements.length; i++) {
                 if (elements[i].type == "hidden") continue;
                 if (elements[i].type == "submit") continue;
@@ -86,7 +85,7 @@
         function saveShuffleForm() {
             if (!isLocalStorageEnabled()) return;
             var form = document.getElementById("randomPlayQueue");
-            var data = {}
+            var data = {};
             var elements = [];
             elements = form.getElementsByTagName("input");
             for (var i = 0; i < elements.length; i++) {

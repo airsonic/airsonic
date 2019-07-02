@@ -315,7 +315,7 @@
         console.log("new media session ID:" + mediaSession.mediaSessionId + ' (' + how + ')');
         this.currentMediaSession = mediaSession;
         if (how == 'loadMedia') {
-            this.castPlayerState = this.castPlayerState = PLAYER_STATE.LOADED;
+            this.castPlayerState = PLAYER_STATE.LOADED;
             console.log(this.castPlayerState + " (onMediaDiscovered-loadMedia)");
         }
 

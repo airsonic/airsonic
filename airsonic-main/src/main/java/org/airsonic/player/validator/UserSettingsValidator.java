@@ -60,7 +60,7 @@ public class UserSettingsValidator implements Validator {
         String confirmPassword = command.getConfirmPassword();
 
         if (command.isNewUser()) {
-            if (username == null || username.length() == 0) {
+            if (username == null || username.isEmpty()) {
                 errors.rejectValue("username", "usersettings.nousername");
             } else if (securityService.getUserByName(username) != null) {
                 errors.rejectValue("username", "usersettings.useralreadyexists");
