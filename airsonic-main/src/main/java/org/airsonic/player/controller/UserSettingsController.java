@@ -87,6 +87,7 @@ public class UserSettingsController {
                 UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
                 command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
                 command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
+                command.setCurrentUser(securityService.getCurrentUser(request).getUsername().equals(user.getUsername()));
             } else {
                 command.setNewUser(true);
                 command.setStreamRole(true);

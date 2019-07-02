@@ -46,6 +46,7 @@ public class UserSettingsCommand {
 
     private List<User> users;
     private boolean isAdmin;
+    private boolean isCurrentUser;
     private boolean isPasswordChange;
     private boolean isNewUser;
     private boolean isDeleteUser;
@@ -164,6 +165,14 @@ public class UserSettingsCommand {
 
     public void setAdmin(boolean admin) {
         isAdmin = admin;
+    }
+
+    public boolean isCurrentUser() {
+        return isCurrentUser;
+    }
+
+    public void setCurrentUser(boolean currentUser) {
+        isCurrentUser = currentUser;
     }
 
     public boolean isPasswordChange() {

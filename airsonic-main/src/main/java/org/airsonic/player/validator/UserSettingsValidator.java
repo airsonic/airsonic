@@ -29,6 +29,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Validator for {@link UserSettingsController}.
  *
@@ -41,6 +43,8 @@ public class UserSettingsValidator implements Validator {
     private SecurityService securityService;
     @Autowired
     private SettingsService settingsService;
+    @Autowired
+    private HttpServletRequest request;
 
     /**
      * {@inheritDoc}
@@ -83,6 +87,16 @@ public class UserSettingsValidator implements Validator {
 
         if (command.isPasswordChange() && command.isLdapAuthenticated()) {
             errors.rejectValue("password", "usersettings.passwordnotsupportedforldap");
+        }
+
+        if (securityService.getCurrentUser(request).getUsername().equals(username)) {
+            // These errors don't need translation since the option isn't exposed to the user
+            if (command.isDeleteUser()) {
+                errors.rejectValue("deleteUser", null, "Cannot delete the current user");
+            }
+            if (! command.isAdminRole()) {
+                errors.rejectValue("adminRole", null, "Cannot remove admin from the current user");
+            }
         }
 
     }
