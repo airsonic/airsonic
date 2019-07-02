@@ -24,8 +24,6 @@ import org.airsonic.player.controller.UserSettingsController;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -36,15 +34,17 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Sindre Mehus
  */
-@Component
 public class UserSettingsValidator implements Validator {
 
-    @Autowired
     private SecurityService securityService;
-    @Autowired
     private SettingsService settingsService;
-    @Autowired
     private HttpServletRequest request;
+
+    public UserSettingsValidator(SecurityService securityService, SettingsService settingsService, HttpServletRequest request) {
+        this.securityService = securityService;
+        this.settingsService = settingsService;
+        this.request = request;
+    }
 
     /**
      * {@inheritDoc}
