@@ -56,7 +56,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  * so do not include exception handling in this class.
  */
 @Component
-public class SearchServiceTermination {
+public class SearchServiceUtilities {
 
   /* Search by id only. */
   @Autowired

@@ -54,7 +54,7 @@ public class SearchServiceImpl implements SearchService {
   @Autowired
   private IndexManager indexManager;
   @Autowired
-  private SearchServiceTermination termination;
+  private SearchServiceUtilities util;
 
   // TODO Should be changed to SecureRandom?
   private final Random random = new Random(System.currentTimeMillis());
@@ -113,7 +113,7 @@ public class SearchServiceImpl implements SearchService {
       int end = Math.min(start + count, topDocs.totalHits);
 
       for (int i = start; i < end; i++) {
-        termination.addIfAnyMatch(result, indexType, searcher.doc(topDocs.scoreDocs[i].doc));
+        util.addIfAnyMatch(result, indexType, searcher.doc(topDocs.scoreDocs[i].doc));
       }
 
     } catch (IOException | ParseException e) {
@@ -147,7 +147,7 @@ public class SearchServiceImpl implements SearchService {
       while (!docs.isEmpty() && result.size() < count) {
           int randomPos = random.nextInt(docs.size());
           Document document = searcher.doc(docs.get(randomPos));
-          id2ListCallBack.accept(result, termination.getId.apply(document));
+          id2ListCallBack.accept(result, util.getId.apply(document));
           docs.remove(randomPos);
       }
 
@@ -168,7 +168,7 @@ public class SearchServiceImpl implements SearchService {
 
       Query query = queryFactory.getRandomSongs(criteria);
       return createRandomDocsList(criteria.getCount(), searcher, query,
-          (dist, id) -> termination.addIgnoreNull(dist, SONG, id));
+          (dist, id) -> util.addIgnoreNull(dist, SONG, id));
 
     } catch (IOException e) {
       LOG.error("Failed to search or random songs.", e);
@@ -191,7 +191,7 @@ public class SearchServiceImpl implements SearchService {
 
       Query query = queryFactory.getRandomAlbums(musicFolders);
       return createRandomDocsList(count, searcher, query,
-          (dist, id) -> termination.addIgnoreNull(dist, ALBUM, id));
+          (dist, id) -> util.addIgnoreNull(dist, ALBUM, id));
 
     } catch (IOException e) {
       LOG.error("Failed to search for random albums.", e);
@@ -214,7 +214,7 @@ public class SearchServiceImpl implements SearchService {
 
       Query query = queryFactory.getRandomAlbumsId3(musicFolders);
       return createRandomDocsList(count, searcher, query,
-          (dist, id) -> termination.addIgnoreNull(dist, ALBUM_ID3, id));
+          (dist, id) -> util.addIgnoreNull(dist, ALBUM_ID3, id));
 
     } catch (IOException e) {
       LOG.error("Failed to search for random albums.", e);
@@ -230,9 +230,9 @@ public class SearchServiceImpl implements SearchService {
 
     // we only support album, artist, and song for now
     @Nullable
-    IndexType indexType = termination.getIndexType.apply(assignableClass);
+    IndexType indexType = util.getIndexType.apply(assignableClass);
     @Nullable
-    String fieldName = termination.getFieldName.apply(assignableClass);
+    String fieldName = util.getFieldName.apply(assignableClass);
 
     ParamSearchResult<T> result = new ParamSearchResult<T>();
     result.setOffset(offset);
@@ -257,7 +257,7 @@ public class SearchServiceImpl implements SearchService {
 
       for (int i = start; i < end; i++) {
         Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-        termination.addIgnoreNull(result, indexType, termination.getId.apply(doc), assignableClass);
+        util.addIgnoreNull(result, indexType, util.getId.apply(doc), assignableClass);
       }
 
     } catch (IOException | ParseException e) {
