@@ -31,13 +31,30 @@
 <span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
 
 <script type="text/javascript" language="javascript">
+
+    // These variables store the media player state, received from DWR in the
+    // playQueueCallback function below.
+
+    // List of songs (of type PlayQueueInfo.Entry)
     var songs = null;
+
+    // Stream URL of the media being played
     var currentStreamUrl = null;
+
+    // Is autorepeat enabled?
     var repeatEnabled = false;
-    var radioEnabled = false;
+
+    // Is the "shuffle radio" playing? (More > Shuffle Radio)
+    var shuffleRadioEnabled = false;
+
+    // Is the "internet radio" playing?
+    var internetRadioEnabled = false;
+
+    // Is the play queue visible? (Initially hidden if set to "auto-hide" in the settings)
     var isVisible = ${model.autoHide ? 'false' : 'true'};
+
+    // Initialize the Cast player (ChromeCast support)
     var CastPlayer = new CastPlayer();
-    var ignore = false;
 
     function init() {
         <c:if test="${model.autoHide}">initAutoHide();</c:if>
@@ -81,6 +98,40 @@
                 return trclone;
             }
         });
+
+        /** Toggle between <a> and <span> in order to disable play queue action buttons */
+        $.fn.toggleLink = function(newState) {
+            $(this).each(function(ix, elt) {
+
+                var node, currentState;
+                if (elt.tagName.toLowerCase() === "a") currentState = true;
+                else if (elt.tagName.toLowerCase() === "span") currentState = false;
+                else return true;
+                if (typeof newState === 'undefined') newState = !currentState;
+                if (newState === currentState) return true;
+
+                if (newState) node = document.createElement("a");
+                else node = document.createElement("span");
+
+                node.innerHTML = elt.innerHTML;
+                if (elt.hasAttribute("id")) node.setAttribute("id", elt.getAttribute("id"));
+                if (elt.hasAttribute("style")) node.setAttribute("style", elt.getAttribute("style"));
+                if (elt.hasAttribute("class")) node.setAttribute("class", elt.getAttribute("class"));
+
+                if (newState) {
+                    if (elt.hasAttribute("data-href")) node.setAttribute("href", elt.getAttribute("data-href"));
+                    node.classList.remove("disabled");
+                    node.removeAttribute("aria-disabled");
+                } else {
+                    if (elt.hasAttribute("href")) node.setAttribute("data-href", elt.getAttribute("href"));
+                    node.classList.add("disabled");
+                    node.setAttribute("aria-disabled", "true");
+                }
+
+                elt.parentNode.replaceChild(node, elt);
+                return true;
+            });
+        };
 
         getPlayQueue();
     }
@@ -280,7 +331,7 @@
     }
     function onNext(wrap) {
         var index = parseInt(getCurrentSongIndex()) + 1;
-        if (radioEnabled && index >= songs.length) {
+        if (shuffleRadioEnabled && index >= songs.length) {
             playQueueService.reloadSearchCriteria(function(playQueue) {
                 playQueueCallback(playQueue);
                 onSkip(index);
@@ -302,6 +353,9 @@
     }
     function onPlayPlaylist(id, index) {
         playQueueService.playPlaylist(id, index, playQueueCallback);
+    }
+    function onPlayInternetRadio(id, index) {
+        playQueueService.playInternetRadio(id, index, playQueueCallback);
     }
     function onPlayTopSong(id, index) {
         playQueueService.playTopSong(id, index, playQueueCallback);
@@ -423,14 +477,22 @@
     function playQueueCallback(playQueue) {
         songs = playQueue.entries;
         repeatEnabled = playQueue.repeatEnabled;
-        radioEnabled = playQueue.radioEnabled;
+        shuffleRadioEnabled = playQueue.shuffleRadioEnabled;
+        internetRadioEnabled = playQueue.internetRadioEnabled;
+
+        // If an internet radio has no sources, display a message to the user.
+        if (internetRadioEnabled && songs.length == 0) {
+            top.main.$().toastmessage("showErrorToast", "<fmt:message key="playlist.toast.radioerror"/>");
+            onStop();
+        }
+
         if ($("#start")) {
             $("#start").toggle(!playQueue.stopEnabled);
             $("#stop").toggle(playQueue.stopEnabled);
         }
 
         if ($("#toggleRepeat")) {
-            if (radioEnabled) {
+            if (shuffleRadioEnabled) {
                 $("#toggleRepeat").html("<fmt:message key="playlist.repeat_radio"/>");
             } else if (repeatEnabled) {
                 $("#toggleRepeat").attr('src', '<spring:theme code="repeatOn"/>');
@@ -440,6 +502,24 @@
                 $("#toggleRepeat").attr('alt', 'Repeat Off');
             }
         }
+
+        // Disable some UI items if internet radio is playing
+        $("select#moreActions #loadPlayQueue").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #savePlayQueue").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #savePlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #downloadPlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sharePlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByTrack").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByAlbum").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByArtist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #selectAll").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #selectNone").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #removeSelected").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #download").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #appendPlaylist").prop("disabled", internetRadioEnabled);
+        $("#shuffleQueue").toggleLink(!internetRadioEnabled);
+        $("#repeatQueue").toggleLink(!internetRadioEnabled);
+        $("#undoQueue").toggleLink(!internetRadioEnabled);
 
         if (songs.length == 0) {
             $("#songCountAndDuration").text("");
@@ -462,11 +542,26 @@
             if ($("#trackNumber" + id)) {
                 $("#trackNumber" + id).text(song.trackNumber);
             }
-            if (song.starred) {
-                $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
+
+            if (!internetRadioEnabled) {
+                // Show star/remove buttons in all cases...
+                $("#starSong" + id).show();
+                $("#removeSong" + id).show();
+                $("#songIndex" + id).show();
+
+                // Show star rating
+                if (song.starred) {
+                    $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
+                } else {
+                    $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
+                }
             } else {
-                $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
+                // ...except from when internet radio is playing.
+                $("#starSong" + id).hide();
+                $("#removeSong" + id).hide();
+                $("#songIndex" + id).hide();
             }
+
             if ($("#currentImage" + id) && song.streamUrl == currentStreamUrl) {
                 $("#currentImage" + id).show();
                 if (isJavaJukeboxPresent()) {
@@ -486,6 +581,13 @@
                 $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", song.albumUrl);
+                // Open external internet radio links in new windows
+                if (internetRadioEnabled) {
+                    $("#albumUrl" + id).attr({
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                    });
+                }
             }
             if ($("#artist" + id)) {
                 $("#artist" + id).text(song.artist);
@@ -495,7 +597,13 @@
                 $("#genre" + id).text(song.genre);
             }
             if ($("#year" + id)) {
-                $("#year" + id).text(song.year);
+                // If song.year is not an int, this will return NaN, which
+                // conveniently returns false in all boolean operations.
+                if (parseInt(song.year) > 0) {
+                    $("#year" + id).text(song.year);
+                } else {
+                    $("#year" + id).text("");
+                }
             }
             if ($("#bitRate" + id)) {
                 $("#bitRate" + id).text(song.bitRate);
@@ -805,7 +913,7 @@
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onShuffle()">
+                        <a href="javascript:onShuffle()" id="shuffleQueue">
                             <img src="<spring:theme code="shuffleImage"/>" alt="shuffle" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
@@ -813,7 +921,7 @@
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
                         <td style="white-space:nowrap;">
                           <span class="header">
-                            <a href="javascript:onToggleRepeat()">
+                            <a href="javascript:onToggleRepeat()" id="repeatQueue">
                               <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="repeatOn" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
@@ -821,7 +929,7 @@
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onUndo()">
+                        <a href="javascript:onUndo()" id="undoQueue">
                           <img src="<spring:theme code="undoImage"/>" alt="undo" style="cursor:pointer; height:18px">
                         </a>
                       </span>  |</td>

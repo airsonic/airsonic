@@ -239,6 +239,7 @@ public class RandomPlayQueueController {
 
         if (autoRandom != null) {
             playQueue.setRandomSearchCriteria(criteria);
+            playQueue.setInternetRadio(null);
         }
 
         // Render the 'reload' view to reload the play queue and the main page

@@ -83,6 +83,13 @@ a:hover, a:hover * {
     color: #FFFFFF;
 }
 
+/* Disabled links color and behavior */
+a.disabled, a.disabled span, span.disabled {
+    cursor: default;
+    text-decoration: none;
+    color: #999;
+}
+
 /* Colour for warning messages. */
 .warning {
     color: #990099;

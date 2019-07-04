@@ -21,6 +21,7 @@ package org.airsonic.player.ajax;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.airsonic.player.dao.InternetRadioDao;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.dao.PlayQueueDao;
 import org.airsonic.player.domain.*;
@@ -28,6 +29,8 @@ import org.airsonic.player.service.*;
 import org.airsonic.player.service.PlaylistService;
 import org.airsonic.player.util.StringUtil;
 import org.directwebremoting.WebContextFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -74,7 +77,13 @@ public class PlayQueueService {
     @Autowired
     private PlayQueueDao playQueueDao;
     @Autowired
+    private InternetRadioDao internetRadioDao;
+    @Autowired
     private JWTSecurityService jwtSecurityService;
+    @Autowired
+    private InternetRadioService internetRadioService;
+
+    private static final Logger LOG = LoggerFactory.getLogger(PlayQueueService.class);
 
     /**
      * Returns the play queue for the player of the current user.
@@ -143,6 +152,7 @@ public class PlayQueueService {
         String username = securityService.getCurrentUsername(request);
         Player player = getCurrentPlayer(request, response);
         PlayQueue playQueue = player.getPlayQueue();
+        playQueue.setInternetRadio(null);
         if (playQueue.getRandomSearchCriteria() != null) {
             playQueue.addFiles(true, mediaFileService.getRandomSongs(playQueue.getRandomSearchCriteria(), username));
         }
@@ -230,6 +240,19 @@ public class PlayQueueService {
             songs = mediaFileService.getDescendantsOf(file, true);
         }
         return doPlay(request, player, songs).setStartPlayerAt(0);
+    }
+
+    /**
+     * @param index Start playing at this index, or play whole radio playlist if {@code null}.
+     */
+    public PlayQueueInfo playInternetRadio(int id, Integer index) throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+
+        InternetRadio radio = internetRadioDao.getInternetRadioById(id);
+        if (!radio.isEnabled()) { throw new Exception("Radio is not enabled"); }
+
+        Player player = resolvePlayer();
+        return doPlayInternetRadio(request, player, radio).setStartPlayerAt(0);
     }
 
     /**
@@ -418,6 +441,18 @@ public class PlayQueueService {
         }
         player.getPlayQueue().addFiles(false, files);
         player.getPlayQueue().setRandomSearchCriteria(null);
+        player.getPlayQueue().setInternetRadio(null);
+        if (player.isJukebox()) {
+            jukeboxService.play(player);
+        }
+        return convert(request, player, true);
+    }
+
+    private PlayQueueInfo doPlayInternetRadio(HttpServletRequest request, Player player, InternetRadio radio) throws Exception {
+        internetRadioService.clearInternetRadioSourceCache(radio.getId());
+        player.getPlayQueue().clear();
+        player.getPlayQueue().setRandomSearchCriteria(null);
+        player.getPlayQueue().setInternetRadio(radio);
         if (player.isJukebox()) {
             jukeboxService.play(player);
         }
@@ -433,6 +468,7 @@ public class PlayQueueService {
         Player player = getCurrentPlayer(request, response);
         player.getPlayQueue().addFiles(false, randomFiles);
         player.getPlayQueue().setRandomSearchCriteria(null);
+        player.getPlayQueue().setInternetRadio(null);
         return convert(request, player, true).setStartPlayerAt(0);
     }
 
@@ -445,6 +481,8 @@ public class PlayQueueService {
         List<MediaFile> similarSongs = lastFmService.getSimilarSongs(artist, count, musicFolders);
         Player player = getCurrentPlayer(request, response);
         player.getPlayQueue().addFiles(false, similarSongs);
+        player.getPlayQueue().setRandomSearchCriteria(null);
+        player.getPlayQueue().setInternetRadio(null);
         return convert(request, player, true).setStartPlayerAt(0);
     }
 
@@ -478,6 +516,7 @@ public class PlayQueueService {
             playQueue.addFiles(true, files);
         }
         playQueue.setRandomSearchCriteria(null);
+        playQueue.setInternetRadio(null);
         return playQueue;
     }
 
@@ -589,7 +628,7 @@ public class PlayQueueService {
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
         Player player = getCurrentPlayer(request, response);
         PlayQueue playQueue = player.getPlayQueue();
-        if (playQueue.isRadioEnabled()) {
+        if (playQueue.isShuffleRadioEnabled()) {
             playQueue.setRandomSearchCriteria(null);
             playQueue.setRepeatEnabled(false);
         } else {
@@ -636,20 +675,43 @@ public class PlayQueueService {
     }
 
     private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) throws Exception {
+
         String url = NetworkService.getBaseUrl(request);
-
-        /* if (serverSidePlaylist && player.isJukebox()) {
-            updateJukebox(player, offset);
-        } */
-        boolean isCurrentPlayer = player.getIpAddress() != null && player.getIpAddress().equals(request.getRemoteAddr());
-
-        boolean m3uSupported = player.isExternal() || player.isExternalWithPlaylist();
-        serverSidePlaylist = player.isAutoControlEnabled() && m3uSupported && isCurrentPlayer && serverSidePlaylist;
         Locale locale = RequestContextUtils.getLocale(request);
-
-        List<PlayQueueInfo.Entry> entries = new ArrayList<PlayQueueInfo.Entry>();
         PlayQueue playQueue = player.getPlayQueue();
 
+        List<PlayQueueInfo.Entry> entries;
+        if (playQueue.isInternetRadioEnabled()) {
+            entries = convertInternetRadio(request, player);
+        } else {
+            entries = convertMediaFileList(request, player);
+        }
+
+        boolean isCurrentPlayer = player.getIpAddress() != null && player.getIpAddress().equals(request.getRemoteAddr());
+        boolean isStopEnabled = playQueue.getStatus() == PlayQueue.Status.PLAYING && !player.isExternalWithPlaylist();
+        boolean m3uSupported = player.isExternal() || player.isExternalWithPlaylist();
+        serverSidePlaylist = player.isAutoControlEnabled() && m3uSupported && isCurrentPlayer && serverSidePlaylist;
+
+        float gain = jukeboxService.getGain(player);
+
+        return new PlayQueueInfo(
+            entries,
+            isStopEnabled,
+            playQueue.isRepeatEnabled(),
+            playQueue.isShuffleRadioEnabled(),
+            playQueue.isInternetRadioEnabled(),
+            serverSidePlaylist,
+            gain
+        );
+    }
+
+    private List<PlayQueueInfo.Entry> convertMediaFileList(HttpServletRequest request, Player player) {
+
+        String url = NetworkService.getBaseUrl(request);
+        Locale locale = RequestContextUtils.getLocale(request);
+        PlayQueue playQueue = player.getPlayQueue();
+
+        List<PlayQueueInfo.Entry> entries = new ArrayList<>();
         for (MediaFile file : playQueue.getFiles()) {
 
             String albumUrl = url + "main.view?id=" + file.getId();
@@ -668,12 +730,48 @@ public class PlayQueueService {
                     formatFileSize(file.getFileSize(), locale), starred, albumUrl, streamUrl, remoteStreamUrl,
                     coverArtUrl, remoteCoverArtUrl));
         }
-        boolean isStopEnabled = playQueue.getStatus() == PlayQueue.Status.PLAYING && !player.isExternalWithPlaylist();
 
-        float gain = 0.0f;
-        gain = jukeboxService.getGain(player);
+        return entries;
+    }
 
-        return new PlayQueueInfo(entries, isStopEnabled, playQueue.isRepeatEnabled(), playQueue.isRadioEnabled(), serverSidePlaylist, gain);
+    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) throws Exception {
+
+        PlayQueue playQueue = player.getPlayQueue();
+        InternetRadio radio = playQueue.getInternetRadio();
+
+        final String radioHomepageUrl = radio.getHomepageUrl();
+        final String radioName = radio.getName();
+
+        List<PlayQueueInfo.Entry> entries = new ArrayList<>();
+        for (InternetRadioSource streamSource: internetRadioService.getInternetRadioSources(radio)) {
+            // Fake entry id so that the source can be selected in the UI
+            Integer streamId = -(1+entries.size());
+            Integer streamTrackNumber = entries.size();
+            String streamUrl = streamSource.getStreamUrl();
+            entries.add(new PlayQueueInfo.Entry(
+                    streamId,          // Entry id
+                    streamTrackNumber, // Track number
+                    streamUrl,         // Track title (use radio stream URL for now)
+                    "",                // Track artist
+                    radioName,         // Album name (use radio name)
+                    "Internet Radio",  // Genre
+                    0,                 // Year
+                    "",                // Bit rate
+                    0,                 // Duration
+                    "",                // Duration (as string)
+                    "",                // Format
+                    "",                // Content Type
+                    "",                // File size
+                    false,             // Starred
+                    radioHomepageUrl,  // Album URL (use radio home page URL)
+                    streamUrl,         // Stream URL
+                    streamUrl,         // Remote stream URL
+                    null,              // Cover art URL
+                    null               // Remote cover art URL
+            ));
+        }
+
+        return entries;
     }
 
     private String formatFileSize(Long fileSize, Locale locale) {
@@ -796,5 +894,9 @@ public class PlayQueueService {
 
     public void setJwtSecurityService(JWTSecurityService jwtSecurityService) {
         this.jwtSecurityService = jwtSecurityService;
+    }
+
+    public void setInternetRadioDao(InternetRadioDao internetRadioDao) {
+        this.internetRadioDao = internetRadioDao;
     }
 }
