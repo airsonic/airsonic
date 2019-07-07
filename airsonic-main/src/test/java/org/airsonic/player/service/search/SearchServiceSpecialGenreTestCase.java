@@ -137,10 +137,77 @@ public class SearchServiceSpecialGenreTestCase {
 
     @Test
     public void testQueryEscapeRequires() {
-    
+
         /*
-         * Legacy is not searchable. (FILE01 - FILE16)
+         * There are 19 files
+         * in src/test/resources/MEDIAS/Search/SpecialGenre/ARTIST1/ALBUM_A.
+         * In FILE01 to FILE16, Special strings for Lucene syntax are stored
+         * as tag values ​​of Genre.
+         * 
+         * Legacy can not search all these genres.
+         * (Strictly speaking, the genre field is not created at index creation.)
          */
+
+        List<MusicFolder> folders = getTestMusicFolders();
+
+        Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
+            new RandomSearchCriteria(Integer.MAX_VALUE, // count
+                    s, // genre,
+                    null, // fromYear
+                    null, // toYear
+                    folders // musicFolders
+            );
+
+        List<MediaFile> songs = searchService.getRandomSongs(simpleStringCriteria.apply("+"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("-"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("&&"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("+"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("||"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply(" ("));// space & bracket
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply(")"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("{}"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("[]"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("^"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("\""));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("~"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("*"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("?"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply(":"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("\\"));
+        Assert.assertEquals(0, songs.size());
+
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("/"));
+        Assert.assertEquals(0, songs.size());
 
     }
 
