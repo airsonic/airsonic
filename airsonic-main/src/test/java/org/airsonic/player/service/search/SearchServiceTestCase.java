@@ -319,16 +319,30 @@ public class SearchServiceTestCase {
         Assert.assertEquals("(24) Specify music as 'genre', and randomly acquire songs.", 0,
                 allRandomSongs.size());
 
+        /*
+         * Genre including blank.
+         * Regardless of the Lucene version, It should be 2.
+         */
+        randomSearchCriteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
+                "Baroque Instrumental", // genre,
+                null, // fromYear
+                null, // toYear
+                allMusicFolders // musicFolders
+        );
+        allRandomSongs = searchService.getRandomSongs(randomSearchCriteria);
+        Assert.assertEquals("(25) Search by specifying genres including spaces and hyphens.", 2,
+                allRandomSongs.size());
+
         // *** testGetRandomAlbums() ***
 
         /*
          * Acquisition of maximum number(5).
          */
         List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, 0, true, true, allMusicFolders);
-        Assert.assertEquals("(25) Get all albums with Dao.", 5, allAlbums.size());
+        Assert.assertEquals("(26) Get all albums with Dao.", 5, allAlbums.size());
         List<MediaFile> allRandomAlbums = searchService.getRandomAlbums(Integer.MAX_VALUE,
                 allMusicFolders);
-        Assert.assertEquals("(26) Specify Integer.MAX_VALUE as the upper limit,"
+        Assert.assertEquals("(27) Specify Integer.MAX_VALUE as the upper limit,"
                 + "and randomly acquire albums(file struct).", 5, allRandomAlbums.size());
 
         /*
@@ -337,7 +351,7 @@ public class SearchServiceTestCase {
         List<Album> allRandomAlbumsId3 = searchService.getRandomAlbumsId3(Integer.MAX_VALUE,
                 allMusicFolders);
         Assert.assertEquals(
-                "(27) Specify Integer.MAX_VALUE as the upper limit, and randomly acquire albums(ID3).",
+                "(28) Specify Integer.MAX_VALUE as the upper limit, and randomly acquire albums(ID3).",
                 5, allRandomAlbumsId3.size());
 
         /*
@@ -346,13 +360,13 @@ public class SearchServiceTestCase {
         query = "ID 3 ARTIST";
         searchCriteria.setQuery(query);
         result = searchService.search(searchCriteria, allMusicFolders, IndexType.ARTIST_ID3);
-        Assert.assertEquals("(28) Specify '" + query + "', total Hits is", 4,
+        Assert.assertEquals("(29) Specify '" + query + "', total Hits is", 4,
                 result.getTotalHits());
-        Assert.assertEquals("(29) Specify '" + query + "', and get an artists. Artist SIZE is ", 4,
+        Assert.assertEquals("(30) Specify '" + query + "', and get an artists. Artist SIZE is ", 4,
                 result.getArtists().size());
-        Assert.assertEquals("(30) Specify '" + query + "', and get a artists. Album SIZE is ", 0,
+        Assert.assertEquals("(31) Specify '" + query + "', and get a artists. Album SIZE is ", 0,
                 result.getAlbums().size());
-        Assert.assertEquals("(31) Specify '" + query + "', and get a artists. MediaFile SIZE is ",
+        Assert.assertEquals("(32) Specify '" + query + "', and get a artists. MediaFile SIZE is ",
                 0, result.getMediaFiles().size());
 
         /*
@@ -362,7 +376,7 @@ public class SearchServiceTestCase {
          */
         long count = result.getArtists().stream()
                 .filter(a -> a.getName().startsWith("_ID3_ARTIST_")).count();
-        Assert.assertEquals("(32) Artist whose name contains \\\"_ID3_ARTIST_\\\" is 3 records.",
+        Assert.assertEquals("(33) Artist whose name contains \\\"_ID3_ARTIST_\\\" is 3 records.",
                 3L, count);
 
         /*
@@ -373,7 +387,7 @@ public class SearchServiceTestCase {
          */
         count = result.getArtists().stream()
                 .filter(a -> a.getName().startsWith("_ID3_ALBUMARTIST_")).count();
-        Assert.assertEquals("(33) Artist whose name is \"_ID3_ARTIST_\" is 1 records.", 1L, count);
+        Assert.assertEquals("(34) Artist whose name is \"_ID3_ARTIST_\" is 1 records.", 1L, count);
 
         /*
          * Below is a simple loop test.

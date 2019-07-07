@@ -1,6 +1,7 @@
 
 package org.airsonic.player.service.search;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -412,7 +413,7 @@ public class AnalyzerFactoryTestCase {
          * Case using test resource name
          */
 
-        // title
+        // Semicolon , comma and hyphen.
         String query = "Bach: Goldberg Variations, BWV 988 - Aria";
         List<String> terms = toTermString(query);
         assertEquals(6, terms.size());
@@ -423,7 +424,7 @@ public class AnalyzerFactoryTestCase {
         assertEquals("988", terms.get(4));
         assertEquals("aria", terms.get(5));
 
-        // artist
+        // Underbars around words, ascii and semicolon.
         query = "_ID3_ARTIST_ Céline Frisch: Café Zimmermann";
         terms = toTermString(query);
         assertEquals(5, terms.size());
@@ -432,6 +433,72 @@ public class AnalyzerFactoryTestCase {
         assertEquals("frisch", terms.get(2));
         assertEquals("cafe", terms.get(3));
         assertEquals("zimmermann", terms.get(4));
+
+        // Underbars around words and slashes
+        query = "_ID3_ARTIST_ Sarah Walker/Nash Ensemble";
+        terms = toTermString(query);
+        assertEquals(5, terms.size());
+        assertEquals("id3_artist", terms.get(0));
+        assertEquals("sarah", terms.get(1));
+        assertEquals("walker", terms.get(2));
+        assertEquals("nash", terms.get(3));
+        assertEquals("ensemble", terms.get(4));
+        
+        // space
+        assertEquals(asList("abc", "def"), toTermString(" ABC DEF "));
+        assertEquals(asList("abc1", "def"), toTermString(" ABC1 DEF "));
+
+        // trim and delimiter
+        assertEquals(asList("abc", "def"), toTermString("+ABC+DEF+"));
+        assertEquals(asList("abc", "def"), toTermString("|ABC|DEF|"));
+        assertEquals(asList("abc", "def"), toTermString("!ABC!DEF!"));
+        assertEquals(asList("abc", "def"), toTermString("(ABC(DEF("));
+        assertEquals(asList("abc", "def"), toTermString(")ABC)DEF)"));
+        assertEquals(asList("abc", "def"), toTermString("{ABC{DEF{"));
+        assertEquals(asList("abc", "def"), toTermString("}ABC}DEF}"));
+        assertEquals(asList("abc", "def"), toTermString("[ABC[DEF["));
+        assertEquals(asList("abc", "def"), toTermString("]ABC]DEF]"));
+        assertEquals(asList("abc", "def"), toTermString("^ABC^DEF^"));
+        assertEquals(asList("abc", "def"), toTermString("\\ABC\\DEF\\"));
+        assertEquals(asList("abc", "def"), toTermString("\"ABC\"DEF\""));
+        assertEquals(asList("abc", "def"), toTermString("~ABC~DEF~"));
+        assertEquals(asList("abc", "def"), toTermString("*ABC*DEF*"));
+        assertEquals(asList("abc", "def"), toTermString("?ABC?DEF?"));
+        assertEquals(asList("abc", "def"), toTermString(":ABC:DEF:"));
+        assertEquals(asList("abc", "def"), toTermString("-ABC-DEF-"));
+        assertEquals(asList("abc", "def"), toTermString("/ABC/DEF/"));
+        assertEquals(asList("abc", "def"), toTermString("_ABC_DEF_"));
+        assertEquals(asList("abc", "def"), toTermString(",ABC,DEF,"));
+        assertEquals(asList("abc.def"), toTermString(".ABC.DEF."));
+        assertEquals(asList("abc&def"), toTermString("&ABC&DEF&"));
+        assertEquals(asList("abc@def"), toTermString("@ABC@DEF@"));
+        assertEquals(asList("abc'def"), toTermString("'ABC'DEF'"));
+
+        // trim and delimiter and number
+        assertEquals(asList("abc1", "def"), toTermString("+ABC1+DEF+"));
+        assertEquals(asList("abc1", "def"), toTermString("|ABC1|DEF|"));
+        assertEquals(asList("abc1", "def"), toTermString("!ABC1!DEF!"));
+        assertEquals(asList("abc1", "def"), toTermString("(ABC1(DEF("));
+        assertEquals(asList("abc1", "def"), toTermString(")ABC1)DEF)"));
+        assertEquals(asList("abc1", "def"), toTermString("{ABC1{DEF{"));
+        assertEquals(asList("abc1", "def"), toTermString("}ABC1}DEF}"));
+        assertEquals(asList("abc1", "def"), toTermString("[ABC1[DEF["));
+        assertEquals(asList("abc1", "def"), toTermString("]ABC1]DEF]"));
+        assertEquals(asList("abc1", "def"), toTermString("^ABC1^DEF^"));
+        assertEquals(asList("abc1", "def"), toTermString("\\ABC1\\DEF\\"));
+        assertEquals(asList("abc1", "def"), toTermString("\"ABC1\"DEF\""));
+        assertEquals(asList("abc1", "def"), toTermString("~ABC1~DEF~"));
+        assertEquals(asList("abc1", "def"), toTermString("*ABC1*DEF*"));
+        assertEquals(asList("abc1", "def"), toTermString("?ABC1?DEF?"));
+        assertEquals(asList("abc1", "def"), toTermString(":ABC1:DEF:"));
+        assertEquals(asList("abc1,def"), toTermString(",ABC1,DEF,"));
+        assertEquals(asList("abc1-def"), toTermString("-ABC1-DEF-"));
+        assertEquals(asList("abc1/def"), toTermString("/ABC1/DEF/"));
+        assertEquals(asList("abc1_def"), toTermString("_ABC1_DEF_"));
+        assertEquals(asList("abc1.def"), toTermString(".ABC1.DEF."));
+        assertEquals(asList("abc1", "def"), toTermString("&ABC1&DEF&"));
+        assertEquals(asList("abc1", "def"), toTermString("@ABC1@DEF@"));
+        assertEquals(asList("abc1", "def"), toTermString("'ABC1'DEF'"));
 
     }
 
