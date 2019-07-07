@@ -413,7 +413,7 @@ public class AnalyzerFactoryTestCase {
          * Case using test resource name
          */
 
-        // Semicolon , comma and hyphen.
+        // Semicolon, comma and hyphen.
         String query = "Bach: Goldberg Variations, BWV 988 - Aria";
         List<String> terms = toTermString(query);
         assertEquals(6, terms.size());
