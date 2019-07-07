@@ -424,7 +424,7 @@ public class AnalyzerFactoryTestCase {
         assertEquals("988", terms.get(4));
         assertEquals("aria", terms.get(5));
 
-        // Underbars around words, ascii and semicolon.
+        // Underscores around words, ascii and semicolon.
         query = "_ID3_ARTIST_ Céline Frisch: Café Zimmermann";
         terms = toTermString(query);
         assertEquals(5, terms.size());
