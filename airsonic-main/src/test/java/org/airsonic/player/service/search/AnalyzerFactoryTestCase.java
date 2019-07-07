@@ -444,7 +444,7 @@ public class AnalyzerFactoryTestCase {
         assertEquals("nash", terms.get(3));
         assertEquals("ensemble", terms.get(4));
         
-        // space
+        // Space
         assertEquals(asList("abc", "def"), toTermString(" ABC DEF "));
         assertEquals(asList("abc1", "def"), toTermString(" ABC1 DEF "));
 
