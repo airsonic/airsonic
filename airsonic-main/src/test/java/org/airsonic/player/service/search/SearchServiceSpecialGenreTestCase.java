@@ -108,6 +108,11 @@ public class SearchServiceSpecialGenreTestCase {
         return musicFolders;
     }
 
+    /*
+     * A count to deliberately stagger the execution of populateDatabase.
+     * If populate Database is called from multiple methods almost simultaneously,
+     * it may not execute correctly.
+     */
     private int count = 1;
 
     private synchronized void populateDatabase() {
@@ -135,18 +140,17 @@ public class SearchServiceSpecialGenreTestCase {
         }
     }
 
+    /*
+     * There are 19 files
+     * in src/test/resources/MEDIAS/Search/SpecialGenre/ARTIST1/ALBUM_A.
+     * In FILE01 to FILE16, Special strings for Lucene syntax are stored
+     * as tag values ​​of Genre.
+     * 
+     * Legacy can not search all these genres.
+     * (Strictly speaking, the genre field is not created at index creation.)
+     */
     @Test
     public void testQueryEscapeRequires() {
-
-        /*
-         * There are 19 files
-         * in src/test/resources/MEDIAS/Search/SpecialGenre/ARTIST1/ALBUM_A.
-         * In FILE01 to FILE16, Special strings for Lucene syntax are stored
-         * as tag values ​​of Genre.
-         * 
-         * Legacy can not search all these genres.
-         * (Strictly speaking, the genre field is not created at index creation.)
-         */
 
         List<MusicFolder> folders = getTestMusicFolders();
 
@@ -211,13 +215,12 @@ public class SearchServiceSpecialGenreTestCase {
 
     }
 
+    /*
+     * Jaudiotagger applies special treatment to bracket (FILE17).
+     * 
+     */
     @Test
     public void testBrackets() {
-        
-        /*
-         * Jaudiotagger applies special treatment to bracket (FILE17).
-         * 
-         */
 
         List<MusicFolder> folders = getTestMusicFolders();
 
@@ -245,12 +248,12 @@ public class SearchServiceSpecialGenreTestCase {
 
     }
 
+    /*
+     * Jaudiotagger applies special treatment to numeric. (FILE18)
+     */
     @Test
     public void testNumericMapping() {
 
-        /*
-         * Jaudiotagger applies special treatment to numeric. (FILE18)
-         */
         List<MusicFolder> folders = getTestMusicFolders();
 
         RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
@@ -269,18 +272,18 @@ public class SearchServiceSpecialGenreTestCase {
 
     }
 
+    /*
+     * Other special strings. (FILE19)
+     * 
+     * {'“『【【】】[︴○◎@ $〒→+]ＦＵＬＬ－ＷＩＤＴＨCæsar's
+     * 
+     * Legacy stores with Analyze,
+     * so searchable characters are different.
+     * 
+     */
     @Test
     public void testOthers() {
 
-        /*
-         * Other special strings. (FILE19)
-         * 
-         * {'“『【【】】[︴○◎@ $〒→+]ＦＵＬＬ－ＷＩＤＴＨCæsar's
-         * 
-         * Legacy stores with Analyze,
-         * so searchable characters are different.
-         * 
-         */
         List<MusicFolder> folders = getTestMusicFolders();
 
         RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
