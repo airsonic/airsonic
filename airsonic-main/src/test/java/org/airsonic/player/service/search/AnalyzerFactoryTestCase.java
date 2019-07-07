@@ -434,7 +434,7 @@ public class AnalyzerFactoryTestCase {
         assertEquals("cafe", terms.get(3));
         assertEquals("zimmermann", terms.get(4));
 
-        // Underbars around words and slashes
+        // Underscores around words and slashes.
         query = "_ID3_ARTIST_ Sarah Walker/Nash Ensemble";
         terms = toTermString(query);
         assertEquals(5, terms.size());
