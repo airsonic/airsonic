@@ -45,7 +45,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @DirtiesContext(
         classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 /*
- * Tests to clarify strings that can be used in genre.
+ * Tests to prove what kind of strings/chars can be used in the genre field.
  */
 public class SearchServiceSpecialGenreTestCase {
 
