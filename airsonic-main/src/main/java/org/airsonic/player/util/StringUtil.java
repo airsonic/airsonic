@@ -60,6 +60,7 @@ public final class StringUtil {
             {"ogx", "application/ogg"},
             {"aac", "audio/mp4"},
             {"m4a", "audio/mp4"},
+            {"m4b", "audio/mp4"},
             {"flac", "audio/flac"},
             {"wav", "audio/x-wav"},
             {"wma", "audio/x-ms-wma"},
