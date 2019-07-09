@@ -628,10 +628,10 @@ public class CoverArtController implements LastModified {
             try {
                 in = getImageInputStreamForVideo(mediaFile, width, height, offset);
                 BufferedImage result = ImageIO.read(in);
-                if (result == null) {
-                    throw new NullPointerException();
+                if (result != null) {
+                    return result;
                 }
-                return result;
+                LOG.warn("Failed to process cover art for " + mediaFile + ": {}", result);
             } catch (Throwable x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
             } finally {
