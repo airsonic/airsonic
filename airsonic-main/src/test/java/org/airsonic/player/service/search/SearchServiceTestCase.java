@@ -5,19 +5,13 @@ import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.dao.AlbumDao;
-import org.airsonic.player.dao.DaoHelper;
-import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.dao.MusicFolderDao;
-import org.airsonic.player.dao.MusicFolderTestData;
 import org.airsonic.player.domain.Album;
 import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
@@ -27,150 +21,50 @@ import org.airsonic.player.domain.ParamSearchResult;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
 import org.airsonic.player.domain.SearchResult;
-import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.search.IndexType;
-import org.airsonic.player.util.HomeRule;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import org.subsonic.restapi.ArtistID3;
 
-@ContextConfiguration(
-        locations = {
-                "/applicationContext-service.xml",
-                "/applicationContext-cache.xml",
-                "/applicationContext-testdb.xml",
-                "/applicationContext-mockSonos.xml" })
-@DirtiesContext(
-        classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class SearchServiceTestCase {
+public class SearchServiceTestCase extends AbstractAirsonicHomeTest {
 
-    @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule homeRule = new HomeRule();
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return homeRule.apply(spring, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    @Autowired
+    private AlbumDao albumDao;
 
     private final MetricRegistry metrics = new MetricRegistry();
-
-    @Autowired
-    private MediaScannerService mediaScannerService;
-
-    @Autowired
-    private MediaFileDao mediaFileDao;
 
     @Autowired
     private MusicFolderDao musicFolderDao;
 
     @Autowired
-    private DaoHelper daoHelper;
-
-    @Autowired
-    private AlbumDao albumDao;
-
-    @Autowired
     private SearchService searchService;
-
-    @Autowired
-    private SettingsService settingsService;
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Autowired
-    ResourceLoader resourceLoader;
 
     @Before
     public void setup() throws Exception {
-        populateDatabase();
+        populateDatabaseOnlyOnce();
     }
 
-    private static boolean dataBasePopulated;
-
-    private int count = 1;
-
-    /*
-     * Cases susceptible to SerchService refactoring and version upgrades.
-     * It is not exhaustive.
-     */
-    private synchronized void populateDatabase() {
+    @Test
+    public void testSearchTypical() {
 
         /*
-         * It seems that there is a case that does not work well
-         * if you test immediately after initialization in 1 method.
-         * It may be improved later.
+         * A simple test that is expected to easily detect API syntax differences when updating lucene.
+         * Complete route coverage and data coverage in this case alone are not conscious.
          */
-        try {
-            Thread.sleep(300 * count++);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
-        if (!dataBasePopulated) {
+        List<MusicFolder> allMusicFolders = musicFolderDao.getAllMusicFolders();
+        Assert.assertEquals(3, allMusicFolders.size());
+    
+        // *** testSearch() ***
 
-            MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
-            settingsService.clearMusicFolderCache();
-            TestCaseUtils.execScan(mediaScannerService);
-            System.out.println("--- Report of records count per table ---");
-            Map<String, Integer> records = TestCaseUtils.recordsInAllTables(daoHelper);
-            records.keySet().stream().filter(s -> s.equals("MEDIA_FILE") // 20
-                    | s.equals("ARTIST") // 5
-                    | s.equals("MUSIC_FOLDER")// 3
-                    | s.equals("ALBUM"))// 5
-                    .forEach(tableName -> System.out
-                            .println("\t" + tableName + " : " + records.get(tableName).toString()));
-            // Music Folder Music must have 3 children
-            List<MediaFile> listeMusicChildren = mediaFileDao.getChildrenOf(
-                    new File(MusicFolderTestData.resolveMusicFolderPath()).getPath());
-            Assert.assertEquals(3, listeMusicChildren.size());
-            // Music Folder Music2 must have 1 children
-            List<MediaFile> listeMusic2Children = mediaFileDao.getChildrenOf(
-                    new File(MusicFolderTestData.resolveMusic2FolderPath()).getPath());
-            Assert.assertEquals(1, listeMusic2Children.size());
-            System.out.println("--- *********************** ---");
-            dataBasePopulated = true;
-        }
-    }
-
-  @Test
-  public void testSearchTypical() {
-
-    /*
-     * A simple test that is expected to easily detect API syntax differences when updating lucene.
-     * Complete route coverage and data coverage in this case alone are not conscious.
-     */
-
-    List<MusicFolder> allMusicFolders = musicFolderDao.getAllMusicFolders();
-    Assert.assertEquals(3, allMusicFolders.size());
-
-    // *** testSearch() ***
-
-    String query = "Sarah Walker";
-    final SearchCriteria searchCriteria = new SearchCriteria();
-    searchCriteria.setQuery(query);
-    searchCriteria.setCount(Integer.MAX_VALUE);
-    searchCriteria.setOffset(0);
+        String query = "Sarah Walker";
+        final SearchCriteria searchCriteria = new SearchCriteria();
+        searchCriteria.setQuery(query);
+        searchCriteria.setCount(Integer.MAX_VALUE);
+        searchCriteria.setOffset(0);
 
         /*
          * _ID3_ALBUMARTIST_ Sarah Walker/Nash Ensemble

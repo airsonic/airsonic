@@ -1,143 +1,47 @@
 
 package org.airsonic.player.service.search;
 
-import com.google.common.base.Function;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.dao.DaoHelper;
-import org.airsonic.player.dao.MusicFolderDao;
-import org.airsonic.player.dao.MusicFolderTestData;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
-import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.service.SettingsService;
-import org.airsonic.player.util.HomeRule;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
-import static org.springframework.util.ObjectUtils.isEmpty;
 
-@ContextConfiguration(
-        locations = {
-                "/applicationContext-service.xml",
-                "/applicationContext-cache.xml",
-                "/applicationContext-testdb.xml",
-                "/applicationContext-mockSonos.xml" })
-@DirtiesContext(
-        classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+import com.google.common.base.Function;
+
 /*
  * Tests to prove what kind of strings/chars can be used in the genre field.
  */
-public class SearchServiceSpecialGenreTestCase {
+public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest {
 
-    @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule homeRule = new HomeRule();
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return homeRule.apply(spring, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
-    @Autowired
-    private MediaScannerService mediaScannerService;
-
-    @Autowired
-    private MusicFolderDao musicFolderDao;
-
-    @Autowired
-    private DaoHelper daoHelper;
+    private List<MusicFolder> musicFolders;
 
     @Autowired
     private SearchService searchService;
 
-    @Autowired
-    private SettingsService settingsService;
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Autowired
-    ResourceLoader resourceLoader;
-
-    @Before
-    public void setup() throws Exception {
-        populateDatabase();
-    }
-
-    private static boolean dataBasePopulated;
-
-    private static Function<String, String> resolvePath = (childPath) ->{
-        return MusicFolderTestData.resolveBaseMediaPath() + childPath;
-    };
-    
-    private List<MusicFolder> musicFolders;
-    
-    private List<MusicFolder> getTestMusicFolders() {
+    @Override
+    public List<MusicFolder> getMusicFolders() {
         if (isEmpty(musicFolders)) {
             musicFolders = new ArrayList<>();
-
-            File musicDir = new File(resolvePath.apply("Search/SpecialGenre"));
+            File musicDir = new File(resolveBaseMediaPath.apply("Search/SpecialGenre"));
             musicFolders.add(new MusicFolder(1, musicDir, "accessible", true, new Date()));
-
         }
         return musicFolders;
     }
 
-    /*
-     * A count to deliberately stagger the execution of populateDatabase.
-     * If populate Database is called from multiple methods almost simultaneously,
-     * it may not execute correctly.
-     */
-    private int count = 1;
-
-    private synchronized void populateDatabase() {
-
-        try {
-            Thread.sleep(300 * count++);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        if (!dataBasePopulated) {
-            getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
-            settingsService.clearMusicFolderCache();
-            TestCaseUtils.execScan(mediaScannerService);
-            System.out.println("--- Report of records count per table ---");
-            Map<String, Integer> records = TestCaseUtils.recordsInAllTables(daoHelper);
-            records.keySet().stream().filter(s -> s.equals("MEDIA_FILE") // 20
-                    | s.equals("ARTIST") // 5
-                    | s.equals("MUSIC_FOLDER")// 3
-                    | s.equals("ALBUM"))// 5
-                    .forEach(tableName -> System.out
-                            .println("\t" + tableName + " : " + records.get(tableName).toString()));
-            System.out.println("--- *********************** ---");
-            dataBasePopulated = true;
-        }
+    @Before
+    public void setup() throws Exception {
+        populateDatabaseOnlyOnce();
     }
 
     /*
@@ -152,7 +56,7 @@ public class SearchServiceSpecialGenreTestCase {
     @Test
     public void testQueryEscapeRequires() {
 
-        List<MusicFolder> folders = getTestMusicFolders();
+        List<MusicFolder> folders = getMusicFolders();
 
         Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
             new RandomSearchCriteria(Integer.MAX_VALUE, // count
@@ -222,7 +126,7 @@ public class SearchServiceSpecialGenreTestCase {
     @Test
     public void testBrackets() {
 
-        List<MusicFolder> folders = getTestMusicFolders();
+        List<MusicFolder> folders = getMusicFolders();
 
         RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
                 "-(GENRE)-", // genre,
@@ -254,7 +158,7 @@ public class SearchServiceSpecialGenreTestCase {
     @Test
     public void testNumericMapping() {
 
-        List<MusicFolder> folders = getTestMusicFolders();
+        List<MusicFolder> folders = getMusicFolders();
 
         RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
                 "Rock", // genre,
@@ -284,7 +188,7 @@ public class SearchServiceSpecialGenreTestCase {
     @Test
     public void testOthers() {
 
-        List<MusicFolder> folders = getTestMusicFolders();
+        List<MusicFolder> folders = getMusicFolders();
 
         RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
                 "{'“『【【】】[︴○◎@ $〒→+]ＦＵＬＬ－ＷＩＤＴＨCæsar's", // genre,

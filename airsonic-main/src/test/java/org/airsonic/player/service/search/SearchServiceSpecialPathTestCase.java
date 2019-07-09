@@ -1,49 +1,21 @@
 
 package org.airsonic.player.service.search;
 
-import com.google.common.base.Function;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.dao.DaoHelper;
-import org.airsonic.player.dao.MusicFolderDao;
-import org.airsonic.player.dao.MusicFolderTestData;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
-import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.service.SettingsService;
-import org.airsonic.player.util.HomeRule;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
-@ContextConfiguration(
-        locations = {
-                "/applicationContext-service.xml",
-                "/applicationContext-cache.xml",
-                "/applicationContext-testdb.xml",
-                "/applicationContext-mockSonos.xml" })
-@DirtiesContext(
-        classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 /*
  * Test cases related to #1139.
  * Confirming whether shuffle search can be performed correctly in MusicFolder containing special strings.
@@ -54,95 +26,39 @@ import static org.springframework.util.ObjectUtils.isEmpty;
  * This test case is a FalsePattern for search,
  * but there may be problems with the data flow prior to creating the search index.
  */
-public class SearchServiceSpecialPathTestCase {
+public class SearchServiceSpecialPathTestCase extends AbstractAirsonicHomeTest {
 
-    @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule homeRule = new HomeRule();
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return homeRule.apply(spring, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
-    @Autowired
-    private MediaScannerService mediaScannerService;
-
-    @Autowired
-    private MusicFolderDao musicFolderDao;
-
-    @Autowired
-    private DaoHelper daoHelper;
+    private List<MusicFolder> musicFolders;
 
     @Autowired
     private SearchService searchService;
 
-    @Autowired
-    private SettingsService settingsService;
-
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Autowired
-    ResourceLoader resourceLoader;
-
-    @Before
-    public void setup() throws Exception {
-        populateDatabase();
-    }
-
-    private static boolean dataBasePopulated;
-
-    private static Function<String, String> resolvePath = (childPath) ->{
-        return MusicFolderTestData.resolveBaseMediaPath() + childPath;
-    };
-    
-    private List<MusicFolder> musicFolders;
-    
-    private List<MusicFolder> getTestMusicFolders() {
+    @Override
+    public List<MusicFolder> getMusicFolders() {
         if (isEmpty(musicFolders)) {
             musicFolders = new ArrayList<>();
 
-            File musicDir = new File(resolvePath.apply("Search/SpecialPath/accessible"));
+            File musicDir = new File(resolveBaseMediaPath.apply("Search/SpecialPath/accessible"));
             musicFolders.add(new MusicFolder(1, musicDir, "accessible", true, new Date()));
 
-            File music2Dir = new File(resolvePath.apply("Search/SpecialPath/accessible's"));
+            File music2Dir = new File(resolveBaseMediaPath.apply("Search/SpecialPath/accessible's"));
             musicFolders.add(new MusicFolder(2, music2Dir, "accessible's", true, new Date()));
 
-            File music3Dir = new File(resolvePath.apply("Search/SpecialPath/accessible+s"));
+            File music3Dir = new File(resolveBaseMediaPath.apply("Search/SpecialPath/accessible+s"));
             musicFolders.add(new MusicFolder(3, music3Dir, "accessible+s", true, new Date()));
         }
         return musicFolders;
     }
 
-    private synchronized void populateDatabase() {
-
-        if (!dataBasePopulated) {
-            getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
-            settingsService.clearMusicFolderCache();
-            TestCaseUtils.execScan(mediaScannerService);
-            System.out.println("--- Report of records count per table ---");
-            Map<String, Integer> records = TestCaseUtils.recordsInAllTables(daoHelper);
-            records.keySet().stream().filter(s -> s.equals("MEDIA_FILE") // 20
-                    | s.equals("ARTIST") // 5
-                    | s.equals("MUSIC_FOLDER")// 3
-                    | s.equals("ALBUM"))// 5
-                    .forEach(tableName -> System.out
-                            .println("\t" + tableName + " : " + records.get(tableName).toString()));
-            System.out.println("--- *********************** ---");
-            dataBasePopulated = true;
-        }
+    @Before
+    public void setup() throws Exception {
+        populateDatabaseOnlyOnce();
     }
 
     @Test
     public void testSpecialCharactersInDirName() {
 
-        List<MusicFolder> folders = getTestMusicFolders();
+        List<MusicFolder> folders = getMusicFolders();
 
         // ALL Songs
         List<MediaFile> randomAlbums = searchService.getRandomAlbums(Integer.MAX_VALUE, folders);
