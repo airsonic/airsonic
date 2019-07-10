@@ -1,4 +1,4 @@
-package org.airsonic.player.dao;
+package org.airsonic.player.util;
 
 import org.airsonic.player.domain.MusicFolder;
 
@@ -38,4 +38,5 @@ public class MusicFolderTestData {
     liste.add(musicFolder2);
     return liste;
   }
+
 }
