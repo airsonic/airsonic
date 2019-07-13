@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -35,8 +32,8 @@ public class JukeboxJavaService {
 
 
     private TransferStatus status;
-    private Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new Hashtable<>();
-    private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new Hashtable<>();
+    private Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new HashMap<>();
+    private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new HashMap<>();
     private final static String DEFAULT_MIXER_ENTRY_KEY = "_default";
 
 
