@@ -326,6 +326,26 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>net.nicoulaj.maven.plugins</groupId>
+                    <artifactId>checksum-maven-plugin</artifactId>
+                    <version>1.8</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>artifacts</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <algorithms>
+                            <algorithm>SHA-256</algorithm>
+                        </algorithms>
+                        <individualFiles>false</individualFiles>
+                        <shasumSummary>true</shasumSummary>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -416,26 +436,6 @@
                 <module>install/docker</module>
                 <module>integration-test</module>
             </modules>
-        </profile>
-        <profile>
-            <id>sign</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 </project>
