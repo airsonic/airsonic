@@ -3,7 +3,7 @@
 # airsonic/airsonic
 # -->
 
-## v10.4.0 - ?
+## v10.4.0 - 13 Jul 2019
 
 Fixes:
 - /stream When transcoding, always use chunked transfers and report that ranges
