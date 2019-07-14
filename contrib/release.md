@@ -24,7 +24,7 @@ Release Steps
 
 7. Sign sha256sums file
 
-        gpg2 --clearsign artifacts-checksums.sha
+        gpg2 --clearsign airsonic-main/target/artifacts-checksums.sha
 
 8. push up branch and tag
 
@@ -37,7 +37,7 @@ Release Steps
    - Choose existing tag
    - Title is "Airsonic X.Y.Z"
    - Contents are the relevant entry of the CHANGELOG.md file
-   - Upload `airsonic.war` and `artifacts-checksums.sha`
+   - Upload `airsonic.war` and `artifacts-checksums.sha.asc`
 
 10. Update latest docker tag
 
