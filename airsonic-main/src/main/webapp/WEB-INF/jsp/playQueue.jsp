@@ -897,24 +897,24 @@
 
                     <c:if test="${model.player.web}">
                         <td><span class="header">
-                            <img src="<spring:theme code="backImage"/>" alt="" onclick="onPrevious()" style="cursor:pointer"></span>
+                            <img src="<spring:theme code="backImage"/>" alt="Play next" title="Play next" onclick="onPrevious()" style="cursor:pointer"></span>
                         </td>
                         <td><span class="header">
-                            <img src="<spring:theme code="forwardImage"/>" alt="" onclick="onNext(false)" style="cursor:pointer"></span> |
+                            <img src="<spring:theme code="forwardImage"/>" alt="Play next" title="Play next" onclick="onNext(false)" style="cursor:pointer"></span> |
                         </td>
                     </c:if>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
                         <a href="javascript:onClear()">
-                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" style="cursor:pointer; height:18px">
+                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
                         <a href="javascript:onShuffle()" id="shuffleQueue">
-                            <img src="<spring:theme code="shuffleImage"/>" alt="shuffle" style="cursor:pointer; height:18px">
+                            <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
@@ -922,7 +922,7 @@
                         <td style="white-space:nowrap;">
                           <span class="header">
                             <a href="javascript:onToggleRepeat()" id="repeatQueue">
-                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="repeatOn" style="cursor:pointer; height:18px">
+                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
                     </c:if>
@@ -930,7 +930,7 @@
                     <td style="white-space:nowrap;">
                       <span class="header">
                         <a href="javascript:onUndo()" id="undoQueue">
-                          <img src="<spring:theme code="undoImage"/>" alt="undo" style="cursor:pointer; height:18px">
+                          <img src="<spring:theme code="undoImage"/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
                         </a>
                       </span>  |</td>
 
@@ -938,7 +938,7 @@
                         <td style="white-space:nowrap;">
                           <span class="header">
                             <a href="playerSettings.view?id=${model.player.id}" target="main">
-                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" style="cursor:pointer; height:18px">
+                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
                     </c:if>
