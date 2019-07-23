@@ -24,7 +24,7 @@ import org.airsonic.player.domain.PlayerTechnology;
 import org.springframework.stereotype.Service;
 
 /**
- * @author Rémi Cocula
+ * @author RÃ©mi Cocula
  */
 @Service
 public class JukeboxService {

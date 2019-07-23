@@ -1,6 +1,6 @@
 package org.airsonic.player.util;
 
-import org.jdom.input.SAXBuilder;
+import org.jdom2.input.SAXBuilder;
 
 public class XMLUtil {
 

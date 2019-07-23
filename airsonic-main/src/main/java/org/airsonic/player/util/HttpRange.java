@@ -56,7 +56,7 @@ public class HttpRange {
             String firstString = matcher.group(1);
             String lastString = StringUtils.trimToNull(matcher.group(2));
 
-            Long first = Long.parseLong(firstString);
+            long first = Long.parseLong(firstString);
             Long last = lastString == null ? null : Long.parseLong(lastString);
 
             if (last != null && first > last) {

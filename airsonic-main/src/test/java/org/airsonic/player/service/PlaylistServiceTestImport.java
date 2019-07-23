@@ -88,9 +88,9 @@ public class PlaylistServiceTestImport {
         FileUtils.touch(mf2);
         File mf3 = folder.newFile();
         FileUtils.touch(mf3);
-        builder.append(mf1.getAbsolutePath() + "\n");
-        builder.append(mf2.getAbsolutePath() + "\n");
-        builder.append(mf3.getAbsolutePath() + "\n");
+        builder.append(mf1.getAbsolutePath()).append("\n");
+        builder.append(mf2.getAbsolutePath()).append("\n");
+        builder.append(mf3.getAbsolutePath()).append("\n");
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
@@ -122,9 +122,9 @@ public class PlaylistServiceTestImport {
         FileUtils.touch(mf2);
         File mf3 = folder.newFile();
         FileUtils.touch(mf3);
-        builder.append("File1=" + mf1.getAbsolutePath() + "\n");
-        builder.append("File2=" + mf2.getAbsolutePath() + "\n");
-        builder.append("File3=" + mf3.getAbsolutePath() + "\n");
+        builder.append("File1=").append(mf1.getAbsolutePath()).append("\n");
+        builder.append("File2=").append(mf2.getAbsolutePath()).append("\n");
+        builder.append("File3=").append(mf3.getAbsolutePath()).append("\n");
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
@@ -158,9 +158,9 @@ public class PlaylistServiceTestImport {
         FileUtils.touch(mf2);
         File mf3 = folder.newFile();
         FileUtils.touch(mf3);
-        builder.append("<track><location>file://" + mf1.getAbsolutePath() + "</location></track>\n");
-        builder.append("<track><location>file://" + mf2.getAbsolutePath() + "</location></track>\n");
-        builder.append("<track><location>file://" + mf3.getAbsolutePath() + "</location></track>\n");
+        builder.append("<track><location>file://").append(mf1.getAbsolutePath()).append("</location></track>\n");
+        builder.append("<track><location>file://").append(mf2.getAbsolutePath()).append("</location></track>\n");
+        builder.append("<track><location>file://").append(mf3.getAbsolutePath()).append("</location></track>\n");
         builder.append("    </trackList>\n" + "</playlist>\n");
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));

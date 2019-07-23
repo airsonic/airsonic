@@ -24,6 +24,7 @@ files, ensure you are legally permitted to share copies!*
  * **Airsonic version**: *the version listed on the About page*
  * **Operating system**: *the operating system you're running Airsonic on.
    Linux, what distribution; Windows or Mac, what version?*
+ * **Java version**: *the Java version your using to run Airsonic.*
  * **Proxy server**: *if running Airsonic behind a proxy, what server and
    version? Otherwise,* None
  * **Client**: *what browser and version you use to access the Airsonic web

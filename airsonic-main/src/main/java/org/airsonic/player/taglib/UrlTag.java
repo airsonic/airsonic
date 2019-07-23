@@ -88,7 +88,7 @@ public class UrlTag extends BodyTagSupport {
     private String formatUrl() throws JspException {
         String baseUrl = UrlSupport.resolveUrl(value, null, pageContext);
 
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append(baseUrl);
         if (!parameters.isEmpty()) {
             result.append('?');

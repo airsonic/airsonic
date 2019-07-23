@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+
 <table>
     <tr>
         <c:if test="${not empty model.musicFolder}">
@@ -73,7 +76,11 @@
 
         <c:if test="${not empty model.albums}">
             <td style="padding-left: 2em">
-                <a href="javascript:playShuffle()"><img src="<spring:theme code="shuffleImage"/>" alt="">&nbsp;<fmt:message key="home.shuffle"/></a></td>
+                <a href="javascript:playShuffle()">
+                  <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" style="height:16px;">
+                  <fmt:message key="home.shuffle"/>
+                </a>
+            </td>
         </c:if>
     </tr>
 </table>

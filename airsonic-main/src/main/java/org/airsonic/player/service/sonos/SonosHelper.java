@@ -27,6 +27,7 @@ import org.airsonic.player.controller.CoverArtController;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
+import org.airsonic.player.service.search.IndexType;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,9 +121,7 @@ public class SonosHelper {
         List<MediaFile> albums = searchService.getRandomAlbums(40, musicFolders);
         List<MediaFile> songs = new ArrayList<MediaFile>();
         for (MediaFile album : albums) {
-            for (MediaFile file : filterMusic(mediaFileService.getChildrenOf(album, true, false, false))) {
-                songs.add(file);
-            }
+            songs.addAll(filterMusic(mediaFileService.getChildrenOf(album, true, false, false)));
         }
         Collections.shuffle(songs);
         songs = songs.subList(0, Math.min(count, songs.size()));
@@ -527,7 +526,7 @@ public class SonosHelper {
         return Arrays.asList(artists, albums, songs);
     }
 
-    public MediaList forSearch(String query, int offset, int count, SearchService.IndexType indexType, String username, HttpServletRequest request) {
+    public MediaList forSearch(String query, int offset, int count, IndexType indexType, String username, HttpServletRequest request) {
 
         SearchCriteria searchCriteria = new SearchCriteria();
         searchCriteria.setCount(count);

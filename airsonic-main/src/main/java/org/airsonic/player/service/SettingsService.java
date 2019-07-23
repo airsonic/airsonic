@@ -84,7 +84,6 @@ public class SettingsService {
     private static final String KEY_PODCAST_EPISODE_DOWNLOAD_COUNT = "PodcastEpisodeDownloadCount";
     private static final String KEY_DOWNLOAD_BITRATE_LIMIT = "DownloadBitrateLimit";
     private static final String KEY_UPLOAD_BITRATE_LIMIT = "UploadBitrateLimit";
-    private static final String KEY_ENABLE_SEEK = "EnableSeek1";
     private static final String KEY_DOWNSAMPLING_COMMAND = "DownsamplingCommand4";
     private static final String KEY_HLS_COMMAND = "HlsCommand3";
     private static final String KEY_JUKEBOX_COMMAND = "JukeboxCommand2";
@@ -108,6 +107,7 @@ public class SettingsService {
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
     private static final String KEY_JWT_KEY = "JWTKey";
+    private static final String KEY_REMEMBER_ME_KEY = "RememberMeKey";
 
     private static final String KEY_SMTP_SERVER = "SmtpServer";
     private static final String KEY_SMTP_ENCRYPTION = "SmtpEncryption";
@@ -144,8 +144,8 @@ public class SettingsService {
     private static final String DEFAULT_IGNORED_ARTICLES = "The El La Los Las Le Les";
     private static final String DEFAULT_SHORTCUTS = "New Incoming Podcast";
     private static final String DEFAULT_PLAYLIST_FOLDER = Util.getDefaultPlaylistFolder();
-    private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a flac wav wma aif aiff ape mpc shn mka opus";
-    private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts";
+    private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a m4b flac wav wma aif aiff ape mpc shn mka opus";
+    private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts webm";
     private static final String DEFAULT_COVER_ART_FILE_TYPES = "cover.jpg cover.png cover.gif folder.jpg jpg jpeg gif png";
     private static final int DEFAULT_COVER_ART_CONCURRENCY = 4;
     private static final String DEFAULT_WELCOME_TITLE = "Welcome to Airsonic!";
@@ -427,7 +427,7 @@ public class SettingsService {
         setProperty(KEY_PLAYLIST_FOLDER, playlistFolder);
     }
 
-    public String getMusicFileTypes() {
+    public synchronized String getMusicFileTypes() {
         return getProperty(KEY_MUSIC_FILE_TYPES, DEFAULT_MUSIC_FILE_TYPES);
     }
 
@@ -443,7 +443,7 @@ public class SettingsService {
         return cachedMusicFileTypesArray;
     }
 
-    public String getVideoFileTypes() {
+    public synchronized String getVideoFileTypes() {
         return getProperty(KEY_VIDEO_FILE_TYPES, DEFAULT_VIDEO_FILE_TYPES);
     }
 
@@ -459,7 +459,7 @@ public class SettingsService {
         return cachedVideoFileTypesArray;
     }
 
-    public String getCoverArtFileTypes() {
+    public synchronized String getCoverArtFileTypes() {
         return getProperty(KEY_COVER_ART_FILE_TYPES, DEFAULT_COVER_ART_FILE_TYPES);
     }
 
@@ -618,7 +618,7 @@ public class SettingsService {
      * @param limit The download bitrate limit in Kbit/s. Zero if unlimited.
      */
     public void setDownloadBitrateLimit(long limit) {
-        setProperty(KEY_DOWNLOAD_BITRATE_LIMIT, "" + limit);
+        setProperty(KEY_DOWNLOAD_BITRATE_LIMIT, String.valueOf(limit));
     }
 
     /**
@@ -633,14 +633,6 @@ public class SettingsService {
      */
     public void setUploadBitrateLimit(long limit) {
         setLong(KEY_UPLOAD_BITRATE_LIMIT, limit);
-    }
-
-    public boolean isEnableSeek() {
-        return getBoolean(KEY_ENABLE_SEEK, DEFAULT_ENABLE_SEEK);
-    }
-
-    public void setEnableSeek(boolean enableSeek) {
-        setBoolean(KEY_ENABLE_SEEK, enableSeek);
     }
 
     public String getDownsamplingCommand() {
@@ -785,7 +777,7 @@ public class SettingsService {
     }
 
     private void compileExcludePattern() {
-        if (getExcludePatternString() != null && getExcludePatternString().trim().length() > 0) {
+        if (getExcludePatternString() != null && !getExcludePatternString().trim().isEmpty()) {
             excludePattern = Pattern.compile(getExcludePatternString());
         } else {
             excludePattern = null;
@@ -805,6 +797,27 @@ public class SettingsService {
 
     void setMediaLibraryStatistics(MediaLibraryStatistics statistics) {
         setString(KEY_MEDIA_LIBRARY_STATISTICS, statistics.format());
+    }
+
+    /**
+     * Returns whether we are running in Development mode.
+     *
+     * @return true if we are in Development mode.
+     */
+    public boolean isDevelopmentMode() {
+        return System.getProperty("airsonic.development") != null;
+    }
+
+    /**
+     * Returns the custom 'remember me' key used for generating authentication tokens.
+     *
+     * @return The 'remember me' key.
+     */
+    public String getRememberMeKey() {
+        String key = null;
+        if (StringUtils.isBlank(key)) key = getString(KEY_REMEMBER_ME_KEY, null);
+        if (StringUtils.isBlank(key)) key = System.getProperty("airsonic.rememberMeKey");
+        return key;
     }
 
     /**

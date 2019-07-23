@@ -2,10 +2,40 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="setup-hsqldb-checkpoint-defrag" author="fxthomas">
+    <changeSet id="setup-hsqldb-2-checkpoint-defrag" author="fxthomas">
 
         <preConditions onFail="MARK_RAN">
           <dbms type="hsqldb" />
+          <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
+            <param name="major" value="2" />
+          </customPrecondition>
+        </preConditions>
+
+        <sql>
+          CHECKPOINT DEFRAG;
+          <comment>Defragment the database before enabling auto defrag, so that the biggest part of the work is done during migration.</comment>
+        </sql>
+        <sql>
+          SET FILES LOG SIZE 64;
+          <comment>Automatically run a CHECKPOINT when the log is above 64MB. http://hsqldb.org/doc/guide/management-chapt.html#N150AB</comment>
+        </sql>
+        <sql>
+          SET FILES DEFRAG 50;
+          <comment>Sets the threshold in percentage for performing a DEFRAG during a checkpoint. http://hsqldb.org/doc/guide/management-chapt.html#N1506D</comment>
+        </sql>
+
+        <rollback></rollback>
+
+    </changeSet>
+    <changeSet id="setup-hsqldb-checkpoint-defrag" author="fxthomas">
+
+        <validCheckSum>7:890e52428bbc2a792fea1e026a4b7610</validCheckSum>
+
+        <preConditions onFail="MARK_RAN">
+          <dbms type="hsqldb" />
+          <customPrecondition className="org.airsonic.player.spring.DbmsVersionPrecondition" >
+            <param name="major" value="1" />
+          </customPrecondition>
         </preConditions>
 
         <sql>
@@ -18,7 +48,7 @@
         </sql>
         <sql>
           SET CHECKPOINT DEFRAG 32;
-          <comment>Automatically defragment on CHECKPOINT when the wasted space is above 32MB.</comment>
+          <comment>Sets the threshold in percentage for performing a DEFRAG during a checkpoint.</comment>
         </sql>
 
         <rollback></rollback>

@@ -25,8 +25,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -58,7 +58,7 @@ public class MainController  {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
                                                  HttpServletRequest request,
                                                  HttpServletResponse response) throws Exception {
@@ -129,9 +129,9 @@ public class MainController  {
         map.put("brand", settingsService.getBrand());
         map.put("viewAsList", isViewAsList(request, userSettings));
         if (dir.isAlbum()) {
-            List<MediaFile> sieblingAlbums = getSieblingAlbums(dir);
-            thereIsMoreSAlbums = trimToSize(showAll, sieblingAlbums, userPaginationPreference);
-            map.put("sieblingAlbums", sieblingAlbums);
+            List<MediaFile> siblingAlbums = getSiblingAlbums(dir);
+            thereIsMoreSAlbums = trimToSize(showAll, siblingAlbums, userPaginationPreference);
+            map.put("siblingAlbums", siblingAlbums);
             map.put("artist", guessArtist(children));
             map.put("album", guessAlbum(children));
             map.put("musicBrainzReleaseId", guessMusicBrainzReleaseId(children));
@@ -277,13 +277,13 @@ public class MainController  {
         return result;
     }
 
-    private List<MediaFile> getSieblingAlbums(MediaFile dir) {
+    private List<MediaFile> getSiblingAlbums(MediaFile dir) {
         List<MediaFile> result = new ArrayList<>();
 
         MediaFile parent = mediaFileService.getParentOf(dir);
         if (!mediaFileService.isRoot(parent)) {
-            List<MediaFile> sieblings = mediaFileService.getChildrenOf(parent, false, true, true);
-            result.addAll(sieblings.stream().filter(siebling -> siebling.isAlbum() && !siebling.equals(dir)).collect(Collectors.toList()));
+            List<MediaFile> siblings = mediaFileService.getChildrenOf(parent, false, true, true);
+            result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && !sibling.equals(dir)).collect(Collectors.toList()));
         }
         return result;
     }

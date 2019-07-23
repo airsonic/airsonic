@@ -28,8 +28,8 @@ import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +59,7 @@ public class MoreController  {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
@@ -67,7 +67,7 @@ public class MoreController  {
 
         String uploadDirectory = null;
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(user.getUsername());
-        if (musicFolders.size() > 0) {
+        if (!musicFolders.isEmpty()) {
             uploadDirectory = new File(musicFolders.get(0).getPath(), "Incoming").getPath();
         }
 

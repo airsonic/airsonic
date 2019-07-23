@@ -38,10 +38,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,15 +66,13 @@ public class UserSettingsController {
     private SettingsService settingsService;
     @Autowired
     private TranscodingService transcodingService;
-    @Autowired
-    private UserSettingsValidator userSettingsValidator;
 
     @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(userSettingsValidator);
+    protected void initBinder(WebDataBinder binder, HttpServletRequest request) {
+        binder.addValidators(new UserSettingsValidator(securityService, settingsService, request));
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm(HttpServletRequest request, Model model) throws Exception {
         UserSettingsCommand command;
         if(!model.containsAttribute("command")) {
@@ -86,6 +85,7 @@ public class UserSettingsController {
                 UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
                 command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
                 command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
+                command.setCurrentUser(securityService.getCurrentUser(request).getUsername().equals(user.getUsername()));
             } else {
                 command.setNewUser(true);
                 command.setStreamRole(true);
@@ -129,7 +129,7 @@ public class UserSettingsController {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
 
         if(!bindingResult.hasErrors()) {

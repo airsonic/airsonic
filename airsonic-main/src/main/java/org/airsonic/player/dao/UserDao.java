@@ -79,7 +79,7 @@ public class UserDao extends AbstractDao {
      * Returns the user with the given username.
      *
      * @param username The username used when logging in.
-     * @param caseSensitive
+     * @param caseSensitive If false, perform a case-insensitive search
      * @return The user, or <code>null</code> if not found.
      */
     public User getUserByName(String username, boolean caseSensitive) {

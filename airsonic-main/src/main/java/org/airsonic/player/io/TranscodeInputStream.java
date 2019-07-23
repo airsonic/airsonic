@@ -56,7 +56,7 @@ public class TranscodeInputStream extends InputStream {
     public TranscodeInputStream(ProcessBuilder processBuilder, final InputStream in, File tmpFile) throws IOException {
         this.tmpFile = tmpFile;
 
-        StringBuffer buf = new StringBuffer("Starting transcoder: ");
+        StringBuilder buf = new StringBuilder("Starting transcoder: ");
         for (String s : processBuilder.command()) {
             buf.append('[').append(s).append("] ");
         }

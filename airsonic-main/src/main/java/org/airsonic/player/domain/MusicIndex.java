@@ -24,6 +24,7 @@ import java.text.CollationKey;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A music index is a mapping from an index string to a list of prefixes.  A complete index consists of a list of
@@ -99,7 +100,7 @@ public class MusicIndex implements Serializable {
 
         final MusicIndex musicIndex = (MusicIndex) o;
 
-        if (index != null ? !index.equals(musicIndex.index) : musicIndex.index != null) {
+        if (!Objects.equals(index, musicIndex.index)) {
             return false;
         }
 

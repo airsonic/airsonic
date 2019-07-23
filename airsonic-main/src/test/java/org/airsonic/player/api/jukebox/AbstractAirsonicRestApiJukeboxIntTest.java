@@ -7,6 +7,7 @@ import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MusicFolderTestData;
 import org.airsonic.player.util.StringUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -151,7 +152,7 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
     }
 
     private String convertDateToString(Date date) {
-       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000'Z'");
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
        return formatter.format(date);
     }

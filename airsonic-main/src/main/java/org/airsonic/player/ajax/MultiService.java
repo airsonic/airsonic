@@ -29,8 +29,6 @@ import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.WebContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,8 +48,6 @@ import java.util.List;
  */
 @Service("ajaxMultiService")
 public class MultiService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(MultiService.class);
 
     @Autowired
     private MediaFileService mediaFileService;

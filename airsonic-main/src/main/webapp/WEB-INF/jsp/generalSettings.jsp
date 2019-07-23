@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 </head>
 
 <body class="mainframe bgcolor1">
@@ -158,7 +158,7 @@
         <tr>
             <td colspan="2" style="padding-top:1.5em">
                 <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-                <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+                <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
             </td>
         </tr>
 

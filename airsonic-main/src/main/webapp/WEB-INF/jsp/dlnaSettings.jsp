@@ -21,7 +21,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 </head>
 
 <body class="mainframe bgcolor1">
@@ -37,8 +37,7 @@
     <sec:csrfInput />
 
     <div>
-        <input type="checkbox" name="dlnaEnabled" id="dlnaEnabled" class="checkbox"
-               <c:if test="${model.dlnaEnabled}">checked="checked"</c:if>/>
+        <input type="checkbox" name="dlnaEnabled" id="dlnaEnabled" ${model.dlnaEnabled? "checked": ""}/>
         <label for="dlnaEnabled"><fmt:message key="dlnasettings.enabled"/></label>
     </div>
     <p class="detail" style="width:60%;white-space:normal">
@@ -65,7 +64,7 @@
 
     <p>
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
     </p>
 
 </form>

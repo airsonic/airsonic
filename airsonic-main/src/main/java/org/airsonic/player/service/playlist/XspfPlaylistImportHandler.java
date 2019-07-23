@@ -7,8 +7,6 @@ import chameleon.playlist.xspf.StringContainer;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.util.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,8 +18,6 @@ import java.util.stream.Collectors;
 
 @Component
 public class XspfPlaylistImportHandler implements PlaylistImportHandler {
-
-    private static final Logger LOG = LoggerFactory.getLogger(XspfPlaylistImportHandler.class);
 
     @Autowired
     MediaFileService mediaFileService;

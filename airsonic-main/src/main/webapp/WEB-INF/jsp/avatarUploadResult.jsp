@@ -14,7 +14,7 @@
 <c:choose>
     <c:when test="${empty model.error}">
         <p>
-            <fmt:message key="avataruploadresult.success"><fmt:param value="${model.avatar.name}"/></fmt:message>
+            <fmt:message key="avataruploadresult.success"><fmt:param value="${fn:escapeXml(model.avatar.name)}"/></fmt:message>
             <sub:url value="avatar.view" var="avatarUrl">
                 <sub:param name="username" value="${model.username}"/>
                 <sub:param name="forceCustom" value="true"/>

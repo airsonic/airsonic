@@ -84,8 +84,8 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
 
             MapDifference<String, List<String>> difference = Maps.difference(left, right);
 
-            if(difference.entriesDiffering().size() != 0 ||
-                    difference.entriesOnlyOnLeft().size() != 0 ||
+            if(!difference.entriesDiffering().isEmpty() ||
+                    !difference.entriesOnlyOnLeft().isEmpty() ||
                     difference.entriesOnlyOnRight().size() != 1 ||
                     difference.entriesOnlyOnRight().get(JWTSecurityService.JWT_PARAM_NAME) == null) {
 

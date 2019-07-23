@@ -49,11 +49,6 @@ table {
     background-image:url("../icons/midnightfun/midnightfun_back.png");
 }
 
-/* Forward image */
-.forward {
-    background-image:url("../icons/midnightfun/midnightfun_forward.png");
-}
-
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
     color: #656569;

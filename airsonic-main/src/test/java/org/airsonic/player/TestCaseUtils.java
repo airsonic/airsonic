@@ -48,9 +48,7 @@ public class TestCaseUtils {
 
   /**
    * Cleans the AIRSONIC_HOME directory used for tests.
-   *
-   * @throws IOException
-     */
+   */
   public static void cleanAirsonicHomeForTest() throws IOException {
 
     File airsonicHomeDir = new File(airsonicHomePathForTest());
@@ -79,20 +77,14 @@ public class TestCaseUtils {
                     "from information_schema.system_tables " +
                     "where table_name not like 'SYSTEM%'"
             , String.class);
-    Map<String, Integer> nbRecords =
-            tableNames.stream()
-                    .collect(Collectors.toMap(table -> table, table -> recordsInTable(table,daoHelper)));
 
-    return nbRecords;
+      return tableNames.stream()
+              .collect(Collectors.toMap(table -> table, table -> recordsInTable(table,daoHelper)));
   }
 
   /**
    * Counts records in a table.
-   *
-   * @param tableName
-   * @param daoHelper
-   * @return
-     */
+   */
   public static Integer recordsInTable(String tableName, DaoHelper daoHelper) {
     return daoHelper.getJdbcTemplate().queryForObject("select count(1) from " + tableName,Integer.class);
   }

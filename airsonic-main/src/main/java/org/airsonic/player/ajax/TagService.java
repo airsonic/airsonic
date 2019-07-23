@@ -73,7 +73,7 @@ public class TagService {
         Integer trackNumber = null;
         if (track != null) {
             try {
-                trackNumber = new Integer(track);
+                trackNumber = Integer.valueOf(track);
             } catch (NumberFormatException x) {
                 LOG.warn("Illegal track number: " + track, x);
             }
@@ -82,7 +82,7 @@ public class TagService {
         Integer yearNumber = null;
         if (year != null) {
             try {
-                yearNumber = new Integer(year);
+                yearNumber = Integer.valueOf(year);
             } catch (NumberFormatException x) {
                 LOG.warn("Illegal year: " + year, x);
             }

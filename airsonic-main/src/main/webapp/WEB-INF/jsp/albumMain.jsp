@@ -1,18 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <%--@elvariable id="model" type="java.util.Map"--%>
 
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -25,7 +23,9 @@
 
 <script type="text/javascript" language="javascript">
     function init() {
-        setupZoom('<c:url value="/"/>');
+        $("a.fancy").fancyZoom({
+            minBorder: 30
+        });
 
         $("#dialog-select-playlist").dialog({resizable: true, height: 350, autoOpen: false,
             buttons: {
@@ -164,7 +164,7 @@
 <div style="float:left">
     <h1>
         <img id="starImage" src="<spring:theme code="${not empty model.dir.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"
-             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer" alt="">
+             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer;height:18px;" alt="">
 
         <span style="vertical-align: middle">
             <c:forEach items="${model.ancestors}" var="ancestor">
@@ -239,33 +239,33 @@
     </c:if>
 
     <c:if test="${model.user.shareRole}">
-        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" alt=""></a>
+        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" style="height:18px;" alt=""></a>
             <a href="${shareUrl}"><fmt:message key="main.sharealbum"/></a> </span> |
     </c:if>
 
     <c:if test="${not empty model.artist and not empty model.album}">
-        <sub:url value="http://www.google.com/search" var="googleUrl" encoding="UTF-8">
+        <sub:url value="https://www.google.com/search" var="googleUrl" encoding="UTF-8">
             <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
         </sub:url>
-        <sub:url value="http://en.wikipedia.org/wiki/Special:Search" var="wikipediaUrl" encoding="UTF-8">
+        <sub:url value="https://en.wikipedia.org/wiki/Special:Search" var="wikipediaUrl" encoding="UTF-8">
             <sub:param name="search" value="\"${model.album}\""/>
             <sub:param name="go" value="Go"/>
         </sub:url>
         <sub:url value="allmusic.view" var="allmusicUrl">
             <sub:param name="album" value="${model.album}"/>
         </sub:url>
-        <sub:url value="http://www.last.fm/search" var="lastFmUrl" encoding="UTF-8">
+        <sub:url value="https://www.last.fm/search" var="lastFmUrl" encoding="UTF-8">
             <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
             <sub:param name="type" value="album"/>
         </sub:url>
         <span class="header"><fmt:message key="top.search"/> <a target="_blank" href="${googleUrl}">Google</a></span> |
-        <span class="header"><a target="_blank" href="${wikipediaUrl}">Wikipedia</a></span> |
-        <span class="header"><a target="_blank" href="${allmusicUrl}">allmusic</a></span> |
-        <span class="header"><a target="_blank" href="${lastFmUrl}">Last.fm</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${wikipediaUrl}">Wikipedia</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${allmusicUrl}">allmusic</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${lastFmUrl}">Last.fm</a></span> |
         <c:if test="${not empty model.musicBrainzReleaseId}">
           <sub:url value="https://musicbrainz.org/release/${model.musicBrainzReleaseId}" var="musicBrainzUrl" encoding="UTF-8">
           </sub:url>
-          <span class="header"><a target="_blank" href="${musicBrainzUrl}">MusicBrainz</a></span> |
+          <span class="header"><a target="_blank" rel="noopener noreferrer" href="${musicBrainzUrl}">MusicBrainz</a></span> |
         </c:if>
         <span class="header">
             <fmt:message key="main.playcount"><fmt:param value="${model.dir.playCount}"/></fmt:message>
@@ -317,7 +317,7 @@
                             <c:param name="asTable" value="true"/>
                         </c:import>
 
-                        <td class="fit"><input type="checkbox" class="checkbox" id="songIndex${loopStatus.count - 1}">
+                        <td class="fit"><input type="checkbox" id="songIndex${loopStatus.count - 1}">
                             <span id="songId${loopStatus.count - 1}" style="display: none">${song.id}</span></td>
 
                         <c:if test="${model.visibility.trackNumberVisible}">
@@ -399,24 +399,6 @@
                 </c:import>
             </div>
         </td>
-        <c:if test="${model.showAd}">
-            <td style="vertical-align:top;width:160px" rowspan="3">
-                <h2 style="padding-bottom: 1em">Subsonic Premium</h2>
-                <p style="font-size: 90%">
-                    Upgrade to Subsonic Premium and get:
-                </p>
-                <div style="font-size: 90%;padding-bottom: 1em">
-                    <p><a href="https://airsonic.github.io/docs/apps/" target="_blank">Apps</a> for Android, iPhone, Windows Phone ++.</p>
-                    <p>Video streaming.</p>
-                    <p>Chromecast and Sonos support.</p>
-                    <p>DLNA/UPnP support</p>
-                    <p>Share on Facebook, Twitter, Google+</p>
-                    <p>No ads.</p>
-                    <p>Your personal server address: <em>you</em>.airsonic.org</p>
-                    <p>Podcast receiver.</p>
-                </div>
-            </td>
-        </c:if>
     </tr>
 
     <tr>
@@ -455,7 +437,7 @@
                     </tr>
                 </c:forEach>
                 <c:if test="${model.viewAsList}">
-                    <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
+                    <c:forEach items="${model.siblingAlbums}" var="album" varStatus="loopStatus">
                         <tr>
                             <c:import url="playButtons.jsp">
                                 <c:param name="id" value="${album.id}"/>
@@ -479,7 +461,7 @@
 
 <c:if test="${not model.viewAsList}">
     <div style="float: left">
-        <c:forEach items="${model.sieblingAlbums}" var="album" varStatus="loopStatus">
+        <c:forEach items="${model.siblingAlbums}" var="album" varStatus="loopStatus">
             <div class="albumThumb">
                 <c:import url="coverArt.jsp">
                     <c:param name="albumId" value="${album.id}"/>
