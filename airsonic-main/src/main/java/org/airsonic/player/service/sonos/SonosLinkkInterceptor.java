@@ -1,7 +1,7 @@
 package org.airsonic.player.service.sonos;
 
-
 import com.google.common.collect.Sets;
+
 import com.sonos.services._1.Credentials;
 import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
 import org.airsonic.player.service.SecurityService;

@@ -1,6 +1,5 @@
 package org.airsonic.player.dao;
 
-
 import org.airsonic.player.domain.SonosLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
