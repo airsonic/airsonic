@@ -212,11 +212,15 @@ public class MediaFile {
     }
 
     public String getDisplayName() {
-        if (isFile()) {
-            return title != null ? title : FilenameUtils.getBaseName(path);
-        }
+        String displayName;
 
-        return FilenameUtils.getName(path);
+        if (isFile()) {
+            displayName = title != null ? title : FilenameUtils.getBaseName(path);
+        }
+        else {
+            displayName = FilenameUtils.getName(path);
+        }
+        return displayName.replace('_', ' ').trim().replaceAll("\\s+", " ");
     }
 
     public Integer getDiscNumber() {
