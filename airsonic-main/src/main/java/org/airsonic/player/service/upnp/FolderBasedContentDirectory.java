@@ -217,7 +217,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
     private Container createContainer(MediaFile mediaFile) throws Exception {
         Container container = mediaFile.isAlbum() ? createAlbumContainer(mediaFile) : new MusicAlbum();
         container.setId(CONTAINER_ID_FOLDER_PREFIX + mediaFile.getId());
-        container.setTitle(mediaFile.getName());
+        container.setTitle(mediaFile.getDisplayName());
         List<MediaFile> children = mediaFileService.getChildrenOf(mediaFile, true, true, false);
         container.setChildCount(children.size());
 

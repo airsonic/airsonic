@@ -211,7 +211,7 @@ public class MediaFile {
         this.albumArtist = albumArtist;
     }
 
-    public String getName() {
+    public String getDisplayName() {
         if (isFile()) {
             return title != null ? title : FilenameUtils.getBaseName(path);
         }
@@ -455,7 +455,7 @@ public class MediaFile {
 
     @Override
     public String toString() {
-        return getName();
+        return getDisplayName();
     }
 
     public static List<Integer> toIdList(List<MediaFile> from) {

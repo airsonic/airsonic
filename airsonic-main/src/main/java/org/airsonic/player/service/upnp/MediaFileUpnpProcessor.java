@@ -73,7 +73,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
             container.setDescription(item.getComment());
         }
         container.setId(DispatchingContentDirectory.CONTAINER_ID_FOLDER_PREFIX + DispatchingContentDirectory.SEPARATOR + item.getId());
-        container.setTitle(item.getName());
+        container.setTitle(item.getDisplayName());
         List<MediaFile> children = getChildren(item);
         container.setChildCount(children.size());
 

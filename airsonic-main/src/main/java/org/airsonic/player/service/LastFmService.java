@@ -245,7 +245,7 @@ public class LastFmService {
      * @return Top songs for artist.
      */
     public List<MediaFile> getTopSongs(MediaFile artist, int count, List<MusicFolder> musicFolders) {
-        return getTopSongs(artist.getName(), count, musicFolders);
+        return getTopSongs(artist.getDisplayName(), count, musicFolders);
     }
 
     /**
@@ -458,7 +458,7 @@ public class LastFmService {
     }
 
     private String getArtistName(MediaFile mediaFile) {
-        String artistName = mediaFile.getName();
+        String artistName = mediaFile.getDisplayName();
         if (mediaFile.isAlbum() || mediaFile.isFile()) {
             artistName = mediaFile.getAlbumArtist() != null ? mediaFile.getAlbumArtist() : mediaFile.getArtist();
         }

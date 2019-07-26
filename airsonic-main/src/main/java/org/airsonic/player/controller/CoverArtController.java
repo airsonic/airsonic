@@ -599,7 +599,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public String getAlbum() {
-            return dir.getName();
+            return dir.getDisplayName();
         }
 
         @Override
@@ -661,7 +661,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public String getArtist() {
-            return mediaFile.getName();
+            return mediaFile.getDisplayName();
         }
 
         @Override

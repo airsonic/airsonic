@@ -147,7 +147,7 @@ public class PlayQueueTestCase extends TestCase {
         playQueue.setStatus(PlayQueue.Status.PLAYING);
         assertEquals(PlayQueue.Status.PLAYING, playQueue.getStatus());
         assertEquals(0, playQueue.getIndex());
-        assertEquals("A", playQueue.getCurrentFile().getName());
+        assertEquals("A", playQueue.getCurrentFile().getDisplayName());
     }
 
     public void testPlayLast() throws Exception {
@@ -238,13 +238,13 @@ public class PlayQueueTestCase extends TestCase {
     private void assertPlaylistEquals(PlayQueue playQueue, int index, String... songs) {
         assertEquals(songs.length, playQueue.size());
         for (int i = 0; i < songs.length; i++) {
-            assertEquals(songs[i], playQueue.getFiles().get(i).getName());
+            assertEquals(songs[i], playQueue.getFiles().get(i).getDisplayName());
         }
 
         if (index == -1) {
             assertNull(playQueue.getCurrentFile());
         } else {
-            assertEquals(songs[index], playQueue.getCurrentFile().getName());
+            assertEquals(songs[index], playQueue.getCurrentFile().getDisplayName());
         }
     }
 
@@ -278,7 +278,7 @@ public class PlayQueueTestCase extends TestCase {
         }
 
         @Override
-        public String getName() {
+        public String getDisplayName() {
             return name;
         }
 

@@ -637,7 +637,7 @@ public class SubsonicRESTController {
         } catch (SecurityException x) {
             // Ignored.
         }
-        directory.setName(dir.getName());
+        directory.setName(dir.getDisplayName());
         directory.setStarred(jaxbWriter.convertDate(mediaFileDao.getMediaFileStarredDate(id, username)));
         directory.setPlayCount((long) dir.getPlayCount());
 
@@ -1250,7 +1250,7 @@ public class SubsonicRESTController {
         } catch (SecurityException x) {
             // Ignored.
         }
-        child.setTitle(mediaFile.getName());
+        child.setTitle(mediaFile.getDisplayName());
         child.setAlbum(mediaFile.getAlbumName());
         child.setArtist(mediaFile.getArtist());
         child.setIsDir(mediaFile.isDirectory());
