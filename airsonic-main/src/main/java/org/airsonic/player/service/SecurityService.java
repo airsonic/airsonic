@@ -82,8 +82,18 @@ public class SecurityService implements UserDetailsService {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    // This is initialize in GlobalSecurityConfig, is autowired.
-    // Something wrong here, some circular ref, maybe rebuild responsibilities...
+    /*
+        TODO This is initialize in GlobalSecurityConfig.
+
+        Something wrong here, some circular ref, maybe rebuild responsibilities...
+
+        We are :
+           - RESTRequestParameterProcessingFilter need SecurityService cause is UserDetailsService.
+           - But SecurityService need AuthenticationManager they create in GlobalSecurityConfig
+           - But GlobalSecurityConfig create RESTRequestParameterProcessingFilter
+
+           So GlobalSecurityConfig -> RESTRequestParameterProcessingFilter -> SecurityService -> AuthenticationManager (but create in GlobalSecurityConfig)
+     */
     private AuthenticationManager authenticationManager;
 
 
