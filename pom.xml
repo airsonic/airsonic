@@ -381,6 +381,7 @@
                                 <ignoredUsedUndeclaredDependency>org.springframework.boot:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat.embed:tomcat-embed-core*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat:tomcat-annotations-api:*</ignoredUsedUndeclaredDependency>
+                                <ignoredUsedUndeclaredDependency>org.apache.tomcat.embed:tomcat-embed-el*</ignoredUsedUndeclaredDependency>
                             </ignoredUsedUndeclaredDependencies>
                             <ignoredUnusedDeclaredDependencies>
                                 <ignoredUnusedDeclaredDependency>com.sun.mail:javax.mail*</ignoredUnusedDeclaredDependency>

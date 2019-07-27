@@ -638,6 +638,27 @@
                 <groupId>net.nicoulaj.maven.plugins</groupId>
                 <artifactId>checksum-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jspc-maven-plugin</artifactId>
+                <version>9.4.19.v20190610</version>
+                <executions>
+                    <execution>
+                        <id>jspc</id>
+                        <goals>
+                            <goal>jspc</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <!-- Since we are using spring boot - we do not have a web.xml so there is no sense
+                            enabling merging. Furthermore, we output the webXmlFragment to the target/classes
+                            directory such that it will be on the classpath for use during runtime -->
+                            <mergeFragment>false</mergeFragment>
+                            <webXmlFragment>${project.build.outputDirectory}/precompiled-jsp-web.xml</webXmlFragment>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>
