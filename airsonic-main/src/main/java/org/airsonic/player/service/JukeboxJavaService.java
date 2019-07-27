@@ -255,17 +255,19 @@ public class JukeboxJavaService {
                     return airsonicPlayer.getPlayQueue().getIndex();
                 }
             });
-            // Close any other player using the same mixer.
-            String mixer = airsonicPlayer.getJavaJukeboxMixer();
-            if (StringUtils.isBlank(mixer)) {
-                mixer = DEFAULT_MIXER_ENTRY_KEY;
-            }
-            List<com.github.biconou.AudioPlayer.api.Player> playersForSameMixer = activeAudioPlayersPerMixer.get(mixer);
-            playersForSameMixer.forEach(player -> {
-                if (player != audioPlayer) {
-                    player.close();
+            synchronized (activeAudioPlayers) {
+                // Close any other player using the same mixer.
+                String mixer = airsonicPlayer.getJavaJukeboxMixer();
+                if (StringUtils.isBlank(mixer)) {
+                    mixer = DEFAULT_MIXER_ENTRY_KEY;
                 }
-            });
+                List<com.github.biconou.AudioPlayer.api.Player> playersForSameMixer = activeAudioPlayersPerMixer.get(mixer);
+                playersForSameMixer.forEach(player -> {
+                    if (player != audioPlayer) {
+                        player.close();
+                    }
+                });
+            }
             audioPlayer.play();
         }
     }
