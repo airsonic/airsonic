@@ -411,11 +411,11 @@ public class SecurityService implements UserDetailsService {
     public String getHousehold(String linkCode){
         Element element = sonosLinkcodeCache.get(linkCode);
 
-        if(element == null){
-            return  null;
-        } else {
+        if(element != null){
             return (String) element.getValue();
         }
+
+        return  null;
     }
 
     /**
@@ -485,10 +485,6 @@ public class SecurityService implements UserDetailsService {
     private String createLinkCode() {
         return UUID.randomUUID().toString().replace("-", "");
     }
-
-
-    //--------------------------------------------------------------------------------------------------------
-
 
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;

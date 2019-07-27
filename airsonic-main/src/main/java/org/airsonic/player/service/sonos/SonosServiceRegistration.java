@@ -171,11 +171,11 @@ public class SonosServiceRegistration {
         Document doc = Jsoup.connect(controllerUrl).get();
         Element element = doc.selectFirst("input[name='csrfToken']");
 
-        if(element == null ){
-            return null;
-        } else {
+        if(element != null ){
             return element.attributes().get("value");
         }
+
+        return null;
     }
 
     private RequestConfig getDefaultRequestConfig(){

@@ -76,9 +76,11 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
             Map<String, List<String>> left = new HashMap<>(expected.getQueryParams());
             Map<String, List<String>> right = new HashMap<>(requested.getQueryParams());
 
-            // Remove size parameters, it's security important and sonos controller change it
-            // We must change all request to set in path all important for security and rest in param. But
-            // now is too much change.
+            /*
+                Here, test if the request come from the way but include the parameters size of request,
+                but Sonos change the size use in request depend of client can get it. The request is never the same, and
+                we never equals, so return false.
+             */
             left.remove("size");
             right.remove("size");
 

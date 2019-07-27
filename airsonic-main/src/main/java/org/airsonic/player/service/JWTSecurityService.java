@@ -89,7 +89,7 @@ public class JWTSecurityService {
 
 
     /**
-     * Create a unexpired token for sonos link
+     * Create a an unexpiring token, "it will never expire"
      */
     public String createSonosToken(String username, String householdId, String linkCode){
         return JWT.create()

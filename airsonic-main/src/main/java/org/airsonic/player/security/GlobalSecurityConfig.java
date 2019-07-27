@@ -162,9 +162,8 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .frameOptions()
                     .sameOrigin()
                     .and().authorizeRequests()
-                    .antMatchers("/recover*", "/accessDenied*",
-                            "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/crossdomain.xml", "/login", "/error", "/sonos/**", "/sonoslink/**", "/ws/Sonos/**")
+                    .antMatchers("/recover*", "/accessDenied*", "/style/**", "/icons/**", "/flash/**", "/script/**",
+                            "/login", "/error", "/sonos/**", "/sonoslink/**", "/ws/Sonos/**")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")
