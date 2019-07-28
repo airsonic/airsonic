@@ -804,7 +804,7 @@ public class SettingsService {
      *
      * @return true if we are in Development mode.
      */
-    public boolean isDevelopmentMode() {
+    public static boolean isDevelopmentMode() {
         return System.getProperty("airsonic.development") != null;
     }
 
