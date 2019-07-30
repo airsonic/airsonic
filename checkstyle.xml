@@ -22,6 +22,7 @@
         </module>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
+        <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
         <module name="InnerAssignment"/>
         <module name="RedundantImport"/>
