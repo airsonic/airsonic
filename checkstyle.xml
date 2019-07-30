@@ -22,5 +22,6 @@
         <module name="UnusedImports"/>
         <module name="RedundantImport"/>
         <module name="EqualsHashCode"/>
+        <module name="StringLiteralEquality"/>
     </module>
 </module>
