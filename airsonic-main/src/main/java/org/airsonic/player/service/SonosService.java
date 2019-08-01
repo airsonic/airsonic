@@ -118,7 +118,7 @@ public class SonosService implements SonosSoap {
     private WebServiceContext context;
 
     /**
-     * Try to enable/disbale the Sonos link.
+     * Try to enable/disable the Sonos link.
      *
      * @param enabled or not, is not the sonoslink table is clear
      * @param baseUrl call back root address
