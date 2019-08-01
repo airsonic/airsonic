@@ -123,7 +123,7 @@ public class SonosServiceRegistration {
             params.add(Pair.create("presentationMapVersion", "1"));
             params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
 
-            // If you are change text in : /home/michel/externalDev/airsonic/airsonic-main/src/main/webapp/sonos/strings.xml
+            // Don't forget to change `stringsVersion` if you change the text in airsonic/airsonic-main/src/main/webapp/sonos/strings.xml
             // Change the stringsVersion @see https://musicpartners.sonos.com/node/134
             params.add(Pair.create("stringsVersion", "11"));
             params.add(Pair.create("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
