@@ -144,7 +144,7 @@ public class SonosService implements SonosSoap {
                 if (registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, authenticationType)) {
 
                     messagesCodes.add("sonossettings.sonoslink.success");
-                    // Clean old links.
+                    // Remove old links.
                     if (!enabled) {
                         sonosLinkDao.removeAll();
                         messagesCodes.add("sonossettings.sonoslink.removed");
