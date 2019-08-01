@@ -11,6 +11,7 @@
     <property name="fileExtensions" value="java, properties, xml"/>
 
     <module name="TreeWalker">
+        <module name="AnnotationLocation"/>
         <module name="CustomImportOrder">
             <property name="customImportOrderRules"
                       value="THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS###STANDARD_JAVA_PACKAGE###STATIC"/>
@@ -19,13 +20,12 @@
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="separateLineBetweenGroups" value="true"/>
         </module>
-        <module name="UnusedImports"/>
-        <module name="RedundantImport"/>
-        <module name="EqualsHashCode"/>
-        <module name="StringLiteralEquality"/>
-        <module name="AnnotationLocation"/>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
         <module name="InnerAssignment"/>
+        <module name="RedundantImport"/>
+        <module name="StringLiteralEquality"/>
+        <module name="UnusedImports"/>
     </module>
 </module>
