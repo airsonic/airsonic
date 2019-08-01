@@ -141,11 +141,11 @@ public class SonosService implements SonosSoap {
 
         for (String sonosController : sonosControllers) {
             try {
-                if( registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, authenticationType)){
+                if (registration.setEnabled(baseUrl, sonosController, enabled, sonosServiceName, sonosServiceId, authenticationType)) {
 
                     messagesCodes.add("sonossettings.sonoslink.success");
                     // Clean old links.
-                    if(!enabled) {
+                    if (!enabled) {
                         sonosLinkDao.removeAll();
                         messagesCodes.add("sonossettings.sonoslink.removed");
                     }
@@ -250,7 +250,7 @@ public class SonosService implements SonosSoap {
         }
 
         LOG.debug(String.format("getMetadata result: id=%s index=%s count=%s total=%s",
-                                id, mediaList.getIndex(), mediaList.getCount(), mediaList.getTotal()));
+                id, mediaList.getIndex(), mediaList.getCount(), mediaList.getTotal()));
 
         GetMetadataResponse response = new GetMetadataResponse();
         response.setGetMetadataResult(mediaList);
@@ -299,7 +299,7 @@ public class SonosService implements SonosSoap {
         }
 
         MediaList mediaList = sonosHelper.forSearch(parameters.getTerm(), parameters.getIndex(),
-                                                    parameters.getCount(), indexType, getUsername(), getRequest());
+                parameters.getCount(), indexType, getUsername(), getRequest());
         SearchResponse response = new SearchResponse();
         response.setSearchResult(mediaList);
         return response;
@@ -614,19 +614,18 @@ public class SonosService implements SonosSoap {
 
         String authToken = securityService.getSonosAuthToken(householdId, linkCode);
 
-        if(authToken == null){
+        if (authToken == null) {
             throw new SonosSoapFault.NotLinkedRetry();
-        } else {
-            DeviceAuthTokenResult authTokenResult = new DeviceAuthTokenResult();
-            authTokenResult.setAuthToken(authToken);
-            authTokenResult.setPrivateKey("alwaysAuthenticate");
-
-            authTokenResult.setUserInfo(new UserInfo());
-            authTokenResult.getUserInfo().setNickname(securityService.getSonosLink(linkCode).getUsername());
-
-            return authTokenResult;
         }
 
+        DeviceAuthTokenResult authTokenResult = new DeviceAuthTokenResult();
+        authTokenResult.setAuthToken(authToken);
+        authTokenResult.setPrivateKey("alwaysAuthenticate");
+
+        authTokenResult.setUserInfo(new UserInfo());
+        authTokenResult.getUserInfo().setNickname(securityService.getSonosLink(linkCode).getUsername());
+
+        return authTokenResult;
     }
 
     @Override
