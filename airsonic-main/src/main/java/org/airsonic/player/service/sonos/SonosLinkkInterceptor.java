@@ -77,7 +77,7 @@ public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
             } else if( action != null && authenticationType == AuthenticationType.ANONYMOUS){
                 securityService.authenticate();
             } else {
-                LOG.debug("Soap message not process : " + message.toString());
+                LOG.debug("Unable to process SOAP message : " + message.toString());
                 throw new SonosSoapFault.LoginUnauthorized();
             }
         } catch (JAXBException e) {
