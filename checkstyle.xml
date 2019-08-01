@@ -26,5 +26,6 @@
         <module name="AnnotationLocation"/>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
+        <module name="InnerAssignment"/>
     </module>
 </module>
