@@ -131,7 +131,7 @@ public class SonosServiceRegistration {
 
         } else {
 
-            // For disable it need name with empty value, without that the service registration didn't disable.
+            // To disable a Sonos device, just name it with an empty value.
             params.add(Pair.create("name", null));
         }
 
