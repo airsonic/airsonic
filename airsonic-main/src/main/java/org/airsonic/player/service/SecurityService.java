@@ -481,7 +481,7 @@ public class SecurityService implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-        // must be strict 32 character limit on length
+        // The link code must be exactly 32 characters long
     private String createLinkCode() {
         return UUID.randomUUID().toString().replace("-", "");
     }
