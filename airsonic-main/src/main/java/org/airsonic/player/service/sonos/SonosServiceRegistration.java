@@ -148,7 +148,7 @@ public class SonosServiceRegistration {
         HttpPost request = new HttpPost(url);
         request.setConfig(getDefaultRequestConfig());
 
-        // Don't use the UTF8 encoding, is nice but the sonos controller didn't like (it's american!).
+        // We're not using UTF8 encoding here since the Sonos controller doesn't like it.
         request.setEntity(new UrlEncodedFormEntity(params));
 
 
