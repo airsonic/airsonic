@@ -91,9 +91,8 @@ public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
         QName creadentialQName = new QName("http://www.sonos.com/Services/1.1", "credentials");
 
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        List<Header> headers = message.getHeaders();
 
-        for (Header header : headers) {
+        for (Header header : message.getHeaders()) {
             if (creadentialQName.equals(header.getName())) {
                 ElementNSImpl elementNS = (ElementNSImpl) header.getObject();
                 Credentials credentials = unmarshaller.unmarshal(elementNS, Credentials.class).getValue();
