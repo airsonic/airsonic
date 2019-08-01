@@ -66,7 +66,7 @@ public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
             AuthenticationType authenticationType = AuthenticationType.valueOf(settingsService.getSonosLinkMethod());
 
             if (action != null && openMethod.contains(action)) {
-                LOG.debug(""Unable to process SOAP message: " + message.toString());
+                LOG.debug("Unable to process SOAP message: " + message.toString());
 
             } else if( action != null && authenticationType == AuthenticationType.APPLICATION_LINK) {
 
