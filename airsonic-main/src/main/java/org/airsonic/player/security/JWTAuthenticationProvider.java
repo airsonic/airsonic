@@ -77,9 +77,12 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
             Map<String, List<String>> right = new HashMap<>(requested.getQueryParams());
 
             /*
-                Here, test if the request come from the way but include the parameters size of request,
-                but Sonos change the size use in request depend of client can get it. The request is never the same, and
-                we never equals, so return false.
+                If the equality test uses the size parameter on the request, it is possible that the equality test will fail because Sonos
+                changes the size parameter according to the client.
+
+                All parameters should be removed, but this would require too much retrofit work throughout the code.
+
+                Translated with www.DeepL.com/Translator
              */
             left.remove("size");
             right.remove("size");
