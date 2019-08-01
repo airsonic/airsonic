@@ -83,7 +83,7 @@ public class SecurityService implements UserDetailsService {
     private JWTSecurityService jwtSecurityService;
 
     /*
-        TODO This is initialize in GlobalSecurityConfig.
+        TODO This is initialized in GlobalSecurityConfig.
 
         Something wrong here, some circular ref, maybe rebuild responsibilities...
 
