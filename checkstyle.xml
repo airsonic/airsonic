@@ -23,5 +23,8 @@
         <module name="RedundantImport"/>
         <module name="EqualsHashCode"/>
         <module name="StringLiteralEquality"/>
+        <module name="AnnotationLocation"/>
+        <module name="DefaultComesLast"/>
+        <module name="EmptyStatement"/>
     </module>
 </module>
