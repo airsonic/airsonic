@@ -321,6 +321,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.0</version>
+                        <configuration>
+                            <!-- #1186 Temporarily skip a test. -->
+                            <excludes>org.airsonic.player.service.search.*TestCase.java</excludes>
+                        </configuration>
                 </plugin>
                 <plugin>
                     <groupId>net.nicoulaj.maven.plugins</groupId>
