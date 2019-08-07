@@ -26,6 +26,7 @@
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
         <module name="StringLiteralEquality"/>
         <module name="UnusedImports"/>

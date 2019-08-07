@@ -252,7 +252,7 @@ public class SettingsService {
 
     private void removeObsoleteProperties() {
 
-        OBSOLETE_KEYS.forEach( oKey -> {
+        OBSOLETE_KEYS.forEach(oKey -> {
             if(configurationService.containsKey(oKey)) {
                 LOG.info("Removing obsolete property [" + oKey + ']');
                 configurationService.clearProperty(oKey);
