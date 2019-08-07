@@ -140,13 +140,7 @@ public final class FileUtil {
     }
 
     private static <T> T timed(FileTask<T> task) {
-//        long t0 = System.nanoTime();
-//        try {
-            return task.execute();
-//        } finally {
-//            long t1 = System.nanoTime();
-//            LOG.debug((t1 - t0) / 1000L + " microsec, " + task);
-//        }
+        return task.execute();
     }
 
     private abstract static class FileTask<T> {

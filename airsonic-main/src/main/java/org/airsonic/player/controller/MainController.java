@@ -171,7 +171,7 @@ public class MainController  {
         }
 
         return new ModelAndView(view, "model", map);
-}
+    }
 
     private <T> boolean trimToSize(Boolean showAll, List<T> list, int userPaginationPreference) {
         boolean trimmed = false;

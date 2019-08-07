@@ -31,11 +31,11 @@ public class JWTRequestParameterProcessingFilter implements Filter {
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-            Optional<JWTAuthenticationToken> token = findToken(request);
-            if(token.isPresent()) {
-                return authenticationManager.authenticate(token.get());
-            }
-            throw new AuthenticationServiceException("Invalid auth method");
+        Optional<JWTAuthenticationToken> token = findToken(request);
+        if(token.isPresent()) {
+            return authenticationManager.authenticate(token.get());
+        }
+        throw new AuthenticationServiceException("Invalid auth method");
     }
 
     private static Optional<JWTAuthenticationToken> findToken(HttpServletRequest request) {

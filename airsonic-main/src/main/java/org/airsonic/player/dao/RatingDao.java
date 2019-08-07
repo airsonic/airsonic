@@ -51,10 +51,10 @@ public class RatingDao extends AbstractDao {
         }
 
         Map<String, Object> args = new HashMap<>();
-          args.put("type", MediaFile.MediaType.ALBUM.name());
-          args.put("folders", MusicFolder.toPathList(musicFolders));
-          args.put("count", count);
-          args.put("offset", offset);
+        args.put("type", MediaFile.MediaType.ALBUM.name());
+        args.put("folders", MusicFolder.toPathList(musicFolders));
+        args.put("count", count);
+        args.put("offset", offset);
 
         String sql = "select user_rating.path from user_rating, media_file " +
                      "where user_rating.path=media_file.path and media_file.present and media_file.type = :type and media_file.folder in (:folders) " +

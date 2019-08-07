@@ -74,9 +74,9 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     }
 
     private static String generateRememberMeKey() {
-      byte[] array = new byte[32];
-      new SecureRandom().nextBytes(array);
-      return new String(array);
+        byte[] array = new byte[32];
+        new SecureRandom().nextBytes(array);
+        return new String(array);
     }
 
     @Configuration
