@@ -201,7 +201,7 @@ public final class StringUtil {
         // More than 1 TB?
         if (byteCount >= 1024L * 1024 * 1024 * 1024) {
             NumberFormat teraByteFormat = new DecimalFormat("0.00 TB", new DecimalFormatSymbols(locale));
-            return teraByteFormat.format( byteCount / ((double) 1024 * 1024 * 1024 * 1024));
+            return teraByteFormat.format(byteCount / ((double) 1024 * 1024 * 1024 * 1024));
         }
      
         // More than 1 GB?

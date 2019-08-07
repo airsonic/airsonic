@@ -21,13 +21,20 @@
             <property name="separateLineBetweenGroups" value="true"/>
         </module>
         <module name="DefaultComesLast"/>
+        <module name="EmptyLineSeparator">
+            <!-- Enable all except PACKAGE_DEF, METHOD_DEF, VARIABLE_DEF -->
+            <property name="tokens"
+                      value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, CTOR_DEF"/>
+        </module>
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
         <module name="StringLiteralEquality"/>
+        <module name="TypecastParenPad"/>
         <module name="UnusedImports"/>
     </module>
 </module>
