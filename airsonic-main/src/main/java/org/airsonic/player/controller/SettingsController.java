@@ -42,7 +42,7 @@ public class SettingsController  {
     @Autowired
     private SecurityService securityService;
 
-@GetMapping
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         User user = securityService.getCurrentUser(request);
@@ -51,6 +51,6 @@ public class SettingsController  {
         String view = user.isAdminRole() ? "musicFolderSettings" : "personalSettings";
 
         return new ModelAndView(new RedirectView(view));
-     }
+    }
 
 }

@@ -76,7 +76,7 @@ public class UserSettingsController {
     protected String displayForm(HttpServletRequest request, Model model) throws Exception {
         UserSettingsCommand command;
         if(!model.containsAttribute("command")) {
-             command = new UserSettingsCommand();
+            command = new UserSettingsCommand();
 
             User user = getUser(request);
             if (user != null) {

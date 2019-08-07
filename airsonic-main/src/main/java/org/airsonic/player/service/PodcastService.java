@@ -74,10 +74,10 @@ public class PodcastService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
     private static final DateFormat[] RSS_DATE_FORMATS = {new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
-            new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
+        new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
 
     private static final Namespace[] ITUNES_NAMESPACES = {Namespace.getNamespace("http://www.itunes.com/DTDs/Podcast-1.0.dtd"),
-            Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
+        Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
 
     private final ExecutorService refreshExecutor;
     private final ExecutorService downloadExecutor;
@@ -704,7 +704,7 @@ public class PodcastService {
         File channelDir = new File(podcastDir, StringUtil.fileSystemSafe(channel.getTitle()));
 
         if (!podcastDir.canWrite()) {
-          throw new RuntimeException("The podcasts directory " + podcastDir + " isn't writeable.");
+            throw new RuntimeException("The podcasts directory " + podcastDir + " isn't writeable.");
         }
 
         if (!channelDir.exists()) {

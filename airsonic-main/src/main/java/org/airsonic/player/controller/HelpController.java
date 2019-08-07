@@ -103,7 +103,7 @@ public class HelpController {
             String current;
             while((current = reader.readLine()) != null) {
                 if (lines.size() >= LOG_LINES_TO_SHOW) {
-                  break;
+                    break;
                 }
                 lines.add(0, current);
             }
