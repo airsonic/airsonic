@@ -31,6 +31,7 @@
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="MethodParamPad"/>
         <module name="NoWhitespaceBefore">
             <property name="allowLineBreaks" value="true"/>
         </module>
