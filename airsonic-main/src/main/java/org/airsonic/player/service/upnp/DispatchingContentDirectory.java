@@ -152,7 +152,7 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
 
 
     private UpnpContentProcessor findProcessor(String type) {
-        switch(type) {
+        switch (type) {
             case CONTAINER_ID_ROOT:
                 return getRootProcessor();
             case CONTAINER_ID_PLAYLIST_PREFIX:

@@ -101,7 +101,7 @@ public class HelpController {
             List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
             ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset());
             String current;
-            while((current = reader.readLine()) != null) {
+            while ((current = reader.readLine()) != null) {
                 if (lines.size() >= LOG_LINES_TO_SHOW) {
                     break;
                 }

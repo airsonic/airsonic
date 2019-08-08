@@ -360,7 +360,7 @@ public class PodcastService {
     private void downloadImage(PodcastChannel channel) {
         InputStream in = null;
         OutputStream out = null;
-        try(CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             String imageUrl = channel.getImageUrl();
             if (imageUrl == null) {
                 return;

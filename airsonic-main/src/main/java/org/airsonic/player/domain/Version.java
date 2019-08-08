@@ -54,7 +54,7 @@ public class Version implements Comparable<Version> {
      * @return Whether this object is equals to another.
      */
     public boolean equals(Object o) {
-        if(o instanceof Version) {
+        if (o instanceof Version) {
             return internalVersion.equals(((Version)o).internalVersion);
         } else {
             return false;

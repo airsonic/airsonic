@@ -34,15 +34,15 @@ public class XspfPlaylistImportHandler implements PlaylistImportHandler {
         Playlist xspfPlaylist = (Playlist) inputSpecificPlaylist;
         xspfPlaylist.getTracks().forEach(track -> {
             MediaFile mediaFile = null;
-            for(StringContainer sc : track.getStringContainers()) {
-                if(sc instanceof Location) {
+            for (StringContainer sc : track.getStringContainers()) {
+                if (sc instanceof Location) {
                     Location location = (Location) sc;
                     try {
                         File file = new File(new URI(location.getText()));
                         mediaFile = mediaFileService.getMediaFile(file);
                     } catch (Exception ignored) {}
 
-                    if(mediaFile == null) {
+                    if (mediaFile == null) {
                         try {
                             File file = new File(sc.getText());
                             mediaFile = mediaFileService.getMediaFile(file);
@@ -50,7 +50,7 @@ public class XspfPlaylistImportHandler implements PlaylistImportHandler {
                     }
                 }
             }
-            if(mediaFile != null) {
+            if (mediaFile != null) {
                 mediaFiles.add(mediaFile);
             } else {
                 String errorMsg = "Could not find media file matching ";

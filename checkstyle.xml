@@ -37,5 +37,12 @@
         <module name="StringLiteralEquality"/>
         <module name="TypecastParenPad"/>
         <module name="UnusedImports"/>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
     </module>
 </module>

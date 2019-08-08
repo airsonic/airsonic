@@ -104,7 +104,7 @@ public class MainController  {
 
         int userPaginationPreference = userSettings.getPaginationSize();
 
-        if(userPaginationPreference <= 0) {
+        if (userPaginationPreference <= 0) {
             showAll = true;
         }
 
@@ -175,8 +175,8 @@ public class MainController  {
 
     private <T> boolean trimToSize(Boolean showAll, List<T> list, int userPaginationPreference) {
         boolean trimmed = false;
-        if(!BooleanUtils.isTrue(showAll)) {
-            if(list.size() > userPaginationPreference) {
+        if (!BooleanUtils.isTrue(showAll)) {
+            if (list.size() > userPaginationPreference) {
                 trimmed = true;
                 list.subList(userPaginationPreference, list.size()).clear();
             }

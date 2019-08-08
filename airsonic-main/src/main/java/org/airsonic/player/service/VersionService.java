@@ -249,7 +249,7 @@ public class VersionService {
 
         Function<String, Version> convertToVersion = s -> {
             Matcher match = VERSION_REGEX.matcher(s);
-            if(!match.matches()) {
+            if (!match.matches()) {
                 throw new RuntimeException("Unexpected tag format " + s);
             }
             return new Version(match.group(1));

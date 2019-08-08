@@ -8,10 +8,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServletDef {
-    @XmlElement(name="servlet-name")
+    @XmlElement(name = "servlet-name")
     private String name;
 
-    @XmlElement(name="servlet-class")
+    @XmlElement(name = "servlet-class")
     private String sclass;
 
     public String getName() {

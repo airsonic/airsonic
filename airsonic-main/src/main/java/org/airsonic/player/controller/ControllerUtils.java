@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ControllerUtils {
 
-    public static String extractMatched(final HttpServletRequest request){
+    public static String extractMatched(final HttpServletRequest request) {
 
         String path = (String) request.getAttribute(
                 HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
