@@ -33,6 +33,8 @@
         <module name="InnerAssignment"/>
         <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
         <module name="TypecastParenPad"/>
         <module name="UnusedImports"/>
