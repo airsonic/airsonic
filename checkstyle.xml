@@ -31,6 +31,9 @@
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="NoWhitespaceBefore">
+            <property name="allowLineBreaks" value="true"/>
+        </module>
         <module name="OneStatementPerLine"/>
         <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
