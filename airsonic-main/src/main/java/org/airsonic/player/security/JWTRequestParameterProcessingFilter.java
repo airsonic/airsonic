@@ -27,7 +27,8 @@ public class JWTRequestParameterProcessingFilter implements Filter {
     private final AuthenticationFailureHandler failureHandler;
 
     protected JWTRequestParameterProcessingFilter(AuthenticationManager authenticationManager, String failureUrl) {
-        this.authenticationManager = authenticationManager; failureHandler = new SimpleUrlAuthenticationFailureHandler(failureUrl);
+        this.authenticationManager = authenticationManager;
+        failureHandler = new SimpleUrlAuthenticationFailureHandler(failureUrl);
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
