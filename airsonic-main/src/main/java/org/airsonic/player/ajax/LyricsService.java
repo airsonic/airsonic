@@ -63,7 +63,7 @@ public class LyricsService {
      * @return The lyrics, never <code>null</code> .
      */
     public LyricsInfo getLyrics(String artist, String song) {
-    	LyricsInfo lyrics = new LyricsInfo();
+        LyricsInfo lyrics = new LyricsInfo();
         try {
 
             artist = StringUtil.urlEncode(artist);
