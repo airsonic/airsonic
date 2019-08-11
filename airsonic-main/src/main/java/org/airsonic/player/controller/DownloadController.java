@@ -240,7 +240,7 @@ public class DownloadController implements LastModified {
                 }
             }
         }
-        if (coverArtFile != null && coverArtFile.exists() && cover_embedded == false) {
+        if (coverArtFile != null && coverArtFile.exists() && !cover_embedded) {
             zip(out, coverArtFile.getParentFile(), coverArtFile, status, range);
         }
 
