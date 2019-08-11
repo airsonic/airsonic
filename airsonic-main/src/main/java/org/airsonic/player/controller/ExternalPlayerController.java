@@ -72,7 +72,7 @@ public class ExternalPlayerController {
         String shareName = ControllerUtils.extractMatched(request);
         LOG.debug("Share name is {}", shareName);
 
-        if(StringUtils.isBlank(shareName)) {
+        if (StringUtils.isBlank(shareName)) {
             LOG.warn("Could not find share with shareName " + shareName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -102,7 +102,7 @@ public class ExternalPlayerController {
     private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) throws IOException {
         Date expires = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication instanceof JWTAuthenticationToken) {
+        if (authentication instanceof JWTAuthenticationToken) {
             DecodedJWT token = jwtSecurityService.verify((String) authentication.getCredentials());
             expires = token.getExpiresAt();
         }

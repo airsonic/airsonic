@@ -149,7 +149,7 @@ public class SubsonicRESTController {
     public void handleMissingRequestParam(HttpServletRequest request,
                                           HttpServletResponse response,
                                           MissingServletRequestParameterException exception) throws Exception {
-        error(request, response, ErrorCode.MISSING_PARAMETER, "Required param ("+exception.getParameterName()+") is missing");
+        error(request, response, ErrorCode.MISSING_PARAMETER, "Required param (" + exception.getParameterName() + ") is missing");
     }
 
     @RequestMapping(value = "/ping")

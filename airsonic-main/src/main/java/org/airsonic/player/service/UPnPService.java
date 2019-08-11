@@ -69,9 +69,9 @@ public class UPnPService {
 
     @PostConstruct
     public void init() {
-        if(settingsService.isDlnaEnabled() || settingsService.isSonosEnabled()) {
+        if (settingsService.isDlnaEnabled() || settingsService.isSonosEnabled()) {
             ensureServiceStarted();
-            if(settingsService.isDlnaEnabled()) {
+            if (settingsService.isDlnaEnabled()) {
                 // Start DLNA media server?
                 setMediaServerEnabled(true);
             }
@@ -86,7 +86,7 @@ public class UPnPService {
 
     public void ensureServiceStarted() {
         running.getAndUpdate(bo -> {
-            if(!bo) {
+            if (!bo) {
                 startService();
                 return true;
             } else {

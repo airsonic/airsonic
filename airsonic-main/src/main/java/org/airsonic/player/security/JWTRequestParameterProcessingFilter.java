@@ -33,7 +33,7 @@ public class JWTRequestParameterProcessingFilter implements Filter {
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
         Optional<JWTAuthenticationToken> token = findToken(request);
-        if(token.isPresent()) {
+        if (token.isPresent()) {
             return authenticationManager.authenticate(token.get());
         }
         throw new AuthenticationServiceException("Invalid auth method");
@@ -41,7 +41,7 @@ public class JWTRequestParameterProcessingFilter implements Filter {
 
     private static Optional<JWTAuthenticationToken> findToken(HttpServletRequest request) {
         String token = request.getParameter(JWTSecurityService.JWT_PARAM_NAME);
-        if(!StringUtils.isEmpty(token)) {
+        if (!StringUtils.isEmpty(token)) {
             return Optional.of(new JWTAuthenticationToken(AuthorityUtils.NO_AUTHORITIES, token, request.getRequestURI() + "?" + request.getQueryString()));
         }
         return Optional.empty();
@@ -58,7 +58,7 @@ public class JWTRequestParameterProcessingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        if(!findToken(request).isPresent()) {
+        if (!findToken(request).isPresent()) {
             chain.doFilter(req, resp);
             return;
         }

@@ -72,7 +72,6 @@ public enum IndexType {
             FieldNames.ARTIST),
         boosts(
             entry(FieldNames.ARTIST, 2F))),
-
     ;
 
     @SafeVarargs

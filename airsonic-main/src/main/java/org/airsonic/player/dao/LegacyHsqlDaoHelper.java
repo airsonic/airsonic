@@ -49,9 +49,9 @@ public class LegacyHsqlDaoHelper extends GenericDaoHelper {
 
         } finally {
             try {
-                if(conn != null)
+                if (conn != null)
                     conn.close();
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }

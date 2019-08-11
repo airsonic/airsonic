@@ -114,7 +114,7 @@ public abstract class CustomContentDirectory extends AbstractContentDirectorySer
 
     protected String getBaseUrl() {
         String dlnaBaseLANURL = settingsService.getDlnaBaseLANURL();
-        if(StringUtils.isBlank(dlnaBaseLANURL)) {
+        if (StringUtils.isBlank(dlnaBaseLANURL)) {
             throw new RuntimeException("DLNA Base LAN URL is not set correctly");
         }
         return dlnaBaseLANURL;

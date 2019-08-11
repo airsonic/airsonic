@@ -28,7 +28,7 @@ public class ApacheCommonsConfigurationService {
 
     public ApacheCommonsConfigurationService() {
         File propertyFile = SettingsService.getPropertyFile();
-        if(!propertyFile.exists()) {
+        if (!propertyFile.exists()) {
             try {
                 FileUtils.touch(propertyFile);
             } catch (IOException e) {

@@ -7,7 +7,7 @@ public class HsqlDatabase extends liquibase.database.core.HsqlDatabase {
     @Override
     public boolean supportsSchemas() {
         try {
-            if(getDatabaseMajorVersion() < 2) {
+            if (getDatabaseMajorVersion() < 2) {
                 return false;
             } else {
                 return super.supportsSchemas();

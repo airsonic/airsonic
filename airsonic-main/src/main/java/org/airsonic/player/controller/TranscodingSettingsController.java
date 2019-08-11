@@ -68,7 +68,7 @@ public class TranscodingSettingsController {
     @PostMapping
     public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         String error = handleParameters(request, redirectAttributes);
-        if(error != null) {
+        if (error != null) {
             redirectAttributes.addFlashAttribute("settings_toast", true);
         }
         redirectAttributes.addFlashAttribute("error", error);
@@ -127,7 +127,7 @@ public class TranscodingSettingsController {
             } else {
                 transcodingService.createTranscoding(transcoding);
             }
-            if(error != null) {
+            if (error != null) {
                 redirectAttributes.addAttribute("newTranscoding", transcoding);
                 return error;
             }

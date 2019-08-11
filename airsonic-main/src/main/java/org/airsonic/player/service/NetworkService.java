@@ -68,7 +68,7 @@ public class NetworkService {
             xForardedHost = xForardedHost.split(",")[0];
         }
 
-        if(!isValidXForwardedHost(xForardedHost)) {
+        if (!isValidXForwardedHost(xForardedHost)) {
             xForardedHost = request.getHeader(X_FORWARDED_SERVER);
 
             // If the request has been through multiple reverse proxies,
@@ -77,7 +77,7 @@ public class NetworkService {
                 xForardedHost = xForardedHost.split(",")[0];
             }
 
-            if(!isValidXForwardedHost(xForardedHost)) {
+            if (!isValidXForwardedHost(xForardedHost)) {
                 throw new RuntimeException("Cannot calculate proxy uri without HTTP header " + X_FORWARDED_HOST);
             }
         }
@@ -86,7 +86,7 @@ public class NetworkService {
         String host = proxyHost.getHost();
         int port = proxyHost.getPort();
         String scheme = request.getHeader(X_FORWARDED_PROTO);
-        if(StringUtils.isBlank(scheme)) {
+        if (StringUtils.isBlank(scheme)) {
             throw new RuntimeException("Scheme not provided");
         }
 

@@ -64,7 +64,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         }
         auth.userDetailsService(securityService);
         String jwtKey = settingsService.getJWTKey();
-        if(StringUtils.isBlank(jwtKey)) {
+        if (StringUtils.isBlank(jwtKey)) {
             logger.warn("Generating new jwt key");
             jwtKey = JWTSecurityService.generateKey();
             settingsService.setJWTKey(jwtKey);

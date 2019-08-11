@@ -253,7 +253,7 @@ public class SettingsService {
     private void removeObsoleteProperties() {
 
         OBSOLETE_KEYS.forEach(oKey -> {
-            if(configurationService.containsKey(oKey)) {
+            if (configurationService.containsKey(oKey)) {
                 LOG.info("Removing obsolete property [" + oKey + ']');
                 configurationService.clearProperty(oKey);
             }
@@ -269,7 +269,7 @@ public class SettingsService {
         String oldHome = System.getProperty("libresonic.home");
         if (overrideHome != null) {
             home = new File(overrideHome);
-        } else if(oldHome != null) {
+        } else if (oldHome != null) {
             home = new File(oldHome);
         } else {
             boolean isWindows = System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
@@ -314,7 +314,7 @@ public class SettingsService {
     }
 
     public void save(boolean updateSettingsChanged) {
-        if(updateSettingsChanged) {
+        if (updateSettingsChanged) {
             removeObsoleteProperties();
             this.setLong(KEY_SETTINGS_CHANGED, System.currentTimeMillis());
         }

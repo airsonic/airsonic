@@ -31,11 +31,22 @@
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceBefore">
+            <property name="allowLineBreaks" value="true"/>
+        </module>
         <module name="OneStatementPerLine"/>
         <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
         <module name="StringLiteralEquality"/>
         <module name="TypecastParenPad"/>
         <module name="UnusedImports"/>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
     </module>
 </module>
