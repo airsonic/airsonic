@@ -51,4 +51,6 @@
             <property name="allowEmptyTypes" value="true"/>
         </module>
     </module>
+
+    <module name="UniqueProperties"/>
 </module>
