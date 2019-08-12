@@ -40,6 +40,7 @@
         </module>
         <module name="OneStatementPerLine"/>
         <module name="PackageDeclaration"/>
+        <module name="OverloadMethodsDeclarationOrder"/>
         <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
         <module name="RequireThis"/>

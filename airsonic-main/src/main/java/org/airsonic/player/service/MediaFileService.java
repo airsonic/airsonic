@@ -118,15 +118,6 @@ public class MediaFileService {
         return result;
     }
 
-    private MediaFile checkLastModified(MediaFile mediaFile, boolean useFastCache) {
-        if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
-            return mediaFile;
-        }
-        mediaFile = createMediaFile(mediaFile.getFile());
-        mediaFileDao.createOrUpdateMediaFile(mediaFile);
-        return mediaFile;
-    }
-
     /**
      * Returns a media file instance for the given path name. If possible, a cached value is returned.
      *
@@ -157,6 +148,15 @@ public class MediaFileService {
             return null;
         }
         return getMediaFile(mediaFile.getParentPath());
+    }
+
+    private MediaFile checkLastModified(MediaFile mediaFile, boolean useFastCache) {
+        if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
+            return mediaFile;
+        }
+        mediaFile = createMediaFile(mediaFile.getFile());
+        mediaFileDao.createOrUpdateMediaFile(mediaFile);
+        return mediaFile;
     }
 
     /**

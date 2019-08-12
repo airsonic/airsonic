@@ -47,6 +47,10 @@ public class AlbumDao extends AbstractDao {
 
     private final RowMapper rowMapper = new AlbumMapper();
 
+    public Album getAlbum(int id) {
+        return queryOne("select " + QUERY_COLUMNS + " from album where id=?", rowMapper, id);
+    }
+
     /**
      * Returns the album with the given artist and album name.
      *
@@ -88,10 +92,6 @@ public class AlbumDao extends AbstractDao {
 
         // No appropriate album found.
         return null;
-    }
-
-    public Album getAlbum(int id) {
-        return queryOne("select " + QUERY_COLUMNS + " from album where id=?", rowMapper, id);
     }
 
     public List<Album> getAlbumsForArtist(final String artist, final List<MusicFolder> musicFolders) {
