@@ -89,7 +89,7 @@ public class RatingDao extends AbstractDao {
      */
     public Double getAverageRating(MediaFile mediaFile) {
         try {
-            return (Double) getJdbcTemplate().queryForObject("select avg(rating) from user_rating where path=?", new Object[]{mediaFile.getPath()}, Double.class);
+            return (Double) getJdbcTemplate().queryForObject("select avg(rating) from user_rating where path=?", mediaFile.getPath(), Double.class);
         } catch (EmptyResultDataAccessException x) {
             return null;
         }
@@ -104,7 +104,7 @@ public class RatingDao extends AbstractDao {
      */
     public Integer getRatingForUser(String username, MediaFile mediaFile) {
         try {
-            return getJdbcTemplate().queryForObject("select rating from user_rating where username=? and path=?", new Object[]{username, mediaFile.getPath()},Integer.class);
+            return getJdbcTemplate().queryForObject("select rating from user_rating where username=? and path=?", username, mediaFile.getPath(),Integer.class);
         } catch (EmptyResultDataAccessException x) {
             return null;
         }
