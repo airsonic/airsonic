@@ -22,7 +22,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.airsonic.player.service.sonos.SonosServiceRegistration.AuthenticationType;
