@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -73,7 +74,7 @@ public class LyricsService {
             String xml = executeGetRequest(url);
             lyrics = parseSearchResult(xml);
 
-        } catch (SocketException x) {
+        } catch (SocketException | ConnectTimeoutException x) {
             lyrics.setTryLater(true);
         } catch (Exception x) {
             LOG.warn("Failed to get lyrics for song '" + song + "'.", x);
