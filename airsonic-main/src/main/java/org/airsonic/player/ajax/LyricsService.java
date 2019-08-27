@@ -25,6 +25,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -79,7 +80,7 @@ public class LyricsService {
             if (x.getStatusCode() == 503) {
                 lyrics.setTryLater(true);
             }
-        } catch (SocketException x) {
+        } catch (SocketException | ConnectTimeoutException x) {
             LOG.warn("Failed to get lyrics for song '{}': {}", song, x.toString());
             lyrics.setTryLater(true);
         } catch (Exception x) {
