@@ -170,9 +170,10 @@ public class SubsonicRESTController {
 
         license.setEmail("airsonic@github.com");
         license.setValid(true);
-        Date neverExpireDate = new Date(Long.MAX_VALUE);
-        license.setLicenseExpires(jaxbWriter.convertDate(neverExpireDate));
-        license.setTrialExpires(jaxbWriter.convertDate(neverExpireDate));
+        Date farFuture = new Date();
+        farFuture.setYear(farFuture.getYear() + 100);
+        license.setLicenseExpires(jaxbWriter.convertDate(farFuture));
+        license.setTrialExpires(jaxbWriter.convertDate(farFuture));
 
         Response res = createResponse();
         res.setLicense(license);
