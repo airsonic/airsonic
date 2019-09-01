@@ -65,14 +65,14 @@ public class MusicFolderSettingsController {
     private MediaFileDao mediaFileDao;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "musicFolderSettings";
     }
 
     @ModelAttribute
     protected void formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
                                        @RequestParam(value = "expunge",required = false) String expunge,
-                                       Model model) throws Exception {
+                                       Model model) {
         MusicFolderSettingsCommand command = new MusicFolderSettingsCommand();
 
         if (scanNow != null) {
@@ -114,7 +114,7 @@ public class MusicFolderSettingsController {
     }
 
     @PostMapping
-    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
             if (musicFolderInfo.isDelete()) {

@@ -54,7 +54,7 @@ public class PodcastChannelsController {
     private SettingsService settingsService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<>();
         ModelAndView result = new ModelAndView();

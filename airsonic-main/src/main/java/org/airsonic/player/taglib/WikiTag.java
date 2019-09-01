@@ -43,7 +43,7 @@ public class WikiTag extends BodyTagSupport {
 
     private String text;
 
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         return EVAL_BODY_BUFFERED;
     }
 

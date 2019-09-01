@@ -17,7 +17,7 @@ public class MetricsFilter implements Filter {
     private MetricsManager metricsManager;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
     @Override

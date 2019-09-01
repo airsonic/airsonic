@@ -41,7 +41,7 @@ public class SearchServiceStartWithStopwardsTestCase extends AbstractAirsonicHom
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         populateDatabaseOnlyOnce();
     }
 

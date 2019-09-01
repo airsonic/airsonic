@@ -261,7 +261,7 @@ public class PlaylistService {
         }
     }
 
-    private void doImportPlaylists() throws Exception {
+    private void doImportPlaylists() {
         String playlistFolderPath = settingsService.getPlaylistFolder();
         if (playlistFolderPath == null) {
             return;

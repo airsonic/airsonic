@@ -111,7 +111,7 @@ public class TranscodeInputStream extends InputStream {
     /**
      * @see InputStream#close()
      */
-    public void close() throws IOException {
+    public void close() {
         IOUtils.closeQuietly(processInputStream);
         IOUtils.closeQuietly(processOutputStream);
 

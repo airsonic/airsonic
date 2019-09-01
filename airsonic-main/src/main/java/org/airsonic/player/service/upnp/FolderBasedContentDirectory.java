@@ -266,7 +266,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         return container;
     }
 
-    private URI getAlbumArtUrl(MediaFile album) throws URISyntaxException {
+    private URI getAlbumArtUrl(MediaFile album) {
         return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(getBaseUrl() + "/ext/coverArt.view")
                 .queryParam("id", album.getId())
                 .queryParam("size", CoverArtScheme.LARGE.getSize()))

@@ -61,12 +61,12 @@ public class SearchController {
     private SearchService searchService;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "search";
     }
 
     @ModelAttribute
-    protected void formBackingObject(HttpServletRequest request, Model model) throws Exception {
+    protected void formBackingObject(HttpServletRequest request, Model model) {
         model.addAttribute("command",new SearchCommand());
     }
 

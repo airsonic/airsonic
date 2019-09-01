@@ -51,7 +51,7 @@ public class TranscodingSettingsController {
     private SettingsService settingsService;
 
     @GetMapping
-    public String doGet(Model model) throws Exception {
+    public String doGet(Model model) {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -66,7 +66,7 @@ public class TranscodingSettingsController {
     }
 
     @PostMapping
-    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String error = handleParameters(request, redirectAttributes);
         if (error != null) {
             redirectAttributes.addFlashAttribute("settings_toast", true);

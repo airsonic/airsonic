@@ -56,7 +56,7 @@ public class PodcastController  {
     private SecurityService securityService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         String url = request.getRequestURL().toString();
         String username = securityService.getCurrentUsername(request);

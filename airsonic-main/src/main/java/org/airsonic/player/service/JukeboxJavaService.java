@@ -230,7 +230,7 @@ public class JukeboxJavaService {
             audioPlayer.setPlayList(new PlayList() {
 
                 @Override
-                public File getNextAudioFile() throws IOException {
+                public File getNextAudioFile() {
                     airsonicPlayer.getPlayQueue().next();
                     return getCurrentAudioFile();
                 }
@@ -292,7 +292,7 @@ public class JukeboxJavaService {
         audioPlayer.pause();
     }
 
-    public void skip(Player airsonicPlayer, int index, int offset) throws Exception {
+    public void skip(Player airsonicPlayer, int index, int offset) {
         log.debug("begin skip jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
 
         com.github.biconou.AudioPlayer.api.Player audioPlayer = retrieveAudioPlayerForAirsonicPlayer(airsonicPlayer);

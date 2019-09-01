@@ -59,7 +59,7 @@ public class PlayerSettingsController  {
     private TranscodingService transcodingService;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "playerSettings";
     }
 
@@ -114,7 +114,7 @@ public class PlayerSettingsController  {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) {
         Player player = playerService.getPlayerById(command.getPlayerId());
         if (player != null) {
             player.setAutoControlEnabled(command.isAutoControlEnabled());
