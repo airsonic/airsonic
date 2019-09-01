@@ -81,6 +81,7 @@ public class DynamicDockerHook implements AirsonicServer, EnvironmentAware, Init
                 .build();
 
         final String name = "airsonic-it-" + RandomStringUtils.randomAlphabetic(10);
+        boolean isException = false;
         try {
             final ContainerCreation containerCreate = docker.createContainer(config, name);
             containerId = containerCreate.id();
@@ -109,6 +110,7 @@ public class DynamicDockerHook implements AirsonicServer, EnvironmentAware, Init
                     break;
                 } else {
                     logger.trace("Container ("+name+") never became ready within max wait time");
+                    isException = true;
                     throw new RuntimeException("Container ("+name+") not ready");
                 }
             }
@@ -118,10 +120,16 @@ public class DynamicDockerHook implements AirsonicServer, EnvironmentAware, Init
                 String ipAddress = next.getValue().ipAddress();
                 serverUri = "http://" + ipAddress + ":" + dockerPort;
             } catch(Exception e) {
+                isException = true;
                 throw new RuntimeException("Could not determine container ("+name+") address", e);
             }
         } catch (DockerException | InterruptedException e) {
+            isException = true;
             throw new RuntimeException(e);
+        } finally {
+            if(isException){
+                stopServer();
+            }
         }
     }
 
