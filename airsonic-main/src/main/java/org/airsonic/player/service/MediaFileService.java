@@ -409,13 +409,13 @@ public class MediaFileService {
         // uncomment the 'else' section to hide indexed sound files (i.e. the base
         // files for CUE-sheets from which tracks are added) from the listing
         //} else {
-            List<File> children = filterMediaFiles(FileUtil.listFiles(parent.getFile()));
-            for (File child : children) {
-                if (storedChildrenMap.remove(child.getPath()) == null) {
-                    // Add children that are not already stored.
-                    mediaFileDao.createOrUpdateMediaFile(createMediaFile(child));
-                }
+        List<File> children = filterMediaFiles(FileUtil.listFiles(parent.getFile()));
+        for (File child : children) {
+            if (storedChildrenMap.remove(child.getPath()) == null) {
+                // Add children that are not already stored.
+                mediaFileDao.createOrUpdateMediaFile(createMediaFile(child));
             }
+        }
         //}
 
         // Delete children that no longer exist on disk.
@@ -641,7 +641,7 @@ public class MediaFileService {
                     mediaFile.setArtist(file.getName());
                 }
 
-                if (isSingleFileAlbum(file)){
+                if (isSingleFileAlbum(file)) {
                     mediaFile.setMediaType(MediaFile.MediaType.ALBUM_SINGLE_FILE);
                 }
             }
@@ -659,20 +659,20 @@ public class MediaFileService {
         return false;
     }
 
-    private List<File> getCueSheets(File albumDir){
+    private List<File> getCueSheets(File albumDir) {
         List<File> cueFiles = new ArrayList<>();
-        for (File child:FileUtil.listFiles(albumDir)){
-            if (isCueSheet(child)){
+        for (File child:FileUtil.listFiles(albumDir)) {
+            if (isCueSheet(child)) {
                 cueFiles.add(child);
             }
         }
         return cueFiles;
     }
 
-    private File getSoundChild(File albumDir, String cueFilePath){
+    private File getSoundChild(File albumDir, String cueFilePath) {
         List<File> candidates = filterMediaFiles(FileUtil.listFiles(albumDir));
-        for (File singleFileSound:candidates){
-            if (FilenameUtils.getBaseName(singleFileSound.getPath()).equals(FilenameUtils.getBaseName(cueFilePath))||
+        for (File singleFileSound:candidates) {
+            if (FilenameUtils.getBaseName(singleFileSound.getPath()).equals(FilenameUtils.getBaseName(cueFilePath)) ||
                     FilenameUtils.getName(singleFileSound.getPath()).equals(FilenameUtils.getBaseName(cueFilePath))) {
                 return singleFileSound;
             }
@@ -680,7 +680,7 @@ public class MediaFileService {
         return null;
     }
 
-    private boolean isCueSheet(File file){
+    private boolean isCueSheet(File file) {
         return "cue".equalsIgnoreCase(FilenameUtils.getExtension(file.getName()));
     }
 

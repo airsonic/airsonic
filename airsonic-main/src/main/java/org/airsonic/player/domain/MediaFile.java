@@ -488,30 +488,30 @@ public class MediaFile {
         setPath(mediaFilePath + ":" + songStart + ":" + songEnd);
     }
 
-    public String getSingleFileAlbumSongBegin(){
+    public String getSingleFileAlbumSongBegin() {
         try {
             String[] parts = path.split(":");
-            return parts[parts.length-2];
+            return parts[parts.lengthi - 2];
         } catch (ArrayIndexOutOfBoundsException e) {
             // ignore
             return null;
         }
     }
 
-    public String getSingleFileAlbumSongEnd(){
+    public String getSingleFileAlbumSongEnd() {
         try {
             String[] parts = path.split(":");
-            return parts[parts.length-1];
+            return parts[parts.length - 1];
         } catch (ArrayIndexOutOfBoundsException e) {
             // ignore
             return null;
         }
     }
 
-    public String getSingleFileAlbumSongWholePath(){
+    public String getSingleFileAlbumSongWholePath() {
         try {
             String[] parts = path.split(":");
-            return parts[parts.length-3];
+            return parts[parts.length - 3];
         } catch (ArrayIndexOutOfBoundsException e) {
             // normal file
             return path;
