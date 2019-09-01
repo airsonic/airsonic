@@ -491,7 +491,7 @@ public class MediaFile {
     public String getSingleFileAlbumSongBegin() {
         try {
             String[] parts = path.split(":");
-            return parts[parts.lengthi - 2];
+            return parts[parts.length - 2];
         } catch (ArrayIndexOutOfBoundsException e) {
             // ignore
             return null;
