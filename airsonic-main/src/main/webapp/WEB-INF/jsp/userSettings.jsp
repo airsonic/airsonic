@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript">
         function init() {
             enablePasswordChangeFields();
@@ -63,9 +63,10 @@
 
 <form:form method="post" action="userSettings.view" modelAttribute="command">
         <table style="${command.admin ? 'display:none' : ''}">
-            <tr>
+            <tr style="${command.currentUser ? 'display:none' : ''}">
                 <td><form:checkbox path="adminRole" id="admin" cssClass="checkbox"/></td>
                 <td><label for="admin"><fmt:message key="usersettings.admin"/></label></td>
+                <td class="warning"><form:errors path="adminRole"/></td>
             </tr>
             <tr>
                 <td><form:checkbox path="settingsRole" id="settings" cssClass="checkbox"/></td>
@@ -136,11 +137,12 @@
         </tr>
     </table>
 
-    <c:if test="${not command.newUser and not command.admin}">
+    <c:if test="${not command.newUser and not command.admin and not command.currentUser}">
         <table class="indent">
             <tr>
                 <td><form:checkbox path="deleteUser" id="delete" cssClass="checkbox"/></td>
                 <td><label for="delete"><fmt:message key="usersettings.delete"/></label></td>
+                <td class="warning"><form:errors path="deleteUser"/></td>
             </tr>
         </table>
     </c:if>
@@ -215,7 +217,7 @@
     </c:choose>
 
     <input type="submit" value="<fmt:message key="common.save"/>" style="margin-top:1.5em;margin-right:0.3em">
-    <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'" style="margin-top:1.5em">
+    <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-top:1.5em"></a>
 </form:form>
 
 </body></html>

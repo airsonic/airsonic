@@ -86,8 +86,8 @@
                 $("#empty").hide();
             }
 
-            $("#songCount").html(playlist.fileCount);
-            $("#duration").html(playlist.durationAsString);
+            $("#songCount").text(playlist.fileCount);
+            $("#duration").text(playlist.durationAsString);
 
             if (playlist.shared) {
                 $("#shared").html("<fmt:message key="playlist2.shared"/>");
@@ -113,15 +113,15 @@
                 if (!song.present) {
                     $("#missing" + id).show();
                 }
-                $("#index" + id).html(id);
-                $("#title" + id).html(song.title);
+                $("#index" + id).text(id);
+                $("#title" + id).text(song.title);
                 $("#title" + id).attr("title", song.title);
-                $("#album" + id).html(song.album);
+                $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", "main.view?id=" + song.id);
-                $("#artist" + id).html(song.artist);
+                $("#artist" + id).text(song.artist);
                 $("#artist" + id).attr("title", song.artist);
-                $("#songDuration" + id).html(song.durationAsString);
+                $("#songDuration" + id).text(song.durationAsString);
 
                 // Note: show() method causes page to scroll to top.
                 $("#pattern" + id).css("display", "table-row");
@@ -228,16 +228,16 @@
     <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
         <td class="fit">
             <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code="ratingOffImage"/>"
-                 style="cursor:pointer" alt="" title=""></td>
+                 style="cursor:pointer;height:18px;" alt="" title=""></td>
         <td class="fit">
             <img id="play" src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" title="<fmt:message key="common.play"/>"
-                 style="padding-right:0.1em;cursor:pointer" onclick="onPlay(this.id.substring(4) - 1)"></td>
+                 style="padding-right:0.1em;cursor:pointer;height:18px;" onclick="onPlay(this.id.substring(4) - 1)"></td>
         <td class="fit">
             <img id="add" src="<spring:theme code="addImage"/>" alt="<fmt:message key="common.add"/>" title="<fmt:message key="common.add"/>"
-                 style="padding-right:0.1em;cursor:pointer" onclick="onAdd(this.id.substring(3) - 1)"></td>
+                 style="padding-right:0.1em;cursor:pointer;height:18px;" onclick="onAdd(this.id.substring(3) - 1)"></td>
         <td class="fit" style="padding-right:30px">
             <img id="addNext" src="<spring:theme code="addNextImage"/>" alt="<fmt:message key="main.addnext"/>" title="<fmt:message key="main.addnext"/>"
-                 style="padding-right:0.1em;cursor:pointer" onclick="onAddNext(this.id.substring(7) - 1)"></td>
+                 style="padding-right:0.1em;cursor:pointer;height:18px;" onclick="onAddNext(this.id.substring(7) - 1)"></td>
 
         <td class="fit rightalign"><span id="index">1</span></td>
         <td class="fit"><span id="missing" class="playlist-missing"><fmt:message key="playlist.missing"/></span></td>
@@ -249,7 +249,7 @@
         <c:if test="${model.editAllowed}">
             <td class="fit">
                 <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
-                     style="cursor:pointer" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
+                     style="cursor:pointer;height:18px;" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
         </c:if>
     </tr>
     </tbody>

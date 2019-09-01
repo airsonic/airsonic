@@ -7,19 +7,15 @@ import org.airsonic.player.service.jukebox.JavaPlayerFactory;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
- * @author Rémi Cocula
+ * @author RÃ©mi Cocula
  */
 @Service
 public class JukeboxJavaService {
@@ -28,22 +24,30 @@ public class JukeboxJavaService {
 
     private static final float DEFAULT_GAIN = 0.75f;
 
-    @Autowired
     private AudioScrobblerService audioScrobblerService;
-    @Autowired
     private StatusService statusService;
-    @Autowired
     private SecurityService securityService;
-    @Autowired
     private MediaFileService mediaFileService;
-    @Autowired
     private JavaPlayerFactory javaPlayerFactory;
 
 
     private TransferStatus status;
-    private Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new Hashtable<>();
-    private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new Hashtable<>();
+    private Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new HashMap<>();
+    private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new HashMap<>();
     private final static String DEFAULT_MIXER_ENTRY_KEY = "_default";
+
+
+    public JukeboxJavaService(AudioScrobblerService audioScrobblerService,
+                              StatusService statusService,
+                              SecurityService securityService,
+                              MediaFileService mediaFileService,
+                              JavaPlayerFactory javaPlayerFactory) {
+        this.audioScrobblerService = audioScrobblerService;
+        this.statusService = statusService;
+        this.securityService = securityService;
+        this.mediaFileService = mediaFileService;
+        this.javaPlayerFactory = javaPlayerFactory;
+    }
 
     /**
      * Finds the corresponding active audio player for a given airsonic player.
@@ -58,9 +62,6 @@ public class JukeboxJavaService {
         if (foundPlayer == null) {
             synchronized (activeAudioPlayers) {
                 com.github.biconou.AudioPlayer.api.Player newPlayer = initAudioPlayer(airsonicPlayer);
-                if (newPlayer == null) {
-                    throw new RuntimeException("Did not initialized a player");
-                }
                 activeAudioPlayers.put(airsonicPlayer.getId(), newPlayer);
                 String mixer = airsonicPlayer.getJavaJukeboxMixer();
                 if (StringUtils.isBlank(mixer)) {
@@ -96,8 +97,8 @@ public class JukeboxJavaService {
             log.info("use default mixer");
             audioPlayer = javaPlayerFactory.createJavaPlayer();
         }
-        audioPlayer.setGain(DEFAULT_GAIN);
         if (audioPlayer != null) {
+            audioPlayer.setGain(DEFAULT_GAIN);
             audioPlayer.registerListener(new PlayerListener() {
                 @Override
                 public void onBegin(int index, File currentFile) {
@@ -123,7 +124,6 @@ public class JukeboxJavaService {
                 public void onPause() {
                     // Nothing to do here
                 }
-
             });
             log.info("New audio player {} has been initialized.", audioPlayer.toString());
         } else {
@@ -212,8 +212,6 @@ public class JukeboxJavaService {
 
     /**
      * Plays the playqueue of a jukebox player starting at the beginning.
-     *
-     * @param airsonicPlayer
      */
     public void play(Player airsonicPlayer) {
         log.debug("begin play jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
@@ -257,17 +255,19 @@ public class JukeboxJavaService {
                     return airsonicPlayer.getPlayQueue().getIndex();
                 }
             });
-            // Close any other player using the same mixer.
-            String mixer = airsonicPlayer.getJavaJukeboxMixer();
-            if (StringUtils.isBlank(mixer)) {
-                mixer = DEFAULT_MIXER_ENTRY_KEY;
-            }
-            List<com.github.biconou.AudioPlayer.api.Player> playersForSameMixer = activeAudioPlayersPerMixer.get(mixer);
-            playersForSameMixer.forEach(player -> {
-                if (player != audioPlayer) {
-                    player.close();
+            synchronized (activeAudioPlayers) {
+                // Close any other player using the same mixer.
+                String mixer = airsonicPlayer.getJavaJukeboxMixer();
+                if (StringUtils.isBlank(mixer)) {
+                    mixer = DEFAULT_MIXER_ENTRY_KEY;
                 }
-            });
+                List<com.github.biconou.AudioPlayer.api.Player> playersForSameMixer = activeAudioPlayersPerMixer.get(mixer);
+                playersForSameMixer.forEach(player -> {
+                    if (player != audioPlayer) {
+                        player.close();
+                    }
+                });
+            }
             audioPlayer.play();
         }
     }
@@ -276,7 +276,7 @@ public class JukeboxJavaService {
         play(airsonicPlayer);
     }
 
-    public void stop(Player airsonicPlayer) throws Exception {
+    public void stop(Player airsonicPlayer) {
         log.debug("begin stop jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
 
         com.github.biconou.AudioPlayer.api.Player audioPlayer = retrieveAudioPlayerForAirsonicPlayer(airsonicPlayer);
@@ -292,11 +292,6 @@ public class JukeboxJavaService {
         audioPlayer.pause();
     }
 
-    /**
-     * @param airsonicPlayer
-     * @param index
-     * @throws Exception
-     */
     public void skip(Player airsonicPlayer, int index, int offset) throws Exception {
         log.debug("begin skip jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
 
@@ -320,21 +315,4 @@ public class JukeboxJavaService {
             }
         }
     }
-
-    public void setAudioScrobblerService(AudioScrobblerService audioScrobblerService) {
-        this.audioScrobblerService = audioScrobblerService;
-    }
-
-    public void setStatusService(StatusService statusService) {
-        this.statusService = statusService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
-
-    public void setMediaFileService(MediaFileService mediaFileService) {
-        this.mediaFileService = mediaFileService;
-    }
-
 }

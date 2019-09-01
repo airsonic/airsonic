@@ -31,8 +31,7 @@ public class XspfPlaylistExportHandler implements PlaylistExportHandler {
 
     @Override
     public SpecificPlaylist handle(int id, SpecificPlaylistProvider provider) throws Exception {
-        chameleon.playlist.xspf.Playlist playlist = createXsfpPlaylistFromDBId(id);
-        return playlist;
+        return createXsfpPlaylistFromDBId(id);
     }
 
     chameleon.playlist.xspf.Playlist createXsfpPlaylistFromDBId(int id) {

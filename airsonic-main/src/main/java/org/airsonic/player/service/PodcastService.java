@@ -36,16 +36,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +62,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
+
 /**
  * Provides services for Podcast reception.
  *
@@ -72,10 +74,10 @@ public class PodcastService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
     private static final DateFormat[] RSS_DATE_FORMATS = {new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
-            new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
+        new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
 
     private static final Namespace[] ITUNES_NAMESPACES = {Namespace.getNamespace("http://www.itunes.com/DTDs/Podcast-1.0.dtd"),
-            Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
+        Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
 
     private final ExecutorService refreshExecutor;
     private final ExecutorService downloadExecutor;
@@ -94,6 +96,7 @@ public class PodcastService {
 
     public PodcastService() {
         ThreadFactory threadFactory = new ThreadFactory() {
+            @Override
             public Thread newThread(Runnable r) {
                 Thread t = Executors.defaultThreadFactory().newThread(r);
                 t.setDaemon(true);
@@ -125,6 +128,7 @@ public class PodcastService {
 
     public synchronized void schedule() {
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 LOG.info("Starting scheduled Podcast refresh.");
                 refreshAllChannels(true);
@@ -173,7 +177,8 @@ public class PodcastService {
      */
     public PodcastChannel getChannel(int channelId) {
         PodcastChannel channel = podcastDao.getChannel(channelId);
-        addMediaFileIdToChannels(Arrays.asList(channel));
+        if (channel.getTitle() != null)
+            addMediaFileIdToChannels(Arrays.asList(channel));
         return channel;
     }
 
@@ -232,7 +237,7 @@ public class PodcastService {
     }
 
     private List<PodcastEpisode> filterAllowed(List<PodcastEpisode> episodes) {
-        List<PodcastEpisode> result = new ArrayList<PodcastEpisode>(episodes.size());
+        List<PodcastEpisode> result = new ArrayList<>(episodes.size());
         for (PodcastEpisode episode : episodes) {
             if (episode.getPath() == null || securityService.isReadAllowed(new File(episode.getPath()))) {
                 result.add(episode);
@@ -268,6 +273,10 @@ public class PodcastService {
     private List<PodcastChannel> addMediaFileIdToChannels(List<PodcastChannel> channels) {
         for (PodcastChannel channel : channels) {
             try {
+                if (channel.getTitle() == null) {
+                    LOG.warn("Podcast channel id {} has null title", channel.getId());
+                    continue;
+                }
                 File dir = getChannelDirectory(channel);
                 MediaFile mediaFile = mediaFileService.getMediaFile(dir);
                 if (mediaFile != null) {
@@ -291,6 +300,7 @@ public class PodcastService {
     private void refreshChannels(final List<PodcastChannel> channels, final boolean downloadEpisodes) {
         for (final PodcastChannel channel : channels) {
             Runnable task = new Runnable() {
+                @Override
                 public void run() {
                     doRefreshChannel(channel, downloadEpisodes);
                 }
@@ -299,7 +309,6 @@ public class PodcastService {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
     private void doRefreshChannel(PodcastChannel channel, boolean downloadEpisodes) {
         InputStream in = null;
 
@@ -317,7 +326,7 @@ public class PodcastService {
             try (CloseableHttpResponse response = client.execute(method)) {
                 in = response.getEntity().getContent();
 
-                Document document = new SAXBuilder().build(in);
+                Document document = createSAXBuilder().build(in);
                 Element channelElement = document.getRootElement().getChild("channel");
 
                 channel.setTitle(StringUtil.removeMarkup(channelElement.getChildTextTrim("title")));
@@ -351,7 +360,7 @@ public class PodcastService {
     private void downloadImage(PodcastChannel channel) {
         InputStream in = null;
         OutputStream out = null;
-        try(CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             String imageUrl = channel.getImageUrl();
             if (imageUrl == null) {
                 return;
@@ -408,6 +417,7 @@ public class PodcastService {
 
     public void downloadEpisode(final PodcastEpisode episode) {
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 doDownloadEpisode(episode);
             }
@@ -417,7 +427,7 @@ public class PodcastService {
 
     private void refreshEpisodes(PodcastChannel channel, List<Element> episodeElements) {
 
-        List<PodcastEpisode> episodes = new ArrayList<PodcastEpisode>();
+        List<PodcastEpisode> episodes = new ArrayList<>();
 
         for (Element episodeElement : episodeElements) {
 
@@ -446,7 +456,7 @@ public class PodcastService {
             if (getEpisodeByUrl(url) == null) {
                 Long length = null;
                 try {
-                    length = new Long(enclosure.getAttributeValue("length"));
+                    length = Long.valueOf(enclosure.getAttributeValue("length"));
                 } catch (Exception x) {
                     LOG.warn("Failed to parse enclosure length.", x);
                 }
@@ -461,17 +471,12 @@ public class PodcastService {
 
         // Sort episode in reverse chronological order (newest first)
         Collections.sort(episodes, new Comparator<PodcastEpisode>() {
+            @Override
             public int compare(PodcastEpisode a, PodcastEpisode b) {
                 long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
                 long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
 
-                if (timeA < timeB) {
-                    return 1;
-                }
-                if (timeA > timeB) {
-                    return -1;
-                }
-                return 0;
+                return Long.compare(timeB, timeA);
             }
         });
 
@@ -552,6 +557,10 @@ public class PodcastService {
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectTimeout(2 * 60 * 1000) // 2 minutes
                     .setSocketTimeout(10 * 60 * 1000) // 10 minutes
+                    // Workaround HttpClient circular redirects, which some feeds use (with query parameters)
+                    .setCircularRedirectsAllowed(true)
+                    // Workaround HttpClient not understanding latest RFC-compliant cookie 'expires' attributes
+                    .setCookieSpec(CookieSpecs.STANDARD)
                     .build();
             HttpGet method = new HttpGet(episode.getUrl());
             method.setConfig(requestConfig);
@@ -693,6 +702,10 @@ public class PodcastService {
     private File getChannelDirectory(PodcastChannel channel) {
         File podcastDir = new File(settingsService.getPodcastFolder());
         File channelDir = new File(podcastDir, StringUtil.fileSystemSafe(channel.getTitle()));
+
+        if (!podcastDir.canWrite()) {
+            throw new RuntimeException("The podcasts directory " + podcastDir + " isn't writeable.");
+        }
 
         if (!channelDir.exists()) {
             boolean ok = channelDir.mkdirs();

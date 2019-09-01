@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
     <script type="text/javascript" language="javascript">
@@ -20,6 +20,11 @@
                     top.main.location.href = mainLocation;
                 }
             }
+
+            $('.radio-play').on('click', function(evt) {
+                top.playQueue.onPlayInternetRadio($(this).data("id"), 0);
+                evt.preventDefault();
+            });
         }
 
         function updatePlaylists() {
@@ -59,7 +64,9 @@
 <a name="top"></a>
 
 <div style="padding-bottom:1.5em">
-    <a href="help.view?" target="main"><img src="<spring:theme code="logoImage"/>" style="width:196px" title="<fmt:message key="top.help"/>" alt=""></a>
+    <a href="home.view" target="main">
+      <img src="<spring:theme code="logoImage"/>" style="width:196px" title="<fmt:message key="top.help"/>" alt="">
+    </a>
 </div>
 
 <c:if test="${fn:length(model.musicFolders) > 1}">
@@ -109,26 +116,27 @@
     <div id="playlists"></div>
     <div id="playlistOverflow" style="display:none"></div>
     <div style="padding-top: 0.3em"></div>
-    <div class="forward" id="showAllPlaylists" style="display: none"><a href="javascript:noop()" onclick="showAllPlaylists()"><fmt:message key="left.showallplaylists"/></a></div>
-    <div class="forward"><a href="javascript:noop()" onclick="createEmptyPlaylist()"><fmt:message key="left.createplaylist"/></a></div>
+    <div class="forward" id="showAllPlaylists" style="display: none"><a href="#" onclick="showAllPlaylists()"><fmt:message key="left.showallplaylists"/></a></div>
+    <div class="forward"><a href="#" onclick="createEmptyPlaylist()"><fmt:message key="left.createplaylist"/></a></div>
     <div class="forward"><a href="importPlaylist.view" target="main"><fmt:message key="left.importplaylist"/></a></div>
 </div>
 
 <c:if test="${not empty model.radios}">
     <h2 class="bgcolor1" style="padding-left: 2px"><fmt:message key="left.radio"/></h2>
+    <iframe id="radio-playlist-data" style="display:none;"></iframe>
     <c:forEach items="${model.radios}" var="radio">
         <p class="dense" style="padding-left: 2px">
-            <a target="hidden" href="${radio.streamUrl}">
-                <img src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" title="<fmt:message key="common.play"/>"></a>
+        <a target="hidden" href="${radio.streamUrl}" class="radio-play" data-id="${radio.id}">
+            <img src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" title="<fmt:message key="common.play"/>"></a>
             <span style="vertical-align: middle">
                 <c:choose>
-                <c:when test="${empty radio.homepageUrl}">
+                    <c:when test="${empty radio.homepageUrl}">
                         ${fn:escapeXml(radio.name)}
                     </c:when>
                     <c:otherwise>
-                    <a target="main" href="${radio.homepageUrl}">${fn:escapeXml(radio.name)}</a>
+                        <a target="_blank" rel="noopener" href="${radio.homepageUrl}">${fn:escapeXml(radio.name)}</a>
                     </c:otherwise>
-                    </c:choose>
+                </c:choose>
             </span>
         </p>
     </c:forEach>
@@ -141,7 +149,7 @@
                 <h2 style="padding:0;margin:0;border:0">${fn:escapeXml(entry.key.index)}</h2>
             </th>
             <th style="text-align:right;">
-                <a href="#top"><img src="<spring:theme code="upImage"/>" alt=""></a>
+                <a href="#top"><img src="<spring:theme code="upImage"/>" alt="" style="height:18px;"></a>
             </th>
         </tr>
     </table>

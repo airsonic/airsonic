@@ -79,24 +79,24 @@ public class UserDao extends AbstractDao {
      * Returns the user with the given username.
      *
      * @param username The username used when logging in.
-     * @param caseSensitive
+     * @param caseSensitive If false, perform a case-insensitive search
      * @return The user, or <code>null</code> if not found.
      */
     public User getUserByName(String username, boolean caseSensitive) {
         String sql;
-        if(caseSensitive) {
+        if (caseSensitive) {
             sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where username=?";
         } else {
             sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where UPPER(username)=UPPER(?)";
         }
         List<User> users = query(sql, userRowMapper, username);
         User user = null;
-        if(users.size() == 1) {
+        if (users.size() == 1) {
             user = users.iterator().next();
         } else if (users.size() > 1) {
             throw new RuntimeException("Too many matching users");
         }
-        if(user != null) {
+        if (user != null) {
             readRoles(user);
         }
         return user;
@@ -111,7 +111,7 @@ public class UserDao extends AbstractDao {
     public User getUserByEmail(String email) {
         String sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where email=?";
         User user = queryOne(sql, userRowMapper, email);
-        if(user != null) {
+        if (user != null) {
             readRoles(user);
         }
         return user;

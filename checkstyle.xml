@@ -10,7 +10,10 @@
 
     <property name="fileExtensions" value="java, properties, xml"/>
 
+    <module name="FileTabCharacter"/>
+
     <module name="TreeWalker">
+        <module name="AnnotationLocation"/>
         <module name="CustomImportOrder">
             <property name="customImportOrderRules"
                       value="THIRD_PARTY_PACKAGE###SPECIAL_IMPORTS###STANDARD_JAVA_PACKAGE###STATIC"/>
@@ -19,7 +22,43 @@
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="separateLineBetweenGroups" value="true"/>
         </module>
-        <module name="UnusedImports"/>
+        <module name="DefaultComesLast"/>
+        <module name="EmptyLineSeparator">
+            <!-- Enable all except PACKAGE_DEF, METHOD_DEF, VARIABLE_DEF -->
+            <property name="tokens"
+                      value="IMPORT, STATIC_IMPORT, CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, CTOR_DEF"/>
+        </module>
+        <module name="EmptyStatement"/>
+        <module name="EqualsAvoidNull"/>
+        <module name="EqualsHashCode"/>
+        <module name="Indentation"/>
+        <module name="InnerAssignment"/>
+        <module name="MethodParamPad"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="NoWhitespaceBefore">
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+        <module name="OneStatementPerLine"/>
+        <module name="PackageDeclaration"/>
+        <module name="OverloadMethodsDeclarationOrder"/>
+        <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
+        <module name="RequireThis"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="SuperClone"/>
+        <module name="SuperFinalize"/>
+        <module name="TypecastParenPad"/>
+        <module name="UnusedImports"/>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyCatches" value="true"/>
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyLambdas" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+        </module>
     </module>
+
+    <module name="UniqueProperties"/>
 </module>

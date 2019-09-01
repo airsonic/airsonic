@@ -24,10 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class AirsonicRestApiIntTest {
 
-    public static final String CLIENT_NAME = "airsonic";
-    public static final String AIRSONIC_USER = "admin";
-    public static final String AIRSONIC_PASSWORD = "admin";
-    public static final String EXPECTED_FORMAT = "json";
+    private static final String CLIENT_NAME = "airsonic";
+    private static final String AIRSONIC_USER = "admin";
+    private static final String AIRSONIC_PASSWORD = "admin";
+    private static final String EXPECTED_FORMAT = "json";
 
     private static String AIRSONIC_API_VERSION;
 

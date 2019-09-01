@@ -11,134 +11,46 @@
  */(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 'use strict';
 
-/**
- * Twitch renderer
- *
- * Uses <iframe> approach and uses Twitch API to manipulate it.
- * @see https://github.com/justintv/Twitch-API/blob/master/embed-video.md
- */
+var TwitchApi = {
 
-var twitchApi = {
-	/**
-  * @type {Boolean}
-  */
-	isIframeStarted: false,
-	/**
-  * @type {Boolean}
-  */
-	isIframeLoaded: false,
-	/**
-  * @type {Array}
-  */
-	iframeQueue: [],
+	promise: null,
 
-	/**
-  * Create a queue to prepare the creation of <iframe>
-  *
-  * @param {Object} settings - an object with settings needed to create <iframe>
-  */
-	enqueueIframe: function enqueueIframe(settings) {
-
-		// Check whether Twitch API is already loaded.
-		twitchApi.isLoaded = typeof Twitch !== 'undefined';
-
-		if (twitchApi.isLoaded) {
-			twitchApi.createIframe(settings);
+	load: function load(settings) {
+		if (typeof Twitch !== 'undefined') {
+			TwitchApi.promise = new Promise(function (resolve) {
+				resolve();
+			}).then(function () {
+				TwitchApi._createPlayer(settings);
+			});
 		} else {
-			twitchApi.loadIframeApi();
-			twitchApi.iframeQueue.push(settings);
+			TwitchApi.promise = TwitchApi.promise || mejs.Utils.loadScript('https://player.twitch.tv/js/embed/v1.js');
+			TwitchApi.promise.then(function () {
+				TwitchApi._createPlayer(settings);
+			});
 		}
 	},
 
-	/**
-  * Load Twitch API script on the header of the document
-  *
-  */
-	loadIframeApi: function loadIframeApi() {
-		if (!twitchApi.isIframeStarted) {
-
-			var script = document.createElement('script'),
-			    firstScriptTag = document.getElementsByTagName('script')[0];
-
-			var done = false;
-
-			script.src = 'https://player.twitch.tv/js/embed/v1.js';
-
-			// Attach handlers for all browsers
-			script.onload = script.onreadystatechange = function () {
-				if (!done && (!this.readyState || this.readyState === undefined || this.readyState === 'loaded' || this.readyState === 'complete')) {
-					done = true;
-					twitchApi.iFrameReady();
-					script.onload = script.onreadystatechange = null;
-				}
-			};
-			firstScriptTag.parentNode.insertBefore(script, firstScriptTag);
-			twitchApi.isIframeStarted = true;
-		}
-	},
-
-	/**
-  * Process queue of Twitch <iframe> element creation
-  *
-  */
-	iFrameReady: function iFrameReady() {
-
-		twitchApi.isLoaded = true;
-		twitchApi.isIframeLoaded = true;
-
-		while (twitchApi.iframeQueue.length > 0) {
-			var settings = twitchApi.iframeQueue.pop();
-			twitchApi.createIframe(settings);
-		}
-	},
-
-	/**
-  * Create a new instance of Twitch API player and trigger a custom event to initialize it
-  *
-  * @param {Object} settings - an object with settings needed to create <iframe>
-  */
-	createIframe: function createIframe(settings) {
+	_createPlayer: function _createPlayer(settings) {
 		var player = new Twitch.Player(settings.id, settings);
 		window['__ready__' + settings.id](player);
 	},
 
-	/**
-  * Extract ID from Twitch to be loaded through API
-  * Valid URL format(s):
-  *  - https://player.twitch.tv/?video=40464143
-  *  - https://www.twitch.tv/40464143
-  *  - https://player.twitch.tv/?channel=monserrat
-  *  - https://www.twitch.tv/monserrat
-  *
-  * @param {String} url - Twitch full URL to grab the number Id of the source
-  * @return {int}
-  */
 	getTwitchId: function getTwitchId(url) {
-
 		var twitchId = '';
 
 		if (url.indexOf('?') > 0) {
-			twitchId = twitchApi.getTwitchIdFromParam(url);
+			twitchId = TwitchApi.getTwitchIdFromParam(url);
 			if (twitchId === '') {
-				twitchId = twitchApi.getTwitchIdFromUrl(url);
+				twitchId = TwitchApi.getTwitchIdFromUrl(url);
 			}
 		} else {
-			twitchId = twitchApi.getTwitchIdFromUrl(url);
+			twitchId = TwitchApi.getTwitchIdFromUrl(url);
 		}
 
 		return twitchId;
 	},
 
-	/**
-  * Get ID from URL with format:
-  *  - https://player.twitch.tv/?channel=monserrat
-  *  - https://player.twitch.tv/?video=40464143
-  *
-  * @param {String} url
-  * @returns {string}
-  */
 	getTwitchIdFromParam: function getTwitchIdFromParam(url) {
-
 		if (url === undefined || url === null || !url.trim().length) {
 			return null;
 		}
@@ -150,10 +62,10 @@ var twitchApi = {
 
 		for (var i = 0, total = parameters.length; i < total; i++) {
 			var paramParts = parameters[i].split('=');
-			if (~paramParts[0].indexOf('channel=')) {
+			if (~paramParts[0].indexOf('channel')) {
 				twitchId = paramParts[1];
 				break;
-			} else if (~paramParts[0].indexOf('video=')) {
+			} else if (~paramParts[0].indexOf('video')) {
 				twitchId = 'v' + paramParts[1];
 				break;
 			}
@@ -162,16 +74,7 @@ var twitchApi = {
 		return twitchId;
 	},
 
-	/**
-  * Get ID from URL with formats:
-  *  - https://www.twitch.tv/40464143
-  *  - https://www.twitch.tv/monserrat
-  *
-  * @param {String} url
-  * @return {?String}
-  */
 	getTwitchIdFromUrl: function getTwitchIdFromUrl(url) {
-
 		if (url === undefined || url === null || !url.trim().length) {
 			return null;
 		}
@@ -179,55 +82,31 @@ var twitchApi = {
 		var parts = url.split('?');
 		url = parts[0];
 		var id = url.substring(url.lastIndexOf('/') + 1);
-		return (/^\d+$/i.test(id) !== null ? 'v' + id : id
+		return (/^\d+$/i.test(id) ? 'v' + id : id
 		);
 	},
 
-	/**
-  * Determine whether media is channel or video based on Twitch ID
-  *
-  * @see getTwitchId()
-  * @param {String} id
-  * @returns {String}
-  */
 	getTwitchType: function getTwitchType(id) {
-		return (/^v\d+/i.test(id) !== null ? 'video' : 'channel'
+		return (/^v\d+/i.test(id) ? 'video' : 'channel'
 		);
 	}
 };
 
 var TwitchIframeRenderer = {
 	name: 'twitch_iframe',
-
 	options: {
 		prefix: 'twitch_iframe'
 	},
 
-	/**
-  * Determine if a specific element type can be played with this render
-  *
-  * @param {String} type
-  * @return {Boolean}
-  */
 	canPlayType: function canPlayType(type) {
 		return ~['video/twitch', 'video/x-twitch'].indexOf(type.toLowerCase());
 	},
 
-	/**
-  * Create the player instance and add all native events/methods/properties as possible
-  *
-  * @param {MediaElement} mediaElement Instance of mejs.MediaElement already created
-  * @param {Object} options All the player configuration options passed through constructor
-  * @param {Object[]} mediaFiles List of sources with format: {src: url, type: x/y-z}
-  * @return {Object}
-  */
 	create: function create(mediaElement, options, mediaFiles) {
-
-		// API objects
 		var twitch = {},
 		    apiStack = [],
 		    readyState = 4,
-		    twitchId = twitchApi.getTwitchId(mediaFiles[0].src);
+		    twitchId = TwitchApi.getTwitchId(mediaFiles[0].src);
 
 		var twitchPlayer = null,
 		    paused = true,
@@ -241,43 +120,32 @@ var TwitchIframeRenderer = {
 		twitch.id = mediaElement.id + '_' + options.prefix;
 		twitch.mediaElement = mediaElement;
 
-		// wrappers for get/set
 		var props = mejs.html5media.properties,
 		    assignGettersSetters = function assignGettersSetters(propName) {
-
-			// add to flash state that we will store
-
 			var capName = '' + propName.substring(0, 1).toUpperCase() + propName.substring(1);
 
 			twitch['get' + capName] = function () {
 				if (twitchPlayer !== null) {
 					var value = null;
 
-					// figure out how to get Twitch dta here
 					switch (propName) {
 						case 'currentTime':
 							time = twitchPlayer.getCurrentTime();
 							return time;
-
 						case 'duration':
 							duration = twitchPlayer.getDuration();
 							return duration;
-
 						case 'volume':
 							volume = twitchPlayer.getVolume();
 							return volume;
-
 						case 'paused':
 							paused = twitchPlayer.isPaused();
 							return paused;
-
 						case 'ended':
 							ended = twitchPlayer.getEnded();
 							return ended;
-
 						case 'muted':
 							return twitchPlayer.getMuted();
-
 						case 'buffered':
 							return {
 								start: function start() {
@@ -289,9 +157,7 @@ var TwitchIframeRenderer = {
 								length: 1
 							};
 						case 'src':
-
-							return twitchApi.getTwitchType(twitchId) === 'channel' ? twitchPlayer.getChannel() : twitchPlayer.getVideo();
-
+							return TwitchApi.getTwitchType(twitchId) === 'channel' ? twitchPlayer.getChannel() : twitchPlayer.getVideo();
 						case 'readyState':
 							return readyState;
 					}
@@ -303,23 +169,18 @@ var TwitchIframeRenderer = {
 			};
 
 			twitch['set' + capName] = function (value) {
-
 				if (twitchPlayer !== null) {
-
-					// do something
 					switch (propName) {
-
 						case 'src':
 							var url = typeof value === 'string' ? value : value[0].src,
-							    videoId = twitchApi.getTwitchId(url);
+							    videoId = TwitchApi.getTwitchId(url);
 
-							if (twitchApi.getTwitchType(twitchId) === 'channel') {
+							if (TwitchApi.getTwitchType(twitchId) === 'channel') {
 								twitchPlayer.setChannel(videoId);
 							} else {
 								twitchPlayer.setVideo(videoId);
 							}
 							break;
-
 						case 'currentTime':
 							twitchPlayer.seek(value);
 							setTimeout(function () {
@@ -327,7 +188,6 @@ var TwitchIframeRenderer = {
 								mediaElement.dispatchEvent(event);
 							}, 50);
 							break;
-
 						case 'muted':
 							twitchPlayer.setMuted(value);
 							setTimeout(function () {
@@ -335,7 +195,6 @@ var TwitchIframeRenderer = {
 								mediaElement.dispatchEvent(event);
 							}, 50);
 							break;
-
 						case 'volume':
 							volume = value;
 							twitchPlayer.setVolume(value);
@@ -348,13 +207,11 @@ var TwitchIframeRenderer = {
 							var event = mejs.Utils.createEvent('canplay', twitch);
 							mediaElement.dispatchEvent(event);
 							break;
-
 						default:
 							
 							break;
 					}
 				} else {
-					// store for after "READY" event fires
 					apiStack.push({ type: 'set', propName: propName, value: value });
 				}
 			};
@@ -364,16 +221,10 @@ var TwitchIframeRenderer = {
 			assignGettersSetters(props[i]);
 		}
 
-		// add wrappers for native methods
 		var methods = mejs.html5media.methods,
 		    assignMethods = function assignMethods(methodName) {
-
-			// run the method on the native HTMLMediaElement
 			twitch[methodName] = function () {
-
 				if (twitchPlayer !== null) {
-
-					// DO method
 					switch (methodName) {
 						case 'play':
 							paused = false;
@@ -383,7 +234,6 @@ var TwitchIframeRenderer = {
 							return twitchPlayer.pause();
 						case 'load':
 							return null;
-
 					}
 				} else {
 					apiStack.push({ type: 'call', methodName: methodName });
@@ -395,12 +245,6 @@ var TwitchIframeRenderer = {
 			assignMethods(methods[_i]);
 		}
 
-		/**
-   * Dispatch a list of events
-   *
-   * @private
-   * @param {Array} events
-   */
 		function sendEvents(events) {
 			for (var _i2 = 0, _total2 = events.length; _i2 < _total2; _i2++) {
 				var event = mejs.Utils.createEvent(events[_i2], twitch);
@@ -408,15 +252,11 @@ var TwitchIframeRenderer = {
 			}
 		}
 
-		// Initial method to register all Twitch events when initializing <iframe>
 		window['__ready__' + twitch.id] = function (_twitchPlayer) {
-
 			mediaElement.twitchPlayer = twitchPlayer = _twitchPlayer;
 
-			// do call stack
 			if (apiStack.length) {
 				for (var _i3 = 0, _total3 = apiStack.length; _i3 < _total3; _i3++) {
-
 					var stackItem = apiStack[_i3];
 
 					if (stackItem.type === 'set') {
@@ -434,11 +274,9 @@ var TwitchIframeRenderer = {
 			twitchIframe.style.width = '100%';
 			twitchIframe.style.height = '100%';
 
-			// a few more events
-			var events = ['mouseover', 'mouseout'];
-
-			var assignEvents = function assignEvents(e) {
-				var event = createEvent(e.type, twitch);
+			var events = ['mouseover', 'mouseout'],
+			    assignEvents = function assignEvents(e) {
+				var event = mejs.Utils.createEvent(e.type, twitch);
 				mediaElement.dispatchEvent(event);
 			};
 
@@ -448,13 +286,12 @@ var TwitchIframeRenderer = {
 
 			var timer = void 0;
 
-			// Twitch events
-			twitchPlayer.addEventListener('ready', function () {
+			twitchPlayer.addEventListener(Twitch.Player.READY, function () {
 				paused = false;
 				ended = false;
 				sendEvents(['rendererready', 'loadedmetadata', 'loadeddata', 'canplay']);
 			});
-			twitchPlayer.addEventListener('play', function () {
+			twitchPlayer.addEventListener(Twitch.Player.PLAY, function () {
 				if (!hasStartedPlaying) {
 					hasStartedPlaying = true;
 				}
@@ -462,20 +299,19 @@ var TwitchIframeRenderer = {
 				ended = false;
 				sendEvents(['play', 'playing', 'progress']);
 
-				// Workaround to update progress bar
 				timer = setInterval(function () {
 					twitchPlayer.getCurrentTime();
 					sendEvents(['timeupdate']);
 				}, 250);
 			});
-			twitchPlayer.addEventListener('pause', function () {
+			twitchPlayer.addEventListener(Twitch.Player.PAUSE, function () {
 				paused = true;
 				ended = false;
 				if (!twitchPlayer.getEnded()) {
 					sendEvents(['pause']);
 				}
 			});
-			twitchPlayer.addEventListener('ended', function () {
+			twitchPlayer.addEventListener(Twitch.Player.ENDED, function () {
 				paused = true;
 				ended = true;
 				sendEvents(['ended']);
@@ -485,17 +321,17 @@ var TwitchIframeRenderer = {
 			});
 		};
 
-		// CREATE Twitch
 		var height = mediaElement.originalNode.height,
 		    width = mediaElement.originalNode.width,
 		    twitchContainer = document.createElement('div'),
-		    type = twitchApi.getTwitchType(twitchId),
+		    type = TwitchApi.getTwitchType(twitchId),
 		    twitchSettings = {
 			id: twitch.id,
 			width: width,
 			height: height,
 			playsinline: false,
-			autoplay: mediaElement.originalNode.autoplay
+			autoplay: mediaElement.originalNode.autoplay,
+			muted: mediaElement.originalNode.muted
 		};
 
 		twitchSettings[type] = twitchId;
@@ -507,11 +343,8 @@ var TwitchIframeRenderer = {
 		mediaElement.originalNode.style.display = 'none';
 		mediaElement.originalNode.autoplay = false;
 
-		// send it off for async loading and creation
-		twitchApi.enqueueIframe(twitchSettings);
-
 		twitch.setSize = function (width, height) {
-			if (twitchApi !== null && !isNaN(width) && !isNaN(height)) {
+			if (TwitchApi !== null && !isNaN(width) && !isNaN(height)) {
 				twitchContainer.setAttribute('width', width);
 				twitchContainer.setAttribute('height', height);
 			}
@@ -524,6 +357,8 @@ var TwitchIframeRenderer = {
 			twitchContainer.style.display = '';
 		};
 		twitch.destroy = function () {};
+
+		TwitchApi.load(twitchSettings);
 
 		return twitch;
 	}

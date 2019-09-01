@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+
 /**
  * Locale resolver implementation which returns the locale selected in the settings.
  *

@@ -53,11 +53,6 @@ table {
     background-image:url( "../icons/simplify/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/simplify/forward.png" );
-}
-
 
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {

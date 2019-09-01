@@ -1,18 +1,17 @@
 language: java
-sudo: required
-jdk:
-  - oraclejdk8
-services:
-  - docker
 cache:
   directories:
     - $HOME/.m2
-install:
-  - sudo apt-get -qq update
-before_script:
-  - wget http://apache.mirrors.tds.net/maven/maven-3/3.5.4/binaries/apache-maven-3.5.4-bin.tar.gz
-  - tar -xvf apache-maven-3.5.4-bin.tar.gz
-  - export M2_HOME=$PWD/apache-maven-3.5.4
-  - export PATH=$PWD/apache-maven-3.5.4/bin:$PATH
 script:
   - mvn verify -B -P integration-test
+
+matrix:
+  include:
+  - jdk: openjdk8
+  - jdk: oraclejdk9
+    before_install:
+        # The OpenJDK9's CA bundle is outdated, so we're using the system's ones.
+        - rm "${JAVA_HOME}/lib/security/cacerts"
+        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
+  - jdk: openjdk11
+  - jdk: openjdk12

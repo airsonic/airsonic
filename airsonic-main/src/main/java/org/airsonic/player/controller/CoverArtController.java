@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.annotation.PostConstruct;
@@ -98,7 +98,7 @@ public class CoverArtController implements LastModified {
         return coverArtRequest.lastModified();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
@@ -381,7 +381,11 @@ public class CoverArtController implements LastModified {
                 InputStream in = null;
                 try {
                     in = getImageInputStream(coverArt);
-                    return scale(ImageIO.read(in), size, size);
+                    BufferedImage bimg = ImageIO.read(in);
+                    if (bimg != null) {
+                        return scale(bimg, size, size);
+                    }
+                    LOG.warn("Failed to process cover art " + coverArt + ": {}", bimg);
                 } catch (Throwable x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
                 } finally {
@@ -628,10 +632,10 @@ public class CoverArtController implements LastModified {
             try {
                 in = getImageInputStreamForVideo(mediaFile, width, height, offset);
                 BufferedImage result = ImageIO.read(in);
-                if (result == null) {
-                    throw new NullPointerException();
+                if (result != null) {
+                    return result;
                 }
-                return result;
+                LOG.warn("Failed to process cover art for " + mediaFile + ": {}", result);
             } catch (Throwable x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
             } finally {

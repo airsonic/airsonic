@@ -249,7 +249,7 @@ public class VersionService {
 
         Function<String, Version> convertToVersion = s -> {
             Matcher match = VERSION_REGEX.matcher(s);
-            if(!match.matches()) {
+            if (!match.matches()) {
                 throw new RuntimeException("Unexpected tag format " + s);
             }
             return new Version(match.group(1));
@@ -257,7 +257,7 @@ public class VersionService {
 
         Predicate<Version> finalVersionPredicate = version -> !version.isPreview();
 
-        Optional<Version> betaV = unsortedTags.stream().map(convertToVersion).sorted(Comparator.reverseOrder()).findFirst();
+        Optional<Version> betaV = unsortedTags.stream().map(convertToVersion).max(Comparator.naturalOrder());
         Optional<Version> finalV = unsortedTags.stream().map(convertToVersion).sorted(Comparator.reverseOrder()).filter(finalVersionPredicate).findFirst();
 
         LOG.debug("Got {} for beta version", betaV);

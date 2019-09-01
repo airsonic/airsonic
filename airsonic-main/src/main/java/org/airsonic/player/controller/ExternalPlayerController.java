@@ -30,8 +30,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -64,7 +64,7 @@ public class ExternalPlayerController {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Map<String, Object> map = new HashMap<>();
@@ -72,7 +72,7 @@ public class ExternalPlayerController {
         String shareName = ControllerUtils.extractMatched(request);
         LOG.debug("Share name is {}", shareName);
 
-        if(StringUtils.isBlank(shareName)) {
+        if (StringUtils.isBlank(shareName)) {
             LOG.warn("Could not find share with shareName " + shareName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -102,7 +102,7 @@ public class ExternalPlayerController {
     private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) throws IOException {
         Date expires = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication instanceof JWTAuthenticationToken) {
+        if (authentication instanceof JWTAuthenticationToken) {
             DecodedJWT token = jwtSecurityService.verify((String) authentication.getCredentials());
             expires = token.getExpiresAt();
         }

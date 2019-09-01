@@ -108,7 +108,7 @@
 
         <tr>
 
-            <td class="fit"><input type="checkbox" class="checkbox" id="episode${i.index}" value="${episode.id}"/></td>
+            <td class="fit"><input type="checkbox" id="episode${i.index}" value="${episode.id}"/></td>
 
             <c:choose>
                 <c:when test="${empty episode.mediaFileId or episode.status ne 'COMPLETED'}">

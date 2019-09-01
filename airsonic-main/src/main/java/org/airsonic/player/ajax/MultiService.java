@@ -23,13 +23,12 @@ import org.airsonic.player.domain.ArtistBio;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.UserSettings;
+import org.airsonic.player.i18n.LocaleResolver;
 import org.airsonic.player.service.LastFmService;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.WebContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,8 +49,6 @@ import java.util.List;
 @Service("ajaxMultiService")
 public class MultiService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MultiService.class);
-
     @Autowired
     private MediaFileService mediaFileService;
     @Autowired
@@ -60,14 +57,15 @@ public class MultiService {
     private SecurityService securityService;
     @Autowired
     private SettingsService settingsService;
+    @Autowired
+    private LocaleResolver localeResolver;
 
     public ArtistInfo getArtistInfo(int mediaFileId, int maxSimilarArtists, int maxTopSongs) {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
-        UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
 
         MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
         List<SimilarArtist> similarArtists = getSimilarArtists(mediaFileId, maxSimilarArtists);
-        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile, userSettings.getLocale());
+        ArtistBio artistBio = lastFmService.getArtistBio(mediaFile, localeResolver.resolveLocale(request));
         List<TopSong> topSongs = getTopSongs(mediaFile, maxTopSongs);
 
         return new ArtistInfo(similarArtists, artistBio, topSongs);

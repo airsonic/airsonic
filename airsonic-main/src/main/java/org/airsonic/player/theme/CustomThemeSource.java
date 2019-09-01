@@ -42,7 +42,7 @@ public class CustomThemeSource extends ResourceBundleThemeSource {
 
         // Create parent theme recursively.
         for (Theme theme : settingsService.getAvailableThemes()) {
-            if (basename.equals(basenamePrefix + theme.getId()) && theme.getParent() != null) {
+            if ((basenamePrefix + theme.getId()).equals(basename) && theme.getParent() != null) {
                 String parent = basenamePrefix + theme.getParent();
                 messageSource.setParentMessageSource(createMessageSource(parent));
                 break;

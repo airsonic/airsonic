@@ -24,8 +24,6 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.ConfigurationFactory;
 import org.airsonic.player.service.SettingsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.File;
@@ -37,8 +35,6 @@ import java.io.File;
  * @version $Id$
  */
 public class CacheFactory implements InitializingBean {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CacheFactory.class);
     private CacheManager cacheManager;
 
     public void afterPropertiesSet() throws Exception {

@@ -20,8 +20,8 @@
 package org.airsonic.player.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/allmusic")
 public class AllmusicController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView result = new ModelAndView();
         result.addObject("album", request.getParameter("album"));

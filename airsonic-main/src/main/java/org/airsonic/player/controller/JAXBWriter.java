@@ -23,9 +23,8 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.persistence.jaxb.JAXBContext;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Attribute;
+import org.jdom2.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subsonic.restapi.Error;
@@ -46,6 +45,7 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 import static org.springframework.web.bind.ServletRequestUtils.getStringParameter;
 
 /**
@@ -100,7 +100,7 @@ public class JAXBWriter {
         InputStream in = null;
         try {
             in = StringUtil.class.getResourceAsStream("/subsonic-rest-api.xsd");
-            Document document = new SAXBuilder().build(in);
+            Document document = createSAXBuilder().build(in);
             Attribute version = document.getRootElement().getAttribute("version");
             return version.getValue();
         } finally {

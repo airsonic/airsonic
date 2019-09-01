@@ -151,6 +151,7 @@ public class PlayerService {
             String cookieName = COOKIE_NAME + "-" + StringUtil.utf8HexEncode(username);
             Cookie cookie = new Cookie(cookieName, String.valueOf(player.getId()));
             cookie.setMaxAge(COOKIE_EXPIRY);
+            cookie.setHttpOnly(true);
             String path = request.getContextPath();
             if (StringUtils.isEmpty(path)) {
                 path = "/";
@@ -340,7 +341,7 @@ public class PlayerService {
 
         // Create player if necessary.
         Player player = new Player();
-        if (request != null ) {
+        if (request != null) {
             player.setIpAddress(request.getRemoteAddr());
         }
         player.setUsername(User.USERNAME_GUEST);

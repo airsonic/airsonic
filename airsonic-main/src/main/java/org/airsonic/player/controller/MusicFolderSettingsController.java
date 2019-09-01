@@ -26,12 +26,15 @@ import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SettingsService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -48,6 +51,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/musicFolderSettings")
 public class MusicFolderSettingsController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MusicFolderSettingsController.class);
+
     @Autowired
     private SettingsService settingsService;
     @Autowired
@@ -59,7 +64,7 @@ public class MusicFolderSettingsController {
     @Autowired
     private MediaFileDao mediaFileDao;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm() throws Exception {
         return "musicFolderSettings";
     }
@@ -93,16 +98,22 @@ public class MusicFolderSettingsController {
 
 
     private void expunge() {
+        LOG.debug("Cleaning database...");
+        LOG.debug("Deleting non-present artists...");
         artistDao.expunge();
+        LOG.debug("Deleting non-present albums...");
         albumDao.expunge();
+        LOG.debug("Deleting non-present media files...");
         mediaFileDao.expunge();
+        LOG.debug("Database cleanup complete.");
+        mediaFileDao.checkpoint();
     }
 
     private List<MusicFolderSettingsCommand.MusicFolderInfo> wrap(List<MusicFolder> musicFolders) {
         return musicFolders.stream().map(MusicFolderSettingsCommand.MusicFolderInfo::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
 
         for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {

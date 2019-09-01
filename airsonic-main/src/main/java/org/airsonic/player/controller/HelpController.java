@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +61,7 @@ public class HelpController {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
@@ -101,7 +101,10 @@ public class HelpController {
             List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
             ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset());
             String current;
-            while((current = reader.readLine()) != null && lines.size() < LOG_LINES_TO_SHOW) {
+            while ((current = reader.readLine()) != null) {
+                if (lines.size() >= LOG_LINES_TO_SHOW) {
+                    break;
+                }
                 lines.add(0, current);
             }
             return lines;
