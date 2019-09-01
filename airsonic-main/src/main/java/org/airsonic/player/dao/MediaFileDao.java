@@ -96,9 +96,9 @@ public class MediaFileDao extends AbstractDao {
 
     public List<MediaFile> getSongsForAlbum(final String artist, final String album) {
         Map<String, Object> args = new HashMap<>();
-        put("types", MediaFile.MediaType.audioTypes());
-        put("artist", artist);
-        put("album", album);
+        args.put("types", MediaFile.MediaType.audioTypes());
+        args.put("artist", artist);
+        args.put("album", album);
         return namedQuery("select " + QUERY_COLUMNS + " from media_file where album_artist = :artist and album = :album and present " +
                           "and type in (:types) order by disc_number, track_number", rowMapper, args);
     }
@@ -392,10 +392,10 @@ public class MediaFileDao extends AbstractDao {
 
     public List<MediaFile> getSongsByArtist(final String artist, final int offset, final int count) {
         Map<String, Object> args = new HashMap<>();
-        put("types", MediaFile.MediaType.audioTypes());
-        put("artist", artist);
-        put("count", count);
-        put("offset", offset);
+        args.put("types", MediaFile.MediaType.audioTypes());
+        args.put("artist", artist);
+        args.put("count", count);
+        args.put("offset", offset);
         return namedQuery("select " + QUERY_COLUMNS + " from media_file where type in (:types) and artist = :artist " +
                           "and present limit :count offset :offset",
                           rowMapper, args);
