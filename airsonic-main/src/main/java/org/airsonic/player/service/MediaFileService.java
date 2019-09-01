@@ -399,7 +399,7 @@ public class MediaFileService {
 
 
         if (parent.getMediaType() == MediaFile.MediaType.ALBUM_SINGLE_FILE) {
-            for (MediaFile child: createSingleFileAlbumChildren(parent)){
+            for (MediaFile child: createSingleFileAlbumChildren(parent)) {
                 if (storedChildrenMap.remove(child.getPath()) == null) {
                     mediaFileDao.createOrUpdateMediaFile(child);
                 }
