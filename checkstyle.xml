@@ -12,6 +12,12 @@
 
     <module name="FileTabCharacter"/>
 
+    <!-- This is a temporary workaround until ^M line endings is added to upstream checkstyle -->
+    <module name="RegexpMultiline">
+	<property name="format" value="\r\n"/>
+	<property name="message" value="Do not use Windows line endings"/>
+    </module>
+
     <module name="TreeWalker">
         <module name="AnnotationLocation"/>
         <module name="CustomImportOrder">
