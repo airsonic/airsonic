@@ -19,6 +19,8 @@
  */
 package org.airsonic.player.service;
 
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.airsonic.player.dao.AlbumDao;
@@ -31,17 +33,20 @@ import org.airsonic.player.service.metadata.MetaDataParserFactory;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.opf_labs.audio.CueParser;
-import org.opf_labs.audio.CueSheet;
-import org.opf_labs.audio.Position;
-import org.opf_labs.audio.TrackData;
+import org.digitalmediaserver.cuelib.CueParser;
+import org.digitalmediaserver.cuelib.CueSheet;
+import org.digitalmediaserver.cuelib.Position;
+import org.digitalmediaserver.cuelib.TrackData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -443,9 +448,22 @@ public class MediaFileService {
                     long wholeFileSize = FileUtil.length(soundFile);
                     int wholeFileLength = 0; //todo: find sound length without metadata
                     if (metaData != null) {
-                        wholeFileLength = metaData.getDurationSeconds();
+                        wholeFileLength = (metaData.getDurationSeconds() != null) ? metaData.getDurationSeconds() : 0;
                     }
-                    CueSheet cueSheet = CueParser.parse(cueFile);
+
+                    // attempt to detect encoding for cueFile, fallback to UTF-8
+                    Charset cs = null;
+                    int threshold = 35; // 0-100, the higher the more certain the guess
+                    CharsetDetector cd = new CharsetDetector();
+                    cd.setText(new BufferedInputStream(new FileInputStream(cueFile)));
+                    CharsetMatch cm = cd.detect();
+                    if (cm != null && cm.getConfidence() > threshold) {
+                        cs = Charset.forName(cm.getName());
+                    } else {
+                        cs = Charset.forName("UTF-8");
+                    }
+
+                    CueSheet cueSheet = CueParser.parse(cueFile, cs);
                     for (int i = 0; i < cueSheet.getAllTrackData().size(); i++) {
                         TrackData trackData = cueSheet.getAllTrackData().get(i);
                         MediaFile mediaFile = new MediaFile();
