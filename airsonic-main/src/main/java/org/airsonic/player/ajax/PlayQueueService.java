@@ -745,7 +745,7 @@ public class PlayQueueService {
         List<PlayQueueInfo.Entry> entries = new ArrayList<>();
         for (InternetRadioSource streamSource: internetRadioService.getInternetRadioSources(radio)) {
             // Fake entry id so that the source can be selected in the UI
-            Integer streamId = -(1 + entries.size());
+            int streamId = -(1 + entries.size());
             Integer streamTrackNumber = entries.size();
             String streamUrl = streamSource.getStreamUrl();
             entries.add(new PlayQueueInfo.Entry(

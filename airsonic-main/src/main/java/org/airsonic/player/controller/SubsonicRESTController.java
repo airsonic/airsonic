@@ -33,7 +33,6 @@ import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.i18n.LocaleResolver;
 import org.airsonic.player.service.*;
 import org.airsonic.player.service.search.IndexType;
-import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
 import org.apache.commons.lang.StringUtils;
@@ -56,7 +55,6 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.airsonic.player.security.RESTRequestParameterProcessingFilter.decrypt;
 import static org.springframework.web.bind.ServletRequestUtils.*;
@@ -139,7 +137,6 @@ public class SubsonicRESTController {
     @Autowired
     private LocaleResolver localeResolver;
 
-    private final Map<BookmarkKey, org.airsonic.player.domain.Bookmark> bookmarkCache = new ConcurrentHashMap<BookmarkKey, org.airsonic.player.domain.Bookmark>();
     private final JAXBWriter jaxbWriter = new JAXBWriter();
 
     private static final String NOT_YET_IMPLEMENTED = "Not yet implemented";
@@ -1276,11 +1273,6 @@ public class SubsonicRESTController {
             child.setIsVideo(mediaFile.isVideo());
             child.setPath(getRelativePath(mediaFile, settingsService));
 
-            org.airsonic.player.domain.Bookmark bookmark = bookmarkCache.get(new BookmarkKey(username, mediaFile.getId()));
-            if (bookmark != null) {
-                child.setBookmarkPosition(bookmark.getPositionMillis());
-            }
-
             if (mediaFile.getAlbumArtist() != null && mediaFile.getAlbumName() != null) {
                 Album album = albumDao.getAlbum(mediaFile.getAlbumArtist(), mediaFile.getAlbumName());
                 if (album != null) {
@@ -2394,16 +2386,6 @@ public class SubsonicRESTController {
 
         public String getMessage() {
             return message;
-        }
-    }
-
-    private static class BookmarkKey extends Pair<String, Integer> {
-        private BookmarkKey(String username, int mediaFileId) {
-            super(username, mediaFileId);
-        }
-
-        static BookmarkKey forBookmark(org.airsonic.player.domain.Bookmark b) {
-            return new BookmarkKey(b.getUsername(), b.getMediaFileId());
         }
     }
 }
