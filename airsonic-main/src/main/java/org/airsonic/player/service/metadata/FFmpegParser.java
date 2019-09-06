@@ -116,7 +116,7 @@ public class FFmpegParser extends MetaDataParser {
 
     /**
      * Returns whether this parser supports tag editing (using the {@link #setMetaData} method).
-     *
+     * 
      * @return Always false.
      */
     @Override
