@@ -92,7 +92,7 @@
     <p class="warning"><fmt:message key="${error}"/></p>
 </c:if>
 
-<div style="width:60%">
+<div style="width:80%">
     <fmt:message key="transcodingsettings.info"><fmt:param value="${model.transcodeDirectory}"/><fmt:param value="${model.brand}"/></fmt:message>
 </div>
 </body></html>
