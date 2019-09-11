@@ -153,7 +153,7 @@ public class CoverArtService {
     }
 
     private boolean isMediaFile(File file) {
-        return !mediaFileService.filterMediaFiles(new File[]{file}).isEmpty();
+        return mediaFileService.includeMediaFile(file);
     }
 
     private void backup(File newCoverFile, File backup) {

@@ -193,10 +193,10 @@ public class MediaFileService {
         List<MediaFile> result = new ArrayList<MediaFile>();
         for (MediaFile child : mediaFileDao.getChildrenOf(parent.getPath())) {
             child = checkLastModified(child, useFastCache);
-            if (child.isDirectory() && includeDirectories) {
+            if (child.isDirectory() && includeDirectories && includeMediaFile(child)) {
                 result.add(child);
             }
-            if (child.isFile() && includeFiles) {
+            if (child.isFile() && includeFiles && includeMediaFile(child)) {
                 result.add(child);
             }
         }
@@ -412,11 +412,22 @@ public class MediaFileService {
         mediaFileDao.createOrUpdateMediaFile(parent);
     }
 
+    public boolean includeMediaFile(MediaFile candidate) {
+        return includeMediaFile(candidate.getFile());
+    }
+
+    public boolean includeMediaFile(File candidate) {
+        String suffix = FilenameUtils.getExtension(candidate.getName()).toLowerCase();
+        if (!isExcluded(candidate) && (FileUtil.isDirectory(candidate) || isAudioFile(suffix) || isVideoFile(suffix))) {
+            return true;
+        }
+        return false;
+    }
+
     public List<File> filterMediaFiles(File[] candidates) {
         List<File> result = new ArrayList<File>();
         for (File candidate : candidates) {
-            String suffix = FilenameUtils.getExtension(candidate.getName()).toLowerCase();
-            if (!isExcluded(candidate) && (FileUtil.isDirectory(candidate) || isAudioFile(suffix) || isVideoFile(suffix))) {
+            if (includeMediaFile(candidate)) {
                 result.add(candidate);
             }
         }
