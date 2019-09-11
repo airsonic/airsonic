@@ -122,7 +122,7 @@ public class UploadController {
 
                 if (!item.isFormField()) {
                     String fileName = item.getName();
-                    if (fileName.trim().length() > 0) {
+                    if (!fileName.trim().isEmpty()) {
 
                         File targetFile = new File(dir, new File(fileName).getName());
 
@@ -174,7 +174,7 @@ public class UploadController {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 File entryFile = new File(file.getParentFile(), entry.getName());
                 if (!entryFile.toPath().normalize().startsWith(file.getParentFile().toPath())) {
-                  throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
+                    throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
                 }
 
                 if (!entry.isDirectory()) {

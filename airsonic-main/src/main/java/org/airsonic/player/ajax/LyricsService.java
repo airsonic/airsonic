@@ -21,9 +21,11 @@ package org.airsonic.player.ajax;
 
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -63,7 +65,7 @@ public class LyricsService {
      * @return The lyrics, never <code>null</code> .
      */
     public LyricsInfo getLyrics(String artist, String song) {
-    	LyricsInfo lyrics = new LyricsInfo();
+        LyricsInfo lyrics = new LyricsInfo();
         try {
 
             artist = StringUtil.urlEncode(artist);
@@ -73,7 +75,13 @@ public class LyricsService {
             String xml = executeGetRequest(url);
             lyrics = parseSearchResult(xml);
 
-        } catch (SocketException x) {
+        } catch (HttpResponseException x) {
+            LOG.warn("Failed to get lyrics for song '{}'. Request failed: {}", song, x.toString());
+            if (x.getStatusCode() == 503) {
+                lyrics.setTryLater(true);
+            }
+        } catch (SocketException | ConnectTimeoutException x) {
+            LOG.warn("Failed to get lyrics for song '{}': {}", song, x.toString());
             lyrics.setTryLater(true);
         } catch (Exception x) {
             LOG.warn("Failed to get lyrics for song '" + song + "'.", x);

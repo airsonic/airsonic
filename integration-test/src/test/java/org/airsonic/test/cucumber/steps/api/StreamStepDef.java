@@ -43,7 +43,7 @@ public class StreamStepDef implements En {
     public StreamStepDef(AirsonicServer server) {
         mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         this.client = HttpClientBuilder.create().build();
-        Given("Media file (.*) is added", (String streamName) -> {
+        Given("Media file {word} is added", (String streamName) -> {
             this.streamName = streamName;
             server.uploadToDefaultMusicFolder(
                     Paths.get(this.getClass().getResource("/blobs/stream/" + streamName + "/input").toURI()),

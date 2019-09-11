@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.airsonic.player</groupId>
         <artifactId>airsonic</artifactId>
-        <version>10.4.0-SNAPSHOT</version>
+        <version>10.5.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -155,7 +155,10 @@
             </exclusions>
         </dependency>
 
-
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>commons-fileupload</groupId>
@@ -423,6 +426,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
+            <version>1.9.4</version>
             <!-- commons-configuration2 requires during runtime -->
             <scope>runtime</scope>
         </dependency>
@@ -538,7 +542,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
+            <version>42.2.5</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -630,6 +634,31 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jspc-maven-plugin</artifactId>
+                <version>9.4.19.v20190610</version>
+                <executions>
+                    <execution>
+                        <id>jspc</id>
+                        <goals>
+                            <goal>jspc</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <!-- Since we are using spring boot - we do not have a web.xml so there is no sense
+                            enabling merging. Furthermore, we output the webXmlFragment to the target/classes
+                            directory such that it will be on the classpath for use during runtime -->
+                            <mergeFragment>false</mergeFragment>
+                            <webXmlFragment>${project.build.outputDirectory}/precompiled-jsp-web.xml</webXmlFragment>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

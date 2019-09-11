@@ -66,11 +66,6 @@ table {
     background-image:url( "../icons/groove/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/groove/forward.png" );
-}
-
 
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
@@ -86,6 +81,13 @@ input[type="button"] {
 a:hover, a:hover * {
     text-decoration: underline;
     color: #FFFFFF;
+}
+
+/* Disabled links color and behavior */
+a.disabled, a.disabled span, span.disabled {
+    cursor: default;
+    text-decoration: none;
+    color: #999;
 }
 
 /* Colour for warning messages. */

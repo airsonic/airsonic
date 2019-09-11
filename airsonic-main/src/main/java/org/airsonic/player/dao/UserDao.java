@@ -79,24 +79,24 @@ public class UserDao extends AbstractDao {
      * Returns the user with the given username.
      *
      * @param username The username used when logging in.
-     * @param caseSensitive
+     * @param caseSensitive If false, perform a case-insensitive search
      * @return The user, or <code>null</code> if not found.
      */
     public User getUserByName(String username, boolean caseSensitive) {
         String sql;
-        if(caseSensitive) {
+        if (caseSensitive) {
             sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where username=?";
         } else {
             sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where UPPER(username)=UPPER(?)";
         }
         List<User> users = query(sql, userRowMapper, username);
         User user = null;
-        if(users.size() == 1) {
+        if (users.size() == 1) {
             user = users.iterator().next();
         } else if (users.size() > 1) {
             throw new RuntimeException("Too many matching users");
         }
-        if(user != null) {
+        if (user != null) {
             readRoles(user);
         }
         return user;
@@ -111,7 +111,7 @@ public class UserDao extends AbstractDao {
     public User getUserByEmail(String email) {
         String sql = "select " + USER_COLUMNS + " from " + getUserTable() + " where email=?";
         User user = queryOne(sql, userRowMapper, email);
-        if(user != null) {
+        if (user != null) {
             readRoles(user);
         }
         return user;
@@ -164,9 +164,9 @@ public class UserDao extends AbstractDao {
     public void updateUser(User user) {
         String sql = "update " + getUserTable() + " set password=?, email=?, ldap_authenticated=?, bytes_streamed=?, bytes_downloaded=?, bytes_uploaded=? " +
                 "where username=?";
-        getJdbcTemplate().update(sql, new Object[]{encrypt(user.getPassword()), user.getEmail(), user.isLdapAuthenticated(),
+        getJdbcTemplate().update(sql, encrypt(user.getPassword()), user.getEmail(), user.isLdapAuthenticated(),
                 user.getBytesStreamed(), user.getBytesDownloaded(), user.getBytesUploaded(),
-                user.getUsername()});
+                user.getUsername());
         writeRoles(user);
     }
 
@@ -204,29 +204,28 @@ public class UserDao extends AbstractDao {
      * @param settings The user-specific settings.
      */
     public void updateUserSettings(UserSettings settings) {
-        getJdbcTemplate().update("delete from user_settings where username=?", new Object[]{settings.getUsername()});
+        getJdbcTemplate().update("delete from user_settings where username=?", settings.getUsername());
 
         String sql = "insert into user_settings (" + USER_SETTINGS_COLUMNS + ") values (" + questionMarks(USER_SETTINGS_COLUMNS) + ')';
         String locale = settings.getLocale() == null ? null : settings.getLocale().toString();
         UserSettings.Visibility main = settings.getMainVisibility();
         UserSettings.Visibility playlist = settings.getPlaylistVisibility();
-        getJdbcTemplate().update(sql, new Object[]{settings.getUsername(), locale, settings.getThemeId(),
-                                                   settings.isFinalVersionNotificationEnabled(), settings.isBetaVersionNotificationEnabled(),
-                                                   settings.isSongNotificationEnabled(), main.isTrackNumberVisible(),
-                                                   main.isArtistVisible(), main.isAlbumVisible(), main.isGenreVisible(), main.isYearVisible(),
-                                                   main.isBitRateVisible(), main.isDurationVisible(), main.isFormatVisible(), main.isFileSizeVisible(),
-                                                   playlist.isTrackNumberVisible(), playlist.isArtistVisible(), playlist.isAlbumVisible(),
-                                                   playlist.isGenreVisible(), playlist.isYearVisible(), playlist.isBitRateVisible(), playlist.isDurationVisible(),
-                                                   playlist.isFormatVisible(), playlist.isFileSizeVisible(),
-                                                   settings.isLastFmEnabled(), settings.getLastFmUsername(), encrypt(settings.getLastFmPassword()),
-                                                   settings.getTranscodeScheme().name(), settings.isShowNowPlayingEnabled(),
-                                                   settings.getSelectedMusicFolderId(), settings.isPartyModeEnabled(), settings.isNowPlayingAllowed(),
-                                                   settings.getAvatarScheme().name(), settings.getSystemAvatarId(), settings.getChanged(),
-                                                   settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
-                                                   settings.isViewAsList(), settings.getDefaultAlbumList().getId(), settings.isQueueFollowingSongs(),
-                                                   settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled(),
-                                                   settings.getPaginationSize()
-        });
+        getJdbcTemplate().update(sql, settings.getUsername(), locale, settings.getThemeId(),
+                settings.isFinalVersionNotificationEnabled(), settings.isBetaVersionNotificationEnabled(),
+                settings.isSongNotificationEnabled(), main.isTrackNumberVisible(),
+                main.isArtistVisible(), main.isAlbumVisible(), main.isGenreVisible(), main.isYearVisible(),
+                main.isBitRateVisible(), main.isDurationVisible(), main.isFormatVisible(), main.isFileSizeVisible(),
+                playlist.isTrackNumberVisible(), playlist.isArtistVisible(), playlist.isAlbumVisible(),
+                playlist.isGenreVisible(), playlist.isYearVisible(), playlist.isBitRateVisible(), playlist.isDurationVisible(),
+                playlist.isFormatVisible(), playlist.isFileSizeVisible(),
+                settings.isLastFmEnabled(), settings.getLastFmUsername(), encrypt(settings.getLastFmPassword()),
+                settings.getTranscodeScheme().name(), settings.isShowNowPlayingEnabled(),
+                settings.getSelectedMusicFolderId(), settings.isPartyModeEnabled(), settings.isNowPlayingAllowed(),
+                settings.getAvatarScheme().name(), settings.getSystemAvatarId(), settings.getChanged(),
+                settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
+                settings.isViewAsList(), settings.getDefaultAlbumList().getId(), settings.isQueueFollowingSongs(),
+                settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled(),
+                settings.getPaginationSize());
     }
 
     private static String encrypt(String s) {
@@ -288,40 +287,40 @@ public class UserDao extends AbstractDao {
 
     private void writeRoles(User user) {
         String sql = "delete from user_role where username=?";
-        getJdbcTemplate().update(sql, new Object[]{user.getUsername()});
+        getJdbcTemplate().update(sql, user.getUsername());
         sql = "insert into user_role (username, role_id) values(?, ?)";
         if (user.isAdminRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_ADMIN});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_ADMIN);
         }
         if (user.isDownloadRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_DOWNLOAD});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_DOWNLOAD);
         }
         if (user.isUploadRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_UPLOAD});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_UPLOAD);
         }
         if (user.isPlaylistRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_PLAYLIST});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_PLAYLIST);
         }
         if (user.isCoverArtRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_COVER_ART});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_COVER_ART);
         }
         if (user.isCommentRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_COMMENT});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_COMMENT);
         }
         if (user.isPodcastRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_PODCAST});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_PODCAST);
         }
         if (user.isStreamRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_STREAM});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_STREAM);
         }
         if (user.isJukeboxRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_JUKEBOX});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_JUKEBOX);
         }
         if (user.isSettingsRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_SETTINGS});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_SETTINGS);
         }
         if (user.isShareRole()) {
-            getJdbcTemplate().update(sql, new Object[]{user.getUsername(), ROLE_ID_SHARE});
+            getJdbcTemplate().update(sql, user.getUsername(), ROLE_ID_SHARE);
         }
     }
 

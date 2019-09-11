@@ -43,6 +43,17 @@ public class InternetRadioDao extends AbstractDao {
     private final InternetRadioRowMapper rowMapper = new InternetRadioRowMapper();
 
     /**
+     * Returns the internet radio station with the given ID.
+     *
+     * @param id The unique internet radio station ID.
+     * @return The internet radio station with the given ID, or <code>null</code> if no such internet radio exists.
+     */
+    public InternetRadio getInternetRadioById(int id) {
+        String sql = "select " + QUERY_COLUMNS + " from internet_radio where id=?";
+        return queryOne(sql, rowMapper, id);
+    }
+
+    /**
      * Returns all internet radio stations.
      *
      * @return Possibly empty list of all internet radio stations.

@@ -7,7 +7,11 @@ script:
 
 matrix:
   include:
-  - jdk: oraclejdk8
+  - jdk: openjdk8
   - jdk: oraclejdk9
-  - jdk: oraclejdk11
-  
+    before_install:
+        # The OpenJDK9's CA bundle is outdated, so we're using the system's ones.
+        - rm "${JAVA_HOME}/lib/security/cacerts"
+        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
+  - jdk: openjdk11
+  - jdk: openjdk12

@@ -33,7 +33,7 @@
                 html += "<tr><td colspan='2' class='detail' style='padding-top:1em;white-space:nowrap'>";
 
                 if (nowPlaying[i].avatarUrl != null) {
-                    html += "<img src='" + nowPlaying[i].avatarUrl + "' style='padding-right:5pt;width:30px;height:30px'>";
+                    html += "<img alt='Avatar' src='" + nowPlaying[i].avatarUrl + "' style='padding-right:5pt;width:30px;height:30px'>";
                 }
                 html += "<b>" + nowPlaying[i].username + "</b></td></tr>";
 
@@ -51,7 +51,7 @@
                 }
                 html += "</td><td>" +
                         "<a title='" + nowPlaying[i].tooltip + "' target='main' href='" + nowPlaying[i].albumUrl + "'>" +
-                        "<img src='" + nowPlaying[i].coverArtUrl + "' class='dropshadow' height='60' width='60'></a>" +
+                        "<img alt='Cover art' src='" + nowPlaying[i].coverArtUrl + "' class='dropshadow' height='60' width='60'></a>" +
                         "</td></tr>";
 
                 var minutesAgo = nowPlaying[i].minutesAgo;

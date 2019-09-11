@@ -62,6 +62,13 @@ a:hover, a:hover * {
     color: #DD6900
 }
 
+/* Disabled links color and behavior */
+a.disabled, a.disabled span, span.disabled {
+    cursor: default;
+    text-decoration: none;
+    color: #bbb;
+}
+
 /* Color for warning messages. */
 .warning {
     color: red;
@@ -205,7 +212,7 @@ input[type=submit]:active, input[type=button]:active {
 }
 
 input[type=checkbox] {
-	border: 0;
+  border: 0;
 }
 
 input:hover, textarea:hover, select:hover {
@@ -272,7 +279,7 @@ img {
 }
 
 .monospace {
-	font-family: monospace;
+  font-family: monospace;
 }
 
 .dropshadow {
@@ -374,8 +381,14 @@ img {
     background-image:url("../icons/default_light/back.png");
 }
 
-.forward {
-    background-image:url("../icons/default_light/forward.png");
+.forward:before {
+    background-image:url("../icons/default_light/chevron.svg");
+    background-size: 16px 16px;
+    width: 16px;
+    height: 16px;
+    content: "";
+    display: inline-block;
+    vertical-align: -20%;
 }
 
 .albumComment {

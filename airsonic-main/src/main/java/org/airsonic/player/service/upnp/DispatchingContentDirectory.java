@@ -152,21 +152,21 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
 
 
     private UpnpContentProcessor findProcessor(String type) {
-        switch(type) {
-        case CONTAINER_ID_ROOT:
-            return getRootProcessor();
-        case CONTAINER_ID_PLAYLIST_PREFIX:
-            return getPlaylistProcessor();
-        case CONTAINER_ID_FOLDER_PREFIX:
-            return getMediaFileProcessor();
-        case CONTAINER_ID_ALBUM_PREFIX:
-            return getAlbumProcessor();
-        case CONTAINER_ID_RECENT_PREFIX:
-            return getRecentAlbumProcessor();
-        case CONTAINER_ID_ARTIST_PREFIX:
-            return getArtistProcessor();
-        case CONTAINER_ID_GENRE_PREFIX:
-            return getGenreProcessor();
+        switch (type) {
+            case CONTAINER_ID_ROOT:
+                return getRootProcessor();
+            case CONTAINER_ID_PLAYLIST_PREFIX:
+                return getPlaylistProcessor();
+            case CONTAINER_ID_FOLDER_PREFIX:
+                return getMediaFileProcessor();
+            case CONTAINER_ID_ALBUM_PREFIX:
+                return getAlbumProcessor();
+            case CONTAINER_ID_RECENT_PREFIX:
+                return getRecentAlbumProcessor();
+            case CONTAINER_ID_ARTIST_PREFIX:
+                return getArtistProcessor();
+            case CONTAINER_ID_GENRE_PREFIX:
+                return getGenreProcessor();
         }
         return null;
     }

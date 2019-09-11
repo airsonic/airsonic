@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class ControllerUtils {
 
-    public static String extractMatched(final HttpServletRequest request){
+    public static String extractMatched(final HttpServletRequest request) {
 
         String path = (String) request.getAttribute(
                 HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-        String bestMatchPattern = (String ) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
+        String bestMatchPattern = (String) request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
 
         AntPathMatcher apm = new AntPathMatcher();
 

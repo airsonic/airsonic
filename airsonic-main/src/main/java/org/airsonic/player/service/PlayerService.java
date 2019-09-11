@@ -341,7 +341,7 @@ public class PlayerService {
 
         // Create player if necessary.
         Player player = new Player();
-        if (request != null ) {
+        if (request != null) {
             player.setIpAddress(request.getRemoteAddr());
         }
         player.setUsername(User.USERNAME_GUEST);

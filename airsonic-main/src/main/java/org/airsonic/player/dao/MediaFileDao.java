@@ -403,7 +403,7 @@ public class MediaFileDao extends AbstractDao {
         args.put("type", MediaFile.MediaType.MUSIC.name());
         args.put("folders", MusicFolder.toPathList(musicFolders));
         return namedQueryOne("select " + QUERY_COLUMNS + " from media_file where artist = :artist " +
-                             "and title = :title and type = :type and present and folder in (:folders)" ,
+                             "and title = :title and type = :type and present and folder in (:folders)",
                              rowMapper, args);
     }
 

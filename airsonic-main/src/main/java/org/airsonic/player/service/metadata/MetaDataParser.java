@@ -164,6 +164,6 @@ public abstract class MetaDataParser {
         }
 
         String result = title.replaceFirst("^\\d{2}[. -]+", "");
-        return result.length() == 0 ? title : result;
+        return result.isEmpty() ? title : result;
     }
 }

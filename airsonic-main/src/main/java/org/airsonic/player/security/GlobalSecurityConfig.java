@@ -64,7 +64,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         }
         auth.userDetailsService(securityService);
         String jwtKey = settingsService.getJWTKey();
-        if(StringUtils.isBlank(jwtKey)) {
+        if (StringUtils.isBlank(jwtKey)) {
             logger.warn("Generating new jwt key");
             jwtKey = JWTSecurityService.generateKey();
             settingsService.setJWTKey(jwtKey);
@@ -74,9 +74,9 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     }
 
     private static String generateRememberMeKey() {
-      byte[] array = new byte[32];
-      new SecureRandom().nextBytes(array);
-      return new String(array);
+        byte[] array = new byte[32];
+        new SecureRandom().nextBytes(array);
+        return new String(array);
     }
 
     @Configuration
@@ -139,7 +139,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             // See: https://docs.spring.io/spring-security/site/docs/3.0.x/reference/remember-me.html
 
             String rememberMeKey = settingsService.getRememberMeKey();
-            boolean development = settingsService.isDevelopmentMode();
+            boolean development = SettingsService.isDevelopmentMode();
             if (StringUtils.isBlank(rememberMeKey) && !development) {
                 // ...if it is empty, generate a random key on startup (default).
                 logger.debug("Generating a new ephemeral 'remember me' key in a secure way.");
@@ -162,7 +162,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .and().authorizeRequests()
                     .antMatchers("/recover*", "/accessDenied*",
                             "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/crossdomain.xml", "/login", "/error")
+                            "/sonos/**", "/login", "/error")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")

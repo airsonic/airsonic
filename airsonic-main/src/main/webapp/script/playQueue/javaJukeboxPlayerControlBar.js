@@ -6,7 +6,7 @@ var javaJukeboxPlayerModel = {
   playing : false,
   songDuration : null,
   songPosition : 0
-}
+};
 
 function refreshView() {
   if (javaJukeboxPlayerModel.playing == true) {

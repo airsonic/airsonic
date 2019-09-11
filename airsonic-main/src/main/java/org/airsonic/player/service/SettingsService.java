@@ -138,8 +138,8 @@ public class SettingsService {
     private static final String DEFAULT_IGNORED_ARTICLES = "The El La Los Las Le Les";
     private static final String DEFAULT_SHORTCUTS = "New Incoming Podcast";
     private static final String DEFAULT_PLAYLIST_FOLDER = Util.getDefaultPlaylistFolder();
-    private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a flac wav wma aif aiff ape mpc shn mka opus";
-    private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts";
+    private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a m4b flac wav wma aif aiff ape mpc shn mka opus";
+    private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts webm";
     private static final String DEFAULT_COVER_ART_FILE_TYPES = "cover.jpg cover.png cover.gif folder.jpg jpg jpeg gif png";
     private static final int DEFAULT_COVER_ART_CONCURRENCY = 4;
     private static final String DEFAULT_WELCOME_TITLE = "Welcome to Airsonic!";
@@ -252,8 +252,8 @@ public class SettingsService {
 
     private void removeObsoleteProperties() {
 
-        OBSOLETE_KEYS.forEach( oKey -> {
-            if(configurationService.containsKey(oKey)) {
+        OBSOLETE_KEYS.forEach(oKey -> {
+            if (configurationService.containsKey(oKey)) {
                 LOG.info("Removing obsolete property [" + oKey + ']');
                 configurationService.clearProperty(oKey);
             }
@@ -269,7 +269,7 @@ public class SettingsService {
         String oldHome = System.getProperty("libresonic.home");
         if (overrideHome != null) {
             home = new File(overrideHome);
-        } else if(oldHome != null) {
+        } else if (oldHome != null) {
             home = new File(oldHome);
         } else {
             boolean isWindows = System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
@@ -314,7 +314,7 @@ public class SettingsService {
     }
 
     public void save(boolean updateSettingsChanged) {
-        if(updateSettingsChanged) {
+        if (updateSettingsChanged) {
             removeObsoleteProperties();
             this.setLong(KEY_SETTINGS_CHANGED, System.currentTimeMillis());
         }
@@ -764,7 +764,7 @@ public class SettingsService {
     }
 
     private void compileExcludePattern() {
-        if (getExcludePatternString() != null && getExcludePatternString().trim().length() > 0) {
+        if (getExcludePatternString() != null && !getExcludePatternString().trim().isEmpty()) {
             excludePattern = Pattern.compile(getExcludePatternString());
         } else {
             excludePattern = null;
@@ -791,7 +791,7 @@ public class SettingsService {
      *
      * @return true if we are in Development mode.
      */
-    public boolean isDevelopmentMode() {
+    public static boolean isDevelopmentMode() {
         return System.getProperty("airsonic.development") != null;
     }
 

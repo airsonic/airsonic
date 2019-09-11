@@ -237,13 +237,13 @@ public class MediaScannerService {
 
         LOG.trace("Scanning file {}", file.getPath());
 
-        searchService.index(file);
-
         // Update the root folder if it has changed.
         if (!musicFolder.getPath().getPath().equals(file.getFolder())) {
             file.setFolder(musicFolder.getPath().getPath());
             mediaFileDao.createOrUpdateMediaFile(file);
         }
+
+        searchService.index(file);
 
         if (file.isDirectory()) {
             for (MediaFile child : mediaFileService.getChildrenOf(file, true, false, false, false)) {

@@ -48,9 +48,7 @@ public class TestCaseUtils {
 
   /**
    * Cleans the AIRSONIC_HOME directory used for tests.
-   *
-   * @throws IOException
-     */
+   */
   public static void cleanAirsonicHomeForTest() throws IOException {
 
     File airsonicHomeDir = new File(airsonicHomePathForTest());
@@ -86,11 +84,7 @@ public class TestCaseUtils {
 
   /**
    * Counts records in a table.
-   *
-   * @param tableName
-   * @param daoHelper
-   * @return
-     */
+   */
   public static Integer recordsInTable(String tableName, DaoHelper daoHelper) {
     return daoHelper.getJdbcTemplate().queryForObject("select count(1) from " + tableName,Integer.class);
   }

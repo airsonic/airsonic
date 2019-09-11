@@ -25,6 +25,7 @@ import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SearchService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.service.search.IndexType;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -87,13 +88,13 @@ public class SearchController {
             criteria.setCount(MATCH_COUNT);
             criteria.setQuery(query);
 
-            SearchResult artists = searchService.search(criteria, musicFolders, SearchService.IndexType.ARTIST);
+            SearchResult artists = searchService.search(criteria, musicFolders, IndexType.ARTIST);
             command.setArtists(artists.getMediaFiles());
 
-            SearchResult albums = searchService.search(criteria, musicFolders, SearchService.IndexType.ALBUM);
+            SearchResult albums = searchService.search(criteria, musicFolders, IndexType.ALBUM);
             command.setAlbums(albums.getMediaFiles());
 
-            SearchResult songs = searchService.search(criteria, musicFolders, SearchService.IndexType.SONG);
+            SearchResult songs = searchService.search(criteria, musicFolders, IndexType.SONG);
             command.setSongs(songs.getMediaFiles());
 
             command.setPlayer(playerService.getPlayer(request, response));

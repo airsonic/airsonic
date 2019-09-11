@@ -60,11 +60,6 @@ table {
     background-image:url( "../icons/buuftheme/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/buuftheme/forward.png" );
-}
-
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
     color: #ffAE00;

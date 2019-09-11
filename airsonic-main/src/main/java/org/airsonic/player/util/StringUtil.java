@@ -60,6 +60,7 @@ public final class StringUtil {
             {"ogx", "application/ogg"},
             {"aac", "audio/mp4"},
             {"m4a", "audio/mp4"},
+            {"m4b", "audio/mp4"},
             {"flac", "audio/flac"},
             {"wav", "audio/x-wav"},
             {"wma", "audio/x-ms-wma"},
@@ -200,7 +201,7 @@ public final class StringUtil {
         // More than 1 TB?
         if (byteCount >= 1024L * 1024 * 1024 * 1024) {
             NumberFormat teraByteFormat = new DecimalFormat("0.00 TB", new DecimalFormatSymbols(locale));
-            return teraByteFormat.format( byteCount / ((double) 1024 * 1024 * 1024 * 1024));
+            return teraByteFormat.format(byteCount / ((double) 1024 * 1024 * 1024 * 1024));
         }
      
         // More than 1 GB?
@@ -285,7 +286,7 @@ public final class StringUtil {
             List<String> result = new ArrayList<String>();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim();
-                if (!line.startsWith("#") && line.length() > 0) {
+                if (!line.startsWith("#") && !line.isEmpty()) {
                     result.add(line);
                 }
             }

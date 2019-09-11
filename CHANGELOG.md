@@ -3,6 +3,62 @@
 # airsonic/airsonic
 # -->
 
+## v10.4.0 - 13 Jul 2019
+
+Fixes:
+- /stream When transcoding, always use chunked transfers and report that ranges
+  are not supported. When not transcoding, support returning ranges but only if
+requested.
+- /stream Remove the option to never set Content-Length. This workaround is
+  obsolete with correct handling of ranges when requested.
+- Use spaces instead of coma in systemd lists
+- Don't use ProtectHome by default in the systemd unit
+- Show cover art not displaying on chromecast
+- Fix downloads with embedded covers
+- Fix a crash when transcoding a track without artist/album
+- Fix the video player that was broken in cf1f86f
+- Fix 3 minor errors in jsp files
+    - Add a missing `$` in dlnaSettings
+    - Add a missing taglib import in homePage.jsp
+    - Add a missing `=` in playQueue.jsp's css
+- Fix layout and alignment issues in current master branch
+- Work around play queue not going to the next song automatically
+
+Changes:
+- Add m4b detection
+- Cleanup unused libraries
+- Better handling of ID3v2.4
+- /stream Refactor
+- /stream Dont use RanegOutputStream when entire range is requested
+- /stream Omit unnecessary null check on ranges
+- Declare the usage of HTML5 in the doctype
+- Remove the embedded copy of jaxrpc
+- Fix a possible stacktrace on RandomPlayQueue
+- Add contrib/library\_autoupdater.sh (#1096)
+- Remove the deprecated getAlphabetialAlbums method
+- Remove the ghetto REST flash-based video player
+- Add an `alt` attribute to images, to increase accessibility
+- Use SVG for the icons for the default\_light theme
+- Disallow deleting your own user or removing admin role
+- SearchService refactoring
+- Play internet radios in MediaElement (fix #408)
+- Add internet radio source cache
+- Hide play queue actions while playing internet radios
+- Limit the amount of data we parse from remote internet radio playlists
+- Show an error is an internet radio has no sources to load
+- Do not try to load radio playlists in the browser when clicking on a radio
+- Follow HTTP redirects when loading internet radio playlists
+
+Translation Updates:
+- Character encoding changes
+- Strip the \<p>…\</p> markup in translation
+- Add Weblate config
+
+Security:
+- Cookie is now marked httpOnly
+- Jackson updates
+
+
 ## v10.3.1 - 21 May 2019
 
 Fixes:

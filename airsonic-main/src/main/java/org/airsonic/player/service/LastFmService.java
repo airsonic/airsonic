@@ -236,6 +236,28 @@ public class LastFmService {
         return getArtistBio(getCanonicalArtistName(artist.getName()), locale);
     }
 
+    private ArtistBio getArtistBio(String artistName, Locale locale) {
+        try {
+            if (artistName == null) {
+                return null;
+            }
+
+            Artist info = Artist.getInfo(artistName, locale, null /* username */, LAST_FM_KEY);
+            if (info == null) {
+                return null;
+            }
+            return new ArtistBio(processWikiText(info.getWikiSummary()),
+                                 info.getMbid(),
+                                 info.getUrl(),
+                                 info.getImageURL(ImageSize.MEDIUM),
+                                 info.getImageURL(ImageSize.LARGE),
+                                 info.getImageURL(ImageSize.MEGA));
+        } catch (Throwable x) {
+            LOG.warn("Failed to find artist bio for " + artistName, x);
+            return null;
+        }
+    }
+
     /**
      * Returns top songs for the given artist, using last.fm REST API.
      *
@@ -366,29 +388,6 @@ public class LastFmService {
         }
 
         return imageUrl == null ? null : new LastFmCoverArt(imageUrl, album.getArtist(), album.getName());
-    }
-
-
-    private ArtistBio getArtistBio(String artistName, Locale locale) {
-        try {
-            if (artistName == null) {
-                return null;
-            }
-
-            Artist info = Artist.getInfo(artistName, locale, null /* username */, LAST_FM_KEY);
-            if (info == null) {
-                return null;
-            }
-            return new ArtistBio(processWikiText(info.getWikiSummary()),
-                                 info.getMbid(),
-                                 info.getUrl(),
-                                 info.getImageURL(ImageSize.MEDIUM),
-                                 info.getImageURL(ImageSize.LARGE),
-                                 info.getImageURL(ImageSize.MEGA));
-        } catch (Throwable x) {
-            LOG.warn("Failed to find artist bio for " + artistName, x);
-            return null;
-        }
     }
 
     private String getCanonicalArtistName(String artistName) {

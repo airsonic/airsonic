@@ -36,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -73,10 +74,10 @@ public class PodcastService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
     private static final DateFormat[] RSS_DATE_FORMATS = {new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
-            new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
+        new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
 
     private static final Namespace[] ITUNES_NAMESPACES = {Namespace.getNamespace("http://www.itunes.com/DTDs/Podcast-1.0.dtd"),
-            Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
+        Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
 
     private final ExecutorService refreshExecutor;
     private final ExecutorService downloadExecutor;
@@ -176,7 +177,8 @@ public class PodcastService {
      */
     public PodcastChannel getChannel(int channelId) {
         PodcastChannel channel = podcastDao.getChannel(channelId);
-        addMediaFileIdToChannels(Arrays.asList(channel));
+        if (channel.getTitle() != null)
+            addMediaFileIdToChannels(Arrays.asList(channel));
         return channel;
     }
 
@@ -271,6 +273,10 @@ public class PodcastService {
     private List<PodcastChannel> addMediaFileIdToChannels(List<PodcastChannel> channels) {
         for (PodcastChannel channel : channels) {
             try {
+                if (channel.getTitle() == null) {
+                    LOG.warn("Podcast channel id {} has null title", channel.getId());
+                    continue;
+                }
                 File dir = getChannelDirectory(channel);
                 MediaFile mediaFile = mediaFileService.getMediaFile(dir);
                 if (mediaFile != null) {
@@ -354,7 +360,7 @@ public class PodcastService {
     private void downloadImage(PodcastChannel channel) {
         InputStream in = null;
         OutputStream out = null;
-        try(CloseableHttpClient client = HttpClients.createDefault()) {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             String imageUrl = channel.getImageUrl();
             if (imageUrl == null) {
                 return;
@@ -551,6 +557,10 @@ public class PodcastService {
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectTimeout(2 * 60 * 1000) // 2 minutes
                     .setSocketTimeout(10 * 60 * 1000) // 10 minutes
+                    // Workaround HttpClient circular redirects, which some feeds use (with query parameters)
+                    .setCircularRedirectsAllowed(true)
+                    // Workaround HttpClient not understanding latest RFC-compliant cookie 'expires' attributes
+                    .setCookieSpec(CookieSpecs.STANDARD)
                     .build();
             HttpGet method = new HttpGet(episode.getUrl());
             method.setConfig(requestConfig);
@@ -694,7 +704,7 @@ public class PodcastService {
         File channelDir = new File(podcastDir, StringUtil.fileSystemSafe(channel.getTitle()));
 
         if (!podcastDir.canWrite()) {
-          throw new RuntimeException("The podcasts directory " + podcastDir + " isn't writeable.");
+            throw new RuntimeException("The podcasts directory " + podcastDir + " isn't writeable.");
         }
 
         if (!channelDir.exists()) {

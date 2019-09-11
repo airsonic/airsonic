@@ -7,6 +7,7 @@ import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MusicFolderTestData;
 import org.airsonic.player.util.StringUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;

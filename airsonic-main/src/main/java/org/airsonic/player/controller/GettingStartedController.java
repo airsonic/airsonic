@@ -48,7 +48,7 @@ public class GettingStartedController {
             return new ModelAndView(new RedirectView("home.view"));
         }
 
-        Map<String, Object> map = new HashMap<>();;
+        Map<String, Object> map = new HashMap<>();
         map.put("runningAsRoot", "root".equals(System.getProperty("user.name")));
         return new ModelAndView("gettingStarted", "model", map);
     }

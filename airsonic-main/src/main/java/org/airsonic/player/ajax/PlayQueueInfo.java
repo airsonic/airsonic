@@ -33,17 +33,19 @@ public class PlayQueueInfo {
     private final List<Entry> entries;
     private final boolean stopEnabled;
     private final boolean repeatEnabled;
-    private final boolean radioEnabled;
+    private final boolean shuffleRadioEnabled;
+    private final boolean internetRadioEnabled;
     private final boolean sendM3U;
     private final float gain;
     private int startPlayerAt = -1;
     private long startPlayerAtPosition; // millis
 
-    public PlayQueueInfo(List<Entry> entries, boolean stopEnabled, boolean repeatEnabled, boolean radioEnabled, boolean sendM3U, float gain) {
+    public PlayQueueInfo(List<Entry> entries, boolean stopEnabled, boolean repeatEnabled, boolean shuffleRadioEnabled, boolean internetRadioEnabled, boolean sendM3U, float gain) {
         this.entries = entries;
         this.stopEnabled = stopEnabled;
         this.repeatEnabled = repeatEnabled;
-        this.radioEnabled = radioEnabled;
+        this.shuffleRadioEnabled = shuffleRadioEnabled;
+        this.internetRadioEnabled = internetRadioEnabled;
         this.sendM3U = sendM3U;
         this.gain = gain;
     }
@@ -74,8 +76,12 @@ public class PlayQueueInfo {
         return repeatEnabled;
     }
 
-    public boolean isRadioEnabled() {
-        return radioEnabled;
+    public boolean isShuffleRadioEnabled() {
+        return shuffleRadioEnabled;
+    }
+
+    public boolean isInternetRadioEnabled() {
+        return internetRadioEnabled;
     }
 
     public float getGain() {
@@ -121,9 +127,27 @@ public class PlayQueueInfo {
         private final String coverArtUrl;
         private final String remoteCoverArtUrl;
 
-        public Entry(int id, Integer trackNumber, String title, String artist, String album, String genre, Integer year,
-                String bitRate, Integer duration, String durationAsString, String format, String contentType, String fileSize,
-                boolean starred, String albumUrl, String streamUrl, String remoteStreamUrl, String coverArtUrl, String remoteCoverArtUrl) {
+        public Entry(
+                int id,
+                Integer trackNumber,
+                String title,
+                String artist,
+                String album,
+                String genre,
+                Integer year,
+                String bitRate,
+                Integer duration,
+                String durationAsString,
+                String format,
+                String contentType,
+                String fileSize,
+                boolean starred,
+                String albumUrl,
+                String streamUrl,
+                String remoteStreamUrl,
+                String coverArtUrl,
+                String remoteCoverArtUrl) {
+
             this.id = id;
             this.trackNumber = trackNumber;
             this.title = title;
@@ -220,5 +244,6 @@ public class PlayQueueInfo {
         public String getRemoteCoverArtUrl() {
             return remoteCoverArtUrl;
         }
+
     }
 }

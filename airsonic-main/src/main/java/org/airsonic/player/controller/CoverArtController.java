@@ -59,7 +59,7 @@ import java.util.concurrent.Semaphore;
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping(value = {"/coverArt", "/ext/coverArt"})
+@RequestMapping({"/coverArt", "/ext/coverArt"})
 public class CoverArtController implements LastModified {
 
     public static final String ALBUM_COVERART_PREFIX = "al-";
@@ -292,12 +292,12 @@ public class CoverArtController implements LastModified {
             try {
                 LOG.trace("Reading artwork from file {}", mediaFile);
                 artwork = jaudiotaggerParser.getArtwork(mediaFile);
+                is = new ByteArrayInputStream(artwork.getBinaryData());
+                mimeType = artwork.getMimeType();
             } catch (Exception e) {
                 LOG.debug("Could not read artwork from file {}", mediaFile);
                 throw new RuntimeException(e);
             }
-            is = new ByteArrayInputStream(artwork.getBinaryData());
-            mimeType = artwork.getMimeType();
         } else {
             is =  new FileInputStream(file);
             mimeType = StringUtil.getMimeType(FilenameUtils.getExtension(file.getName()));
@@ -381,7 +381,11 @@ public class CoverArtController implements LastModified {
                 InputStream in = null;
                 try {
                     in = getImageInputStream(coverArt);
-                    return scale(ImageIO.read(in), size, size);
+                    BufferedImage bimg = ImageIO.read(in);
+                    if (bimg != null) {
+                        return scale(bimg, size, size);
+                    }
+                    LOG.warn("Failed to process cover art " + coverArt + ": {}", bimg);
                 } catch (Throwable x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
                 } finally {
@@ -628,10 +632,10 @@ public class CoverArtController implements LastModified {
             try {
                 in = getImageInputStreamForVideo(mediaFile, width, height, offset);
                 BufferedImage result = ImageIO.read(in);
-                if (result == null) {
-                    throw new NullPointerException();
+                if (result != null) {
+                    return result;
                 }
-                return result;
+                LOG.warn("Failed to process cover art for " + mediaFile + ": {}", result);
             } catch (Throwable x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
             } finally {

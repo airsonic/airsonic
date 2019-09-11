@@ -24,7 +24,7 @@ public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibas
         logger.trace("Starting Liquibase Update");
         try {
             super.afterPropertiesSet();
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("===============================================");
             logger.error("An exception occurred during database migration");
             logger.error("A rollback file has been generated at " + rollbackFile);
@@ -66,9 +66,9 @@ public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibas
 
     private void removeCurrentHsqlDb(List<Database> implementedDatabases) {
         Iterator<Database> iterator = implementedDatabases.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Database db = iterator.next();
-            if(db instanceof liquibase.database.core.HsqlDatabase) {
+            if (db instanceof liquibase.database.core.HsqlDatabase) {
                 iterator.remove();
             }
         }
