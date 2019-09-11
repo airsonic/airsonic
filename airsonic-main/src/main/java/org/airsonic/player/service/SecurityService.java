@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -180,7 +181,7 @@ public class SecurityService implements UserDetailsService {
      */
     public void createUser(User user) {
         userDao.createUser(user);
-        settingsService.setMusicFoldersForUser(user.getUsername(), MusicFolder.toIdList(settingsService.getAllMusicFolders()));
+        settingsService.setMusicFoldersForUser(user.getUsername(), MusicFolder.toIdList(Collections.emptyList()));
         LOG.info("Created user " + user.getUsername());
     }
 
