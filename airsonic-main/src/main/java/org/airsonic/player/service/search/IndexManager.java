@@ -26,9 +26,15 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.FileUtil;
-import org.apache.lucene.index.IndexReader;
+import org.apache.commons.io.FileUtils;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.store.FSDirectory;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +42,14 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
-import static org.airsonic.player.service.search.IndexType.ALBUM;
-import static org.airsonic.player.service.search.IndexType.ALBUM_ID3;
-import static org.airsonic.player.service.search.IndexType.ARTIST;
-import static org.airsonic.player.service.search.IndexType.ARTIST_ID3;
-import static org.airsonic.player.service.search.IndexType.SONG;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Function class that is strongly linked to the lucene index implementation.
@@ -57,112 +65,258 @@ public class IndexManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(IndexManager.class);
 
+    /**
+     * Schema version of Airsonic index.
+     * It may be incremented in the following cases:
+     * 
+     *  - Incompatible update case in Lucene index implementation
+     *  - When schema definition is changed due to modification of AnalyzerFactory,
+     *    DocumentFactory or the class that they use.
+     *
+     */
+    private static final int INDEX_VERSION = 16;
+
+    /**
+     * Literal name of index top directory.
+     */
+    private static final String INDEX_ROOT_DIR_NAME = "index";
+
+    /**
+     * File supplier for index directory.
+     */
+    private Supplier<File> rootIndexDirectory = () ->
+        new File(SettingsService.getAirsonicHome(), INDEX_ROOT_DIR_NAME.concat(Integer.toString(INDEX_VERSION)));
+
+    /**
+     * Returns the directory of the specified index
+     */
+    private Function<IndexType, File> getIndexDirectory = (indexType) ->
+        new File(rootIndexDirectory.get(), indexType.toString().toLowerCase());
+
     @Autowired
     private AnalyzerFactory analyzerFactory;
 
     @Autowired
     private DocumentFactory documentFactory;
 
-    private IndexWriter artistWriter;
-    private IndexWriter artistId3Writer;
-    private IndexWriter albumWriter;
-    private IndexWriter albumId3Writer;
-    private IndexWriter songWriter;
+    private Map<IndexType, SearcherManager> searchers = new HashMap<>();
+
+    private Map<IndexType, IndexWriter> writers = new HashMap<>();
 
     public void index(Album album) {
+        Term primarykey = documentFactory.createPrimarykey(album);
+        Document document = documentFactory.createAlbumId3Document(album);
         try {
-            albumId3Writer.addDocument(documentFactory.createAlbumId3Document(album));
+            writers.get(IndexType.ALBUM_ID3).updateDocument(primarykey, document);
         } catch (Exception x) {
             LOG.error("Failed to create search index for " + album, x);
         }
     }
 
     public void index(Artist artist, MusicFolder musicFolder) {
+        Term primarykey = documentFactory.createPrimarykey(artist);
+        Document document = documentFactory.createArtistId3Document(artist, musicFolder);
         try {
-            artistId3Writer
-                    .addDocument(documentFactory.createArtistId3Document(artist, musicFolder));
+            writers.get(IndexType.ARTIST_ID3).updateDocument(primarykey, document);
         } catch (Exception x) {
             LOG.error("Failed to create search index for " + artist, x);
         }
     }
 
     public void index(MediaFile mediaFile) {
+        Term primarykey = documentFactory.createPrimarykey(mediaFile);
         try {
             if (mediaFile.isFile()) {
-                songWriter.addDocument(documentFactory.createSongDocument(mediaFile));
+                Document document = documentFactory.createSongDocument(mediaFile);
+                writers.get(IndexType.SONG).updateDocument(primarykey, document);
             } else if (mediaFile.isAlbum()) {
-                albumWriter.addDocument(documentFactory.createAlbumDocument(mediaFile));
+                Document document = documentFactory.createAlbumDocument(mediaFile);
+                writers.get(IndexType.ALBUM).updateDocument(primarykey, document);
             } else {
-                artistWriter.addDocument(documentFactory.createArtistDocument(mediaFile));
+                Document document = documentFactory.createArtistDocument(mediaFile);
+                writers.get(IndexType.ARTIST).updateDocument(primarykey, document);
             }
         } catch (Exception x) {
             LOG.error("Failed to create search index for " + mediaFile, x);
         }
     }
 
-    private static final String LUCENE_DIR = "lucene2";
-
-    public IndexReader createIndexReader(IndexType indexType) throws IOException {
-        File dir = getIndexDirectory(indexType);
-        return IndexReader.open(FSDirectory.open(dir), true);
-    }
-
-    /**
-     * It is static as an intermediate response of the transition period.
-     * (It is called before injection because it is called by SearchService constructor)
-     * 
-     * @return
-     */
-    private static File getIndexRootDirectory() {
-        return new File(SettingsService.getAirsonicHome(), LUCENE_DIR);
-    }
-
-    /**
-     * Make it public as an interim response of the transition period.
-     * (It is called before the injection because it is called in the SearchService constructor.)
-     * 
-     * @param indexType
-     * @return
-     * @deprecated It should not be called from outside.
-     */
-    @Deprecated
-    public static File getIndexDirectory(IndexType indexType) {
-        return new File(getIndexRootDirectory(), indexType.toString().toLowerCase());
-    }
-
-    private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
-        File dir = getIndexDirectory(indexType);
-        return new IndexWriter(FSDirectory.open(dir), analyzerFactory.getAnalyzer(), true,
-                new IndexWriter.MaxFieldLength(10));
-    }
-
     public final void startIndexing() {
         try {
-            artistWriter = createIndexWriter(ARTIST);
-            artistId3Writer = createIndexWriter(ARTIST_ID3);
-            albumWriter = createIndexWriter(ALBUM);
-            albumId3Writer = createIndexWriter(ALBUM_ID3);
-            songWriter = createIndexWriter(SONG);
-        } catch (Exception x) {
-            LOG.error("Failed to create search index.", x);
+            for (IndexType IndexType : IndexType.values()) {
+                writers.put(IndexType, createIndexWriter(IndexType));
+            }
+        } catch (IOException e) {
+            LOG.error("Failed to create search index.", e);
         }
     }
 
+    /**
+     * 
+     * @param indexType
+     * @return
+     * @throws IOException
+     */
+    private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
+        File indexDirectory = getIndexDirectory.apply(indexType);
+        IndexWriterConfig config = new IndexWriterConfig(analyzerFactory.getAnalyzer());
+        return new IndexWriter(FSDirectory.open(indexDirectory.toPath()), config);
+    }
+
+    /**
+     * Close Writer of all indexes and update SearcherManager.
+     * Called at the end of the Scan flow.
+     */
     public void stopIndexing() {
+        Arrays.asList(IndexType.values()).forEach(this::stopIndexing);
+    }
+
+    /**
+     * Close Writer of specified index and refresh SearcherManager.
+     * @param type
+     */
+    private void stopIndexing(IndexType type) {
+
+        boolean isUpdate = false;
+        // close
         try {
-            artistWriter.optimize();
-            artistId3Writer.optimize();
-            albumWriter.optimize();
-            albumId3Writer.optimize();
-            songWriter.optimize();
-        } catch (Exception x) {
-            LOG.error("Failed to create search index.", x);
+            isUpdate = -1 != writers.get(type).commit();
+            writers.get(type).close();
+            writers.remove(type);
+            LOG.trace("Success to create or update search index : [" + type + "]");
+        } catch (IOException e) {
+            LOG.error("Failed to create search index.", e);
         } finally {
-            FileUtil.closeQuietly(artistId3Writer);
-            FileUtil.closeQuietly(artistWriter);
-            FileUtil.closeQuietly(albumWriter);
-            FileUtil.closeQuietly(albumId3Writer);
-            FileUtil.closeQuietly(songWriter);
+            FileUtil.closeQuietly(writers.get(type));
+        }
+
+        // refresh reader as index may have been written
+        if (isUpdate && searchers.containsKey(type)) {
+            try {
+                searchers.get(type).maybeRefresh();
+                LOG.trace("SearcherManager has been refreshed : [" + type + "]");
+            } catch (IOException e) {
+                LOG.error("Failed to refresh SearcherManager : [" + type + "]", e);
+                searchers.remove(type);
+            }
+        }
+
+    }
+
+    /**
+     * Return the IndexSearcher of the specified index.
+     * At initial startup, it may return null
+     * if the user performs any search before performing a scan.
+     * 
+     * @param indexType
+     * @return
+     */
+    public @Nullable IndexSearcher getSearcher(IndexType indexType) {
+        if (!searchers.containsKey(indexType)) {
+            File indexDirectory = getIndexDirectory.apply(indexType);
+            try {
+                if (indexDirectory.exists()) {
+                    SearcherManager manager = new SearcherManager(FSDirectory.open(indexDirectory.toPath()), null);
+                    searchers.put(indexType, manager);
+                } else {
+                    LOG.warn("{} does not exist. Please run a scan.", indexDirectory.getAbsolutePath());
+                }
+            } catch (IOException e) {
+                LOG.error("Failed to initialize SearcherManager.", e);
+            }
+        }
+        try {
+            SearcherManager manager = searchers.get(indexType);
+            if (!isEmpty(manager)) {
+                return searchers.get(indexType).acquire();
+            }
+        } catch (Exception e) {
+            LOG.warn("Failed to acquire IndexSearcher.", e);
+        }
+        return null;
+    }
+
+    public void release(IndexType indexType, IndexSearcher indexSearcher) {
+        if (searchers.containsKey(indexType)) {
+            try {
+                searchers.get(indexType).release(indexSearcher);
+            } catch (IOException e) {
+                LOG.error("Failed to release IndexSearcher.", e);
+                searchers.remove(indexType);
+            }
+        } else {
+            // irregular case
+            try {
+                indexSearcher.getIndexReader().close();
+            } catch (Exception e) {
+                LOG.warn("Failed to release. IndexSearcher has been closed.", e);
+            }
+        }
+    }
+
+    /**
+     * Check the version of the index and clean it up if necessary.
+     * Legacy type indexes (files or directories starting with lucene) are deleted.
+     * If there is no index directory, initialize the directory.
+     * If the index directory exists and is not the current version,
+     * initialize the directory.
+     */
+    public void deleteOldIndexFiles() {
+
+        // Delete legacy files unconditionally
+        Arrays.stream(SettingsService.getAirsonicHome()
+                .listFiles((file, name) -> Pattern.compile("^lucene\\d+$").matcher(name).matches())).forEach(old -> {
+                    if (FileUtil.exists(old)) {
+                        LOG.info("Found legacy index file. Try to delete : {}", old.getAbsolutePath());
+                        try {
+                            if (old.isFile()) {
+                                FileUtils.deleteQuietly(old);
+                            } else {
+                                FileUtils.deleteDirectory(old);
+                            }
+                        } catch (IOException e) {
+                            // Log only if failed
+                            LOG.warn("Failed to delete the legacy Index : ".concat(old.getAbsolutePath()), e);
+                        }
+                    }
+                });
+
+        // Delete if not old index version
+        Arrays.stream(SettingsService.getAirsonicHome()
+                .listFiles((file, name) -> Pattern.compile("^index\\d+$").matcher(name).matches()))
+                .filter(dir -> !dir.getName().equals(rootIndexDirectory.get().getName()))
+                .forEach(old -> {
+                    if (FileUtil.exists(old)) {
+                        LOG.info("Found old index file. Try to delete : {}", old.getAbsolutePath());
+                        try {
+                            if (old.isFile()) {
+                                FileUtils.deleteQuietly(old);
+                            } else {
+                                FileUtils.deleteDirectory(old);
+                            }
+                        } catch (IOException e) {
+                            // Log only if failed
+                            LOG.warn("Failed to delete the old Index : ".concat(old.getAbsolutePath()), e);
+                        }
+                    }
+                });
+
+    }
+
+    /**
+     * Create a directory corresponding to the current index version.
+     */
+    public void initializeIndexDirectory() {
+        // Check if Index is current version
+        if (rootIndexDirectory.get().exists()) {
+            // Index of current version already exists
+            LOG.info("Index was found (index version {}). ", INDEX_VERSION);
+        } else {
+            if (rootIndexDirectory.get().mkdir()) {
+                LOG.info("Index directory was created (index version {}). ", INDEX_VERSION);
+            } else {
+                LOG.warn("Failed to create index directory :  (index version {}). ", INDEX_VERSION);
+            }
         }
     }
 

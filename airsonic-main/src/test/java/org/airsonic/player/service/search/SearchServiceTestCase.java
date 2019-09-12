@@ -164,7 +164,12 @@ public class SearchServiceTestCase extends AbstractAirsonicHomeTest {
                 artistId3Result.getItems().size());
         ParamSearchResult<Artist> artistResult = searchService.searchByName(query, 0,
                 Integer.MAX_VALUE, allMusicFolders, Artist.class);
-        Assert.assertEquals("(21) Specify '" + query + "' as the name, and get an artist.", 0,
+
+        /*
+         * // XXX 3.x -> 8.x :
+         * Hit 'Nash*' as ​​the slash becomes a delimiter.
+         */
+        Assert.assertEquals("(21) Specify '" + query + "' as the name, and get an artist.", 1,
                 artistResult.getItems().size());
 
         // *** testGetRandomSongs() ***
