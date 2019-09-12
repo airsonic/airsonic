@@ -20,19 +20,25 @@
 
 package org.airsonic.player.service.search;
 
-import org.apache.lucene.analysis.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.StopFilter;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.standard.StandardFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.analysis.cjk.CJKWidthFilterFactory;
+import org.apache.lucene.analysis.core.KeywordTokenizerFactory;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.core.StopFilterFactory;
+import org.apache.lucene.analysis.custom.CustomAnalyzer;
+import org.apache.lucene.analysis.custom.CustomAnalyzer.Builder;
+import org.apache.lucene.analysis.en.EnglishPossessiveFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.ASCIIFoldingFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.pattern.PatternReplaceFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Analyzer provider.
@@ -49,73 +55,124 @@ public final class AnalyzerFactory {
 
     private Analyzer queryAnalyzer;
 
+    /*
+     * XXX 3.x -> 8.x : Convert UAX#29 Underscore Analysis to Legacy Analysis
+     * 
+     * Because changes in underscores before and after words
+     * have a major effect on user's forward match search.
+     * 
+     * @see AnalyzerFactoryTestCase
+     */
+    private void addTokenFilterForUnderscoreRemovalAroundToken(Builder builder) throws IOException {
+        builder
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "^\\_", "replacement", "", "replace", "all")
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "\\_$", "replacement", "", "replace", "all");
+    }
+
+    /*
+     * XXX 3.x -> 8.x : Handle brackets correctly
+     * 
+     * Process the input value of Genre search for search of domain value.
+     * 
+     * The tag parser performs special character conversion
+     * when converting input values ​​from a file.
+     * Therefore, the domain value may be different from the original value.
+     * This filter allows searching by user readable value (file tag value).
+     * 
+     * @see org.jaudiotagger.tag.id3.framebody.FrameBodyTCON#convertID3v23GenreToGeneric
+     * (TCON stands for Genre with ID3 v2.3-v2.4)
+     * Such processing exists because brackets in the Gener string have a special meaning.
+     */
+    private void addTokenFilterForTokenToDomainValue(Builder builder) throws IOException {
+        builder
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "\\(", "replacement", "", "replace", "all")
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "\\)$", "replacement", "", "replace", "all")
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "\\)", "replacement", " ", "replace", "all")
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "\\{\\}", "replacement", "\\{ \\}", "replace", "all")
+            .addTokenFilter(PatternReplaceFilterFactory.class,
+                    "pattern", "\\[\\]", "replacement", "\\[ \\]", "replace", "all");
+    }
+
+    private Builder createDefaultAnalyzerBuilder() throws IOException {
+        Builder builder = CustomAnalyzer.builder()
+                .withTokenizer(StandardTokenizerFactory.class)
+                .addTokenFilter(CJKWidthFilterFactory.class)
+                .addTokenFilter(ASCIIFoldingFilterFactory.class, "preserveOriginal", "false")
+                .addTokenFilter(LowerCaseFilterFactory.class)
+                .addTokenFilter(StopFilterFactory.class)
+                .addTokenFilter(EnglishPossessiveFilterFactory.class);
+        addTokenFilterForUnderscoreRemovalAroundToken(builder);
+        return builder;
+    }
+
+    private Builder createKeywordAnalyzerBuilder() throws IOException {
+        return CustomAnalyzer.builder()
+                .withTokenizer(KeywordTokenizerFactory.class);
+    }
+
+    private Builder createGenreAnalyzerBuilder() throws IOException {
+        Builder builder = createKeywordAnalyzerBuilder();
+        addTokenFilterForTokenToDomainValue(builder);
+        return builder;
+    }
+
     /**
-     * Return analyzer.
+     * Returns the Analyzer to use when generating the index.
+     * 
+     * Whether this analyzer is applied to input values ​​depends on
+     * the definition of the document's fields.
      * 
      * @return analyzer for index
+     * @see DocumentFactory
      */
-    public Analyzer getAnalyzer() {
-        if (null == analyzer) {
-            analyzer = new CustomAnalyzer();
+    public Analyzer getAnalyzer() throws IOException {
+        if (isEmpty(analyzer)) {
+            try {
+                analyzer = createDefaultAnalyzerBuilder().build();
+            } catch (IOException e) {
+                throw new IOException("Error when initializing Analyzer.", e);
+            }
         }
         return analyzer;
     }
 
     /**
-     * Return analyzer.
+     * Returns the analyzer to use when generating a query for index search.
      * 
-     * @return analyzer for index
+     * String processing handled by QueryFactory
+     * is limited to Lucene's modifier.
+     * 
+     * The processing of the operands is expressed
+     * in the AnalyzerFactory implementation.
+     * Rules for tokenizing/converting input values ​
+     * should not be described in QueryFactory.
+     * 
+     * @return analyzer for query
+     * @see QueryFactory
      */
-    public Analyzer getQueryAnalyzer() {
-        if (null == queryAnalyzer) {
-            queryAnalyzer = new CustomAnalyzer();
+    public Analyzer getQueryAnalyzer() throws IOException {
+        if (isEmpty(queryAnalyzer)) {
+            try {
+
+                Analyzer defaultAnalyzer = createDefaultAnalyzerBuilder().build();
+                Analyzer genreAnalyzer = createGenreAnalyzerBuilder().build();
+
+                Map<String, Analyzer> fieldAnalyzers = new HashMap<>();
+                fieldAnalyzers.put(FieldNames.GENRE, genreAnalyzer);
+
+                queryAnalyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, fieldAnalyzers);
+
+            } catch (IOException e) {
+                throw new IOException("Error when initializing Analyzer.", e);
+            }
         }
         return queryAnalyzer;
-    }
-
-    /*
-     * The legacy CustomAnalyzer implementation is kept as it is.
-     */
-    private class CustomAnalyzer extends StandardAnalyzer {
-        private CustomAnalyzer() {
-            /*
-             * Version.LUCENE_30
-             * It is a transient description and will be deleted when upgrading the version.
-             * SearchService variables are not used because the reference direction conflicts.
-             */
-            super(Version.LUCENE_30);
-        }
-
-        @Override
-        public TokenStream tokenStream(String fieldName, Reader reader) {
-            TokenStream result = super.tokenStream(fieldName, reader);
-            return new ASCIIFoldingFilter(result);
-        }
-
-        @Override
-        public TokenStream reusableTokenStream(String fieldName, Reader reader) throws IOException {
-            class SavedStreams {
-                StandardTokenizer tokenStream;
-                TokenStream       filteredTokenStream;
-            }
-
-            SavedStreams streams = (SavedStreams) getPreviousTokenStream();
-            if (streams == null) {
-                streams = new SavedStreams();
-                setPreviousTokenStream(streams);
-                streams.tokenStream = new StandardTokenizer(Version.LUCENE_30, reader);
-                streams.filteredTokenStream = new StandardFilter(streams.tokenStream);
-                streams.filteredTokenStream = new LowerCaseFilter(streams.filteredTokenStream);
-                streams.filteredTokenStream = new StopFilter(true, streams.filteredTokenStream,
-                        STOP_WORDS_SET);
-                streams.filteredTokenStream = new ASCIIFoldingFilter(streams.filteredTokenStream);
-            } else {
-                streams.tokenStream.reset(reader);
-            }
-            streams.tokenStream.setMaxTokenLength(DEFAULT_MAX_TOKEN_LENGTH);
-
-            return streams.filteredTokenStream;
-        }
     }
 
 }

@@ -21,7 +21,6 @@
 package org.airsonic.player.service;
 
 import org.airsonic.player.domain.Album;
-import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.ParamSearchResult;
@@ -33,23 +32,13 @@ import org.airsonic.player.service.search.IndexType;
 import java.util.List;
 
 /**
- * Performs Lucene-based searching and indexing.
+ * Performs Lucene-based searching.
  *
  * @author Sindre Mehus
  * @version $Id$
  * @see MediaScannerService
  */
 public interface SearchService {
-
-    void startIndexing();
-
-    void index(MediaFile mediaFile);
-
-    void index(Artist artist, MusicFolder musicFolder);
-
-    void index(Album album);
-
-    void stopIndexing();
 
     SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders,
             IndexType indexType);

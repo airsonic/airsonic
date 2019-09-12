@@ -20,37 +20,32 @@
 
 package org.airsonic.player.service.search;
 
-import org.airsonic.player.domain.MediaFile;
+import org.airsonic.player.domain.MediaFile.MediaType;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
-import org.apache.lucene.analysis.ASCIIFoldingFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.spans.SpanOrQuery;
-import org.apache.lucene.search.spans.SpanQuery;
-import org.apache.lucene.search.spans.SpanTermQuery;
-import org.apache.lucene.util.NumericUtils;
-import org.apache.lucene.util.Version;
+import org.apache.lucene.search.WildcardQuery;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-import static org.airsonic.player.service.search.IndexType.ALBUM_ID3;
-import static org.airsonic.player.service.search.IndexType.ARTIST_ID3;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Factory class of Lucene Query.
@@ -65,37 +60,100 @@ import static org.airsonic.player.service.search.IndexType.ARTIST_ID3;
 @Component
 public class QueryFactory {
 
+    private static final String ASTERISK = "*";
+
     @Autowired
     private AnalyzerFactory analyzerFactory;
 
-    private String analyzeQuery(String query) throws IOException {
-        StringBuilder result = new StringBuilder();
-        /*
-         * Version.LUCENE_30
-         * It is a transient description and will be deleted when upgrading the version.
-         * SearchService variables are not used because the reference direction conflicts.
-         */
-        @SuppressWarnings("resource")
-        ASCIIFoldingFilter filter = new ASCIIFoldingFilter(
-                new StandardTokenizer(Version.LUCENE_30, new StringReader(query)));
-        TermAttribute termAttribute = filter.getAttribute(TermAttribute.class);
-        while (filter.incrementToken()) {
-            result.append(termAttribute.term()).append("* ");
-        }
-        return result.toString();
-    }
+    private final Function<MusicFolder, Query> toFolderIdQuery = (folder) -> {
+        // Unanalyzed field
+        return new TermQuery(new Term(FieldNames.FOLDER_ID, folder.getId().toString()));
+    };
 
-    /**
-     * Normalize the genre string.
-     * 
-     * @param genre genre string
-     * @return genre string normalized
-     * @deprecated should be resolved with tokenizer or filter
+    private final Function<MusicFolder, Query> toFolderPathQuery = (folder) -> {
+        // Unanalyzed field
+        return new TermQuery(new Term(FieldNames.FOLDER, folder.getPath().getPath()));
+    };
+
+    /*
+     *  XXX 3.x -> 8.x :
+     *  "SpanOr" has been changed to "Or".
+     *   - Path comparison is more appropriate with "Or".
+     *   - If "SpanOr" is maintained, the DOC design needs to be changed.
      */
-    @Deprecated
-    private String normalizeGenre(String genre) {
-        return genre.toLowerCase().replace(" ", "").replace("-", "");
-    }
+    private final BiFunction<@NonNull Boolean, @NonNull List<MusicFolder>, @NonNull Query> toFolderQuery = (
+            isId3, folders) -> {
+        BooleanQuery.Builder mfQuery = new BooleanQuery.Builder();
+        folders.stream()
+            .map(isId3 ? toFolderIdQuery : toFolderPathQuery)
+            .forEach(t -> mfQuery.add(t, Occur.SHOULD));
+        return mfQuery.build();
+    };
+
+    /*
+     *  XXX 3.x -> 8.x :
+     * In order to support wildcards,
+     * MultiFieldQueryParser has been replaced by the following process.
+     * 
+     *  - There is also an override of MultiFieldQueryParser, but it is known to be high cost.
+     *  - MultiFieldQueryParser was created before Java API was modernized.
+     *  - The spec of Parser has changed from time to time. Using parser does not reduce library update risk.
+     *  - Self made parser process reduces one library dependency.
+     *  - It is easy to make corrections later when changing the query to improve search accuracy.
+     */
+    private Query createMultiFieldWildQuery(@NonNull String[] fieldNames, @NonNull String queryString)
+            throws IOException {
+
+        BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
+
+        List<List<Query>> fieldsQuerys = new ArrayList<>();
+        Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
+
+        /* Wildcard applies to all tokens. **/
+        for (String fieldName : fieldNames) {
+            try (TokenStream stream = analyzer.tokenStream(fieldName, queryString)) {
+                stream.reset();
+                List<Query> fieldQuerys = new ArrayList<>();
+                while (stream.incrementToken()) {
+                    String token = stream.getAttribute(CharTermAttribute.class).toString();
+                    WildcardQuery wildcardQuery = new WildcardQuery(new Term(fieldName, token.concat(ASTERISK)));
+                    fieldQuerys.add(wildcardQuery);
+                }
+                fieldsQuerys.add(fieldQuerys);
+            }
+        }
+
+        /* If Field's Tokenizer is different, token's length may not match. **/
+        int maxTermLength = fieldsQuerys.stream()
+                .map(l -> l.size())
+                .max(Integer::compare).get();
+
+        if (0 < fieldsQuerys.size()) {
+            for (int i = 0; i < maxTermLength; i++) {
+                BooleanQuery.Builder fieldsQuery = new BooleanQuery.Builder();
+                for (List<Query> fieldQuerys : fieldsQuerys) {
+                    if (i < fieldQuerys.size()) {
+                        fieldsQuery.add(fieldQuerys.get(i), Occur.SHOULD);
+                    }
+                }
+                mainQuery.add(fieldsQuery.build(), Occur.SHOULD);
+            }
+        }
+
+        return mainQuery.build();
+
+    };
+
+    /*
+     * XXX 3.x -> 8.x :
+     * RangeQuery has been changed to not allow null.
+     */
+    private final BiFunction<@Nullable Integer, @Nullable Integer, @NonNull Query> toYearRangeQuery =
+        (from, to) -> {
+            return IntPoint.newRangeQuery(FieldNames.YEAR,
+                isEmpty(from) ? Integer.MIN_VALUE : from,
+                isEmpty(to) ? Integer.MAX_VALUE : to);
+        };
 
     /**
      * Query generation expression extracted from
@@ -106,35 +164,21 @@ public class QueryFactory {
      * @param indexType {@link IndexType}
      * @return Query
      * @throws IOException When parsing of MultiFieldQueryParser fails
-     * @throws ParseException When parsing of MultiFieldQueryParser fails
      */
     public Query search(SearchCriteria criteria, List<MusicFolder> musicFolders,
-            IndexType indexType) throws ParseException, IOException {
-        /*
-         * Version.LUCENE_30
-         * It is a transient description and will be deleted when upgrading the version.
-         * SearchService variables are not used because the reference direction conflicts.
-         */
-        MultiFieldQueryParser queryParser = new MultiFieldQueryParser(Version.LUCENE_30,
-                indexType.getFields(), analyzerFactory.getQueryAnalyzer(), indexType.getBoosts());
+            IndexType indexType) throws IOException {
 
-        BooleanQuery query = new BooleanQuery();
-        query.add(queryParser.parse(analyzeQuery(criteria.getQuery())), BooleanClause.Occur.MUST);
-        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-        for (MusicFolder musicFolder : musicFolders) {
-            if (indexType == ALBUM_ID3 || indexType == ARTIST_ID3) {
-                musicFolderQueries.add(new SpanTermQuery(new Term(FieldNames.FOLDER_ID,
-                        NumericUtils.intToPrefixCoded(musicFolder.getId()))));
-            } else {
-                musicFolderQueries.add(new SpanTermQuery(
-                        new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-            }
-        }
-        query.add(
-                new SpanOrQuery(
-                        musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
-                BooleanClause.Occur.MUST);
-        return query;
+        BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
+
+        Query multiFieldQuery = createMultiFieldWildQuery(indexType.getFields(), criteria.getQuery());
+        mainQuery.add(multiFieldQuery, Occur.MUST);
+
+        boolean isId3 = indexType == IndexType.ALBUM_ID3 || indexType == IndexType.ARTIST_ID3;
+        Query folderQuery = toFolderQuery.apply(isId3, musicFolders);
+        mainQuery.add(folderQuery, Occur.MUST);
+
+        return mainQuery.build();
+
     }
 
     /**
@@ -143,32 +187,37 @@ public class QueryFactory {
      * 
      * @param criteria criteria
      * @return Query
+     * @throws IOException 
      */
-    public Query getRandomSongs(RandomSearchCriteria criteria) {
-        BooleanQuery query = new BooleanQuery();
-        query.add(new TermQuery(
-                new Term(FieldNames.MEDIA_TYPE, MediaFile.MediaType.MUSIC.name().toLowerCase())),
-                BooleanClause.Occur.MUST);
-        if (criteria.getGenre() != null) {
-            String genre = normalizeGenre(criteria.getGenre());
-            query.add(new TermQuery(new Term(FieldNames.GENRE, genre)), BooleanClause.Occur.MUST);
-        }
-        if (criteria.getFromYear() != null || criteria.getToYear() != null) {
-            NumericRangeQuery<Integer> rangeQuery = NumericRangeQuery.newIntRange(FieldNames.YEAR,
-                    criteria.getFromYear(), criteria.getToYear(), true, true);
-            query.add(rangeQuery, BooleanClause.Occur.MUST);
+    public Query getRandomSongs(RandomSearchCriteria criteria) throws IOException {
+
+        BooleanQuery.Builder query = new BooleanQuery.Builder();
+        
+        Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
+        
+        // Unanalyzed field
+        query.add(new TermQuery(new Term(FieldNames.MEDIA_TYPE, MediaType.MUSIC.name())), Occur.MUST);
+
+        if (!isEmpty(criteria.getGenre())) {
+
+            // Unanalyzed field, but performs filtering according to id3 tag parser.
+            try (TokenStream stream = analyzer.tokenStream(FieldNames.GENRE, criteria.getGenre())) {
+                stream.reset();
+                if (stream.incrementToken()) {
+                    String token = stream.getAttribute(CharTermAttribute.class).toString();
+                    query.add(new TermQuery(new Term(FieldNames.GENRE, token)), Occur.MUST);
+                }
+            }
         }
 
-        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-        for (MusicFolder musicFolder : criteria.getMusicFolders()) {
-            musicFolderQueries.add(new SpanTermQuery(
-                    new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
+        if (!(isEmpty(criteria.getFromYear()) && isEmpty(criteria.getToYear()))) {
+            query.add(toYearRangeQuery.apply(criteria.getFromYear(), criteria.getToYear()), Occur.MUST);
         }
-        query.add(
-                new SpanOrQuery(
-                        musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()])),
-                BooleanClause.Occur.MUST);
-        return query;
+
+        query.add(toFolderQuery.apply(false, criteria.getMusicFolders()), Occur.MUST);
+
+        return query.build();
+
     }
 
     /**
@@ -177,18 +226,40 @@ public class QueryFactory {
      * 
      * @param fieldName {@link FieldNames}
      * @return Query
-     * @throws ParseException When parsing of QueryParser fails
+     * @throws IOException When parsing of QueryParser fails
      */
-    public Query searchByName(String fieldName, String name) throws ParseException {
-        /*
-         * Version.LUCENE_30
-         * It is a transient description and will be deleted when upgrading the version.
-         * SearchService variables are not used because the reference direction conflicts.
-         */
-        QueryParser queryParser = new QueryParser(Version.LUCENE_30, fieldName,
-                analyzerFactory.getQueryAnalyzer());
-        Query query = queryParser.parse(name + "*");
-        return query;
+    public Query searchByName(String fieldName, String name) throws IOException {
+
+        BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
+
+        Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
+
+        try (TokenStream stream = analyzer.tokenStream(fieldName, name)) {
+            stream.reset();
+            stream.incrementToken();
+
+            /*
+             *  XXX 3.x -> 8.x :
+             * In order to support wildcards,
+             * QueryParser has been replaced by the following process.
+             */
+
+            /* Wildcards apply only to tail tokens **/
+            while (true) {
+                String token = stream.getAttribute(CharTermAttribute.class).toString();
+                if (stream.incrementToken()) {
+                    mainQuery.add(new TermQuery(new Term(fieldName, token)), Occur.SHOULD);
+                } else {
+                    WildcardQuery wildcardQuery = new WildcardQuery(new Term(fieldName, token.concat(ASTERISK)));
+                    mainQuery.add(wildcardQuery, Occur.SHOULD);
+                    break;
+                }
+            }
+
+        }
+
+        return mainQuery.build();
+
     }
 
     /**
@@ -199,14 +270,9 @@ public class QueryFactory {
      * @return Query
      */
     public Query getRandomAlbums(List<MusicFolder> musicFolders) {
-        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-        for (MusicFolder musicFolder : musicFolders) {
-            musicFolderQueries.add(new SpanTermQuery(
-                    new Term(FieldNames.FOLDER, musicFolder.getPath().getPath())));
-        }
-        Query query = new SpanOrQuery(
-                musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
-        return query;
+        return new BooleanQuery.Builder()
+                .add(toFolderQuery.apply(false, musicFolders), Occur.SHOULD)
+                .build();
     }
 
     /**
@@ -217,15 +283,9 @@ public class QueryFactory {
      * @return Query
      */
     public Query getRandomAlbumsId3(List<MusicFolder> musicFolders) {
-
-        List<SpanTermQuery> musicFolderQueries = new ArrayList<SpanTermQuery>();
-        for (MusicFolder musicFolder : musicFolders) {
-            musicFolderQueries.add(new SpanTermQuery(new Term(FieldNames.FOLDER_ID,
-                    NumericUtils.intToPrefixCoded(musicFolder.getId()))));
-        }
-        Query query = new SpanOrQuery(
-                musicFolderQueries.toArray(new SpanQuery[musicFolderQueries.size()]));
-        return query;
+        return new BooleanQuery.Builder()
+                .add(toFolderQuery.apply(true, musicFolders), Occur.SHOULD)
+                .build();
     }
 
 }
