@@ -23,6 +23,7 @@ import org.airsonic.player.command.MusicFolderSettingsCommand;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.MediaLibraryStatistics;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SettingsService;
@@ -103,11 +104,16 @@ public class MusicFolderSettingsController {
     private void expunge() {
 
         // to be before dao#expunge
-        LOG.debug("Cleaning search index...");
-        indexManager.startIndexing();
-        indexManager.expunge();
-        indexManager.stopIndexing();
-        LOG.debug("Search index cleanup complete.");
+        MediaLibraryStatistics statistics = indexManager.getStatistics();
+        if (statistics != null) {
+            LOG.debug("Cleaning search index...");
+            indexManager.startIndexing();
+            indexManager.expunge();
+            indexManager.stopIndexing(statistics);
+            LOG.debug("Search index cleanup complete.");
+        } else {
+            LOG.warn("Missing index statistics - index probably hasn't been created yet. Not expunging index.");
+        }
 
         LOG.debug("Cleaning database...");
         LOG.debug("Deleting non-present artists...");

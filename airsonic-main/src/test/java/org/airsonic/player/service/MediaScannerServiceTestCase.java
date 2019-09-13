@@ -179,6 +179,12 @@ public class MediaScannerServiceTestCase {
     }
 
     @Test
+    public void testNeverScanned() {
+
+        mediaScannerService.neverScanned();
+    }
+
+    @Test
     public void testMusicBrainzReleaseIdTag() {
 
         // Add the "Music3" folder to the database
