@@ -41,6 +41,7 @@ public class Transcoding {
     private String step1;
     private String step2;
     private String step3;
+    private String step4;
     private boolean defaultActive;
 
     /**
@@ -57,6 +58,27 @@ public class Transcoding {
      */
     public Transcoding(Integer id, String name, String sourceFormats, String targetFormat, String step1,
             String step2, String step3, boolean defaultActive) {
+        this(id, name, sourceFormats, targetFormat, step1, step2, step3, null, defaultActive);
+    }
+
+    /**
+     * Creates a new 4-step transcoding specification, used for cue-indexed tracks
+     *
+     * NOTE: 4-step transcodings are ephemeral, the 4th step is not stored in the database. They are only
+     *       meant to be used internally to allow 3-step transcodings in combination with cue-indexed files.
+     *
+     * @param id              The system-generated ID.
+     * @param name            The user-defined name.
+     * @param sourceFormats   The source formats, e.g., "ogg wav aac".
+     * @param targetFormat    The target format, e.g., "mp3".
+     * @param step1           The command to execute in step 1.
+     * @param step2           The command to execute in step 2.
+     * @param step3           The command to execute in step 3.
+     * @param step4           The command to execute in step 4.
+     * @param defaultActive   Whether the transcoding should be automatically activated for all players.
+     */
+    public Transcoding(Integer id, String name, String sourceFormats, String targetFormat, String step1,
+            String step2, String step3, String step4, boolean defaultActive) {
         this.id = id;
         this.name = name;
         this.sourceFormats = sourceFormats;
@@ -64,6 +86,7 @@ public class Transcoding {
         this.step1 = step1;
         this.step2 = step2;
         this.step3 = step3;
+        this.step4 = step4;
         this.defaultActive = defaultActive;
     }
 
@@ -191,6 +214,25 @@ public class Transcoding {
     public void setStep3(String step3) {
         this.step3 = step3;
     }
+
+    /**
+     * Returns the command to execute in step 4.
+     *
+     * @return The command to execute in step 4.
+     */
+    public String getStep4() {
+        return step4;
+    }
+
+    /**
+     * Sets the command to execute in step 4.
+     *
+     * @param step4 The command to execute in step 4.
+     */
+    public void setStep4(String step4) {
+        this.step4 = step4;
+    }
+
 
     /**
      * Returns whether the transcoding should be automatically activated for all players

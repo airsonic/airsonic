@@ -462,7 +462,6 @@ public class MediaFileService {
                     } else {
                         cs = Charset.forName("UTF-8");
                     }
-
                     CueSheet cueSheet = CueParser.parse(cueFile, cs);
                     for (int i = 0; i < cueSheet.getAllTrackData().size(); i++) {
                         TrackData trackData = cueSheet.getAllTrackData().get(i);
@@ -475,13 +474,9 @@ public class MediaFileService {
                         mediaFile.setParentPath(album.getPath());
                         //mediaFile.setParentPath(soundFile.getPath());
                         Date lastModified = new Date(FileUtil.lastModified(soundFile));
-                        MediaFile existingFile = mediaFileDao.getMediaFile(mediaFile.getPath());
                         mediaFile.setFolder(securityService.getRootFolderForFile(soundFile));
                         mediaFile.setChanged(lastModified);
                         mediaFile.setLastScanned(new Date());
-                        mediaFile.setPlayCount(existingFile == null ? 0 : existingFile.getPlayCount());
-                        mediaFile.setLastPlayed(existingFile == null ? null : existingFile.getLastPlayed());
-                        mediaFile.setComment(existingFile == null ? null : existingFile.getComment());
                         mediaFile.setChildrenLastUpdated(new Date(0));
                         mediaFile.setCreated(lastModified);
                         mediaFile.setPresent(true);
@@ -502,6 +497,7 @@ public class MediaFileService {
 
                         Position currentPosition = cueSheet.getAllTrackData().get(i).getIndices().get(0).getPosition();
                         int currentStart = currentPosition.getMinutes() * 60 + currentPosition.getSeconds();
+                        mediaFile.setStartPosition(currentStart);
 
                         int nextStart = 0;
                         if (cueSheet.getAllTrackData().size() - 1 != i) {
@@ -512,8 +508,12 @@ public class MediaFileService {
                         }
 
                         mediaFile.setDurationSeconds(nextStart - currentStart);
-                        mediaFile.setPathForSingleFileMedia(soundFile.getPath(), currentStart, nextStart);
                         mediaFile.setFileSize((long) ((float) mediaFile.getDurationSeconds() / wholeFileLength * wholeFileSize)); //approximate
+                        mediaFile.setPathForSingleFileMedia(soundFile.getPath(), currentStart, nextStart);
+                        MediaFile existingFile = mediaFileDao.getMediaFile(mediaFile.getPath());
+                        mediaFile.setPlayCount(existingFile == null ? 0 : existingFile.getPlayCount());
+                        mediaFile.setLastPlayed(existingFile == null ? null : existingFile.getLastPlayed());
+                        mediaFile.setComment(existingFile == null ? null : existingFile.getComment());
 
                         children.add(mediaFile);
                     }
