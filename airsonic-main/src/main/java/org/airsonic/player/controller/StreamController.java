@@ -58,7 +58,7 @@ import java.util.regex.Pattern;
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping(value = {"/stream/**", "/ext/stream/**"})
+@RequestMapping({"/stream/**", "/ext/stream/**"})
 public class StreamController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StreamController.class);

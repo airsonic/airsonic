@@ -52,103 +52,182 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
      * 
      * Legacy can not search all these genres.
      * (Strictly speaking, the genre field is not created at index creation.)
+     *
+     * // XXX 3.x -> 8.x : Do the process more strictly.
+     * 
+     *  - Values ​​that can be cross-referenced with DB are stored in the index.
+     *  - Search is also possible with user's readable value (file tag value).
+     *  - However, there is an exception in parentheses.
      */
     @Test
     public void testQueryEscapeRequires() {
 
-        List<MusicFolder> folders = getMusicFolders();
-
         Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
-            new RandomSearchCriteria(Integer.MAX_VALUE, // count
-                    s, // genre,
-                    null, // fromYear
-                    null, // toYear
-                    folders // musicFolders
-            );
+        new RandomSearchCriteria(Integer.MAX_VALUE, // count
+                s, // genre,
+                null, // fromYear
+                null, // toYear
+                getMusicFolders() // musicFolders
+        );
 
         List<MediaFile> songs = searchService.getRandomSongs(simpleStringCriteria.apply("+"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("+", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 1", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("-"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("-", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 2", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("&&"));
-        Assert.assertEquals(0, songs.size());
-
-        songs = searchService.getRandomSongs(simpleStringCriteria.apply("+"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("&&", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 3", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("||"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("||", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 4", songs.get(0).getTitle());
 
+        /*
+         * // XXX 3.x -> 8.x : Brackets ()
+         * 
+         * Lucene can handle these.
+         * However, brackets are specially parsed before the index creation process.
+         * 
+         * This string is never stored in the index.
+         * This is the only exception.
+         */
         songs = searchService.getRandomSongs(simpleStringCriteria.apply(" ("));// space & bracket
         Assert.assertEquals(0, songs.size());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply(")"));
         Assert.assertEquals(0, songs.size());
 
+        /*
+         * // XXX 3.x -> 8.x : Brackets {}[]
+         * 
+         * Lucene can handle these.
+         * However, brackets are specially parsed before the index creation process.
+         * 
+         * This can be done with a filter that performs the reverse process
+         * on the input values ​​when searching.
+         * As a result, the values ​​stored in the file can be retrieved by search.
+         * 
+         * @see AnalyzerFactory
+         * 
+         * >>>>>
+         */
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("{}"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        /*
+         * This is the result of the tag parser and domain value.
+         * It is different from the tag value in file.
+         */
+        Assert.assertEquals("{ }", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 7", songs.get(0).getTitle());
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("{ }"));
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("Query Escape Requires 7", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("[]"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        /*
+         * This is the result of the tag parser and domain value.
+         * It is different from the tag value in file.
+         */
+        Assert.assertEquals("[ ]", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 8", songs.get(0).getTitle());
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("[ ]"));
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("Query Escape Requires 8", songs.get(0).getTitle());
+        // <<<<<
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("^"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("^", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 9", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("\""));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("\"", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 10", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("~"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("~", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 11", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("*"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("*", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 12", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("?"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("?", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 13", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply(":"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals(":", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 14", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("\\"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("\\", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 15", songs.get(0).getTitle());
 
         songs = searchService.getRandomSongs(simpleStringCriteria.apply("/"));
-        Assert.assertEquals(0, songs.size());
+        Assert.assertEquals(1, songs.size());// XXX 3.x -> 8.x : Searchable
+        Assert.assertEquals("/", songs.get(0).getGenre());
+        Assert.assertEquals("Query Escape Requires 16", songs.get(0).getTitle());
 
     }
 
     /*
      * Jaudiotagger applies special treatment to bracket (FILE17).
-     * 
+     * XXX 3.x -> 8.x : Specification of genre search became more natural.
      */
     @Test
     public void testBrackets() {
 
-        List<MusicFolder> folders = getMusicFolders();
-
-        RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
-                "-(GENRE)-", // genre,
+        Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
+        new RandomSearchCriteria(Integer.MAX_VALUE, // count
+                s, // genre,
                 null, // fromYear
                 null, // toYear
-                folders // musicFolders
+                getMusicFolders() // musicFolders
         );
 
-        List<MediaFile> songs = searchService.getRandomSongs(criteria);
-        Assert.assertEquals(0, songs.size());
+        // -(GENRE)- is registered as genre of FILE17.
 
-        criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
-                " genre", // genre,
-                null, // fromYear
-                null, // toYear
-                folders // musicFolders
-        );
-
-        songs = searchService.getRandomSongs(criteria);
+        /*
+         * Search by genre string registered in file.
+         * 
+         * The value stored in the index is different from legacy.
+         * Domain value is kept as it is.
+         */
+        List<MediaFile> songs = searchService.getRandomSongs(simpleStringCriteria.apply("-(GENRE)-"));
         Assert.assertEquals(1, songs.size());
-        Assert.assertEquals("Consistency with Tag Parser 1", songs.get(0).getTitle());
         Assert.assertEquals("-GENRE -", songs.get(0).getGenre());
+        Assert.assertEquals("Consistency with Tag Parser 1", songs.get(0).getTitle());
+
+        /*
+         * Search by Domain value.
+         */
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("-GENRE -"));
+        Assert.assertEquals(1, songs.size());
+        Assert.assertEquals("-GENRE -", songs.get(0).getGenre());
+        Assert.assertEquals("Consistency with Tag Parser 1", songs.get(0).getTitle());
+
+        /*
+         * Legacy genre search
+         */
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply(" genre"));
+        // Strong unique parsing rules have been removed.
+        Assert.assertEquals(0, songs.size());
 
     }
 
@@ -188,29 +267,28 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
     @Test
     public void testOthers() {
 
-        List<MusicFolder> folders = getMusicFolders();
-
-        RandomSearchCriteria criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
-                "{'“『【【】】[︴○◎@ $〒→+]ＦＵＬＬ－ＷＩＤＴＨCæsar's", // genre,
+        Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
+        new RandomSearchCriteria(Integer.MAX_VALUE, // count
+                s, // genre,
                 null, // fromYear
                 null, // toYear
-                folders // musicFolders
+                getMusicFolders() // musicFolders
         );
 
-        List<MediaFile> songs = searchService.getRandomSongs(criteria);
-        Assert.assertEquals(0, songs.size());
-
-        criteria = new RandomSearchCriteria(Integer.MAX_VALUE, // count
-                "widthcaesar", // genre,
-                null, // fromYear
-                null, // toYear
-                folders // musicFolders
-        );
-
-        songs = searchService.getRandomSongs(criteria);
+        // XXX 3.x -> 8.x : Do the process more strictly.
+        List<MediaFile> songs = searchService
+                .getRandomSongs(simpleStringCriteria.apply("{'“『【【】】[︴○◎@ $〒→+]ＦＵＬＬ－ＷＩＤＴＨCæsar's"));
+        Assert.assertEquals(1, songs.size());
         Assert.assertEquals(1, songs.size());
         Assert.assertEquals("Other special strings 1", songs.get(0).getTitle());
         Assert.assertEquals("{'“『【【】】[︴○◎@ $〒→+]ＦＵＬＬ－ＷＩＤＴＨCæsar's", songs.get(0).getGenre());
+
+        /*
+         * Legacy kept "widthcaesar" using their own rules.
+         * The previous rule has been discarded.
+         */
+        songs = searchService.getRandomSongs(simpleStringCriteria.apply("widthcaesar"));
+        Assert.assertEquals(0, songs.size());
 
     }
 }

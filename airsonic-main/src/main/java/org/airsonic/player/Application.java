@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
 @Configuration
-@ImportResource(value = {"classpath:/applicationContext-service.xml",
+@ImportResource({"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
         "classpath:/servlet.xml"})

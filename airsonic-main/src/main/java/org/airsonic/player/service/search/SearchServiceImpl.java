@@ -22,14 +22,8 @@ package org.airsonic.player.service.search;
 
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.util.FileUtil;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.*;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,35 +53,6 @@ public class SearchServiceImpl implements SearchService {
     // TODO Should be changed to SecureRandom?
     private final Random random = new Random(System.currentTimeMillis());
 
-    public SearchServiceImpl() {
-        removeLocks();
-    }
-
-    @Override
-    public void startIndexing() {
-        indexManager.startIndexing();
-    }
-
-    @Override
-    public void index(MediaFile mediaFile) {
-        indexManager.index(mediaFile);
-    }
-
-    @Override
-    public void index(Artist artist, MusicFolder musicFolder) {
-        indexManager.index(artist, musicFolder);
-    }
-
-    @Override
-    public void index(Album album) {
-        indexManager.index(album);
-    }
-
-    @Override
-    public void stopIndexing() {
-        indexManager.stopIndexing();
-    }
-
     @Override
     public SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders,
             IndexType indexType) {
@@ -100,26 +65,28 @@ public class SearchServiceImpl implements SearchService {
         if (count <= 0)
             return result;
 
-        IndexReader reader = null;
-        try {
+        IndexSearcher searcher = indexManager.getSearcher(indexType);
+        if (isEmpty(searcher)) {
+            return result;
+        }
 
-            reader = indexManager.createIndexReader(indexType);
-            Searcher searcher = new IndexSearcher(reader);
+        try {
             Query query = queryFactory.search(criteria, musicFolders, indexType);
 
-            TopDocs topDocs = searcher.search(query, null, offset + count);
-            result.setTotalHits(topDocs.totalHits);
-            int start = Math.min(offset, topDocs.totalHits);
-            int end = Math.min(start + count, topDocs.totalHits);
+            TopDocs topDocs = searcher.search(query, offset + count);
+            int totalHits = util.round.apply(topDocs.totalHits.value);
+            result.setTotalHits(totalHits);
+            int start = Math.min(offset, totalHits);
+            int end = Math.min(start + count, totalHits);
 
             for (int i = start; i < end; i++) {
                 util.addIfAnyMatch(result, indexType, searcher.doc(topDocs.scoreDocs[i].doc));
             }
 
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             LOG.error("Failed to execute Lucene search.", e);
         } finally {
-            FileUtil.closeQuietly(reader);
+            indexManager.release(indexType, searcher);
         }
         return result;
     }
@@ -135,7 +102,7 @@ public class SearchServiceImpl implements SearchService {
      * @throws IOException
      */
     private final <D> List<D> createRandomDocsList(
-            int count, Searcher searcher, Query query, BiConsumer<List<D>, Integer> id2ListCallBack)
+            int count, IndexSearcher searcher, Query query, BiConsumer<List<D>, Integer> id2ListCallBack)
             throws IOException {
 
         List<Integer> docs = Arrays
@@ -157,14 +124,13 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<MediaFile> getRandomSongs(RandomSearchCriteria criteria) {
 
-        IndexReader reader = null;
+        IndexSearcher searcher = indexManager.getSearcher(SONG);
+        if (isEmpty(searcher)) {
+            // At first start
+            return Collections.emptyList();
+        }
+
         try {
-            reader = indexManager.createIndexReader(SONG);
-            Searcher searcher = new IndexSearcher(reader);
-            if (isEmpty(searcher)) {
-                // At first start
-                return Collections.emptyList();
-            }
 
             Query query = queryFactory.getRandomSongs(criteria);
             return createRandomDocsList(criteria.getCount(), searcher, query,
@@ -173,7 +139,7 @@ public class SearchServiceImpl implements SearchService {
         } catch (IOException e) {
             LOG.error("Failed to search or random songs.", e);
         } finally {
-            FileUtil.closeQuietly(reader);
+            indexManager.release(IndexType.SONG, searcher);
         }
         return Collections.emptyList();
     }
@@ -181,22 +147,22 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<MediaFile> getRandomAlbums(int count, List<MusicFolder> musicFolders) {
 
-        IndexReader reader = null;
-        try {
-            reader = indexManager.createIndexReader(ALBUM);
-            Searcher searcher = new IndexSearcher(reader);
-            if (isEmpty(searcher)) {
-                return Collections.emptyList();
-            }
+        IndexSearcher searcher = indexManager.getSearcher(IndexType.ALBUM);
+        if (isEmpty(searcher)) {
+            return Collections.emptyList();
+        }
 
-            Query query = queryFactory.getRandomAlbums(musicFolders);
+        Query query = queryFactory.getRandomAlbums(musicFolders);
+
+        try {
+
             return createRandomDocsList(count, searcher, query,
                 (dist, id) -> util.addIgnoreNull(dist, ALBUM, id));
 
         } catch (IOException e) {
             LOG.error("Failed to search for random albums.", e);
         } finally {
-            FileUtil.closeQuietly(reader);
+            indexManager.release(IndexType.ALBUM, searcher);
         }
         return Collections.emptyList();
     }
@@ -204,22 +170,22 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public List<Album> getRandomAlbumsId3(int count, List<MusicFolder> musicFolders) {
 
-        IndexReader reader = null;
-        try {
-            reader = indexManager.createIndexReader(ALBUM_ID3);
-            Searcher searcher = new IndexSearcher(reader);
-            if (isEmpty(searcher)) {
-                return Collections.emptyList();
-            }
+        IndexSearcher searcher = indexManager.getSearcher(IndexType.ALBUM_ID3);
+        if (isEmpty(searcher)) {
+            return Collections.emptyList();
+        }
 
-            Query query = queryFactory.getRandomAlbumsId3(musicFolders);
+        Query query = queryFactory.getRandomAlbumsId3(musicFolders);
+
+        try {
+
             return createRandomDocsList(count, searcher, query,
                 (dist, id) -> util.addIgnoreNull(dist, ALBUM_ID3, id));
 
         } catch (IOException e) {
             LOG.error("Failed to search for random albums.", e);
         } finally {
-            FileUtil.closeQuietly(reader);
+            indexManager.release(IndexType.ALBUM_ID3, searcher);
         }
         return Collections.emptyList();
     }
@@ -241,58 +207,39 @@ public class SearchServiceImpl implements SearchService {
             return result;
         }
 
-        IndexReader reader = null;
+        IndexSearcher searcher = indexManager.getSearcher(indexType);
+        if (isEmpty(searcher)) {
+            return result;
+        }
 
         try {
-            reader = indexManager.createIndexReader(indexType);
-            Searcher searcher = new IndexSearcher(reader);
+
             Query query = queryFactory.searchByName(fieldName, name);
 
-            Sort sort = new Sort(new SortField(fieldName, SortField.STRING));
-            TopDocs topDocs = searcher.search(query, null, offset + count, sort);
+            SortField[] sortFields = Arrays
+                    .stream(indexType.getFields())
+                    .map(n -> new SortField(n, SortField.Type.STRING))
+                    .toArray(i -> new SortField[i]);
+            Sort sort = new Sort(sortFields);
 
-            result.setTotalHits(topDocs.totalHits);
-            int start = Math.min(offset, topDocs.totalHits);
-            int end = Math.min(start + count, topDocs.totalHits);
+            TopDocs topDocs = searcher.search(query, offset + count, sort);
+
+            int totalHits = util.round.apply(topDocs.totalHits.value);
+            result.setTotalHits(totalHits);
+            int start = Math.min(offset, totalHits);
+            int end = Math.min(start + count, totalHits);
 
             for (int i = start; i < end; i++) {
                 Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
                 util.addIgnoreNull(result, indexType, util.getId.apply(doc), assignableClass);
             }
 
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             LOG.error("Failed to execute Lucene search.", e);
         } finally {
-            FileUtil.closeQuietly(reader);
+            indexManager.release(indexType, searcher);
         }
         return result;
-    }
-
-    /**
-     * Locks are managed automatically by the framework.
-     * 
-     * @deprecated It becomes unnecessary at the time of version upgrade.
-     */
-    @Deprecated
-    public void removeLocks() {
-        for (IndexType indexType : IndexType.values()) {
-            Directory dir = null;
-            try {
-                /*
-                 * Static access to the accompanying method is performed as a transition period.
-                 * (Unnecessary processing after updating Lucene.)
-                 */
-                dir = FSDirectory.open(IndexManager.getIndexDirectory(indexType));
-                if (IndexWriter.isLocked(dir)) {
-                    IndexWriter.unlock(dir);
-                    LOG.info("Removed Lucene lock file in " + dir);
-                }
-            } catch (Exception x) {
-                LOG.warn("Failed to remove Lucene lock file in " + dir, x);
-            } finally {
-                FileUtil.closeQuietly(dir);
-            }
-        }
     }
 
 }
