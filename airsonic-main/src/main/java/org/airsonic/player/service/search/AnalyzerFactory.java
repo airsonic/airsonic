@@ -51,6 +51,10 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Component
 public final class AnalyzerFactory {
 
+    private static final String STOP_WORDS = "org/airsonic/player/service/search/analysis/stopwords.txt";
+
+    private static final String STOP_WORDS_ARTIST = "org/airsonic/player/service/search/analysis/stopwords_artist.txt";
+
     private Analyzer analyzer;
 
     private Analyzer queryAnalyzer;
@@ -105,7 +109,19 @@ public final class AnalyzerFactory {
                 .addTokenFilter(CJKWidthFilterFactory.class)
                 .addTokenFilter(ASCIIFoldingFilterFactory.class, "preserveOriginal", "false")
                 .addTokenFilter(LowerCaseFilterFactory.class)
-                .addTokenFilter(StopFilterFactory.class)
+                .addTokenFilter(StopFilterFactory.class, "words", STOP_WORDS)
+                .addTokenFilter(EnglishPossessiveFilterFactory.class);
+        addTokenFilterForUnderscoreRemovalAroundToken(builder);
+        return builder;
+    }
+
+    private Builder createArtistAnalyzerBuilder() throws IOException {
+        Builder builder = CustomAnalyzer.builder()
+                .withTokenizer(StandardTokenizerFactory.class)
+                .addTokenFilter(CJKWidthFilterFactory.class)
+                .addTokenFilter(ASCIIFoldingFilterFactory.class, "preserveOriginal", "false")
+                .addTokenFilter(LowerCaseFilterFactory.class)
+                .addTokenFilter(StopFilterFactory.class, "words", STOP_WORDS_ARTIST)
                 .addTokenFilter(EnglishPossessiveFilterFactory.class);
         addTokenFilterForUnderscoreRemovalAroundToken(builder);
         return builder;
@@ -134,7 +150,15 @@ public final class AnalyzerFactory {
     public Analyzer getAnalyzer() throws IOException {
         if (isEmpty(analyzer)) {
             try {
-                analyzer = createDefaultAnalyzerBuilder().build();
+
+                Analyzer defaultAnalyzer = createDefaultAnalyzerBuilder().build();
+                Analyzer artistAnalyzer = createArtistAnalyzerBuilder().build();
+
+                Map<String, Analyzer> fieldAnalyzers = new HashMap<>();
+                fieldAnalyzers.put(FieldNames.ARTIST, artistAnalyzer);
+
+                analyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, fieldAnalyzers);
+
             } catch (IOException e) {
                 throw new IOException("Error when initializing Analyzer.", e);
             }
@@ -161,9 +185,11 @@ public final class AnalyzerFactory {
             try {
 
                 Analyzer defaultAnalyzer = createDefaultAnalyzerBuilder().build();
+                Analyzer artistAnalyzer = createArtistAnalyzerBuilder().build();
                 Analyzer genreAnalyzer = createGenreAnalyzerBuilder().build();
 
                 Map<String, Analyzer> fieldAnalyzers = new HashMap<>();
+                fieldAnalyzers.put(FieldNames.ARTIST, artistAnalyzer);
                 fieldAnalyzers.put(FieldNames.GENRE, genreAnalyzer);
 
                 queryAnalyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, fieldAnalyzers);
