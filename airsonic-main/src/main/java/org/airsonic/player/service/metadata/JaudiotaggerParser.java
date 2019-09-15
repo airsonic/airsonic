@@ -361,15 +361,19 @@ public class JaudiotaggerParser extends MetaDataParser {
         String format = FilenameUtils.getExtension(file.getName()).toLowerCase();
 
         return "mp3".equals(format) ||
+               "mp4".equals(format) ||
                "m4a".equals(format) ||
                "m4b".equals(format) ||
+               "m4p".equals(format) ||
                "aac".equals(format) ||
                "ogg".equals(format) ||
-               "flac".equals(format) ||
                "wav".equals(format) ||
                "mpc".equals(format) ||
-               "mp+".equals(format) ||
-               "ape".equals(format) ||
+               "aif".equals(format) ||
+               "dsf".equals(format) ||
+               "aiff".equals(format) ||
+               "aifc".equals(format) ||
+               "flac".equals(format) ||
                "wma".equals(format);
     }
 
