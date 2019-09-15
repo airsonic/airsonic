@@ -145,7 +145,7 @@ public class MediaFile {
     public File getFile() {
         // TODO: Optimize
         if (isSingleFile()) {
-            return new File(getSingleFileAlbumSongWholePath());
+            return new File(getSingleFileMediaPath());
         }
         return new File(path);
     }
@@ -494,34 +494,16 @@ public class MediaFile {
         };
     }
 
-    public void setPathForSingleFileMedia(String mediaFilePath, int songStart, int songEnd) {
-        setPath(mediaFilePath + ":" + songStart + ":" + songEnd);
+    // concatenate file path with track start to create unique path for indexed media
+    public void setSingleFileMediaPath(String mediaFilePath, int songStart) {
+        setPath(mediaFilePath + ":" + songStart);
     }
 
-    public String getSingleFileAlbumSongBegin() {
+    // return path without track start marker (if present)
+    public String getSingleFileMediaPath() {
         try {
-            String[] parts = path.split(":");
-            return parts[parts.length - 2];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // ignore
-            return null;
-        }
-    }
-
-    public String getSingleFileAlbumSongEnd() {
-        try {
-            String[] parts = path.split(":");
-            return parts[parts.length - 1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // ignore
-            return null;
-        }
-    }
-
-    public String getSingleFileAlbumSongWholePath() {
-        try {
-            String[] parts = path.split(":");
-            return parts[parts.length - 3];
+            String[] parts = FilenameUtils.getExtension(path).split(":");
+            return FilenameUtils.getFullPath(path) + FilenameUtils.getBaseName(path) + FilenameUtils.EXTENSION_SEPARATOR + parts[parts.length - 2];
         } catch (ArrayIndexOutOfBoundsException e) {
             // normal file
             return path;

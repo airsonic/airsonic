@@ -65,7 +65,7 @@ public class MediaFileComparator implements Comparator<MediaFile> {
 
         // keep single_file tracks together
         if (a.isSingleFile() && b.isSingleFile()) {
-            int i = a.getSingleFileAlbumSongWholePath().compareToIgnoreCase(b.getSingleFileAlbumSongWholePath());
+            int i = a.getSingleFileMediaPath().compareToIgnoreCase(b.getSingleFileMediaPath());
             if (i != 0) {
                 return i;
             }

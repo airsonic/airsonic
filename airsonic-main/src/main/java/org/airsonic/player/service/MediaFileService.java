@@ -509,7 +509,7 @@ public class MediaFileService {
 
                         mediaFile.setDurationSeconds(nextStart - currentStart);
                         mediaFile.setFileSize((long) ((float) mediaFile.getDurationSeconds() / wholeFileLength * wholeFileSize)); //approximate
-                        mediaFile.setPathForSingleFileMedia(soundFile.getPath(), currentStart, nextStart);
+                        mediaFile.setSingleFileMediaPath(soundFile.getPath(), currentStart);
                         MediaFile existingFile = mediaFileDao.getMediaFile(mediaFile.getPath());
                         mediaFile.setPlayCount(existingFile == null ? 0 : existingFile.getPlayCount());
                         mediaFile.setLastPlayed(existingFile == null ? null : existingFile.getLastPlayed());
