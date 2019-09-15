@@ -31,6 +31,7 @@ import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
@@ -101,7 +102,8 @@ public class QueryFactory {
      *  - Self made parser process reduces one library dependency.
      *  - It is easy to make corrections later when changing the query to improve search accuracy.
      */
-    private Query createMultiFieldWildQuery(@NonNull String[] fieldNames, @NonNull String queryString)
+    private Query createMultiFieldWildQuery(@NonNull String[] fieldNames, @NonNull String queryString,
+            @NonNull IndexType indexType)
             throws IOException {
 
         BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
@@ -117,7 +119,11 @@ public class QueryFactory {
                 while (stream.incrementToken()) {
                     String token = stream.getAttribute(CharTermAttribute.class).toString();
                     WildcardQuery wildcardQuery = new WildcardQuery(new Term(fieldName, token.concat(ASTERISK)));
-                    fieldQuerys.add(wildcardQuery);
+                    if (indexType.getBoosts().containsKey(fieldName)) {
+                        fieldQuerys.add(new BoostQuery(wildcardQuery, indexType.getBoosts().get(fieldName)));
+                    } else {
+                        fieldQuerys.add(wildcardQuery);
+                    }
                 }
                 fieldsQuerys.add(fieldQuerys);
             }
@@ -169,7 +175,7 @@ public class QueryFactory {
 
         BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
 
-        Query multiFieldQuery = createMultiFieldWildQuery(indexType.getFields(), criteria.getQuery());
+        Query multiFieldQuery = createMultiFieldWildQuery(indexType.getFields(), criteria.getQuery(), indexType);
         mainQuery.add(multiFieldQuery, Occur.MUST);
 
         boolean isId3 = indexType == IndexType.ALBUM_ID3 || indexType == IndexType.ARTIST_ID3;

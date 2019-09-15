@@ -39,7 +39,7 @@ public enum IndexType {
             FieldNames.TITLE,
             FieldNames.ARTIST),
         boosts(
-            entry(FieldNames.TITLE, 2F))),
+            entry(FieldNames.TITLE, 1.1F))),
 
     ALBUM(
         fieldNames(
@@ -47,7 +47,7 @@ public enum IndexType {
             FieldNames.ARTIST), 
             // FieldNames.FOLDER), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
         boosts(
-            entry(FieldNames.ALBUM, 2F))),
+            entry(FieldNames.ALBUM, 1.1F))),
 
     ALBUM_ID3(
         fieldNames(
@@ -55,20 +55,18 @@ public enum IndexType {
             FieldNames.ARTIST),
             // FieldNames.FOLDER_ID), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
         boosts(
-            entry(FieldNames.ALBUM, 2F))),
+            entry(FieldNames.ALBUM, 1.1F))),
 
     ARTIST(
         fieldNames(
             FieldNames.ARTIST),
             // FieldNames.FOLDER), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
-        boosts(
-            entry(FieldNames.ARTIST, 1F))),
+        boosts()),
 
     ARTIST_ID3(
         fieldNames(
             FieldNames.ARTIST),
-        boosts(
-            entry(FieldNames.ARTIST, 2F))),
+        boosts()),
 
     ;
 
