@@ -50,9 +50,6 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private SearchServiceUtilities util;
 
-    // TODO Should be changed to SecureRandom?
-    private final Random random = new Random(System.currentTimeMillis());
-
     @Override
     public SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders,
             IndexType indexType) {
@@ -108,7 +105,7 @@ public class SearchServiceImpl implements SearchService {
 
         List<D> result = new ArrayList<>();
         while (!docs.isEmpty() && result.size() < count) {
-            int randomPos = random.nextInt(docs.size());
+            int randomPos = util.nextInt.apply(docs.size());
             Document document = searcher.doc(docs.get(randomPos));
             id2ListCallBack.accept(result, util.getId.apply(document));
             docs.remove(randomPos);

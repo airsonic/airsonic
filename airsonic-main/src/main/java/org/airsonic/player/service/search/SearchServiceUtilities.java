@@ -31,13 +31,21 @@ import org.airsonic.player.service.MediaFileService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.lucene.document.Document;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.Security;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
 
@@ -70,6 +78,45 @@ public class SearchServiceUtilities {
      */
     @Autowired
     private MediaFileService mediaFileService;
+
+    private static final Logger LOG = LoggerFactory.getLogger(SearchServiceUtilities.class);
+
+    private Random random;
+    
+    private static Random createSecureRandom(String algorithm) {
+        SecureRandom secureRandom = null;
+        try {
+            LOG.debug("{} is used to create a random list of songs.", algorithm);
+            secureRandom = SecureRandom.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e) {
+            LOG.error("Usually unreachable.", e);
+        }
+        return secureRandom;
+    }
+
+    {
+
+        String algorithmNative = "NativePRNG";
+        String algorithmSHA = "SHA1PRNG";
+
+        List<String> algorithms = Arrays.asList(Security.getProviders()).stream()
+                .flatMap(p -> p.getServices().stream().filter(s -> "SecureRandom".equals(s.getType())))
+                .map(s -> s.getAlgorithm()).collect(Collectors.toList());
+
+        if (algorithms.contains(algorithmNative)) {
+            random = createSecureRandom(algorithmNative);
+        } else if (algorithms.contains(algorithmSHA)) {
+            random = createSecureRandom(algorithmSHA);
+        }
+
+        if (isEmpty(random)) {
+            random = new Random(System.currentTimeMillis());
+            LOG.debug("NativePRNG and SHA1PRNG cannot be used on this platform.");
+        }
+
+    }
+
+    public Function<Integer, Integer> nextInt = (range) -> random.nextInt(range);
 
     public final Function<Long, Integer> round = (i) -> {
         // return
