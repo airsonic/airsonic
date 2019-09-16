@@ -361,7 +361,6 @@ public class JaudiotaggerParser extends MetaDataParser {
         String format = FilenameUtils.getExtension(file.getName()).toLowerCase();
 
         return "mp3".equals(format) ||
-               "mp4".equals(format) ||
                "m4a".equals(format) ||
                "m4b".equals(format) ||
                "m4p".equals(format) ||
