@@ -379,13 +379,22 @@ public class CoverArtController implements LastModified {
         public BufferedImage createImage(int size) {
             if (coverArt != null) {
                 InputStream in = null;
+                String reason = null;
                 try {
                     in = getImageInputStream(coverArt);
-                    BufferedImage bimg = ImageIO.read(in);
-                    if (bimg != null) {
-                        return scale(bimg, size, size);
+                    if (in == null) {
+                        reason = "getImageInputStream";
                     }
-                    LOG.warn("Failed to process cover art " + coverArt + ": {}", bimg);
+                    else {
+                        BufferedImage bimg = ImageIO.read(in);
+                        if (bimg == null) {
+                            reason = "ImageIO.read";
+                        }
+                        else {
+                            return scale(bimg, size, size);
+                        }
+                    }
+                    LOG.warn("Failed to process cover art " + coverArt + ": " + reason + " failed");
                 } catch (Throwable x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
                 } finally {
