@@ -1,8 +1,9 @@
 package org.airsonic.test.cucumber.steps.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import cucumber.api.java8.En;
 import org.airsonic.test.cucumber.server.AirsonicServer;
 import org.airsonic.test.domain.SavedHttpResponse;
@@ -90,9 +91,10 @@ public class StreamStepDef implements En {
         CloseableHttpResponse response = client.execute(builder.build());
 
         String responseAsString = EntityUtils.toString(response.getEntity());
-        JsonNode jsonNode = mapper.readTree(responseAsString).get("subsonic-response");
-        Response subsonicResponse = mapper.treeToValue(jsonNode, Response.class);
-        List<MusicFolder> musicFolder = subsonicResponse.getMusicFolders().getMusicFolder();
+        final JsonReader jsonreader = Json.createReader(responseAsString);
+        List<MusicFolder> musicFolder = jsonreader.getJsonObject("subsonic-response").getJsonArray("MusicFolders");
+        jsonreader.close();
+
         MusicFolder music = musicFolder
                 .stream()
                 .filter(folder -> Objects.equals(folder.getName(), "Music"))
@@ -110,9 +112,11 @@ public class StreamStepDef implements En {
         CloseableHttpResponse response = client.execute(builder.build());
 
         String responseAsString = EntityUtils.toString(response.getEntity());
-        JsonNode jsonNode = mapper.readTree(responseAsString).get("subsonic-response");
-        Response subsonicResponse = mapper.treeToValue(jsonNode, Response.class);
-        return subsonicResponse.getIndexes().getChild();
+        final JsonReader jsonreader = Json.createReader(responseAsString);
+        List<Child> childList = jsonreader.getJsonObject("subsonic-response").getJsonObject("Indexes").getJsonArray("child");
+        jsonreader.close();
+
+        return childList;
     }
 
     private void saveBody(SavedHttpResponse savedHttpResponse, int iter) throws IOException {

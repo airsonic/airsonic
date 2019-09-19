@@ -19,8 +19,6 @@
  */
 package org.airsonic.player.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -110,16 +108,6 @@ public final class Util {
             result[i] = values.get(i);
         }
         return result;
-    }
-
-    static ObjectMapper objectMapper = new ObjectMapper();
-    public static String debugObject(Object object) {
-        try {
-            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            LOG.warn("Cant output debug object", e);
-            return "";
-        }
     }
 
     /**

@@ -23,8 +23,8 @@ import org.airsonic.player.domain.Genre;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
-import org.airsonic.player.util.Util;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -165,7 +165,7 @@ public class MediaFileDao extends AbstractDao {
                      "mb_release_id=? " +
                      "where path=?";
 
-        logger.trace("Updating media file {}", Util.debugObject(file));
+        logger.trace("Updating media file {}", ReflectionToStringBuilder.toString(file));
 
         int n = update(sql,
                        file.getFolder(), file.getMediaType().name(), file.getFormat(), file.getTitle(), file.getAlbumName(), file.getArtist(),

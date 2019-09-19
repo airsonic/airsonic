@@ -1,8 +1,9 @@
 package org.airsonic.test.cucumber.steps.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import cucumber.api.java8.En;
 import org.airsonic.test.cucumber.server.AirsonicServer;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,10 +21,8 @@ public class ScanStepDef implements En {
     private final AirsonicServer server;
     private CloseableHttpResponse response;
     private CloseableHttpClient client;
-    private ObjectMapper mapper = new ObjectMapper();
 
     public ScanStepDef(AirsonicServer server) {
-        mapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         this.client = HttpClientBuilder.create().build();
         this.server = server;
 
@@ -53,9 +52,10 @@ public class ScanStepDef implements En {
         response = client.execute(builder.build());
 
         String responseAsString = EntityUtils.toString(response.getEntity());
-        JsonNode jsonNode = mapper.readTree(responseAsString).get("subsonic-response");
-        Response response = mapper.treeToValue(jsonNode, Response.class);
-        return response.getScanStatus().isScanning();
+        final JsonReader jsonreader = Json.createReader(responseAsString);
+        boolean ret = jsonreader.getJsonObject("subsonic-response").getJsonObject("ScanStatus").getBoolean("scanning");
+        jsonreader.close();
+        return ret;
     }
 
 }

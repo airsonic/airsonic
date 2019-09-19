@@ -19,8 +19,6 @@
  */
 package org.airsonic.player.service.metadata;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.TranscodingService;
@@ -29,6 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +49,6 @@ import java.util.List;
 public class FFmpegParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegParser.class);
-    private static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String[] FFPROBE_OPTIONS = {
         "-v", "quiet", "-print_format", "json", "-show_format", "-show_streams"
     };
@@ -84,21 +86,25 @@ public class FFmpegParser extends MetaDataParser {
             command.add(file.getAbsolutePath());
 
             Process process = Runtime.getRuntime().exec(command.toArray(new String[0]));
-            final JsonNode result = objectMapper.readTree(process.getInputStream());
+            final JsonReader jsonreader = Json.createReader(process.getInputStream());
+            JsonObject jsonobject = jsonreader.readObject();
 
-            metaData.setDurationSeconds(result.at("/format/duration").asInt());
+            metaData.setDurationSeconds(jsonobject.getJsonObject("format").getInt("duration"));
             // Bitrate is in Kb/s
-            metaData.setBitRate(result.at("/format/bit_rate").asInt() / 1000);
+            metaData.setBitRate(jsonobject.getJsonObject("format").getInt("bit_rate") / 1000);
 
             // Find the first (if any) stream that has dimensions and use those.
             // 'width' and 'height' are display dimensions; compare to 'coded_width', 'coded_height'.
-            for (JsonNode stream : result.at("/streams")) {
-                if (stream.has("width") && stream.has("height")) {
-                    metaData.setWidth(stream.get("width").asInt());
-                    metaData.setHeight(stream.get("height").asInt());
+            for (JsonValue j : jsonobject.getJsonArray("streams")) {
+                JsonObject stream_jobj = j.asJsonObject();
+                if (stream_jobj.containsKey("width") && stream_jobj.containsKey("height")) {
+                    metaData.setWidth(stream_jobj.getInt("width"));
+                    metaData.setHeight(stream_jobj.getInt("height"));
                     break;
                 }
             }
+            jsonreader.close();
+
         } catch (Throwable x) {
             LOG.warn("Error when parsing metadata in " + file, x);
         }

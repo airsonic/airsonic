@@ -513,14 +513,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
         </dependency>
@@ -543,6 +535,11 @@
             <artifactId>jaxb-api</artifactId>
             <scope>compile</scope>
         </dependency>
+				<dependency>
+					<groupId>javax.json</groupId>
+					<artifactId>javax.json-api</artifactId>
+					<version>1.1.2</version>
+				</dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
