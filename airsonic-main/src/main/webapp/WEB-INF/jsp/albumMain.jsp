@@ -289,7 +289,6 @@
         <textarea name="comment" rows="6" cols="70">${model.dir.comment}</textarea>
         <input type="submit" value="<fmt:message key="common.save"/>">
     </form>
-    <fmt:message key="main.wiki"/>
 </div>
 
 <script type='text/javascript'>

@@ -151,7 +151,6 @@
             <td>
                 <form:textarea path="loginMessage" rows="5" cols="70"/>
                 <c:import url="helpToolTip.jsp"><c:param name="topic" value="loginmessage"/></c:import>
-                <fmt:message key="main.wiki"/>
             </td>
         </tr>
 
