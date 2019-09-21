@@ -28,6 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.*;
 import java.util.*;
@@ -385,11 +386,7 @@ public final class StringUtil {
             return null;
         }
         byte[] utf8;
-        try {
-            utf8 = s.getBytes(ENCODING_UTF8);
-        } catch (UnsupportedEncodingException x) {
-            throw new RuntimeException(x);
-        }
+        utf8 = s.getBytes(StandardCharsets.UTF_8);
         return String.valueOf(Hex.encodeHex(utf8));
     }
 
@@ -404,7 +401,7 @@ public final class StringUtil {
         if (s == null) {
             return null;
         }
-        return new String(Hex.decodeHex(s.toCharArray()), ENCODING_UTF8);
+        return new String(Hex.decodeHex(s.toCharArray()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -420,7 +417,7 @@ public final class StringUtil {
 
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            return new String(Hex.encodeHex(md5.digest(s.getBytes(ENCODING_UTF8))));
+            return new String(Hex.encodeHex(md5.digest(s.getBytes(StandardCharsets.UTF_8))));
         } catch (Exception x) {
             throw new RuntimeException(x.getMessage(), x);
         }
