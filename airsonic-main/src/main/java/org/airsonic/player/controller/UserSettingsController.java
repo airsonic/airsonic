@@ -130,7 +130,7 @@ public class UserSettingsController {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
         if (!bindingResult.hasErrors()) {
             if (command.isDeleteUser()) {

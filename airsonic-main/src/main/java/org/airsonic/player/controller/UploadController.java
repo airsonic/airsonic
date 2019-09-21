@@ -72,7 +72,7 @@ public class UploadController {
     public static final String UPLOAD_STATUS = "uploadStatus";
 
     @PostMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<>();
         List<File> uploadedFiles = new ArrayList<>();

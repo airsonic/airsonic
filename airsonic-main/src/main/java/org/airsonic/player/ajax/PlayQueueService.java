@@ -734,7 +734,7 @@ public class PlayQueueService {
         return entries;
     }
 
-    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) throws Exception {
+    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) {
 
         PlayQueue playQueue = player.getPlayQueue();
         InternetRadio radio = playQueue.getInternetRadio();

@@ -123,7 +123,7 @@ public class UPnPService {
         }
     }
 
-    private synchronized void createService() throws Exception {
+    private synchronized void createService() {
         upnpService = new UpnpServiceImpl(new ApacheUpnpServiceConfiguration());
 
         // Asynch search for other devices (most importantly UPnP-enabled routers for port-mapping)
@@ -165,7 +165,7 @@ public class UPnPService {
         contentDirectoryservice.setManager(new DefaultServiceManager<CustomContentDirectory>(contentDirectoryservice) {
 
             @Override
-            protected CustomContentDirectory createServiceInstance() throws Exception {
+            protected CustomContentDirectory createServiceInstance() {
                 return dispatchingContentDirectory;
             }
         });
@@ -185,7 +185,7 @@ public class UPnPService {
         LocalService<ConnectionManagerService> connetionManagerService = new AnnotationLocalServiceBinder().read(ConnectionManagerService.class);
         connetionManagerService.setManager(new DefaultServiceManager<ConnectionManagerService>(connetionManagerService) {
             @Override
-            protected ConnectionManagerService createServiceInstance() throws Exception {
+            protected ConnectionManagerService createServiceInstance() {
                 return new ConnectionManagerService(protocols, null);
             }
         });

@@ -150,7 +150,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/ping")
-    public void ping(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void ping(HttpServletRequest request, HttpServletResponse response) {
         Response res = createResponse();
         jaxbWriter.writeResponse(request, response, res);
     }
@@ -160,7 +160,7 @@ public class SubsonicRESTController {
      * CAUTION : this method is required by mobile applications and must not be removed.
      */
     @RequestMapping("/getLicense")
-    public void getLicense(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getLicense(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         License license = new License();
 
@@ -179,7 +179,7 @@ public class SubsonicRESTController {
 
 
     @RequestMapping("/getMusicFolders")
-    public void getMusicFolders(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getMusicFolders(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
 
         MusicFolders musicFolders = new MusicFolders();
@@ -266,7 +266,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getGenres")
-    public void getGenres(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getGenres(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         org.subsonic.restapi.Genres genres = new org.subsonic.restapi.Genres();
 
@@ -1200,7 +1200,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getNowPlaying")
-    public void getNowPlaying(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getNowPlaying(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         NowPlaying result = new NowPlaying();
 
@@ -1688,7 +1688,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getInternetRadioStations")
-    public void getInternetRadioStations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getInternetRadioStations(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
 
         InternetRadioStations result = new InternetRadioStations();
@@ -2166,7 +2166,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getLyrics")
-    public void getLyrics(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getLyrics(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         String artist = request.getParameter("artist");
         String title = request.getParameter("title");
@@ -2256,7 +2256,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getVideoInfo")
-    public ResponseEntity<String> getVideoInfo() throws Exception {
+    public ResponseEntity<String> getVideoInfo() {
         return ResponseEntity.status(HttpStatus.SC_NOT_IMPLEMENTED).body(NOT_YET_IMPLEMENTED);
     }
 
@@ -2327,7 +2327,7 @@ public class SubsonicRESTController {
         return jaxbWriter.createResponse(true);
     }
 
-    private void writeEmptyResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void writeEmptyResponse(HttpServletRequest request, HttpServletResponse response) {
         jaxbWriter.writeResponse(request, response, createResponse());
     }
 

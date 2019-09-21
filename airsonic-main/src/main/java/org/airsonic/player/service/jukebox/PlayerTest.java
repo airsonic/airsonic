@@ -17,7 +17,7 @@ public class PlayerTest implements AudioPlayer.Listener {
 
     private AudioPlayer player;
 
-    public PlayerTest() throws Exception {
+    public PlayerTest() {
         createGUI();
     }
 

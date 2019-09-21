@@ -104,7 +104,7 @@ public class AvatarUploadController  {
         return new ModelAndView("avatarUploadResult","model",map);
     }
 
-    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) throws IOException {
+    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) {
 
         BufferedImage image;
         try {

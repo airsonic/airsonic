@@ -31,7 +31,7 @@ import java.util.Locale;
  */
 public class StringUtilTestCase extends TestCase {
 
-    public void testToHtml() throws Exception {
+    public void testToHtml() {
         assertEquals(null, StringUtil.toHtml(null));
         assertEquals("", StringUtil.toHtml(""));
         assertEquals(" ", StringUtil.toHtml(" "));
@@ -57,7 +57,7 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in getMimeType().", "application/octet-stream", StringUtil.getMimeType(null));
     }
 
-    public void testFormatBytes() throws Exception {
+    public void testFormatBytes() {
         Locale locale = Locale.ENGLISH;
         assertEquals("Error in formatBytes().", "918 B", StringUtil.formatBytes(918, locale));
         assertEquals("Error in formatBytes().", "1023 B", StringUtil.formatBytes(1023, locale));

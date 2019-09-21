@@ -100,7 +100,7 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
         return getAlbumDao().getAlphabeticalAlbums(0, Integer.MAX_VALUE, false, true, allFolders);
     }
 
-    public Album getItemById(String id) throws Exception {
+    public Album getItemById(String id) {
         Album returnValue = null;
         if (id.startsWith(ALL_BY_ARTIST) || id.equalsIgnoreCase(ALL_RECENT)) {
             returnValue = new Album();
@@ -136,7 +136,7 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
     }
 
     @Override
-    public int getAllItemsSize() throws Exception {
+    public int getAllItemsSize() {
         List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
         return getAlbumDao().getAlbumCount(allFolders);
     }
@@ -146,7 +146,7 @@ public class AlbumUpnpProcessor extends UpnpContentProcessor <Album, MediaFile> 
         didl.addItem(getDispatcher().getMediaFileProcessor().createItem(child));
     }
 
-    public URI getAlbumArtURI(int albumId) throws URISyntaxException {
+    public URI getAlbumArtURI(int albumId) {
         return getDispatcher().getJwtSecurityService().addJWTToken(UriComponentsBuilder.fromUriString(getDispatcher().getBaseUrl() + "/ext/coverArt.view").queryParam("id", albumId).queryParam("size", CoverArtScheme.LARGE.getSize())).build().encode().toUri();
     }
 

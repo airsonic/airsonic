@@ -182,7 +182,7 @@ public class LastFmService {
      * @return Songs from similar artists;
      */
     public List<MediaFile> getSimilarSongs(org.airsonic.player.domain.Artist artist, int count,
-                                           List<MusicFolder> musicFolders) throws IOException {
+                                           List<MusicFolder> musicFolders) {
 
         List<MediaFile> similarSongs = new ArrayList<MediaFile>(mediaFileDao.getSongsByArtist(artist.getName(), 0, 1000));
         for (org.airsonic.player.domain.Artist similarArtist : getSimilarArtists(artist, 100, false, musicFolders)) {

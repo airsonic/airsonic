@@ -99,7 +99,7 @@ public class ExternalPlayerController {
         return new ModelAndView("externalPlayer", "model", map);
     }
 
-    private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) throws IOException {
+    private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) {
         Date expires = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof JWTAuthenticationToken) {

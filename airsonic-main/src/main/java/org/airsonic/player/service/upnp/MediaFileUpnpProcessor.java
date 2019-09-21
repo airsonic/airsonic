@@ -88,7 +88,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         return container;
     }
 
-    public List<MediaFile> getAllItems() throws Exception {
+    public List<MediaFile> getAllItems() {
         List<MusicFolder> allFolders = getDispatcher().getSettingsService().getAllMusicFolders();
         List<MediaFile> returnValue = new ArrayList<MediaFile>();
         if (allFolders.size() == 1) {
@@ -102,7 +102,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         return returnValue;
     }
 
-    public MediaFile getItemById(String id) throws Exception {
+    public MediaFile getItemById(String id) {
         return getMediaFileService().getMediaFile(Integer.parseInt(id));
     }
 

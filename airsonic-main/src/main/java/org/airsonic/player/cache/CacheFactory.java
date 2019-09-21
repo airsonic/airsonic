@@ -37,7 +37,7 @@ import java.io.File;
 public class CacheFactory implements InitializingBean {
     private CacheManager cacheManager;
 
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         Configuration configuration = ConfigurationFactory.parseConfiguration();
 
         // Override configuration to make sure cache is stored in Airsonic home dir.

@@ -20,7 +20,7 @@ public class InternetRadioDaoTestCase extends DaoTestCaseBean2 {
     InternetRadioDao internetRadioDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from internet_radio");
     }
 

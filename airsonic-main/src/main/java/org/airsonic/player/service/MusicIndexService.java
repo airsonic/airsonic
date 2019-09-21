@@ -57,7 +57,7 @@ public class MusicIndexService {
         return sortArtists(artists);
     }
 
-    public SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithArtist>> getIndexedArtists(List<Artist> artists) throws IOException {
+    public SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithArtist>> getIndexedArtists(List<Artist> artists) {
         List<MusicIndex.SortableArtistWithArtist> sortableArtists = createSortableArtists(artists);
         return sortArtists(sortableArtists);
     }
@@ -68,7 +68,7 @@ public class MusicIndexService {
         return new MusicFolderContent(indexedArtists, singleSongs);
     }
 
-    private List<MediaFile> getSingleSongs(List<MusicFolder> folders, boolean refresh) throws IOException {
+    private List<MediaFile> getSingleSongs(List<MusicFolder> folders, boolean refresh) {
         List<MediaFile> result = new ArrayList<MediaFile>();
         for (MusicFolder folder : folders) {
             MediaFile parent = mediaFileService.getMediaFile(folder.getPath(), !refresh);
@@ -161,7 +161,7 @@ public class MusicIndexService {
         return result;
     }
 
-    private List<MusicIndex.SortableArtistWithMediaFiles> createSortableArtists(List<MusicFolder> folders, boolean refresh) throws IOException {
+    private List<MusicIndex.SortableArtistWithMediaFiles> createSortableArtists(List<MusicFolder> folders, boolean refresh) {
         String[] ignoredArticles = settingsService.getIgnoredArticlesAsArray();
         String[] shortcuts = settingsService.getShortcutsAsArray();
         SortedMap<String, MusicIndex.SortableArtistWithMediaFiles> artistMap = new TreeMap<String, MusicIndex.SortableArtistWithMediaFiles>();

@@ -161,32 +161,32 @@ public class InternetRadioService {
         try {
             inputPlaylist.toPlaylist().acceptDown(new PlaylistVisitor() {
                 @Override
-                public void beginVisitPlaylist(Playlist playlist) throws Exception {
+                public void beginVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void endVisitPlaylist(Playlist playlist) throws Exception {
+                public void endVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void beginVisitParallel(Parallel parallel) throws Exception {
+                public void beginVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void endVisitParallel(Parallel parallel) throws Exception {
+                public void endVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void beginVisitSequence(Sequence sequence) throws Exception {
+                public void beginVisitSequence(Sequence sequence) {
 
                 }
 
                 @Override
-                public void endVisitSequence(Sequence sequence) throws Exception {
+                public void endVisitSequence(Sequence sequence) {
 
                 }
 
@@ -204,7 +204,7 @@ public class InternetRadioService {
                 }
 
                 @Override
-                public void endVisitMedia(Media media) throws Exception {
+                public void endVisitMedia(Media media) {
 
                 }
             });
