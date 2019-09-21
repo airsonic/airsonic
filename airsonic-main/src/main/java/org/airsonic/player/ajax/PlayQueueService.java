@@ -357,12 +357,7 @@ public class PlayQueueService {
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
         List<PodcastEpisode> episodes = podcastService.getNewestEpisodes(10);
-        List<MediaFile> files = Lists.transform(episodes, new Function<PodcastEpisode, MediaFile>() {
-            @Override
-            public MediaFile apply(PodcastEpisode episode) {
-                return mediaFileService.getMediaFile(episode.getMediaFileId());
-            }
-        });
+        List<MediaFile> files = Lists.transform(episodes, episode -> mediaFileService.getMediaFile(episode.getMediaFileId()));
 
         String username = securityService.getCurrentUsername(request);
         boolean queueFollowingSongs = settingsService.getUserSettings(username).isQueueFollowingSongs();

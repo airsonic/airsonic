@@ -95,13 +95,10 @@ public class PodcastService {
     private MetaDataParserFactory metaDataParserFactory;
 
     public PodcastService() {
-        ThreadFactory threadFactory = new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = Executors.defaultThreadFactory().newThread(r);
-                t.setDaemon(true);
-                return t;
-            }
+        ThreadFactory threadFactory = r -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
         };
         refreshExecutor = Executors.newFixedThreadPool(5, threadFactory);
         downloadExecutor = Executors.newFixedThreadPool(3, threadFactory);
@@ -127,13 +124,10 @@ public class PodcastService {
     }
 
     public synchronized void schedule() {
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                LOG.info("Starting scheduled Podcast refresh.");
-                refreshAllChannels(true);
-                LOG.info("Completed scheduled Podcast refresh.");
-            }
+        Runnable task = () -> {
+            LOG.info("Starting scheduled Podcast refresh.");
+            refreshAllChannels(true);
+            LOG.info("Completed scheduled Podcast refresh.");
         };
 
         if (scheduledRefresh != null) {
@@ -223,16 +217,13 @@ public class PodcastService {
     public List<PodcastEpisode> getNewestEpisodes(int count) {
         List<PodcastEpisode> episodes = addMediaFileIdToEpisodes(podcastDao.getNewestEpisodes(count));
 
-        return Lists.newArrayList(Iterables.filter(episodes, new Predicate<PodcastEpisode>() {
-            @Override
-            public boolean apply(PodcastEpisode episode) {
-                Integer mediaFileId = episode.getMediaFileId();
-                if (mediaFileId == null) {
-                    return false;
-                }
-                MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
-                return mediaFile != null && mediaFile.isPresent();
+        return Lists.newArrayList(Iterables.filter(episodes, episode -> {
+            Integer mediaFileId = episode.getMediaFileId();
+            if (mediaFileId == null) {
+                return false;
             }
+            MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
+            return mediaFile != null && mediaFile.isPresent();
         }));
     }
 
@@ -299,12 +290,7 @@ public class PodcastService {
 
     private void refreshChannels(final List<PodcastChannel> channels, final boolean downloadEpisodes) {
         for (final PodcastChannel channel : channels) {
-            Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    doRefreshChannel(channel, downloadEpisodes);
-                }
-            };
+            Runnable task = () -> doRefreshChannel(channel, downloadEpisodes);
             refreshExecutor.submit(task);
         }
     }
@@ -416,12 +402,7 @@ public class PodcastService {
     }
 
     public void downloadEpisode(final PodcastEpisode episode) {
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                doDownloadEpisode(episode);
-            }
-        };
+        Runnable task = () -> doDownloadEpisode(episode);
         downloadExecutor.submit(task);
     }
 
@@ -470,14 +451,11 @@ public class PodcastService {
         }
 
         // Sort episode in reverse chronological order (newest first)
-        Collections.sort(episodes, new Comparator<PodcastEpisode>() {
-            @Override
-            public int compare(PodcastEpisode a, PodcastEpisode b) {
-                long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
-                long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
+        Collections.sort(episodes, (a, b) -> {
+            long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
+            long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
 
-                return Long.compare(timeB, timeA);
-            }
+            return Long.compare(timeB, timeA);
         });
 
         // Create episodes in database, skipping the proper number of episodes.

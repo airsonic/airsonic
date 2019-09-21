@@ -251,32 +251,30 @@ public class PlayQueue {
         makeBackup();
         MediaFile currentFile = getCurrentFile();
 
-        Comparator<MediaFile> comparator = new Comparator<MediaFile>() {
-            public int compare(MediaFile a, MediaFile b) {
-                switch (sortOrder) {
-                    case TRACK:
-                        Integer trackA = a.getTrackNumber();
-                        Integer trackB = b.getTrackNumber();
-                        if (trackA == null) {
-                            trackA = 0;
-                        }
-                        if (trackB == null) {
-                            trackB = 0;
-                        }
-                        return trackA.compareTo(trackB);
+        Comparator<MediaFile> comparator = (a, b) -> {
+            switch (sortOrder) {
+                case TRACK:
+                    Integer trackA = a.getTrackNumber();
+                    Integer trackB = b.getTrackNumber();
+                    if (trackA == null) {
+                        trackA = 0;
+                    }
+                    if (trackB == null) {
+                        trackB = 0;
+                    }
+                    return trackA.compareTo(trackB);
 
-                    case ARTIST:
-                        String artistA = StringUtils.trimToEmpty(a.getArtist());
-                        String artistB = StringUtils.trimToEmpty(b.getArtist());
-                        return artistA.compareTo(artistB);
+                case ARTIST:
+                    String artistA = StringUtils.trimToEmpty(a.getArtist());
+                    String artistB = StringUtils.trimToEmpty(b.getArtist());
+                    return artistA.compareTo(artistB);
 
-                    case ALBUM:
-                        String albumA = StringUtils.trimToEmpty(a.getAlbumName());
-                        String albumB = StringUtils.trimToEmpty(b.getAlbumName());
-                        return albumA.compareTo(albumB);
-                    default:
-                        return 0;
-                }
+                case ALBUM:
+                    String albumA = StringUtils.trimToEmpty(a.getAlbumName());
+                    String albumB = StringUtils.trimToEmpty(b.getAlbumName());
+                    return albumA.compareTo(albumB);
+                default:
+                    return 0;
             }
         };
 

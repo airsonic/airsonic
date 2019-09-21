@@ -29,28 +29,18 @@ public class PlayerTest implements AudioPlayer.Listener {
         JButton resetButton = new JButton("Reset");
         final JSlider gainSlider = new JSlider(0, 1000);
 
-        startButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                createPlayer();
-                player.play();
-            }
+        startButton.addActionListener(e -> {
+            createPlayer();
+            player.play();
         });
-        stopButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                player.pause();
-            }
+        stopButton.addActionListener(e -> player.pause());
+        resetButton.addActionListener(e -> {
+            player.close();
+            createPlayer();
         });
-        resetButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                player.close();
-                createPlayer();
-            }
-        });
-        gainSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                float gain = gainSlider.getValue() / 1000.0F;
-                player.setGain(gain);
-            }
+        gainSlider.addChangeListener(e -> {
+            float gain = gainSlider.getValue() / 1000.0F;
+            player.setGain(gain);
         });
 
         frame.setLayout(new FlowLayout());
