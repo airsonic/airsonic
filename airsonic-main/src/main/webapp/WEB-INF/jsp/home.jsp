@@ -65,7 +65,7 @@
 
 <c:if test="${not empty model.welcomeMessage}">
     <div style="width:15em;float:right;padding:0 1em 0 1em;border-left:1px solid #<spring:theme code="detailColor"/>">
-        <sub:wiki text="${model.welcomeMessage}"/>
+        ${model.welcomeMessage}
     </div>
 </c:if>
 

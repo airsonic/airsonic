@@ -279,7 +279,7 @@
     </c:if>
 </div>
 
-<div id="comment" class="albumComment"><sub:wiki text="${model.dir.comment}"/></div>
+<div id="comment" class="albumComment">${model.dir.comment}</div>
 
 <div id="commentForm" style="display:none">
     <form method="post" action="setMusicFileInfo.view">
