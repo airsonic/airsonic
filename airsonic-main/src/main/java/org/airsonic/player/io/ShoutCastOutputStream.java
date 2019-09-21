@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Implements SHOUTcast support by decorating an existing output stream.
@@ -188,7 +189,7 @@ public class ShoutCastOutputStream extends OutputStream {
         }
 
         title = "StreamTitle='" + title + "';";
-        return title.getBytes("US-ASCII");
+        return title.getBytes(StandardCharsets.US_ASCII);
     }
 
     /**
