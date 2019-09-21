@@ -20,13 +20,11 @@
 package org.airsonic.player.service;
 
 import de.umass.lastfm.cache.Cache;
-import de.umass.lastfm.cache.ExpirationPolicy;
 import de.umass.lastfm.cache.FileSystemCache;
 import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -45,12 +43,7 @@ public class LastFmCache extends Cache {
         this.cacheDir = cacheDir;
         this.ttl = ttl;
 
-        setExpirationPolicy(new ExpirationPolicy() {
-            @Override
-            public long getExpirationTime(String method, Map<String, String> params) {
-                return ttl;
-            }
-        });
+        setExpirationPolicy((method, params) -> ttl);
     }
 
     @Override

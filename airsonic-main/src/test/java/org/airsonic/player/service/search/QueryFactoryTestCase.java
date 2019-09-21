@@ -1,8 +1,6 @@
 
 package org.airsonic.player.service.search;
 
-import static org.junit.Assert.assertEquals;
-
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
@@ -24,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for QueryFactory.
@@ -68,9 +68,9 @@ public class QueryFactoryTestCase {
     private static final int FID2 = 20;
 
     private static final MusicFolder MUSIC_FOLDER1 =
-            new MusicFolder(Integer.valueOf(FID1), new File(PATH1), "music1", true, new java.util.Date());
+            new MusicFolder(FID1, new File(PATH1), "music1", true, new java.util.Date());
     private static final MusicFolder MUSIC_FOLDER2 = 
-            new MusicFolder(Integer.valueOf(FID2), new File(PATH2), "music2", true, new java.util.Date());
+            new MusicFolder(FID2, new File(PATH2), "music2", true, new java.util.Date());
 
     private static final List<MusicFolder> SINGLE_FOLDERS = Arrays.asList(MUSIC_FOLDER1);
     private static final List<MusicFolder> MULTI_FOLDERS  = Arrays.asList(MUSIC_FOLDER1, MUSIC_FOLDER2);
@@ -215,15 +215,15 @@ public class QueryFactoryTestCase {
     @Test
     public void testGetRandomSongs() throws IOException {
         RandomSearchCriteria criteria = new RandomSearchCriteria(50, "Classic Rock",
-                Integer.valueOf(1900), Integer.valueOf(2000), SINGLE_FOLDERS);
+                1900, 2000, SINGLE_FOLDERS);
 
         Query query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
                 "+mediaType:MUSIC +genre:Classic Rock +year:[1900 TO 2000] +(folder:" + PATH1 + ")",
                 query.toString());
 
-        criteria = new RandomSearchCriteria(50, "Classic Rock", Integer.valueOf(1900),
-                Integer.valueOf(2000), MULTI_FOLDERS);
+        criteria = new RandomSearchCriteria(50, "Classic Rock", 1900,
+                2000, MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
                 "+mediaType:MUSIC +genre:Classic Rock +year:[1900 TO 2000] +(folder:" + PATH1 + " folder:" + PATH2
@@ -236,7 +236,7 @@ public class QueryFactoryTestCase {
                 "+mediaType:MUSIC +genre:Classic Rock +(folder:" + PATH1 + " folder:" + PATH2 + ")",
                 query.toString());
 
-        criteria = new RandomSearchCriteria(50, "Classic Rock", Integer.valueOf(1900), null,
+        criteria = new RandomSearchCriteria(50, "Classic Rock", 1900, null,
                 MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
@@ -244,7 +244,7 @@ public class QueryFactoryTestCase {
                         + ")",
                 query.toString());
 
-        criteria = new RandomSearchCriteria(50, "Classic Rock", null, Integer.valueOf(2000),
+        criteria = new RandomSearchCriteria(50, "Classic Rock", null, 2000,
                 MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
