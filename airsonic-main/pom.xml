@@ -226,12 +226,6 @@
         </dependency>
 
         <dependency>
-            <groupId>radeox</groupId>
-            <artifactId>radeox</artifactId>
-            <version>1.0-b2</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.directwebremoting</groupId>
             <artifactId>dwr</artifactId>
             <version>3.0.rc1</version>

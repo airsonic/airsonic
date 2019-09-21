@@ -279,7 +279,7 @@
     </c:if>
 </div>
 
-<div id="comment" class="albumComment"><sub:wiki text="${model.dir.comment}"/></div>
+<div id="comment" class="albumComment">${model.dir.comment}</div>
 
 <div id="commentForm" style="display:none">
     <form method="post" action="setMusicFileInfo.view">
@@ -289,7 +289,6 @@
         <textarea name="comment" rows="6" cols="70">${model.dir.comment}</textarea>
         <input type="submit" value="<fmt:message key="common.save"/>">
     </form>
-    <fmt:message key="main.wiki"/>
 </div>
 
 <script type='text/javascript'>
