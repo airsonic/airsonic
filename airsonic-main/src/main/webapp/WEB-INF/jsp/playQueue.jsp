@@ -197,20 +197,16 @@
     }
 
     function createMediaElementPlayer() {
-
-        var player = $('#audioPlayer').get(0);
+        // Manually run MediaElement.js initialization.
+        //
+        // Warning: Bugs will happen if MediaElement.js is not initialized when
+        // we modify the media elements (e.g. adding event handlers). Running
+        // MediaElement.js's automatic initialization does not guarantee that
+        // (it depends on when we call createMediaElementPlayer at load time).
+        $('#audioPlayer').mediaelementplayer();
 
         // Once playback reaches the end, go to the next song, if any.
-        player.addEventListener("ended", onEnded);
-
-        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
-        //
-        // Once a media is loaded, we can start playback, but not before.
-        //
-        // Trying to start playback after a song has endred but before the
-        // 'canplay' event for the next song currently causes a race condition
-        // in the MediaElement.js player (4.2.10).
-        player.addEventListener("canplay", function() { player.play(); });
+        $('#audioPlayer').on("ended", onEnded);
     }
 
     function getPlayQueue() {
@@ -678,19 +674,8 @@
             player.currentTime = position || 0;
         }
 
-        // FIXME: Uncomment once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
-        //
-        // Calling 'player.play()' at this point may work by chance, but it's
-        // not guaranteed in the current MediaElement.js player (4.2.10).  See
-        // the 'createMediaElementPlayer()' function above.
-        //
-        // player.play();
-
-        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
-        //
-        // Instead, we're triggering a 'waiting' event so that the player shows
-        // a progress bar to indicate that it's loading the stream.
-        player.dispatchEvent(new Event("waiting"));
+        // Start playback immediately.
+        player.play();
     }
 
     function skip(index, position) {
@@ -851,7 +836,7 @@
                     <c:if test="${model.player.web}">
                         <td>
                             <div id="player" style="width:340px; height:40px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
+                                <audio id="audioPlayer" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
