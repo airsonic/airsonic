@@ -24,6 +24,7 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.analysis.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
@@ -82,8 +83,15 @@ public class QueryFactory {
         while (filter.incrementToken()) {
             result.append(termAttribute.term()).append("* ");
         }
-        return result.toString();
-    }
+
+        String queryString = result.toString();
+
+        if(StringUtils.isEmpty(queryString)){
+            return "*:*";
+        } else {
+            return queryString;
+        }
+   }
 
     /**
      * Normalize the genre string.
