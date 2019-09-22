@@ -24,6 +24,7 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.LastFmService;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
@@ -147,8 +148,8 @@ public class CoverArtService {
                 }
             }
         } finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(output);
+            FileUtil.closeQuietly(input);
+            FileUtil.closeQuietly(output);
         }
     }
 

@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.io;
 
-import org.apache.commons.io.IOUtils;
+import org.airsonic.player.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,8 +61,8 @@ public class InputStreamReaderThread extends Thread {
         } catch (IOException x) {
             // Intentionally ignored.
         } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(input);
+            FileUtil.closeQuietly(reader);
+            FileUtil.closeQuietly(input);
         }
     }
 }
