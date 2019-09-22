@@ -24,6 +24,7 @@ import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
 import org.airsonic.player.service.metadata.JaudiotaggerParser;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -197,7 +198,7 @@ public class CoverArtController implements LastModified {
         try {
             IOUtils.copy(in, response.getOutputStream());
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -214,7 +215,7 @@ public class CoverArtController implements LastModified {
             }
             ImageIO.write(image, "jpeg", response.getOutputStream());
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -227,7 +228,7 @@ public class CoverArtController implements LastModified {
             response.setContentType(imageInputStreamWithType.getRight());
             IOUtils.copy(in, response.getOutputStream());
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -255,13 +256,13 @@ public class CoverArtController implements LastModified {
                 } catch (Throwable x) {
                     // Delete corrupt (probably empty) thumbnail cache.
                     LOG.warn("Failed to create thumbnail for " + request, x);
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                     cachedImage.delete();
                     throw new IOException("Failed to create thumbnail for " + request + ". " + x.getMessage());
 
                 } finally {
                     semaphore.release();
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                 }
             } else {
 //                LOG.info("Cache HIT - " + request + " (" + size + ")");
@@ -389,7 +390,7 @@ public class CoverArtController implements LastModified {
                 } catch (Throwable x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
                 } finally {
-                    IOUtils.closeQuietly(in);
+                    FileUtil.closeQuietly(in);
                 }
             }
             return createAutoCover(size, size);
@@ -639,7 +640,7 @@ public class CoverArtController implements LastModified {
             } catch (Throwable x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
             } finally {
-                IOUtils.closeQuietly(in);
+                FileUtil.closeQuietly(in);
             }
             return createAutoCover(width, height);
         }

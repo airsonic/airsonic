@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.service.jukebox;
 
-import org.apache.commons.io.IOUtils;
+import org.airsonic.player.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +114,7 @@ public class AudioPlayer {
         } catch (Throwable x) {
             LOG.warn("Failed to close player: " + x, x);
         }
-        IOUtils.closeQuietly(in);
+        FileUtil.closeQuietly(in);
     }
 
     /**

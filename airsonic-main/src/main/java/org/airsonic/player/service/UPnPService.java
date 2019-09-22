@@ -22,7 +22,7 @@ package org.airsonic.player.service;
 import org.airsonic.player.service.upnp.ApacheUpnpServiceConfiguration;
 import org.airsonic.player.service.upnp.CustomContentDirectory;
 import org.airsonic.player.service.upnp.MSMediaReceiverRegistrarService;
-import org.apache.commons.io.IOUtils;
+import org.airsonic.player.util.FileUtil;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.UpnpServiceImpl;
 import org.fourthline.cling.binding.annotations.AnnotationLocalServiceBinder;
@@ -44,7 +44,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 
-import java.io.*;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,7 +159,7 @@ public class UPnPService {
 
         InputStream in = getClass().getResourceAsStream("logo-512.png");
         Icon icon = new Icon("image/png", 512, 512, 32, "logo-512", in);
-        IOUtils.closeQuietly(in);
+        FileUtil.closeQuietly(in);
 
         LocalService<CustomContentDirectory> contentDirectoryservice = new AnnotationLocalServiceBinder().read(CustomContentDirectory.class);
         contentDirectoryservice.setManager(new DefaultServiceManager<CustomContentDirectory>(contentDirectoryservice) {

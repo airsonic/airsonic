@@ -26,10 +26,10 @@ import org.airsonic.player.io.ShoutCastOutputStream;
 import org.airsonic.player.security.JWTAuthenticationToken;
 import org.airsonic.player.service.*;
 import org.airsonic.player.service.sonos.SonosHelper;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,7 +278,7 @@ public class StreamController {
                 securityService.updateUserByteCounts(user, status.getBytesTransfered(), 0L, 0L);
                 statusService.removeStreamStatus(status);
             }
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
         return;
     }

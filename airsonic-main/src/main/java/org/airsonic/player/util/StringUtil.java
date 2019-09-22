@@ -20,7 +20,6 @@
 package org.airsonic.player.util;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -294,8 +293,8 @@ public final class StringUtil {
             return result.toArray(new String[result.size()]);
 
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(reader);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(reader);
         }
     }
 

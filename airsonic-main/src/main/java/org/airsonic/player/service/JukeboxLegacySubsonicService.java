@@ -23,7 +23,6 @@ import org.airsonic.player.domain.*;
 import org.airsonic.player.service.jukebox.AudioPlayer;
 import org.airsonic.player.service.jukebox.AudioPlayerFactory;
 import org.airsonic.player.util.FileUtil;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +124,7 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
 
         } catch (Exception x) {
             LOG.error("Error in jukebox: " + x, x);
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 

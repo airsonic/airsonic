@@ -21,7 +21,7 @@ package org.airsonic.player.service;
 
 import com.jayway.jsonpath.JsonPath;
 import org.airsonic.player.domain.Version;
-import org.apache.commons.io.IOUtils;
+import org.airsonic.player.util.FileUtil;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -202,8 +202,8 @@ public class VersionService {
         } catch (IOException x) {
             return null;
         } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(reader);
+            FileUtil.closeQuietly(in);
         }
     }
 

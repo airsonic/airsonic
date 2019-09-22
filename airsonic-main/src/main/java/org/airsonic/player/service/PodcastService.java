@@ -30,6 +30,7 @@ import org.airsonic.player.domain.PodcastStatus;
 import org.airsonic.player.service.metadata.MetaData;
 import org.airsonic.player.service.metadata.MetaDataParser;
 import org.airsonic.player.service.metadata.MetaDataParserFactory;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -345,7 +346,7 @@ public class PodcastService {
             channel.setErrorMessage(getErrorMessage(x));
             podcastDao.updateChannel(channel);
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
 
         if (downloadEpisodes) {
@@ -384,8 +385,8 @@ public class PodcastService {
         } catch (Exception x) {
             LOG.warn("Failed to download cover art for podcast channel '" + channel.getTitle() + "': " + x, x);
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(out);
         }
     }
 
@@ -600,14 +601,14 @@ public class PodcastService {
 
                 if (isEpisodeDeleted(episode)) {
                     LOG.info("Podcast " + episode.getUrl() + " was deleted. Aborting download.");
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                     file.delete();
                 } else {
                     addMediaFileIdToEpisodes(Arrays.asList(episode));
                     episode.setBytesDownloaded(bytesDownloaded);
                     podcastDao.updateEpisode(episode);
                     LOG.info("Downloaded " + bytesDownloaded + " bytes from Podcast " + episode.getUrl());
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                     updateTags(file, episode);
                     episode.setStatus(PodcastStatus.COMPLETED);
                     podcastDao.updateEpisode(episode);
@@ -620,8 +621,8 @@ public class PodcastService {
             episode.setErrorMessage(getErrorMessage(x));
             podcastDao.updateEpisode(episode);
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(out);
         }
     }
 

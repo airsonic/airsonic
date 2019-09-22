@@ -26,7 +26,6 @@ import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.Util;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -308,7 +307,7 @@ public class DownloadController implements LastModified {
             }
         } finally {
             out.flush();
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
