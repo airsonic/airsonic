@@ -32,7 +32,6 @@ import org.jaudiotagger.tag.id3.AbstractID3Tag;
 import org.jaudiotagger.tag.id3.ID3v24Frames;
 import org.jaudiotagger.tag.id3.ID3v24Tag;
 import org.jaudiotagger.tag.images.Artwork;
-import org.jaudiotagger.tag.reference.GenreTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.io.File;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.LogManager;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Parses meta data from audio files using the Jaudiotagger library
@@ -56,9 +51,6 @@ import java.util.regex.Pattern;
 public class JaudiotaggerParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(JaudiotaggerParser.class);
-    private static final Pattern GENRE_PATTERN = Pattern.compile("\\((\\d+)\\).*");
-    private static final Pattern TRACK_NUMBER_PATTERN = Pattern.compile("(\\d+)/\\d+");
-    private static final Pattern YEAR_NUMBER_PATTERN = Pattern.compile("(\\d{4}).*");
     @Autowired
     private final SettingsService settingsService;
 
@@ -190,103 +182,6 @@ public class JaudiotaggerParser extends MetaDataParser {
     }
 
     /**
-     * Returns all tags supported by id3v1.
-     */
-    public static SortedSet<String> getID3V1Genres() {
-        return new TreeSet<String>(GenreTypes.getInstanceOf().getAlphabeticalValueList());
-    }
-
-    /**
-     * Sometimes the genre is returned as "(17)" or "(17)Rock", instead of "Rock".  This method
-     * maps the genre ID to the corresponding text.
-     */
-    private String mapGenre(String genre) {
-        if (genre == null) {
-            return null;
-        }
-        Matcher matcher = GENRE_PATTERN.matcher(genre);
-        if (matcher.matches()) {
-            int genreId = Integer.parseInt(matcher.group(1));
-            if (genreId >= 0 && genreId < GenreTypes.getInstanceOf().getSize()) {
-                return GenreTypes.getInstanceOf().getValueForId(genreId);
-            }
-        }
-        return genre;
-    }
-
-    /**
-     * Parses the track number from the given string.  Also supports
-     * track numbers on the form "4/12".
-     */
-    private Integer parseTrackNumber(String trackNumber) {
-        if (trackNumber == null) {
-            return null;
-        }
-
-        Integer result = null;
-
-        try {
-            result = Integer.valueOf(trackNumber);
-        } catch (NumberFormatException x) {
-            Matcher matcher = TRACK_NUMBER_PATTERN.matcher(trackNumber);
-            if (matcher.matches()) {
-                try {
-                    result = Integer.valueOf(matcher.group(1));
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            }
-        }
-
-        if (Integer.valueOf(0).equals(result)) {
-            return null;
-        }
-        return result;
-    }
-
-    private Integer parseYear(String year) {
-        if (year == null) {
-            return null;
-        }
-
-        Integer result = null;
-
-        try {
-            result = Integer.valueOf(year);
-        } catch (NumberFormatException x) {
-            Matcher matcher = YEAR_NUMBER_PATTERN.matcher(year);
-            if (matcher.matches()) {
-                try {
-                    result = Integer.valueOf(matcher.group(1));
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-            }
-        }
-
-        if (Integer.valueOf(0).equals(result)) {
-            return null;
-        }
-        return result;
-    }
-
-    private Integer parseInteger(String s) {
-        s = StringUtils.trimToNull(s);
-        if (s == null) {
-            return null;
-        }
-        try {
-            Integer result = Integer.valueOf(s);
-            if (Integer.valueOf(0).equals(result)) {
-                return null;
-            }
-            return result;
-        } catch (NumberFormatException x) {
-            return null;
-        }
-    }
-
-    /**
      * Updates the given file with the given meta data.
      *
      * @param file     The music file to update.
@@ -363,13 +258,16 @@ public class JaudiotaggerParser extends MetaDataParser {
         return "mp3".equals(format) ||
                "m4a".equals(format) ||
                "m4b".equals(format) ||
+               "m4p".equals(format) ||
                "aac".equals(format) ||
                "ogg".equals(format) ||
-               "flac".equals(format) ||
                "wav".equals(format) ||
                "mpc".equals(format) ||
-               "mp+".equals(format) ||
-               "ape".equals(format) ||
+               "aif".equals(format) ||
+               "dsf".equals(format) ||
+               "aiff".equals(format) ||
+               "aifc".equals(format) ||
+               "flac".equals(format) ||
                "wma".equals(format);
     }
 
