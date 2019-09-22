@@ -245,6 +245,7 @@ public class SettingsService {
     private String[] cachedCoverArtFileTypesArray;
     private String[] cachedMusicFileTypesArray;
     private String[] cachedVideoFileTypesArray;
+    private String[] cachedPlayableFileTypesArray;
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
 
@@ -445,6 +446,17 @@ public class SettingsService {
             cachedVideoFileTypesArray = toStringArray(getVideoFileTypes());
         }
         return cachedVideoFileTypesArray;
+    }
+
+    public synchronized String[] getPlayableFileTypesAsArray() {
+        // make sure to regenerate cached result if either KEY_VIDEO_FILE_TYPES or KEY_MUSIC_FILE_TYPES
+        // has been changed
+        if (cachedPlayableFileTypesArray == null
+            || cachedMusicFileTypesArray == null
+            || cachedVideoFileTypesArray == null) {
+            cachedPlayableFileTypesArray = toStringArray(getMusicFileTypes() + " " + getVideoFileTypes());
+        }
+        return cachedPlayableFileTypesArray;
     }
 
     public synchronized String getCoverArtFileTypes() {
