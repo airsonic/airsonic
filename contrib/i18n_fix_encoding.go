@@ -7,6 +7,7 @@ package main
 // Unicode range could be changed to something wider
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -16,7 +17,19 @@ import (
 	"strings"
 )
 
+const i18nFilesPath = "airsonic-main/src/main/resources/org/airsonic/player/i18n"
+
 func main() {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if !strings.Contains(dir, i18nFilesPath) {
+		log.Fatal(errors.New("This script needs to be run inside the " + i18nFilesPath + " folder"))
+	}
+
+	fmt.Println(dir)
 	// List all files in current dir
 	files, err := filepath.Glob("*.properties")
 	if err != nil {
