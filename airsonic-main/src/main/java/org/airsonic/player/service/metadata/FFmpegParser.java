@@ -68,7 +68,7 @@ public class FFmpegParser extends MetaDataParser {
     @Override
     public MetaData getRawMetaData(File file) {
 
-        MetaData metaData = new MetaData(settingsService);
+        MetaData metaData = new MetaData();
 
         try {
             // Use `ffprobe` in the transcode directory if it exists, otherwise let the system sort it out.
