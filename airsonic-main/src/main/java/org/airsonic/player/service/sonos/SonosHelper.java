@@ -647,10 +647,18 @@ public class SonosHelper {
     }
 
     public String getMediaURI(int mediaFileId, String username, HttpServletRequest request) {
+        return getMediaURI(getMediaFile(mediaFileId), username, request);
+    }
+
+    public String getMediaURI(MediaFile song, String username, HttpServletRequest request) {
         Player player = createPlayerIfNecessary(username);
-        MediaFile song = mediaFileService.getMediaFile(mediaFileId);
         String uri = getBaseUrl(request) + "ext/stream?id=" + song.getId() + "&player=" + player.getId();
         return jwtSecurityService.addJWTToken(uri);
+    }
+
+
+    public MediaFile getMediaFile(int mediaFileId) {
+        return mediaFileService.getMediaFile(mediaFileId);
     }
 
     private Player createPlayerIfNecessary(String username) {

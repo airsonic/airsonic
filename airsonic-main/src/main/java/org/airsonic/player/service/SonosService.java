@@ -354,7 +354,9 @@ public class SonosService implements SonosSoap {
                             Holder<HttpHeaders> httpHeaders, Holder<Integer> uriTimeout, Holder<PositionInformation> positionInformation,
                             Holder<String> privateDataFieldName
     ) throws CustomFault {
-        result.value = sonosHelper.getMediaURI(Integer.parseInt(id), getUsername(), getRequest());
+        MediaFile mediaFile = sonosHelper.getMediaFile(Integer.parseInt(id));
+        result.value = sonosHelper.getMediaURI(mediaFile, getUsername(), getRequest());
+
         LOG.debug("getMediaURI: " + id + " -> " + result.value);
     }
 
