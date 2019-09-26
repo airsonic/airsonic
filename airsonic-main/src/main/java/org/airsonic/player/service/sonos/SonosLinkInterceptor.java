@@ -34,11 +34,11 @@ import static org.airsonic.player.service.sonos.SonosServiceRegistration.Authent
  * <p>The validation can be adapt for different link method from sonos.</p>
  */
 @Component
-public class SonosLinkkInterceptor extends AbstractSoapInterceptor {
-    private static final Logger LOG = LoggerFactory.getLogger(SonosLinkkInterceptor.class);
+public class SonosLinkInterceptor extends AbstractSoapInterceptor {
+    private static final Logger LOG = LoggerFactory.getLogger(SonosLinkInterceptor.class);
     private static Set<String> openMethod = Sets.newHashSet("getAppLink", "getDeviceAuthToken");
 
-    public SonosLinkkInterceptor() {
+    public SonosLinkInterceptor() {
         super(Phase.PRE_INVOKE);
     }
 
