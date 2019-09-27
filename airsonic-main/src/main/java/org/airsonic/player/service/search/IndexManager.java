@@ -20,6 +20,9 @@
 
 package org.airsonic.player.service.search;
 
+import org.airsonic.player.dao.AlbumDao;
+import org.airsonic.player.dao.ArtistDao;
+import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.Album;
 import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
@@ -99,6 +102,15 @@ public class IndexManager {
     @Autowired
     private DocumentFactory documentFactory;
 
+    @Autowired
+    private MediaFileDao mediaFileDao;
+
+    @Autowired
+    private ArtistDao artistDao;
+
+    @Autowired
+    private AlbumDao albumDao;
+
     private Map<IndexType, SearcherManager> searchers = new HashMap<>();
 
     private Map<IndexType, IndexWriter> writers = new HashMap<>();
@@ -161,6 +173,55 @@ public class IndexManager {
         File indexDirectory = getIndexDirectory.apply(indexType);
         IndexWriterConfig config = new IndexWriterConfig(analyzerFactory.getAnalyzer());
         return new IndexWriter(FSDirectory.open(indexDirectory.toPath()), config);
+    }
+
+    public void expunge() {
+
+        Term[] primarykeys = mediaFileDao.getArtistExpungeCandidates().stream()
+                .map(m -> documentFactory.createPrimarykey(m))
+                .toArray(i -> new Term[i]);
+        try {
+            writers.get(IndexType.ARTIST).deleteDocuments(primarykeys);
+        } catch (IOException e) {
+            LOG.error("Failed to delete artist doc.", e);
+        }
+
+        primarykeys = mediaFileDao.getAlbumExpungeCandidates().stream()
+                .map(m -> documentFactory.createPrimarykey(m))
+                .toArray(i -> new Term[i]);
+        try {
+            writers.get(IndexType.ALBUM).deleteDocuments(primarykeys);
+        } catch (IOException e) {
+            LOG.error("Failed to delete album doc.", e);
+        }
+
+        primarykeys = mediaFileDao.getSongExpungeCandidates().stream()
+                .map(m -> documentFactory.createPrimarykey(m))
+                .toArray(i -> new Term[i]);
+        try {
+            writers.get(IndexType.SONG).deleteDocuments(primarykeys);
+        } catch (IOException e) {
+            LOG.error("Failed to delete song doc.", e);
+        }
+
+        primarykeys = artistDao.getExpungeCandidates().stream()
+                .map(m -> documentFactory.createPrimarykey(m))
+                .toArray(i -> new Term[i]);
+        try {
+            writers.get(IndexType.ARTIST_ID3).deleteDocuments(primarykeys);
+        } catch (IOException e) {
+            LOG.error("Failed to delete artistId3 doc.", e);
+        }
+
+        primarykeys = albumDao.getExpungeCandidates().stream()
+                .map(m -> documentFactory.createPrimarykey(m))
+                .toArray(i -> new Term[i]);
+        try {
+            writers.get(IndexType.ALBUM_ID3).deleteDocuments(primarykeys);
+        } catch (IOException e) {
+            LOG.error("Failed to delete albumId3 doc.", e);
+        }
+
     }
 
     /**

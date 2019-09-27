@@ -127,16 +127,20 @@ public class DocumentFactory {
         doc.add(new SortedDocValuesField(fieldName, new BytesRef(value)));
     };
 
+    public final Term createPrimarykey(Integer id) {
+        return new Term(FieldNames.ID, Integer.toString(id));
+    };
+
     public final Term createPrimarykey(Album album) {
-        return new Term(FieldNames.ID, Integer.toString(album.getId()));
+        return createPrimarykey(album.getId());
     };
 
     public final Term createPrimarykey(Artist artist) {
-        return new Term(FieldNames.ID, Integer.toString(artist.getId()));
+        return createPrimarykey(artist.getId());
     };
 
     public final Term createPrimarykey(MediaFile mediaFile) {
-        return new Term(FieldNames.ID, Integer.toString(mediaFile.getId()));
+        return createPrimarykey(mediaFile.getId());
     };
 
     /**

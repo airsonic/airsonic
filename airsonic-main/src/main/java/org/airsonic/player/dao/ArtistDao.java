@@ -169,6 +169,10 @@ public class ArtistDao extends AbstractDao {
         }
     }
 
+    public List<Integer> getExpungeCandidates() {
+        return queryForInts("select id from artist where not present");
+    }
+
     public void expunge() {
         int minId = queryForInt("select min(id) from artist where not present", 0);
         int maxId = queryForInt("select max(id) from artist where not present", 0);
