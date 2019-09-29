@@ -673,6 +673,10 @@ public class SonosHelper {
             player.setTechnology(PlayerTechnology.EXTERNAL_WITH_PLAYLIST);
             playerService.createPlayer(player);
             players = playerService.getPlayersForUserAndClientId(username, AIRSONIC_CLIENT_ID);
+
+            // @FIXME when a new transcoding choice can be set we can put the right transcoding here for Sonos player.
+            // Now, we remove transcoding for Sonos player
+            transcodingService.setTranscodingsForPlayer(players.get(0), new int[0]);
         }
 
         return players.get(0);
