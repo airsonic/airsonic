@@ -647,10 +647,18 @@ public class SonosHelper {
     }
 
     public String getMediaURI(int mediaFileId, String username, HttpServletRequest request) {
+        return getMediaURI(getMediaFile(mediaFileId), username, request);
+    }
+
+    public String getMediaURI(MediaFile song, String username, HttpServletRequest request) {
         Player player = createPlayerIfNecessary(username);
-        MediaFile song = mediaFileService.getMediaFile(mediaFileId);
         String uri = getBaseUrl(request) + "ext/stream?id=" + song.getId() + "&player=" + player.getId();
         return jwtSecurityService.addJWTToken(uri);
+    }
+
+
+    public MediaFile getMediaFile(int mediaFileId) {
+        return mediaFileService.getMediaFile(mediaFileId);
     }
 
     private Player createPlayerIfNecessary(String username) {
@@ -665,6 +673,10 @@ public class SonosHelper {
             player.setTechnology(PlayerTechnology.EXTERNAL_WITH_PLAYLIST);
             playerService.createPlayer(player);
             players = playerService.getPlayersForUserAndClientId(username, AIRSONIC_CLIENT_ID);
+
+            // @FIXME when a new transcoding choice can be set we can put the right transcoding here for Sonos player.
+            // Now, we remove transcoding for Sonos player
+            transcodingService.setTranscodingsForPlayer(players.get(0), new int[0]);
         }
 
         return players.get(0);

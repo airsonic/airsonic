@@ -70,8 +70,6 @@ public class SonosFaultInterceptor extends AbstractSoapInterceptor {
             Element sonosError = document.createElement("SonosError");
             sonosError.setTextContent(String.valueOf(cause.getSonosError()));
             details.appendChild(sonosError);
-        } else {
-            LOG.warn("Not handled " + fault, fault);
         }
     }
 }

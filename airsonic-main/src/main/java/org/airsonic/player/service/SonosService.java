@@ -327,19 +327,23 @@ public class SonosService implements SonosSoap {
     @Override
     public GetMediaMetadataResponse getMediaMetadata(GetMediaMetadata parameters) {
         LOG.debug("getMediaMetadata: " + parameters.getId());
-
         GetMediaMetadataResponse response = new GetMediaMetadataResponse();
 
-        // This method is called whenever a playlist is modified. Don't know why.
-        // Return an empty response to avoid ugly log message.
-        if (parameters.getId().startsWith(ID_PLAYLIST_PREFIX)) {
-            return response;
+        try {
+            // This method is called whenever a playlist is modified. Don't know why.
+            // Return an empty response to avoid ugly log message.
+            if (parameters.getId().startsWith(ID_PLAYLIST_PREFIX)) {
+                return response;
+            }
+
+            int id = Integer.parseInt(parameters.getId());
+            MediaFile song = mediaFileService.getMediaFile(id);
+
+            response.setGetMediaMetadataResult(sonosHelper.forSong(song, getUsername(), getRequest()));
+        }catch (SecurityException e){
+            LOG.debug("Login denied", e);
+            throw new SonosSoapFault.LoginUnauthorized();
         }
-
-        int id = Integer.parseInt(parameters.getId());
-        MediaFile song = mediaFileService.getMediaFile(id);
-
-        response.setGetMediaMetadataResult(sonosHelper.forSong(song, getUsername(), getRequest()));
 
         return response;
     }
@@ -350,7 +354,9 @@ public class SonosService implements SonosSoap {
                             Holder<HttpHeaders> httpHeaders, Holder<Integer> uriTimeout, Holder<PositionInformation> positionInformation,
                             Holder<String> privateDataFieldName
     ) throws CustomFault {
-        result.value = sonosHelper.getMediaURI(Integer.parseInt(id), getUsername(), getRequest());
+        MediaFile mediaFile = sonosHelper.getMediaFile(Integer.parseInt(id));
+        result.value = sonosHelper.getMediaURI(mediaFile, getUsername(), getRequest());
+
         LOG.debug("getMediaURI: " + id + " -> " + result.value);
     }
 

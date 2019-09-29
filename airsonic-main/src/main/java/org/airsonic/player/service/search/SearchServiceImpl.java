@@ -117,7 +117,7 @@ public class SearchServiceImpl implements SearchService {
             }
 
         } catch (IOException | ParseException e) {
-            LOG.error("Failed to execute Lucene search.", e);
+            LOG.error("Failed to execute Lucene search criteria {}, music folders {} and indexType {}", criteria, musicFolders, indexType, e);
         } finally {
             FileUtil.closeQuietly(reader);
         }

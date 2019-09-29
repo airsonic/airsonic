@@ -476,7 +476,7 @@ public class SecurityService implements UserDetailsService {
     }
 
     private void setUser(String username) throws SonosSoapFault.LoginUnauthorized {
-        User user = getUserByName(USERNAME_SONOS, true);
+        User user = getUserByName(username, true);
         Authentication authentication = authenticate(user.getUsername(), user.getPassword());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
