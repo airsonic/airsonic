@@ -258,10 +258,15 @@
             <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
             <sub:param name="type" value="album"/>
         </sub:url>
+        <sub:url value="https://www.discogs.com/search/" var="discogsUrl" encoding="UTF-8">
+            <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
+            <sub:param name="type" value="release"/>
+        </sub:url>
         <span class="header"><fmt:message key="top.search"/> <a target="_blank" href="${googleUrl}">Google</a></span> |
         <span class="header"><a target="_blank" rel="noopener noreferrer" href="${wikipediaUrl}">Wikipedia</a></span> |
         <span class="header"><a target="_blank" rel="noopener noreferrer" href="${allmusicUrl}">allmusic</a></span> |
         <span class="header"><a target="_blank" rel="noopener noreferrer" href="${lastFmUrl}">Last.fm</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${discogsUrl}">Discogs</a></span> |
         <c:if test="${not empty model.musicBrainzReleaseId}">
           <sub:url value="https://musicbrainz.org/release/${model.musicBrainzReleaseId}" var="musicBrainzUrl" encoding="UTF-8">
           </sub:url>
