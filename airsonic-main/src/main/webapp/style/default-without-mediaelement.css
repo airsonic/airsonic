@@ -194,6 +194,7 @@ input, textarea, select {
     padding: 3px;
     border-radius: 3px;
     border: 1px solid lightgray;
+    vertical-align: middle;
 }
 
 input[type=submit], input[type=button] {
