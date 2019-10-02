@@ -19,7 +19,6 @@
 
 package org.airsonic.player.service.sonos;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sonos.services._1.*;
