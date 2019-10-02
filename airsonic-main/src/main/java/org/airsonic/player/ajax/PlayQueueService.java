@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.ajax;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.airsonic.player.dao.InternetRadioDao;
 import org.airsonic.player.dao.MediaFileDao;

@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.service;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.airsonic.player.dao.PodcastDao;
