@@ -245,21 +245,21 @@
 
     <c:if test="${not empty model.artist and not empty model.album}">
         <sub:url value="https://www.google.com/search" var="googleUrl" encoding="UTF-8">
-            <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
+            <sub:param name="q" value="\"${fn:escapeXml(model.artist)}\" \"${fn:escapeXml(model.album)}\""/>
         </sub:url>
         <sub:url value="https://en.wikipedia.org/wiki/Special:Search" var="wikipediaUrl" encoding="UTF-8">
-            <sub:param name="search" value="\"${model.album}\""/>
+            <sub:param name="search" value="\"${fn:escapeXml(model.album)}\""/>
             <sub:param name="go" value="Go"/>
         </sub:url>
-        <sub:url value="allmusic.view" var="allmusicUrl">
-            <sub:param name="album" value="${model.album}"/>
+        <sub:url value="https://www.allmusic.com/search/albums/%22${fn:escapeXml(model.artist)}%22+%22${fn:escapeXml(model.album)}%22" var="allmusicUrl">
         </sub:url>
+        
         <sub:url value="https://www.last.fm/search" var="lastFmUrl" encoding="UTF-8">
-            <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
+            <sub:param name="q" value="\"${fn:escapeXml(model.artist)}\" \"${fn:escapeXml(model.album)}\""/>
             <sub:param name="type" value="album"/>
         </sub:url>
         <sub:url value="https://www.discogs.com/search/" var="discogsUrl" encoding="UTF-8">
-            <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
+            <sub:param name="q" value="\"${fn:escapeXml(model.artist)}\" \"${fn:escapeXml(model.album)}\""/>
             <sub:param name="type" value="release"/>
         </sub:url>
         <span class="header"><fmt:message key="top.search"/> <a target="_blank" href="${googleUrl}">Google</a></span> |
