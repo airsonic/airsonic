@@ -533,13 +533,9 @@ public class MediaFileService {
                     }
 
                     // Look for cover art.
-                    try {
-                        File coverArt = findCoverArt(children);
-                        if (coverArt != null) {
-                            mediaFile.setCoverArtPath(coverArt.getPath());
-                        }
-                    } catch (IOException x) {
-                        LOG.error("Failed to find cover art.", x);
+                    File coverArt = findCoverArt(children);
+                    if (coverArt != null) {
+                      mediaFile.setCoverArtPath(coverArt.getPath());
                     }
 
                 } else {
