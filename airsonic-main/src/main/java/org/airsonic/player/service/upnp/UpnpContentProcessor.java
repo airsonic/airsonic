@@ -22,7 +22,6 @@ package org.airsonic.player.service.upnp;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.ParamSearchResult;
 import org.airsonic.player.util.Util;
-import org.fourthline.cling.support.contentdirectory.ContentDirectoryException;
 import org.fourthline.cling.support.contentdirectory.DIDLParser;
 import org.fourthline.cling.support.model.BrowseResult;
 import org.fourthline.cling.support.model.DIDLContent;
