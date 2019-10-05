@@ -67,11 +67,7 @@ public class JukeboxJavaService {
                 if (StringUtils.isBlank(mixer)) {
                     mixer = DEFAULT_MIXER_ENTRY_KEY;
                 }
-                List<com.github.biconou.AudioPlayer.api.Player> playersForMixer = activeAudioPlayersPerMixer.get(mixer);
-                if (playersForMixer == null) {
-                    playersForMixer = new ArrayList<>();
-                    activeAudioPlayersPerMixer.put(mixer, playersForMixer);
-                }
+                List<com.github.biconou.AudioPlayer.api.Player> playersForMixer = activeAudioPlayersPerMixer.computeIfAbsent(mixer, k -> new ArrayList<>());
                 playersForMixer.add(newPlayer);
                 foundPlayer = newPlayer;
             }
