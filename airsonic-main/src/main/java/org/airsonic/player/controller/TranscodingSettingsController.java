@@ -69,9 +69,10 @@ public class TranscodingSettingsController {
     public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
         String error = handleParameters(request, redirectAttributes);
         if (error != null) {
+            redirectAttributes.addFlashAttribute("error", error);
+        } else {
             redirectAttributes.addFlashAttribute("settings_toast", true);
         }
-        redirectAttributes.addFlashAttribute("error", error);
         return "redirect:transcodingSettings.view";
     }
 

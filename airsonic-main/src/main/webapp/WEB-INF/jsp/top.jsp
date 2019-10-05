@@ -132,28 +132,29 @@
         </td>
 
         <td style="padding-left:15pt;padding-right:5pt;vertical-align: middle;width: 100%;text-align: center">
+            <a href="<c:url value="/logout"/>" target="_top">
+                <c:choose>
+                    <c:when test="${model.showAvatar}">
+                        <sub:url value="avatar.view" var="avatarUrl">
+                            <sub:param name="username" value="${model.user.username}"/>
+                        </sub:url>
+                        <div style="padding-bottom: 4px">
+                            <c:if test="${model.user.settingsRole}"><a href="personalSettings.view" target="main"></c:if>
+                            <img src="${avatarUrl}" alt="" width="30" height="30">
+                            <c:if test="${model.user.settingsRole}"></a></c:if>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<spring:theme code="logoutImage"/>" alt="logout" height="24">
+                    </c:otherwise>
+                </c:choose>
 
-          <c:choose>
-            <c:when test="${model.showAvatar}">
-            <sub:url value="avatar.view" var="avatarUrl">
-                <sub:param name="username" value="${model.user.username}"/>
-            </sub:url>
-                <div style="padding-bottom: 4px">
-                    <c:if test="${model.user.settingsRole}"><a href="personalSettings.view" target="main"></c:if>
-                        <img src="${avatarUrl}" alt="" width="30" height="30">
-                        <c:if test="${model.user.settingsRole}"></a></c:if>
+                <div class="detail">
+                    <fmt:message key="top.logout" var="logout"><br/>
+                        <fmt:param value="${model.user.username}"/></fmt:message>
+                    ${fn:escapeXml(logout)}
                 </div>
-            </c:when>
-            <c:otherwise>
-            <img src="<spring:theme code="logoutImage"/>" alt="logout" height="24">
-            </c:otherwise>
-          </c:choose>
-
-            <div class="detail">
-              <fmt:message key="top.logout" var="logout"><br/>
-              <fmt:param value="${model.user.username}"/></fmt:message>
-                <a href="<c:url value="/logout"/>" target="_top">${fn:escapeXml(logout)}</a>
-            </div>
+            </a>
         </td>
 
     </tr></table>
