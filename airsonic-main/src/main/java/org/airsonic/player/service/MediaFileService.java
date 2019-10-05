@@ -356,13 +356,7 @@ public class MediaFileService {
      * Removes video files from the given list.
      */
     public void removeVideoFiles(List<MediaFile> files) {
-        Iterator<MediaFile> iterator = files.iterator();
-        while (iterator.hasNext()) {
-            MediaFile file = iterator.next();
-            if (file.isVideo()) {
-                iterator.remove();
-            }
-        }
+        files.removeIf(MediaFile::isVideo);
     }
 
     public Date getMediaFileStarredDate(int id, String username) {

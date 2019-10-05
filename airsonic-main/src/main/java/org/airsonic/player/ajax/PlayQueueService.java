@@ -275,13 +275,7 @@ public class PlayQueueService {
         }
 
         // Remove non-present files
-        Iterator<MediaFile> iterator = files.iterator();
-        while (iterator.hasNext()) {
-            MediaFile file = iterator.next();
-            if (!file.isPresent()) {
-                iterator.remove();
-            }
-        }
+        files.removeIf(file -> !file.isPresent());
         Player player = getCurrentPlayer(request, response);
         return doPlay(request, player, files).setStartPlayerAt(0);
     }
