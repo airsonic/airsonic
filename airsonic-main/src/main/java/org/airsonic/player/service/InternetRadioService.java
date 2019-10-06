@@ -129,7 +129,6 @@ public class InternetRadioService {
      *
      * @param radio an internet radio
      * @return a list of internet radio sources
-     * @throws Exception
      */
     private List<InternetRadioSource> retrieveInternetRadioSources(InternetRadio radio) throws Exception {
         return retrieveInternetRadioSources(
@@ -148,7 +147,6 @@ public class InternetRadioService {
      * @param maxByteSize maximum size of the response, in bytes, or 0 if unlimited
      * @param maxRedirects maximum number of redirects, or 0 if unlimited
      * @return a list of internet radio sources
-     * @throws Exception
      */
     private List<InternetRadioSource> retrieveInternetRadioSources(InternetRadio radio, int maxCount, long maxByteSize, int maxRedirects) throws Exception {
         // Retrieve the remote playlist

@@ -29,7 +29,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
         "/applicationContext-testdb.xml"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @Component
-/**
+/*
  * Abstract class for scanning MusicFolder.
  */
 public abstract class AbstractAirsonicHomeTest implements AirsonicHomeTest {

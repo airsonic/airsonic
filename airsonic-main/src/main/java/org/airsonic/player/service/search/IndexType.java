@@ -91,7 +91,6 @@ public enum IndexType {
      * 
      * @param k Field name defined by FieldNames
      * @param v Boost value
-     * @return
      */
     private static final SimpleEntry<String, Float> entry(String k, float v) {
         return new AbstractMap.SimpleEntry<>(k, v);
@@ -101,9 +100,6 @@ public enum IndexType {
      * Defines the field that the input value is to search for
      * when searching IndexType.
      * If you specify multiple values, list the field names.
-     * 
-     * @param names
-     * @return
      */
     private static final String[] fieldNames(String... names) {
         return Arrays.stream(names).toArray(String[]::new);
@@ -123,7 +119,7 @@ public enum IndexType {
      * 
      * @return Map of fields and boost values
      * @since legacy
-     * @see BoostQuery
+     * @see org.apache.lucene.search.BoostQuery
      */
     public Map<String, Float> getBoosts() {
         return boosts;
