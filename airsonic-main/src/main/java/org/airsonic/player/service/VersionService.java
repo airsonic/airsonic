@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.service;
 
-import com.jayway.jsonpath.JsonPath;
 import org.airsonic.player.domain.Version;
 import org.airsonic.player.util.FileUtil;
 import org.apache.http.client.ResponseHandler;
@@ -32,11 +31,14 @@ import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+
+import javax.json.*;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -249,7 +251,13 @@ public class VersionService {
             return;
         }
 
-        List<String> unsortedTags = JsonPath.read(content, JSON_PATH);
+        final JsonReader jsonreader = Json.createReader(new StringReader(content));
+        JsonArray jsonobject = jsonreader.readArray();
+        List<String> unsortedTags = new ArrayList<>();
+        for (int j = 0; j < jsonobject.size(); j++) {
+            unsortedTags.add(jsonobject.getJsonObject(j).getString("tag_name"));
+        }
+        jsonreader.close()
 
         Function<String, Version> convertToVersion = s -> {
             Matcher match = VERSION_REGEX.matcher(s);
