@@ -21,7 +21,6 @@ package org.airsonic.player.domain;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.io.IOException;
 import java.util.*;
 
 /**

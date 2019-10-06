@@ -22,7 +22,6 @@ package org.airsonic.player.domain;
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 /**

@@ -24,7 +24,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import javax.swing.*;
 
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * @author Sindre Mehus
