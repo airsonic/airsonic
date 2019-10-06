@@ -12,7 +12,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form commandName="command" action="podcastSettings.view" method="post">
+<form:form modelAttribute="command" action="podcastSettings.view" method="post">
 
 <table class="indent">
     <tr>

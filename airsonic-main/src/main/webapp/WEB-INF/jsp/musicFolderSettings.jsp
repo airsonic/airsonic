@@ -28,7 +28,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form commandName="command" action="musicFolderSettings.view" method="post">
+<form:form modelAttribute="command" action="musicFolderSettings.view" method="post">
 
 <table class="indent">
     <tr>
