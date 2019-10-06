@@ -207,7 +207,7 @@ public class SettingsService {
     private static final String DEFAULT_RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
     private static final String DEFAULT_RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
 
-    private static final boolean DEFAULT_GOOGLE_CAST_ENABLED = false;
+    private static final boolean DEFAULT_GOOGLE_CAST_ENABLED = true;
 
     private static final DataSourceConfigType DEFAULT_DATABASE_CONFIG_TYPE = DataSourceConfigType.LEGACY;
     private static final String DEFAULT_DATABASE_CONFIG_EMBED_DRIVER = null;
