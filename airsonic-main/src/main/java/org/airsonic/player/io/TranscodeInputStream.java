@@ -112,7 +112,7 @@ public class TranscodeInputStream extends InputStream {
     /**
      * @see InputStream#close()
      */
-    public void close() throws IOException {
+    public void close() {
         FileUtil.closeQuietly(processInputStream);
         FileUtil.closeQuietly(processOutputStream);
 

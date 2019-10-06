@@ -40,7 +40,7 @@ public class JWTSecurityServiceTest {
 
 
     @Test
-    public void addJWTToken() throws Exception {
+    public void addJWTToken() {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(uriString);
         String actualUri = service.addJWTToken(builder).build().toUriString();
         String jwtToken = UriComponentsBuilder.fromUriString(actualUri).build().getQueryParams().getFirst(

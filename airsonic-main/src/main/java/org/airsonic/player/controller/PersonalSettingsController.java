@@ -53,7 +53,7 @@ public class PersonalSettingsController  {
     private SecurityService securityService;
 
     @ModelAttribute
-    protected void formBackingObject(HttpServletRequest request,Model model) throws Exception {
+    protected void formBackingObject(HttpServletRequest request,Model model) {
         PersonalSettingsCommand command = new PersonalSettingsCommand();
 
         User user = securityService.getCurrentUser(request);
@@ -110,12 +110,12 @@ public class PersonalSettingsController  {
     }
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "personalSettings";
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         int localeIndex = Integer.parseInt(command.getLocaleIndex());
         Locale locale = null;

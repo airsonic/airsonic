@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -104,7 +103,7 @@ public class AvatarUploadController  {
         return new ModelAndView("avatarUploadResult","model",map);
     }
 
-    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) throws IOException {
+    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) {
 
         BufferedImage image;
         try {

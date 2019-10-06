@@ -10,14 +10,12 @@ import org.mockito.*;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -99,7 +97,7 @@ public class InternetRadioServiceTest {
         InputStream mockURLInputStreamLarge = new InputStream() {
             private long pos = 0;
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return TEST_STREAM_PLAYLIST_CONTENTS_2.charAt((int)(pos++ % TEST_STREAM_PLAYLIST_CONTENTS_2.length()));
             }
         };
@@ -112,7 +110,7 @@ public class InternetRadioServiceTest {
         InputStream mockURLInputStreamLarge2 = new InputStream() {
             private long pos = 0;
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return 0x41;
             }
         };
@@ -129,7 +127,7 @@ public class InternetRadioServiceTest {
     }
 
     @Test
-    public void testParseSimplePlaylist() throws Exception {
+    public void testParseSimplePlaylist() {
         List<InternetRadioSource> radioSources = internetRadioService.getInternetRadioSources(radio1);
 
         Assert.assertEquals(2, radioSources.size());
@@ -138,7 +136,7 @@ public class InternetRadioServiceTest {
     }
 
     @Test
-    public void testRedirects() throws Exception {
+    public void testRedirects() {
         List<InternetRadioSource> radioSources = internetRadioService.getInternetRadioSources(radioMove);
 
         Assert.assertEquals(2, radioSources.size());
@@ -147,7 +145,7 @@ public class InternetRadioServiceTest {
     }
 
     @Test
-    public void testLargeInput() throws Exception {
+    public void testLargeInput() {
         List<InternetRadioSource> radioSources = internetRadioService.getInternetRadioSources(radioLarge);
 
         // A PlaylistTooLarge exception is thrown internally, and the
@@ -157,7 +155,7 @@ public class InternetRadioServiceTest {
     }
 
     @Test
-    public void testLargeInputURL() throws Exception {
+    public void testLargeInputURL() {
         List<InternetRadioSource> radioSources = internetRadioService.getInternetRadioSources(radioLarge2);
 
         // A PlaylistTooLarge exception is thrown internally, and the
@@ -167,7 +165,7 @@ public class InternetRadioServiceTest {
     }
 
     @Test
-    public void testRedirectLoop() throws Exception {
+    public void testRedirectLoop() {
         List<InternetRadioSource> radioSources = internetRadioService.getInternetRadioSources(radioMoveLoop);
 
         // A PlaylistHasTooManyRedirects exception is thrown internally,

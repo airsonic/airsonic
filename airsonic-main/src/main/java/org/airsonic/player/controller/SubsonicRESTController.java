@@ -145,12 +145,12 @@ public class SubsonicRESTController {
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public void handleMissingRequestParam(HttpServletRequest request,
                                           HttpServletResponse response,
-                                          MissingServletRequestParameterException exception) throws Exception {
+                                          MissingServletRequestParameterException exception) {
         error(request, response, ErrorCode.MISSING_PARAMETER, "Required param (" + exception.getParameterName() + ") is missing");
     }
 
     @RequestMapping("/ping")
-    public void ping(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void ping(HttpServletRequest request, HttpServletResponse response) {
         Response res = createResponse();
         jaxbWriter.writeResponse(request, response, res);
     }
@@ -160,7 +160,7 @@ public class SubsonicRESTController {
      * CAUTION : this method is required by mobile applications and must not be removed.
      */
     @RequestMapping("/getLicense")
-    public void getLicense(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getLicense(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         License license = new License();
 
@@ -179,7 +179,7 @@ public class SubsonicRESTController {
 
 
     @RequestMapping("/getMusicFolders")
-    public void getMusicFolders(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getMusicFolders(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
 
         MusicFolders musicFolders = new MusicFolders();
@@ -266,7 +266,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getGenres")
-    public void getGenres(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getGenres(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         org.subsonic.restapi.Genres genres = new org.subsonic.restapi.Genres();
 
@@ -306,7 +306,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getArtists")
-    public void getArtists(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getArtists(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         String username = securityService.getCurrentUsername(request);
 
@@ -776,7 +776,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getPlaylists")
-    public void getPlaylists(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getPlaylists(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
 
         org.airsonic.player.domain.User user = securityService.getCurrentUser(request);
@@ -1200,7 +1200,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getNowPlaying")
-    public void getNowPlaying(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getNowPlaying(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         NowPlaying result = new NowPlaying();
 
@@ -1439,16 +1439,16 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/star")
-    public void star(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void star(HttpServletRequest request, HttpServletResponse response) {
         starOrUnstar(request, response, true);
     }
 
     @RequestMapping("/unstar")
-    public void unstar(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void unstar(HttpServletRequest request, HttpServletResponse response) {
         starOrUnstar(request, response, false);
     }
 
-    private void starOrUnstar(HttpServletRequest request, HttpServletResponse response, boolean star) throws Exception {
+    private void starOrUnstar(HttpServletRequest request, HttpServletResponse response, boolean star) {
         request = wrapRequest(request);
 
         String username = securityService.getCurrentUser(request).getUsername();
@@ -1614,7 +1614,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/refreshPodcasts")
-    public void refreshPodcasts(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void refreshPodcasts(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         org.airsonic.player.domain.User user = securityService.getCurrentUser(request);
         if (!user.isPodcastRole()) {
@@ -1688,7 +1688,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getInternetRadioStations")
-    public void getInternetRadioStations(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getInternetRadioStations(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
 
         InternetRadioStations result = new InternetRadioStations();
@@ -1987,7 +1987,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getUsers")
-    public void getUsers(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getUsers(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
 
         org.airsonic.player.domain.User currentUser = securityService.getCurrentUser(request);
@@ -2166,7 +2166,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getLyrics")
-    public void getLyrics(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void getLyrics(HttpServletRequest request, HttpServletResponse response) {
         request = wrapRequest(request);
         String artist = request.getParameter("artist");
         String title = request.getParameter("title");
@@ -2256,7 +2256,7 @@ public class SubsonicRESTController {
     }
 
     @RequestMapping("/getVideoInfo")
-    public ResponseEntity<String> getVideoInfo() throws Exception {
+    public ResponseEntity<String> getVideoInfo() {
         return ResponseEntity.status(HttpStatus.SC_NOT_IMPLEMENTED).body(NOT_YET_IMPLEMENTED);
     }
 
@@ -2327,11 +2327,11 @@ public class SubsonicRESTController {
         return jaxbWriter.createResponse(true);
     }
 
-    private void writeEmptyResponse(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void writeEmptyResponse(HttpServletRequest request, HttpServletResponse response) {
         jaxbWriter.writeResponse(request, response, createResponse());
     }
 
-    public void error(HttpServletRequest request, HttpServletResponse response, ErrorCode code, String message) throws Exception {
+    public void error(HttpServletRequest request, HttpServletResponse response, ErrorCode code, String message) {
         jaxbWriter.writeErrorResponse(request, response, code, message);
     }
 

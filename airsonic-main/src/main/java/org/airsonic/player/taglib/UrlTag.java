@@ -62,7 +62,7 @@ public class UrlTag extends BodyTagSupport {
     private String encoding = DEFAULT_ENCODING;
     private List<Parameter> parameters = new ArrayList<Parameter>();
 
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         parameters.clear();
         return EVAL_BODY_BUFFERED;
     }

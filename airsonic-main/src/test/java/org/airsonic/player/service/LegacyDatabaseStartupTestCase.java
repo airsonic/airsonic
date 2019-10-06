@@ -47,7 +47,7 @@ public class LegacyDatabaseStartupTestCase {
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Test
-    public void testStartup() throws Exception {
+    public void testStartup() {
         System.out.println("Successful startup");
     }
 

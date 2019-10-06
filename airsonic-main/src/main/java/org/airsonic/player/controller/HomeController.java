@@ -30,7 +30,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.web.bind.ServletRequestUtils.getIntParameter;
@@ -168,7 +167,7 @@ public class HomeController  {
         return result;
     }
 
-    private List<Album> getNewest(int offset, int count, List<MusicFolder> musicFolders) throws IOException {
+    private List<Album> getNewest(int offset, int count, List<MusicFolder> musicFolders) {
         List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getNewestAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(file);
@@ -182,7 +181,7 @@ public class HomeController  {
         return result;
     }
 
-    private List<Album> getStarred(int offset, int count, String username, List<MusicFolder> musicFolders) throws IOException {
+    private List<Album> getStarred(int offset, int count, String username, List<MusicFolder> musicFolders) {
         List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getStarredAlbums(offset, count, username, musicFolders)) {
             result.add(createAlbum(file));
@@ -190,7 +189,7 @@ public class HomeController  {
         return result;
     }
 
-    private List<Album> getRandom(int count, List<MusicFolder> musicFolders) throws IOException {
+    private List<Album> getRandom(int count, List<MusicFolder> musicFolders) {
         List<Album> result = new ArrayList<>();
         for (MediaFile file : searchService.getRandomAlbums(count, musicFolders)) {
             result.add(createAlbum(file));
@@ -198,7 +197,7 @@ public class HomeController  {
         return result;
     }
 
-    private List<Album> getAlphabetical(int offset, int count, boolean byArtist, List<MusicFolder> musicFolders) throws IOException {
+    private List<Album> getAlphabetical(int offset, int count, boolean byArtist, List<MusicFolder> musicFolders) {
         List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getAlphabeticalAlbums(offset, count, byArtist, musicFolders)) {
             result.add(createAlbum(file));

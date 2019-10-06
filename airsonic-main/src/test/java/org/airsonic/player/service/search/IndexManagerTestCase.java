@@ -64,7 +64,7 @@ public class IndexManagerTestCase extends AbstractAirsonicHomeTest {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         populateDatabaseOnlyOnce();
     }
 
@@ -84,7 +84,7 @@ public class IndexManagerTestCase extends AbstractAirsonicHomeTest {
     ResourceLoader resourceLoader;
 
     @Test
-    public void testExpunge() throws InterruptedException {
+    public void testExpunge() {
 
         SearchCriteria criteria = new SearchCriteria();
         criteria.setOffset(0);

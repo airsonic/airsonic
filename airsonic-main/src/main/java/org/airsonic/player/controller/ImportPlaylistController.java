@@ -58,7 +58,7 @@ public class ImportPlaylistController {
     @PostMapping
     protected String handlePost(RedirectAttributes redirectAttributes,
                                 HttpServletRequest request
-    ) throws Exception {
+    ) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {

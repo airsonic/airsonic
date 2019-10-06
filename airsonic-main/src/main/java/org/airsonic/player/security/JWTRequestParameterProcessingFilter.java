@@ -31,7 +31,7 @@ public class JWTRequestParameterProcessingFilter implements Filter {
         failureHandler = new SimpleUrlAuthenticationFailureHandler(failureUrl);
     }
 
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         Optional<JWTAuthenticationToken> token = findToken(request);
         if (token.isPresent()) {
             return authenticationManager.authenticate(token.get());
@@ -48,7 +48,7 @@ public class JWTRequestParameterProcessingFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
 
     }
 

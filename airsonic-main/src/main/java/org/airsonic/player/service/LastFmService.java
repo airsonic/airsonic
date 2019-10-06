@@ -37,7 +37,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -181,7 +180,7 @@ public class LastFmService {
      * @return Songs from similar artists;
      */
     public List<MediaFile> getSimilarSongs(org.airsonic.player.domain.Artist artist, int count,
-                                           List<MusicFolder> musicFolders) throws IOException {
+                                           List<MusicFolder> musicFolders) {
 
         List<MediaFile> similarSongs = new ArrayList<MediaFile>(mediaFileDao.getSongsByArtist(artist.getName(), 0, 1000));
         for (org.airsonic.player.domain.Artist similarArtist : getSimilarArtists(artist, 100, false, musicFolders)) {

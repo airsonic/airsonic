@@ -38,7 +38,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,7 +98,7 @@ public class ExternalPlayerController {
         return new ModelAndView("externalPlayer", "model", map);
     }
 
-    private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) throws IOException {
+    private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) {
         Date expires = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof JWTAuthenticationToken) {

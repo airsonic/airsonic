@@ -25,7 +25,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
     UserDao userDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from user_role");
         getJdbcTemplate().execute("delete from user");
     }

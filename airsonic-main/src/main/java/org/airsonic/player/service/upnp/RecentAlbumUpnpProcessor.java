@@ -80,7 +80,7 @@ public class RecentAlbumUpnpProcessor extends AlbumUpnpProcessor {
     }
 
     @Override
-    public int getAllItemsSize() throws Exception {
+    public int getAllItemsSize() {
         List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();
         int allAlbumCount = getAlbumDao().getAlbumCount(allFolders);
         return Math.min(allAlbumCount, RECENT_COUNT);

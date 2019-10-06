@@ -24,7 +24,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBean2 {
     PlayerDao playerDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from player");
     }
 
