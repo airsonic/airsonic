@@ -51,7 +51,7 @@ public class DLNASettingsController {
     private SettingsService settingsService;
 
     @GetMapping
-    public String handleGet(Model model) throws Exception {
+    public String handleGet(Model model) {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -64,7 +64,7 @@ public class DLNASettingsController {
     }
 
     @PostMapping
-    public String handlePost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+    public String handlePost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         handleParameters(request);
         redirectAttributes.addFlashAttribute("settings_toast", true);
         return "redirect:dlnaSettings.view";

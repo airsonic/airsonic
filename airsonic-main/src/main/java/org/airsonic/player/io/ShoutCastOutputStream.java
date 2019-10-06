@@ -179,7 +179,7 @@ public class ShoutCastOutputStream extends OutputStream {
         }
     }
 
-    private byte[] createStreamTitle(String title) throws UnsupportedEncodingException {
+    private byte[] createStreamTitle(String title) {
         // Remove any quotes from the title.
         title = title.replaceAll("'", "");
 

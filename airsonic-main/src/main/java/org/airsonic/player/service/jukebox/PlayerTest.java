@@ -13,7 +13,7 @@ public class PlayerTest implements AudioPlayer.Listener {
 
     private AudioPlayer player;
 
-    public PlayerTest() throws Exception {
+    public PlayerTest() {
         createGUI();
     }
 
@@ -57,7 +57,7 @@ public class PlayerTest implements AudioPlayer.Listener {
         }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new PlayerTest();
     }
 

@@ -23,7 +23,7 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
     PodcastDao podcastDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from podcast_channel");
     }
 

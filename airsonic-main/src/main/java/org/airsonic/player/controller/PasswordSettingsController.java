@@ -58,7 +58,7 @@ public class PasswordSettingsController {
 
 
     @GetMapping
-    protected ModelAndView displayForm(HttpServletRequest request) throws Exception {
+    protected ModelAndView displayForm(HttpServletRequest request) {
         PasswordSettingsCommand command = new PasswordSettingsCommand();
         User user = securityService.getCurrentUser(request);
         command.setUsername(user.getUsername());
@@ -67,7 +67,7 @@ public class PasswordSettingsController {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") @Validated PasswordSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") @Validated PasswordSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasErrors()) {
             User user = securityService.getUserByName(command.getUsername());
             user.setPassword(command.getPassword());

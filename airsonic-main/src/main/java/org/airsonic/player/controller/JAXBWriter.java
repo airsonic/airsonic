@@ -157,7 +157,7 @@ public class JAXBWriter {
     }
 
     public void writeErrorResponse(HttpServletRequest request, HttpServletResponse response,
-                                   SubsonicRESTController.ErrorCode code, String message) throws Exception {
+                                   SubsonicRESTController.ErrorCode code, String message) {
         Response res = createResponse(false);
         Error error = new Error();
         res.setError(error);

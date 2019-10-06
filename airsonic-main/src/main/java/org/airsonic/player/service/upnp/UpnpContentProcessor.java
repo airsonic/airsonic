@@ -123,8 +123,7 @@ public abstract class UpnpContentProcessor<T extends Object, U extends Object> {
 
     public BrowseResult searchByName(String name,
                                      long firstResult, long maxResults,
-                                     SortCriterion[] orderBy)
-        throws ContentDirectoryException {
+                                     SortCriterion[] orderBy) {
         DIDLContent didl = new DIDLContent();
 
         Class clazz =  (Class) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -153,7 +152,7 @@ public abstract class UpnpContentProcessor<T extends Object, U extends Object> {
         return getDispatchingContentDirectory();
     }
 
-    public void addItem(DIDLContent didl, T item) throws Exception {
+    public void addItem(DIDLContent didl, T item) {
         didl.addContainer(createContainer(item));
     }
 
@@ -162,15 +161,15 @@ public abstract class UpnpContentProcessor<T extends Object, U extends Object> {
         return getAllItems().size();
     }
 
-    public abstract Container createContainer(T item) throws Exception;
+    public abstract Container createContainer(T item);
 
     public abstract List<T> getAllItems() throws Exception;
 
-    public abstract T getItemById(String id) throws Exception;
+    public abstract T getItemById(String id);
 
     public abstract List<U> getChildren(T item) throws Exception;
 
-    public abstract void addChild(DIDLContent didl, U child) throws Exception;
+    public abstract void addChild(DIDLContent didl, U child);
 
     public String getRootTitle() {
         return rootTitle;

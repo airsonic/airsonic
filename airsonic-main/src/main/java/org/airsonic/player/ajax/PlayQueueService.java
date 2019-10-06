@@ -423,7 +423,7 @@ public class PlayQueueService {
         return doPlay(request, player, songs).setStartPlayerAt(0);
     }
 
-    private PlayQueueInfo doPlay(HttpServletRequest request, Player player, List<MediaFile> files) throws Exception {
+    private PlayQueueInfo doPlay(HttpServletRequest request, Player player, List<MediaFile> files) {
         if (player.isWeb()) {
             mediaFileService.removeVideoFiles(files);
         }
@@ -436,7 +436,7 @@ public class PlayQueueService {
         return convert(request, player, true);
     }
 
-    private PlayQueueInfo doPlayInternetRadio(HttpServletRequest request, Player player, InternetRadio radio) throws Exception {
+    private PlayQueueInfo doPlayInternetRadio(HttpServletRequest request, Player player, InternetRadio radio) {
         internetRadioService.clearInternetRadioSourceCache(radio.getId());
         player.getPlayQueue().clear();
         player.getPlayQueue().setRandomSearchCriteria(null);
@@ -489,7 +489,7 @@ public class PlayQueueService {
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
      */
-    public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer index, boolean removeVideoFiles) throws Exception {
+    public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer index, boolean removeVideoFiles) {
         List<MediaFile> files = new ArrayList<MediaFile>(ids.length);
         for (int id : ids) {
             MediaFile ancestor = mediaFileService.getMediaFile(id);
@@ -521,7 +521,7 @@ public class PlayQueueService {
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
      */
-    public PlayQueue resetPlayQueue(PlayQueue playQueue,int[] ids, boolean removeVideoFiles) throws Exception {
+    public PlayQueue resetPlayQueue(PlayQueue playQueue,int[] ids, boolean removeVideoFiles) {
         MediaFile currentFile = playQueue.getCurrentFile();
         PlayQueue.Status status = playQueue.getStatus();
 
@@ -658,11 +658,11 @@ public class PlayQueueService {
         return convert(request, player, false);
     }
 
-    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist) throws Exception {
+    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist) {
         return convert(request, player, serverSidePlaylist, 0);
     }
 
-    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) throws Exception {
+    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) {
 
         String url = NetworkService.getBaseUrl(request);
         Locale locale = RequestContextUtils.getLocale(request);
@@ -722,7 +722,7 @@ public class PlayQueueService {
         return entries;
     }
 
-    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) throws Exception {
+    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) {
 
         PlayQueue playQueue = player.getPlayQueue();
         InternetRadio radio = playQueue.getInternetRadio();

@@ -62,7 +62,7 @@ public class HelpController {
     private SecurityService securityService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
 
         if (versionService.isNewFinalVersionAvailable()) {

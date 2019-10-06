@@ -189,7 +189,7 @@ public class PlaylistServiceTestImport {
         }
 
         @Override
-        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+        public Object answer(InvocationOnMock invocationOnMock) {
             Playlist playlist = invocationOnMock.getArgumentAt(0, Playlist.class);
             playlist.setId(id);
             return null;
@@ -199,7 +199,7 @@ public class PlaylistServiceTestImport {
     private class MediaFileHasEverything implements Answer {
 
         @Override
-        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+        public Object answer(InvocationOnMock invocationOnMock) {
             File file = invocationOnMock.getArgumentAt(0, File.class);
             MediaFile mediaFile = new MediaFile();
             mediaFile.setPath(file.getPath());

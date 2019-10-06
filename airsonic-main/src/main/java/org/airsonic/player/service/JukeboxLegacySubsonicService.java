@@ -68,7 +68,7 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
      * @param player The player in question.
      * @param offset Start playing after this many seconds into the track.
      */
-    public synchronized void updateJukebox(Player player, int offset) throws Exception {
+    public synchronized void updateJukebox(Player player, int offset) {
         User user = securityService.getUserByName(player.getUsername());
         if (!user.isJukeboxRole()) {
             LOG.warn(user.getUsername() + " is not authorized for jukebox playback.");

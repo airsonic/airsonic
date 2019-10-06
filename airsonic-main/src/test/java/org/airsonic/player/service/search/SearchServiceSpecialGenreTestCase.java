@@ -40,7 +40,7 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         populateDatabaseOnlyOnce();
     }
 

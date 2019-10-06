@@ -171,7 +171,7 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
         return null;
     }
 
-    public Item createItem(MediaFile song) throws Exception {
+    public Item createItem(MediaFile song) {
         MediaFile parent = mediaFileService.getParentOf(song);
         MusicTrack item = new MusicTrack();
         item.setId(String.valueOf(song.getId()));
@@ -196,7 +196,7 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
         return item;
     }
 
-    public URI getAlbumArtUrl(int id) throws URISyntaxException {
+    public URI getAlbumArtUrl(int id) {
         return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(getBaseUrl() + "/ext/coverArt.view").queryParam("id", id).queryParam("size", CoverArtScheme.LARGE.getSize())).build().encode().toUri();
     }
 

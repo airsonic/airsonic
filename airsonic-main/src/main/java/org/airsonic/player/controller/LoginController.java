@@ -31,7 +31,7 @@ public class LoginController {
     private SettingsService settingsService;
 
     @GetMapping
-    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
 
         // Auto-login if "user" and "password" parameters are given.
         String username = request.getParameter("user");

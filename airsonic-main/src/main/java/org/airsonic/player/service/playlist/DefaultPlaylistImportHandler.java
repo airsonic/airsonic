@@ -33,37 +33,37 @@ public class DefaultPlaylistImportHandler implements PlaylistImportHandler {
         try {
             inputSpecificPlaylist.toPlaylist().acceptDown(new PlaylistVisitor() {
                 @Override
-                public void beginVisitPlaylist(Playlist playlist) throws Exception {
+                public void beginVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void endVisitPlaylist(Playlist playlist) throws Exception {
+                public void endVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void beginVisitParallel(Parallel parallel) throws Exception {
+                public void beginVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void endVisitParallel(Parallel parallel) throws Exception {
+                public void endVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void beginVisitSequence(Sequence sequence) throws Exception {
+                public void beginVisitSequence(Sequence sequence) {
 
                 }
 
                 @Override
-                public void endVisitSequence(Sequence sequence) throws Exception {
+                public void endVisitSequence(Sequence sequence) {
 
                 }
 
                 @Override
-                public void beginVisitMedia(Media media) throws Exception {
+                public void beginVisitMedia(Media media) {
                     try {
                         URI uri = media.getSource().getURI();
                         File file = new File(uri);
@@ -79,7 +79,7 @@ public class DefaultPlaylistImportHandler implements PlaylistImportHandler {
                 }
 
                 @Override
-                public void endVisitMedia(Media media) throws Exception {
+                public void endVisitMedia(Media media) {
 
                 }
             });

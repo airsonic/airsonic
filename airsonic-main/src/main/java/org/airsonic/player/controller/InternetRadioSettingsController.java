@@ -50,7 +50,7 @@ public class InternetRadioSettingsController {
     private SettingsService settingsService;
 
     @GetMapping
-    public String doGet(Model model) throws Exception {
+    public String doGet(Model model) {
 
         Map<String, Object> map = new HashMap<>();
 
@@ -61,7 +61,7 @@ public class InternetRadioSettingsController {
     }
 
     @PostMapping
-    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         String error = handleParameters(request);
         Map<String, Object> map = new HashMap<>();

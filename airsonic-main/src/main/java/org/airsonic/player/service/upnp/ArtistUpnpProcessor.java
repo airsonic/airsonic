@@ -69,7 +69,7 @@ public class ArtistUpnpProcessor extends UpnpContentProcessor <Artist, Album> {
         return allArtists;
     }
 
-    public Artist getItemById(String id) throws Exception {
+    public Artist getItemById(String id) {
         return getArtistDao().getArtist(Integer.parseInt(id));
     }
 
@@ -88,7 +88,7 @@ public class ArtistUpnpProcessor extends UpnpContentProcessor <Artist, Album> {
         return allAlbums;
     }
 
-    public void addChild(DIDLContent didl, Album album) throws Exception {
+    public void addChild(DIDLContent didl, Album album) {
         didl.addContainer(getAlbumProcessor().createContainer(album));
     }
 
