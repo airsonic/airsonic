@@ -10,7 +10,9 @@
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
+<c:if test="${model.googleCast}">
     <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
+</c:if>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -53,8 +55,10 @@
     // Is the play queue visible? (Initially hidden if set to "auto-hide" in the settings)
     var isVisible = ${model.autoHide ? 'false' : 'true'};
 
+    <c:if test="${model.googleCast}">
     // Initialize the Cast player (ChromeCast support)
     var CastPlayer = new CastPlayer();
+    </c:if>
 
     function init() {
         <c:if test="${model.autoHide}">initAutoHide();</c:if>
@@ -227,9 +231,12 @@
      * Start/resume playing from the current playlist
      */
     function onStart() {
+<c:if test="${model.googleCast}">
         if (CastPlayer.castSession) {
             CastPlayer.playCast();
-        } else if ($('#audioPlayer').get(0)) {
+        } else
+</c:if>
+        if ($('#audioPlayer').get(0)) {
             if ($('#audioPlayer').get(0).src) {
                 $('#audioPlayer').get(0).play();  // Resume playing if the player was paused
             }
@@ -245,9 +252,12 @@
      * Pause playing
      */
     function onStop() {
+<c:if test="${model.googleCast}">
         if (CastPlayer.castSession) {
             CastPlayer.pauseCast();
-        } else if ($('#audioPlayer').get(0)) {
+        } else
+</c:if>
+            if ($('#audioPlayer').get(0)) {
             $('#audioPlayer').get(0).pause();
         } else {
             playQueueService.stop(playQueueCallback);
@@ -260,11 +270,14 @@
      * FIXME: Only works for the Web player for now
      */
     function onToggleStartStop() {
+<c:if test="${model.googleCast}">
         if (CastPlayer.castSession) {
             var playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
             if (playing) onStop();
             else onStart();
-        } else if ($('#audioPlayer').get(0)) {
+        } else
+</c:if>
+        if ($('#audioPlayer').get(0)) {
             var playing = $("#audioPlayer").get(0).paused != null && !$("#audioPlayer").get(0).paused;
             if (playing) onStop();
             else onStart();
@@ -280,10 +293,13 @@
         var value = parseInt($("#jukeboxVolume").slider("option", "value"));
         onGain(value / 100);
     }
+
+<c:if test="${model.googleCast}">
     function onCastVolumeChanged() {
         var value = parseInt($("#castVolume").slider("option", "value"));
         CastPlayer.setCastVolume(value / 100, false);
     }
+</c:if>
 
     /**
      * Increase or decrease volume by a certain amount
@@ -291,13 +307,16 @@
      * @param gain amount to add or remove from the current volume
      */
     function onGainAdd(gain) {
+<c:if test="${model.googleCast}">
         if (CastPlayer.castSession) {
             var volume = parseInt($("#castVolume").slider("option", "value")) + gain;
             if (volume > 100) volume = 100;
             if (volume < 0) volume = 0;
             CastPlayer.setCastVolume(volume / 100, false);
             $("#castVolume").slider("option", "value", volume); // Need to update UI
-        } else if ($('#audioPlayer').get(0)) {
+        } else
+</c:if>
+        if ($('#audioPlayer').get(0)) {
             var volume = parseFloat($('#audioPlayer').get(0).volume)*100 + gain;
             if (volume > 100) volume = 100;
             if (volume < 0) volume = 0;
@@ -687,13 +706,13 @@
         currentStreamUrl = song.streamUrl;
         updateCurrentImage();
 
-        // Handle ChromeCast player.
-        if (CastPlayer.castSession) {
+<c:if test="${model.googleCast}">
+        if (CastPlayer.castSession)  // Handle ChromeCast player.
             CastPlayer.loadCastMedia(song, position);
-        // Handle MediaElement (HTML5) player.
-        } else {
+        else // Handle MediaElement (HTML5) player.
+</c:if>
             loadMediaElementPlayer(song, position);
-        }
+
 
         updateWindowTitle(song);
 
@@ -838,6 +857,7 @@
                             <div id="player" style="width:340px; height:40px">
                                 <audio id="audioPlayer" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
                             </div>
+                            <c:if test="${model.googleCast}">
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
                                     <img alt="Play" id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
@@ -853,11 +873,14 @@
                                     </script>
                                 </div>
                             </div>
+                            </c:if>
                         </td>
-                        <td>
-                            <img alt="Cast on" id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
-                            <img alt="Cast off" id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
-                        </td>
+                        <c:if test="${model.googleCast}">
+                            <td>
+                                <img alt="Cast on" id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
+                                <img alt="Cast off" id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
+                            </td>
+                        </c:if>
                     </c:if>
 
                     <c:if test="${model.user.streamRole and not model.player.web}">
@@ -1029,6 +1052,7 @@
     <div id="dialog-select-playlist-list"></div>
 </div>
 
+<c:if test="${model.googleCast}">
 <script type="text/javascript">
     window['__onGCastApiAvailable'] = function(isAvailable) {
         if (isAvailable) {
@@ -1037,5 +1061,6 @@
     };
 </script>
 <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+</c:if>
 
 </body></html>

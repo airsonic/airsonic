@@ -123,6 +123,8 @@ public class SettingsService {
     private static final String KEY_RECAPTCHA_SITE_KEY = "ReCaptchaSiteKey";
     private static final String KEY_RECAPTCHA_SECRET_KEY = "ReCaptchaSecretKey";
 
+    private static final String KEY_GOOGLE_CAST_ENABLED = "GoogleCast";
+
     // Database Settings
     private static final String KEY_DATABASE_CONFIG_TYPE = "DatabaseConfigType";
     private static final String KEY_DATABASE_CONFIG_EMBED_DRIVER = "DatabaseConfigEmbedDriver";
@@ -204,6 +206,8 @@ public class SettingsService {
     private static final boolean DEFAULT_CAPTCHA_ENABLED = false;
     private static final String DEFAULT_RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
     private static final String DEFAULT_RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
+
+    private static final boolean DEFAULT_GOOGLE_CAST_ENABLED = false;
 
     private static final DataSourceConfigType DEFAULT_DATABASE_CONFIG_TYPE = DataSourceConfigType.LEGACY;
     private static final String DEFAULT_DATABASE_CONFIG_EMBED_DRIVER = null;
@@ -1374,6 +1378,14 @@ public class SettingsService {
 
     public void setRecaptchaSecretKey(String recaptchaSecretKey) {
         setString(KEY_RECAPTCHA_SECRET_KEY, recaptchaSecretKey);
+    }
+
+    public boolean isGoogleCastEnabled() {
+        return getBoolean(KEY_GOOGLE_CAST_ENABLED, DEFAULT_GOOGLE_CAST_ENABLED);
+    }
+
+    public void setGoogleCastEnabled(boolean googleCastEnabled) {
+        setBoolean(KEY_GOOGLE_CAST_ENABLED, googleCastEnabled);
     }
 
     public DataSourceConfigType getDatabaseConfigType() {

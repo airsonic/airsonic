@@ -167,6 +167,13 @@
 
     <p class="warning"><fmt:message key="advancedsettings.ldapRequiresRestart"/></p>
 
+    <table class="indent"><tr><td>
+        <form:checkbox path="googleCastEnabled" id="googleCast"/>
+        <label for="googleCast">
+            <fmt:message key="advancedsettings.enableGoogleCast"/>
+        </label>
+    </td></tr></table>
+
     <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
     <a href="nowPlaying.view"><input type="button" value="<fmt:message key="common.cancel"/>"></a>
 

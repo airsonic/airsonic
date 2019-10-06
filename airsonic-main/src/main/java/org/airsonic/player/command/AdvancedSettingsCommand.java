@@ -49,6 +49,8 @@ public class AdvancedSettingsCommand {
     private String recaptchaSiteKey;
     private String recaptchaSecretKey;
 
+    private boolean googleCastEnabled;
+
     public String getDownloadLimit() {
         return downloadLimit;
     }
@@ -178,6 +180,14 @@ public class AdvancedSettingsCommand {
 
     public void setCaptchaEnabled(boolean captchaEnabled) {
         this.captchaEnabled = captchaEnabled;
+    }
+
+    public void setGoogleCastEnabled(boolean googleCastEnabled) {
+        this.googleCastEnabled = googleCastEnabled;
+    }
+
+    public boolean isGoogleCastEnabled() {
+        return this.googleCastEnabled;
     }
 
     public String getRecaptchaSiteKey() {

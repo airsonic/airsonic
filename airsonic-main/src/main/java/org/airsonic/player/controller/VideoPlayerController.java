@@ -21,10 +21,7 @@ package org.airsonic.player.controller;
 
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.User;
-import org.airsonic.player.service.MediaFileService;
-import org.airsonic.player.service.NetworkService;
-import org.airsonic.player.service.PlayerService;
-import org.airsonic.player.service.SecurityService;
+import org.airsonic.player.service.*;
 import org.airsonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

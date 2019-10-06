@@ -64,6 +64,8 @@ public class AdvancedSettingsController {
         command.setCaptchaEnabled(settingsService.isCaptchaEnabled());
         command.setRecaptchaSiteKey(settingsService.getRecaptchaSiteKey());
 
+        command.setGoogleCastEnabled(settingsService.isGoogleCastEnabled());
+
         model.addAttribute("command", command);
         return "advancedSettings";
     }
@@ -106,6 +108,8 @@ public class AdvancedSettingsController {
         if (StringUtils.isNotEmpty(command.getRecaptchaSecretKey())) {
             settingsService.setRecaptchaSecretKey(command.getRecaptchaSecretKey());
         }
+
+        settingsService.setGoogleCastEnabled(command.isGoogleCastEnabled());
 
         settingsService.save();
 
