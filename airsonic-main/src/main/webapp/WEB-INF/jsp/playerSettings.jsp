@@ -77,7 +77,7 @@ $(document).ready(function() {
             </tr>
         </table>
 
-        <form:form commandName="command" method="post" action="playerSettings.view">
+        <form:form modelAttribute="command" method="post" action="playerSettings.view">
             <form:hidden path="playerId"/>
 
             <table class="ruleTable indent">

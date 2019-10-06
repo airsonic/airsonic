@@ -16,7 +16,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form method="post" action="generalSettings.view" commandName="command">
+<form:form method="post" action="generalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 
