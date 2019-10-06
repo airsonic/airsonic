@@ -163,12 +163,6 @@ public class IndexManager {
         }
     }
 
-    /**
-     * 
-     * @param indexType
-     * @return
-     * @throws IOException
-     */
     private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
         File indexDirectory = getIndexDirectory.apply(indexType);
         IndexWriterConfig config = new IndexWriterConfig(analyzerFactory.getAnalyzer());
@@ -234,7 +228,6 @@ public class IndexManager {
 
     /**
      * Close Writer of specified index and refresh SearcherManager.
-     * @param type
      */
     private void stopIndexing(IndexType type) {
 
@@ -268,9 +261,6 @@ public class IndexManager {
      * Return the IndexSearcher of the specified index.
      * At initial startup, it may return null
      * if the user performs any search before performing a scan.
-     * 
-     * @param indexType
-     * @return
      */
     public @Nullable IndexSearcher getSearcher(IndexType indexType) {
         if (!searchers.containsKey(indexType)) {

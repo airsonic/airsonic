@@ -184,10 +184,6 @@ public class QueryFactory {
     /**
      * Query generation expression extracted from
      * {@link org.airsonic.player.service.SearchService#getRandomSongs(RandomSearchCriteria)}.
-     * 
-     * @param criteria criteria
-     * @return Query
-     * @throws IOException 
      */
     public Query getRandomSongs(RandomSearchCriteria criteria) throws IOException {
 

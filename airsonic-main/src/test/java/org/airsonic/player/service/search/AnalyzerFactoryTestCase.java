@@ -156,7 +156,7 @@ public class AnalyzerFactoryTestCase {
     /**
      * Detailed tests on Stopward.
      * 
-     * @see org.apache.lucene.analysis.StopAnalyzer#ENGLISH_STOP_WORDS_SET
+     * @see org.apache.lucene.analysis.core.StopAnalyzer#ENGLISH_STOP_WORDS_SET
      */
     @Test
     public void testStopward() {

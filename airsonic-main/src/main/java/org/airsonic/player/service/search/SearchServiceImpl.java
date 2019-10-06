@@ -95,11 +95,7 @@ public class SearchServiceImpl implements SearchService {
      * Common processing of random method.
      * 
      * @param count Number of albums to return.
-     * @param searcher
-     * @param query
      * @param id2ListCallBack Callback to get D from id and store it in List
-     * @return result
-     * @throws IOException
      */
     private final <D> List<D> createRandomDocsList(
             int count, IndexSearcher searcher, Query query, BiConsumer<List<D>, Integer> id2ListCallBack)
