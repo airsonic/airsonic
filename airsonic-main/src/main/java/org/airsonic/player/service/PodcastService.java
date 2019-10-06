@@ -451,7 +451,7 @@ public class PodcastService {
         }
 
         // Sort episode in reverse chronological order (newest first)
-        Collections.sort(episodes, (a, b) -> {
+        episodes.sort((a, b) -> {
             long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
             long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
 

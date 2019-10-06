@@ -76,12 +76,7 @@ public class UPnPService {
                 setMediaServerEnabled(true);
             }
         }
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                ensureServiceStopped();
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> ensureServiceStopped()));
     }
 
     public void ensureServiceStarted() {

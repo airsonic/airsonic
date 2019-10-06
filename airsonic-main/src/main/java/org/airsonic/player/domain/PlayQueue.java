@@ -278,7 +278,7 @@ public class PlayQueue {
             }
         };
 
-        Collections.sort(files, comparator);
+        files.sort(comparator);
         if (currentFile != null) {
             index = files.indexOf(currentFile);
         }

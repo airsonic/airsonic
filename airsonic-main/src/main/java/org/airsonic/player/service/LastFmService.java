@@ -19,7 +19,6 @@
 
 package org.airsonic.player.service;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
@@ -364,12 +363,7 @@ public class LastFmService {
 
             Collection<Album> matches = Album.search(query.toString(), LAST_FM_KEY);
             return FluentIterable.from(matches)
-                                 .transform(new Function<Album, LastFmCoverArt>() {
-                                     @Override
-                                     public LastFmCoverArt apply(Album album) {
-                                         return convert(album);
-                                     }
-                                 })
+                                 .transform(album1 -> convert(album1))
                                  .filter(Predicates.notNull())
                                  .toList();
         } catch (Throwable x) {
