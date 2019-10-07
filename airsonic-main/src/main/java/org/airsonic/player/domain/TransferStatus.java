@@ -300,7 +300,7 @@ public class TransferStatus {
         }
 
         public Sample getLast() {
-            return this.get(this.size());
+            return this.get(this.size() - 1);
         }
     }
 }
