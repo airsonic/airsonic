@@ -214,14 +214,6 @@ public class Application extends SpringBootServletInitializer implements Embedde
             LOG.warn("An error happened while trying to optimize tomcat", e);
         }
 
-        try {
-            Class<?> jettyESCF = Class.forName("org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory");
-            if (jettyESCF.isInstance(container)) {
-                LOG.warn("Detected Jetty web server. Here there be dragons.");
-            }
-        } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            LOG.debug("No jetty classes found");
-        }
     }
 
     public static void main(String[] args) {
