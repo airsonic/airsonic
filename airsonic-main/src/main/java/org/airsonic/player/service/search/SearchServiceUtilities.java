@@ -28,7 +28,7 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.ParamSearchResult;
 import org.airsonic.player.domain.SearchResult;
 import org.airsonic.player.service.MediaFileService;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.lucene.document.Document;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,7 +132,7 @@ public class SearchServiceUtilities {
         }
     };
 
-    public final boolean addIgnoreNull(Collection<?> collection, Object object) {
+    public final boolean addIgnoreNull(Collection collection, Object object) {
         return CollectionUtils.addIgnoreNull(collection, object);
     }
 
