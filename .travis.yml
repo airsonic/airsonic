@@ -19,7 +19,7 @@ matrix:
           description: "A Free and Open Source community driven media server"
         notification_email: "airsonic@tutanota.com"
         build_command_prepend:
-        build_command: mvn clean compile
+        build_command: mvn -B clean package -DskipTests=true
         branch_pattern: master
   - jdk: openjdk8
   - jdk: oraclejdk9
