@@ -7,20 +7,6 @@ script:
 
 matrix:
   include:
-  - name: coverity
-    script:
-      - echo "coverity scan script"
-    install:
-      - echo "coverity scan install"
-    addons:
-      coverity_scan:
-        project:
-          name: "airsonic/airsonic"
-          description: "A Free and Open Source community driven media server"
-        notification_email: "airsonic@tutanota.com"
-        build_command_prepend: mvn clean
-        build_command: mvn -DskipTests=true package
-        branch_pattern: master
   - jdk: openjdk8
   - jdk: oraclejdk9
     before_install:
