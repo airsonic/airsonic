@@ -90,8 +90,7 @@ public class BootstrapVerificationFilter implements Filter {
     private boolean directoryWritable(File dir) {
         try {
             File tempFile = File.createTempFile("test", null, dir);
-            tempFile.delete();
-            return true;
+            return tempFile.delete();
         } catch (IOException x) {
             return false;
         }
