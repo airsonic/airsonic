@@ -46,8 +46,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -111,9 +110,9 @@ public class IndexManager {
     @Autowired
     private AlbumDao albumDao;
 
-    private Map<IndexType, SearcherManager> searchers = new HashMap<>();
+    private EnumMap<IndexType, SearcherManager> searchers = new EnumMap<>(IndexType.class);
 
-    private Map<IndexType, IndexWriter> writers = new HashMap<>();
+    private EnumMap<IndexType, IndexWriter> writers = new EnumMap<>(IndexType.class);
 
     public void index(Album album) {
         Term primarykey = documentFactory.createPrimarykey(album);
