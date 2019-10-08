@@ -24,7 +24,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import javax.swing.*;
 
 import java.awt.*;
-import java.io.IOException;
 
 /**
  * @author Sindre Mehus
@@ -32,7 +31,7 @@ import java.io.IOException;
  */
 public class AutoCoverDemo {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         JFrame frame = new JFrame();
         JPanel panel = new JPanel();
         panel.add(new AlbumComponent(110, 110));

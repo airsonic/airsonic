@@ -16,7 +16,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form method="post" action="generalSettings.view" commandName="command">
+<form:form method="post" action="generalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 
@@ -151,7 +151,6 @@
             <td>
                 <form:textarea path="loginMessage" rows="5" cols="70"/>
                 <c:import url="helpToolTip.jsp"><c:param name="topic" value="loginmessage"/></c:import>
-                <fmt:message key="main.wiki"/>
             </td>
         </tr>
 

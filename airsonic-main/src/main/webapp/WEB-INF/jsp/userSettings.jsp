@@ -62,7 +62,7 @@
 <p/>
 
 <form:form method="post" action="userSettings.view" modelAttribute="command">
-        <table style="${command.admin ? 'display:none' : ''}">
+        <table>
             <tr style="${command.currentUser ? 'display:none' : ''}">
                 <td><form:checkbox path="adminRole" id="admin" cssClass="checkbox"/></td>
                 <td><label for="admin"><fmt:message key="usersettings.admin"/></label></td>

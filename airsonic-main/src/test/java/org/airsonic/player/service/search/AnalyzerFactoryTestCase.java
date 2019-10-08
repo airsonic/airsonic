@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.TermAttribute;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -85,9 +85,12 @@ public class AnalyzerFactoryTestCase {
     public void testPunctuation1() {
 
         String query = "B︴C";
-        String expected1 = "b";
-        String expected2 = "c";
+        String expected = "b︴c";
 
+        /*
+         * XXX 3.x -> 8.x :
+         * The definition of punctuation has changed.
+         */
         Arrays.stream(IndexType.values()).flatMap(i -> Arrays.stream(i.getFields())).forEach(n -> {
             List<String> terms = toTermString(n, query);
             switch (n) {
@@ -100,9 +103,8 @@ public class AnalyzerFactoryTestCase {
                 case FieldNames.FOLDER:
                 case FieldNames.GENRE:
                 case FieldNames.MEDIA_TYPE:
-                    assertEquals("tokenized : " + n, 2, terms.size());
-                    assertEquals("tokenized : " + n, expected1, terms.get(0));
-                    assertEquals("tokenized : " + n, expected2, terms.get(1));
+                    assertEquals("tokenized : " + n, 1, terms.size());
+                    assertEquals("tokenized : " + n, expected, terms.get(0));
                     break;
 
                 /*
@@ -112,9 +114,8 @@ public class AnalyzerFactoryTestCase {
                 case FieldNames.ARTIST:
                 case FieldNames.ALBUM:
                 case FieldNames.TITLE:
-                    assertEquals("tokenized : " + n, 2, terms.size());
-                    assertEquals("tokenized : " + n, expected1, terms.get(0));
-                    assertEquals("tokenized : " + n, expected2, terms.get(1));
+                    assertEquals("tokenized : " + n, 1, terms.size());
+                    assertEquals("tokenized : " + n, expected, terms.get(0));
                     break;
                 /*
                  * ID, FOLDER_ID, YEAR
@@ -155,7 +156,7 @@ public class AnalyzerFactoryTestCase {
     /**
      * Detailed tests on Stopward.
      * 
-     * @see org.apache.lucene.analysis.StopAnalyzer#ENGLISH_STOP_WORDS_SET
+     * @see org.apache.lucene.analysis.core.StopAnalyzer#ENGLISH_STOP_WORDS_SET
      */
     @Test
     public void testStopward() {
@@ -256,12 +257,17 @@ public class AnalyzerFactoryTestCase {
          */
         String queryFullWidth = "ＴＨＩＳ　ＩＳ　ＦＵＬＬ－ＷＩＤＴＨ　ＳＥＮＴＥＮＣＥＳ.";
         terms = toTermString(queryFullWidth);
-        assertEquals(5, terms.size());
-        assertEquals("this", terms.get(0));// removal target is ignored
-        assertEquals("is", terms.get(1));
-        assertEquals("full", terms.get(2));
-        assertEquals("width", terms.get(3));
-        assertEquals("sentences", terms.get(4));
+        /*
+         * XXX 3.x -> 8.x :
+         * 
+         * This is not a change due to the library but an intentional change.
+         * The filter order has been changed properly
+         * as it is probably not a deliberate specification.
+         */
+        assertEquals(3, terms.size());
+        assertEquals("full", terms.get(0));
+        assertEquals("width", terms.get(1));
+        assertEquals("sentences", terms.get(2));
 
     }
 
@@ -428,6 +434,11 @@ public class AnalyzerFactoryTestCase {
         query = "_ID3_ARTIST_ Céline Frisch: Café Zimmermann";
         terms = toTermString(query);
         assertEquals(5, terms.size());
+
+        /*
+         * XXX 3.x -> 8.x : _id3_artist_　in UAX#29.
+         * Since the effect is large, trim with Filter.
+         */
         assertEquals("id3_artist", terms.get(0));
         assertEquals("celine", terms.get(1));
         assertEquals("frisch", terms.get(2));
@@ -438,6 +449,11 @@ public class AnalyzerFactoryTestCase {
         query = "_ID3_ARTIST_ Sarah Walker/Nash Ensemble";
         terms = toTermString(query);
         assertEquals(5, terms.size());
+
+        /*
+         * XXX 3.x -> 8.x : _id3_artist_　in UAX#29.
+         * Since the effect is large, trim with Filter.
+         */
         assertEquals("id3_artist", terms.get(0));
         assertEquals("sarah", terms.get(1));
         assertEquals("walker", terms.get(2));
@@ -464,14 +480,18 @@ public class AnalyzerFactoryTestCase {
         assertEquals(asList("abc", "def"), toTermString("~ABC~DEF~"));
         assertEquals(asList("abc", "def"), toTermString("*ABC*DEF*"));
         assertEquals(asList("abc", "def"), toTermString("?ABC?DEF?"));
-        assertEquals(asList("abc", "def"), toTermString(":ABC:DEF:"));
+        assertEquals(asList("abc:def"), toTermString(":ABC:DEF:"));		// XXX 3.x -> 8.x : abc def -> abc:def
         assertEquals(asList("abc", "def"), toTermString("-ABC-DEF-"));
         assertEquals(asList("abc", "def"), toTermString("/ABC/DEF/"));
-        assertEquals(asList("abc", "def"), toTermString("_ABC_DEF_"));
+        /*
+         * XXX 3.x -> 8.x : _abc_def_　in UAX#29.
+         * Since the effect is large, trim with Filter.
+         */
+        assertEquals(asList("abc_def"), toTermString("_ABC_DEF_"));		// XXX 3.x -> 8.x : abc def -> abc_def
         assertEquals(asList("abc", "def"), toTermString(",ABC,DEF,"));
         assertEquals(asList("abc.def"), toTermString(".ABC.DEF."));
-        assertEquals(asList("abc&def"), toTermString("&ABC&DEF&"));
-        assertEquals(asList("abc@def"), toTermString("@ABC@DEF@"));
+        assertEquals(asList("abc", "def"), toTermString("&ABC&DEF&"));		// XXX 3.x -> 8.x : abc&def -> abc def
+        assertEquals(asList("abc", "def"), toTermString("@ABC@DEF@"));		// XXX 3.x -> 8.x : abc@def -> abc def
         assertEquals(asList("abc'def"), toTermString("'ABC'DEF'"));
 
         // trim and delimiter and number
@@ -491,11 +511,15 @@ public class AnalyzerFactoryTestCase {
         assertEquals(asList("abc1", "def"), toTermString("*ABC1*DEF*"));
         assertEquals(asList("abc1", "def"), toTermString("?ABC1?DEF?"));
         assertEquals(asList("abc1", "def"), toTermString(":ABC1:DEF:"));
-        assertEquals(asList("abc1,def"), toTermString(",ABC1,DEF,"));
-        assertEquals(asList("abc1-def"), toTermString("-ABC1-DEF-"));
-        assertEquals(asList("abc1/def"), toTermString("/ABC1/DEF/"));
+        assertEquals(asList("abc1", "def"), toTermString(",ABC1,DEF,"));	// XXX 3.x -> 8.x : abc1,def -> abc1 def
+        assertEquals(asList("abc1", "def"), toTermString("-ABC1-DEF-"));	// XXX 3.x -> 8.x : abc1-def -> abc1 def
+        assertEquals(asList("abc1", "def"), toTermString("/ABC1/DEF/"));	// XXX 3.x -> 8.x : abc1/def -> abc1 def
+        /*
+         * XXX 3.x -> 8.x : _abc1_def_　in UAX#29.
+         * Since the effect is large, trim with Filter.
+         */
         assertEquals(asList("abc1_def"), toTermString("_ABC1_DEF_"));
-        assertEquals(asList("abc1.def"), toTermString(".ABC1.DEF."));
+        assertEquals(asList("abc1", "def"), toTermString(".ABC1.DEF."));	// XXX 3.x -> 8.x : abc1.def -> abc1 def
         assertEquals(asList("abc1", "def"), toTermString("&ABC1&DEF&"));
         assertEquals(asList("abc1", "def"), toTermString("@ABC1@DEF@"));
         assertEquals(asList("abc1", "def"), toTermString("'ABC1'DEF'"));
@@ -517,14 +541,17 @@ public class AnalyzerFactoryTestCase {
         assertEquals("airsonic", terms.get(0));
         assertEquals("analysis", terms.get(1));
 
+        /*
+         * XXX 3.x -> 8.x :
+         * we ve -> we've
+         */
         query = "We’ve been here before.";
         terms = toTermString(query);
-        assertEquals(5, terms.size());
-        assertEquals("we", terms.get(0));
-        assertEquals("ve", terms.get(1));
-        assertEquals("been", terms.get(2));
-        assertEquals("here", terms.get(3));
-        assertEquals("before", terms.get(4));
+        assertEquals(4, terms.size());
+        assertEquals("we've", terms.get(0));
+        assertEquals("been", terms.get(1));
+        assertEquals("here", terms.get(2));
+        assertEquals("before", terms.get(3));
 
         query = "LʼHomme";
         terms = toTermString(query);
@@ -591,6 +618,21 @@ public class AnalyzerFactoryTestCase {
         assertEquals("glasses", terms.get(5));
     }
 
+    @Test
+    public void testGenre() {
+
+        /*
+         * Confirming no conversion to singular.
+         */
+
+        String query = "{}";
+        List<String> terms = toQueryTermString(FieldNames.GENRE, query);
+        assertEquals(1, terms.size());
+        assertEquals("{ }", terms.get(0));
+    }
+    
+    
+    
     private List<String> toTermString(String str) {
         return toTermString(null, str);
     }
@@ -602,7 +644,7 @@ public class AnalyzerFactoryTestCase {
                     new StringReader(str));
             stream.reset();
             while (stream.incrementToken()) {
-                result.add(stream.getAttribute(TermAttribute.class).toString()
+                result.add(stream.getAttribute(CharTermAttribute.class).toString()
                         .replaceAll("^term\\=", ""));
             }
             stream.close();
@@ -627,7 +669,7 @@ public class AnalyzerFactoryTestCase {
                     new StringReader(str));
             stream.reset();
             while (stream.incrementToken()) {
-                result.add(stream.getAttribute(TermAttribute.class).toString()
+                result.add(stream.getAttribute(CharTermAttribute.class).toString()
                         .replaceAll("^term\\=", ""));
             }
             stream.close();

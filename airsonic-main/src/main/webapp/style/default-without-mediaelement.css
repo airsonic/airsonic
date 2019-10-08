@@ -194,6 +194,7 @@ input, textarea, select {
     padding: 3px;
     border-radius: 3px;
     border: 1px solid lightgray;
+    vertical-align: middle;
 }
 
 input[type=submit], input[type=button] {
@@ -457,5 +458,5 @@ img {
 /* Javascript-zoom related styles */
 #zoom { position: absolute; display: none; z-index: 499; -webkit-box-shadow: 0px 5px 25px #000; -moz-box-shadow: 0px 5px 25px #000; box-shadow: 0px 5px 25px #000; }
 #zoom_img { display: block; cursor: pointer; width: 100%; border: 0; margin: 0; padding: 0; }
-#zoom_close { position: absolute; display: none; cursor: pointer; left: -15px; top: -15px; width: 30px; height: 30px; background: url(/script/closebox.png) no-repeat; }
-#zoom_spin { position: absolute; display: none; z-index: 525; width: 50px; height: 50px; background: url(/script/spin.png) no-repeat; }
+#zoom_close { position: absolute; display: none; cursor: pointer; left: -15px; top: -15px; width: 30px; height: 30px; background: url(../script/closebox.png) no-repeat; }
+#zoom_spin { position: absolute; display: none; z-index: 525; width: 50px; height: 50px; background: url(../script/spin.png) no-repeat; }

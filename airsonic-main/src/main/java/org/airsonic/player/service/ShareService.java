@@ -96,7 +96,7 @@ public class ShareService {
         return result;
     }
 
-    public Share createShare(HttpServletRequest request, List<MediaFile> files) throws Exception {
+    public Share createShare(HttpServletRequest request, List<MediaFile> files) {
 
         Share share = new Share();
         share.setName(RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));

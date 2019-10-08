@@ -15,10 +15,10 @@ public class DbmsVersionPrecondition implements CustomPrecondition {
         try {
             int dbMajor = database.getDatabaseMajorVersion();
             int dbMinor = database.getDatabaseMinorVersion();
-            if(major != null && !major.equals(dbMajor)) {
+            if (major != null && !major.equals(dbMajor)) {
                 throw new CustomPreconditionFailedException("DBMS Major Version Precondition failed: expected " + major + ", got " + dbMajor);
             }
-            if(minor != null && !minor.equals(dbMinor)) {
+            if (minor != null && !minor.equals(dbMinor)) {
                 throw new CustomPreconditionFailedException("DBMS Minor Version Precondition failed: expected " + minor + ", got " + dbMinor);
             }
         } catch (DatabaseException e) {

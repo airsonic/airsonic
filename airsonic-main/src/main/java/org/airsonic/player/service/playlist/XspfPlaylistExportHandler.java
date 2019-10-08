@@ -30,7 +30,7 @@ public class XspfPlaylistExportHandler implements PlaylistExportHandler {
     }
 
     @Override
-    public SpecificPlaylist handle(int id, SpecificPlaylistProvider provider) throws Exception {
+    public SpecificPlaylist handle(int id, SpecificPlaylistProvider provider) {
         return createXsfpPlaylistFromDBId(id);
     }
 

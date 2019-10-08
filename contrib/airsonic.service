@@ -35,16 +35,15 @@ RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 RestrictNamespaces=yes
 RestrictRealtime=yes
 SystemCallFilter=~@clock @debug @module @mount @obsolete @privileged @reboot @setuid @swap
+ReadWritePaths=/var/airsonic
+
+# You can change the following line to `strict` instead of `full`
+# if you don't want airsonic to be able to
+# write anything on your filesystem outside of AIRSONIC_HOME.
 ProtectSystem=full
 
-# You can uncomment the following line if you don't want airsonic to be able to 
-# write anything on your filesystem outside of AIRSONIC_HOME.
-# Don't forget to remove the other `ProtectSystem` line above.
-#ProtectSystem=strict
-#ReadWritePaths=/var/airsonic
-
 # You can uncomment the following line if you don't have any media
-# in /home/…. This will prevent airsonic from ever read/write anything there.
+# in /home/…. This will prevent airsonic from ever reading/writing anything there.
 #ProtectHome=true
 
 # You can uncomment the following line if you're not using the OpenJDK.

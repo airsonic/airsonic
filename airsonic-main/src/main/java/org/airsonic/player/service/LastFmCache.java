@@ -20,12 +20,11 @@
 package org.airsonic.player.service;
 
 import de.umass.lastfm.cache.Cache;
-import de.umass.lastfm.cache.ExpirationPolicy;
 import de.umass.lastfm.cache.FileSystemCache;
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -44,12 +43,7 @@ public class LastFmCache extends Cache {
         this.cacheDir = cacheDir;
         this.ttl = ttl;
 
-        setExpirationPolicy(new ExpirationPolicy() {
-            @Override
-            public long getExpirationTime(String method, Map<String, String> params) {
-                return ttl;
-            }
-        });
+        setExpirationPolicy((method, params) -> ttl);
     }
 
     @Override
@@ -66,7 +60,7 @@ public class LastFmCache extends Cache {
         } catch (Exception e) {
             return null;
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -98,8 +92,8 @@ public class LastFmCache extends Cache {
         } catch (Exception e) {
             // we ignore the exception. if something went wrong we just don't cache it.
         } finally {
-            IOUtils.closeQuietly(xmlOut);
-            IOUtils.closeQuietly(metaOut);
+            FileUtil.closeQuietly(xmlOut);
+            FileUtil.closeQuietly(metaOut);
         }
     }
 
@@ -129,7 +123,7 @@ public class LastFmCache extends Cache {
         } catch (Exception e) {
             return false;
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 

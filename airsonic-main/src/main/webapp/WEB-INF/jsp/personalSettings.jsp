@@ -27,7 +27,7 @@
 <h2>${fn:escapeXml(title)}</h2>
 
 <fmt:message key="common.default" var="defaultTitle"/>
-<form:form method="post" action="personalSettings.view" commandName="command">
+<form:form method="post" action="personalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 

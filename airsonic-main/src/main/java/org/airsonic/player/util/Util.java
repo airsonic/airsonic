@@ -21,6 +21,7 @@ package org.airsonic.player.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.MultiValueMap;
@@ -66,7 +67,7 @@ public final class Util {
     }
 
     public static boolean isWindows() {
-        return System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
+        return SystemUtils.IS_OS_WINDOWS;
     }
 
     /**

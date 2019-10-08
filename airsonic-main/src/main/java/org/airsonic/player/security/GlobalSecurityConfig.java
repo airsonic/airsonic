@@ -64,7 +64,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         }
         auth.userDetailsService(securityService);
         String jwtKey = settingsService.getJWTKey();
-        if(StringUtils.isBlank(jwtKey)) {
+        if (StringUtils.isBlank(jwtKey)) {
             logger.warn("Generating new jwt key");
             jwtKey = JWTSecurityService.generateKey();
             settingsService.setJWTKey(jwtKey);
@@ -74,9 +74,9 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     }
 
     private static String generateRememberMeKey() {
-      byte[] array = new byte[32];
-      new SecureRandom().nextBytes(array);
-      return new String(array);
+        byte[] array = new byte[32];
+        new SecureRandom().nextBytes(array);
+        return new String(array);
     }
 
     @Configuration

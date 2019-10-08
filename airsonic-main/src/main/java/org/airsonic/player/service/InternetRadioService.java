@@ -129,7 +129,6 @@ public class InternetRadioService {
      *
      * @param radio an internet radio
      * @return a list of internet radio sources
-     * @throws Exception
      */
     private List<InternetRadioSource> retrieveInternetRadioSources(InternetRadio radio) throws Exception {
         return retrieveInternetRadioSources(
@@ -148,7 +147,6 @@ public class InternetRadioService {
      * @param maxByteSize maximum size of the response, in bytes, or 0 if unlimited
      * @param maxRedirects maximum number of redirects, or 0 if unlimited
      * @return a list of internet radio sources
-     * @throws Exception
      */
     private List<InternetRadioSource> retrieveInternetRadioSources(InternetRadio radio, int maxCount, long maxByteSize, int maxRedirects) throws Exception {
         // Retrieve the remote playlist
@@ -161,32 +159,32 @@ public class InternetRadioService {
         try {
             inputPlaylist.toPlaylist().acceptDown(new PlaylistVisitor() {
                 @Override
-                public void beginVisitPlaylist(Playlist playlist) throws Exception {
+                public void beginVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void endVisitPlaylist(Playlist playlist) throws Exception {
+                public void endVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void beginVisitParallel(Parallel parallel) throws Exception {
+                public void beginVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void endVisitParallel(Parallel parallel) throws Exception {
+                public void endVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void beginVisitSequence(Sequence sequence) throws Exception {
+                public void beginVisitSequence(Sequence sequence) {
 
                 }
 
                 @Override
-                public void endVisitSequence(Sequence sequence) throws Exception {
+                public void endVisitSequence(Sequence sequence) {
 
                 }
 
@@ -204,7 +202,7 @@ public class InternetRadioService {
                 }
 
                 @Override
-                public void endVisitMedia(Media media) throws Exception {
+                public void endVisitMedia(Media media) {
 
                 }
             });

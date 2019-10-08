@@ -20,7 +20,6 @@
 package org.airsonic.player.util;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -28,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.*;
 import java.util.*;
@@ -201,7 +201,7 @@ public final class StringUtil {
         // More than 1 TB?
         if (byteCount >= 1024L * 1024 * 1024 * 1024) {
             NumberFormat teraByteFormat = new DecimalFormat("0.00 TB", new DecimalFormatSymbols(locale));
-            return teraByteFormat.format( byteCount / ((double) 1024 * 1024 * 1024 * 1024));
+            return teraByteFormat.format(byteCount / ((double) 1024 * 1024 * 1024 * 1024));
         }
      
         // More than 1 GB?
@@ -293,8 +293,8 @@ public final class StringUtil {
             return result.toArray(new String[result.size()]);
 
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(reader);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(reader);
         }
     }
 
@@ -385,11 +385,7 @@ public final class StringUtil {
             return null;
         }
         byte[] utf8;
-        try {
-            utf8 = s.getBytes(ENCODING_UTF8);
-        } catch (UnsupportedEncodingException x) {
-            throw new RuntimeException(x);
-        }
+        utf8 = s.getBytes(StandardCharsets.UTF_8);
         return String.valueOf(Hex.encodeHex(utf8));
     }
 
@@ -404,7 +400,7 @@ public final class StringUtil {
         if (s == null) {
             return null;
         }
-        return new String(Hex.decodeHex(s.toCharArray()), ENCODING_UTF8);
+        return new String(Hex.decodeHex(s.toCharArray()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -420,7 +416,7 @@ public final class StringUtil {
 
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            return new String(Hex.encodeHex(md5.digest(s.getBytes(ENCODING_UTF8))));
+            return new String(Hex.encodeHex(md5.digest(s.getBytes(StandardCharsets.UTF_8))));
         } catch (Exception x) {
             throw new RuntimeException(x.getMessage(), x);
         }

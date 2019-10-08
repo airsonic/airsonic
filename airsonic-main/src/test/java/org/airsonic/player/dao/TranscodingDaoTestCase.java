@@ -24,7 +24,7 @@ public class TranscodingDaoTestCase extends DaoTestCaseBean2 {
     PlayerDao playerDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from transcoding2");
     }
 

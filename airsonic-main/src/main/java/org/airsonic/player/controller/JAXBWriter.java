@@ -19,8 +19,8 @@
  */
 package org.airsonic.player.controller;
 
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.persistence.jaxb.JAXBContext;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.jdom2.Attribute;
@@ -104,7 +104,7 @@ public class JAXBWriter {
             Attribute version = document.getRootElement().getAttribute("version");
             return version.getValue();
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -157,7 +157,7 @@ public class JAXBWriter {
     }
 
     public void writeErrorResponse(HttpServletRequest request, HttpServletResponse response,
-                                   SubsonicRESTController.ErrorCode code, String message) throws Exception {
+                                   SubsonicRESTController.ErrorCode code, String message) {
         Response res = createResponse(false);
         Error error = new Error();
         res.setError(error);

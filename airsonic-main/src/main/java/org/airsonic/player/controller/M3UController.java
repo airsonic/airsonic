@@ -36,7 +36,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -74,7 +73,7 @@ public class M3UController  {
         return null;
     }
 
-    private void createClientSidePlaylist(PrintWriter out, Player player, String url) throws Exception {
+    private void createClientSidePlaylist(PrintWriter out, Player player, String url) {
         if (player.isM3uBomEnabled()) {
             out.print("\ufeff");
         }
@@ -97,7 +96,7 @@ public class M3UController  {
         }
     }
 
-    private void createServerSidePlaylist(PrintWriter out, Player player, String url) throws IOException {
+    private void createServerSidePlaylist(PrintWriter out, Player player, String url) {
 
         url += "player=" + player.getId();
 

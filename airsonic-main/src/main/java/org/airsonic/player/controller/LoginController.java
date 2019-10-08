@@ -31,7 +31,7 @@ public class LoginController {
     private SettingsService settingsService;
 
     @GetMapping
-    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
 
         // Auto-login if "user" and "password" parameters are given.
         String username = request.getParameter("user");
@@ -39,9 +39,9 @@ public class LoginController {
         if (username != null && password != null) {
             username = StringUtil.urlEncode(username);
             password = StringUtil.urlEncode(password);
-            return new ModelAndView(new RedirectView("/login?"+
-                    UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY+"=" + username +
-                    "&"+UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY+"=" + password
+            return new ModelAndView(new RedirectView("/login?" +
+                    UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY + "=" + username +
+                    "&" + UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_PASSWORD_KEY + "=" + password
             ));
         }
 

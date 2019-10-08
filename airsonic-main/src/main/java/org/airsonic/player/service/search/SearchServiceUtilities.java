@@ -28,19 +28,15 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.ParamSearchResult;
 import org.airsonic.player.domain.SearchResult;
 import org.airsonic.player.service.MediaFileService;
-import org.airsonic.player.service.SettingsService;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -136,27 +132,7 @@ public class SearchServiceUtilities {
         }
     };
 
-    private final Function<String, File> getRootDirectory = (version) -> {
-        return new File(SettingsService.getAirsonicHome(), version);
-    };
-
-    public final BiFunction<String, IndexType, File> getDirectory = (version, indexType) -> {
-        return new File(getRootDirectory.apply(version), indexType.toString().toLowerCase());
-    };
-
-    public final Term createPrimarykey(Album album) {
-        return new Term(FieldNames.ID, Integer.toString(album.getId()));
-    };
-
-    public final Term createPrimarykey(Artist artist) {
-        return new Term(FieldNames.ID, Integer.toString(artist.getId()));
-    };
-
-    public final Term createPrimarykey(MediaFile mediaFile) {
-        return new Term(FieldNames.ID, Integer.toString(mediaFile.getId()));
-    };
-
-    public final boolean addIgnoreNull(Collection<?> collection, Object object) {
+    public final boolean addIgnoreNull(Collection collection, Object object) {
         return CollectionUtils.addIgnoreNull(collection, object);
     }
 

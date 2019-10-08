@@ -34,7 +34,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -104,7 +103,7 @@ public class MainController  {
 
         int userPaginationPreference = userSettings.getPaginationSize();
 
-        if(userPaginationPreference <= 0) {
+        if (userPaginationPreference <= 0) {
             showAll = true;
         }
 
@@ -171,12 +170,12 @@ public class MainController  {
         }
 
         return new ModelAndView(view, "model", map);
-}
+    }
 
     private <T> boolean trimToSize(Boolean showAll, List<T> list, int userPaginationPreference) {
         boolean trimmed = false;
-        if(!BooleanUtils.isTrue(showAll)) {
-            if(list.size() > userPaginationPreference) {
+        if (!BooleanUtils.isTrue(showAll)) {
+            if (list.size() > userPaginationPreference) {
                 trimmed = true;
                 list.subList(userPaginationPreference, list.size()).clear();
             }
@@ -251,7 +250,7 @@ public class MainController  {
         return null;
     }
 
-    private List<MediaFile> getMultiFolderChildren(List<MediaFile> mediaFiles) throws IOException {
+    private List<MediaFile> getMultiFolderChildren(List<MediaFile> mediaFiles) {
         SortedSet<MediaFile> result = new TreeSet<>(new MediaFileComparator(settingsService.isSortAlbumsByYear()));
         for (MediaFile mediaFile : mediaFiles) {
             if (mediaFile.isFile()) {
@@ -262,7 +261,7 @@ public class MainController  {
         return new ArrayList<>(result);
     }
 
-    private List<MediaFile> getAncestors(MediaFile dir) throws IOException {
+    private List<MediaFile> getAncestors(MediaFile dir) {
         LinkedList<MediaFile> result = new LinkedList<>();
 
         try {

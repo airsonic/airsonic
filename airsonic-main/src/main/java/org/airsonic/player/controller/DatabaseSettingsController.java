@@ -41,12 +41,12 @@ public class DatabaseSettingsController {
     private SettingsService settingsService;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "databaseSettings";
     }
 
     @ModelAttribute
-    protected void formBackingObject(Model model) throws Exception {
+    protected void formBackingObject(Model model) {
         DatabaseSettingsCommand command = new DatabaseSettingsCommand();
         command.setConfigType(settingsService.getDatabaseConfigType());
         command.setEmbedDriver(settingsService.getDatabaseConfigEmbedDriver());
@@ -62,11 +62,11 @@ public class DatabaseSettingsController {
     @PostMapping
     protected String onSubmit(@ModelAttribute("command") @Validated DatabaseSettingsCommand command,
                               BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes) throws Exception {
+                              RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasErrors()) {
             settingsService.resetDatabaseToDefault();
             settingsService.setDatabaseConfigType(command.getConfigType());
-            switch(command.getConfigType()) {
+            switch (command.getConfigType()) {
                 case EMBED:
                     settingsService.setDatabaseConfigEmbedDriver(command.getEmbedDriver());
                     settingsService.setDatabaseConfigEmbedPassword(command.getEmbedPassword());
@@ -80,7 +80,7 @@ public class DatabaseSettingsController {
                 default:
                     break;
             }
-            if(command.getConfigType() != DataSourceConfigType.LEGACY) {
+            if (command.getConfigType() != DataSourceConfigType.LEGACY) {
                 settingsService.setDatabaseMysqlVarcharMaxlength(command.getMysqlVarcharMaxlength());
                 settingsService.setDatabaseUsertableQuote(command.getUsertableQuote());
             }

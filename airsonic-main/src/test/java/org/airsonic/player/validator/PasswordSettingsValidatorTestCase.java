@@ -11,7 +11,7 @@ public class PasswordSettingsValidatorTestCase extends TestCase {
     private PasswordSettingsCommand psc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         psc = new PasswordSettingsCommand();
         psc.setUsername("username");
         psc.setPassword("1234");

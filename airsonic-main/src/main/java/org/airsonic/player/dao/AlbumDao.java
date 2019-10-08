@@ -47,6 +47,10 @@ public class AlbumDao extends AbstractDao {
 
     private final RowMapper rowMapper = new AlbumMapper();
 
+    public Album getAlbum(int id) {
+        return queryOne("select " + QUERY_COLUMNS + " from album where id=?", rowMapper, id);
+    }
+
     /**
      * Returns the album with the given artist and album name.
      *
@@ -88,10 +92,6 @@ public class AlbumDao extends AbstractDao {
 
         // No appropriate album found.
         return null;
-    }
-
-    public Album getAlbum(int id) {
-        return queryOne("select " + QUERY_COLUMNS + " from album where id=?", rowMapper, id);
     }
 
     public List<Album> getAlbumsForArtist(final String artist, final List<MusicFolder> musicFolders) {
@@ -334,13 +334,17 @@ public class AlbumDao extends AbstractDao {
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from album where last_scanned != ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from album where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from album where last_scanned < ? and present", 0, lastScanned);
+        int maxId = queryForInt("select max(id) from album where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("update album set present=false where id between ? and ? and last_scanned != ? and present", id, id + batchSize, lastScanned);
+            update("update album set present=false where id between ? and ? and last_scanned < ? and present", id, id + batchSize, lastScanned);
         }
+    }
+
+    public List<Integer> getExpungeCandidates() {
+        return queryForInts("select id from album where not present");
     }
 
     public void expunge() {

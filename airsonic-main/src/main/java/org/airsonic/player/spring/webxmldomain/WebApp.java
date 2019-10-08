@@ -7,13 +7,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import java.util.List;
 
-@XmlRootElement(name="web-app")
+@XmlRootElement(name = "web-app")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WebApp {
-    @XmlElement(name="servlet")
+    @XmlElement(name = "servlet")
     private List<ServletDef> servletDefs;
 
-    @XmlElement(name="servlet-mapping")
+    @XmlElement(name = "servlet-mapping")
     private List<ServletMappingDef> servletMappingDefs;
 
     public List<ServletDef> getServletDefs() {

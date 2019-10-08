@@ -19,7 +19,6 @@
 
 package org.airsonic.player.service;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
@@ -38,7 +37,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -182,7 +180,7 @@ public class LastFmService {
      * @return Songs from similar artists;
      */
     public List<MediaFile> getSimilarSongs(org.airsonic.player.domain.Artist artist, int count,
-                                           List<MusicFolder> musicFolders) throws IOException {
+                                           List<MusicFolder> musicFolders) {
 
         List<MediaFile> similarSongs = new ArrayList<MediaFile>(mediaFileDao.getSongsByArtist(artist.getName(), 0, 1000));
         for (org.airsonic.player.domain.Artist similarArtist : getSimilarArtists(artist, 100, false, musicFolders)) {
@@ -234,6 +232,28 @@ public class LastFmService {
      */
     public ArtistBio getArtistBio(org.airsonic.player.domain.Artist artist, Locale locale) {
         return getArtistBio(getCanonicalArtistName(artist.getName()), locale);
+    }
+
+    private ArtistBio getArtistBio(String artistName, Locale locale) {
+        try {
+            if (artistName == null) {
+                return null;
+            }
+
+            Artist info = Artist.getInfo(artistName, locale, null /* username */, LAST_FM_KEY);
+            if (info == null) {
+                return null;
+            }
+            return new ArtistBio(processWikiText(info.getWikiSummary()),
+                                 info.getMbid(),
+                                 info.getUrl(),
+                                 info.getImageURL(ImageSize.MEDIUM),
+                                 info.getImageURL(ImageSize.LARGE),
+                                 info.getImageURL(ImageSize.MEGA));
+        } catch (Throwable x) {
+            LOG.warn("Failed to find artist bio for " + artistName, x);
+            return null;
+        }
     }
 
     /**
@@ -342,12 +362,7 @@ public class LastFmService {
 
             Collection<Album> matches = Album.search(query.toString(), LAST_FM_KEY);
             return FluentIterable.from(matches)
-                                 .transform(new Function<Album, LastFmCoverArt>() {
-                                     @Override
-                                     public LastFmCoverArt apply(Album album) {
-                                         return convert(album);
-                                     }
-                                 })
+                                 .transform(album1 -> convert(album1))
                                  .filter(Predicates.notNull())
                                  .toList();
         } catch (Throwable x) {
@@ -366,29 +381,6 @@ public class LastFmService {
         }
 
         return imageUrl == null ? null : new LastFmCoverArt(imageUrl, album.getArtist(), album.getName());
-    }
-
-
-    private ArtistBio getArtistBio(String artistName, Locale locale) {
-        try {
-            if (artistName == null) {
-                return null;
-            }
-
-            Artist info = Artist.getInfo(artistName, locale, null /* username */, LAST_FM_KEY);
-            if (info == null) {
-                return null;
-            }
-            return new ArtistBio(processWikiText(info.getWikiSummary()),
-                                 info.getMbid(),
-                                 info.getUrl(),
-                                 info.getImageURL(ImageSize.MEDIUM),
-                                 info.getImageURL(ImageSize.LARGE),
-                                 info.getImageURL(ImageSize.MEGA));
-        } catch (Throwable x) {
-            LOG.warn("Failed to find artist bio for " + artistName, x);
-            return null;
-        }
     }
 
     private String getCanonicalArtistName(String artistName) {

@@ -47,7 +47,7 @@ public class RecoverController {
     private SecurityService securityService;
 
     @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView recover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView recover(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         String usernameOrEmail = StringUtils.trimToNull(request.getParameter("usernameOrEmail"));
@@ -74,9 +74,9 @@ public class RecoverController {
                 map.put("error", "recover.error.noemail");
             } else {
                 StringBuilder sb = new StringBuilder(PASSWORD_LENGTH);
-                for(int i=0; i<PASSWORD_LENGTH; i++) {
-                  int index = random.nextInt(SYMBOLS.length());
-                  sb.append(SYMBOLS.charAt(index));
+                for (int i = 0; i < PASSWORD_LENGTH; i++) {
+                    int index = random.nextInt(SYMBOLS.length());
+                    sb.append(SYMBOLS.charAt(index));
                 }
                 String password = sb.toString();
 

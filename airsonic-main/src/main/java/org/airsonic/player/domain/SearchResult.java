@@ -59,7 +59,7 @@ public class SearchResult {
         this.offset = offset;
     }
 
-      public int getTotalHits() {
+    public int getTotalHits() {
         return totalHits;
     }
 

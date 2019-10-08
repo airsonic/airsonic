@@ -27,11 +27,11 @@ import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.StatusService;
 import org.airsonic.player.upload.MonitoredDiskFileItemFactory;
 import org.airsonic.player.upload.UploadListener;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +72,7 @@ public class UploadController {
     public static final String UPLOAD_STATUS = "uploadStatus";
 
     @PostMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<>();
         List<File> uploadedFiles = new ArrayList<>();
@@ -174,7 +174,7 @@ public class UploadController {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 File entryFile = new File(file.getParentFile(), entry.getName());
                 if (!entryFile.toPath().normalize().startsWith(file.getParentFile().toPath())) {
-                  throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
+                    throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
                 }
 
                 if (!entry.isDirectory()) {
@@ -202,8 +202,8 @@ public class UploadController {
                         LOG.info("Unzipped " + entryFile);
                         unzippedFiles.add(entryFile);
                     } finally {
-                        IOUtils.closeQuietly(inputStream);
-                        IOUtils.closeQuietly(outputStream);
+                        FileUtil.closeQuietly(inputStream);
+                        FileUtil.closeQuietly(outputStream);
                     }
                 }
             }

@@ -58,9 +58,9 @@ public class GenreUpnpProcessor extends UpnpContentProcessor <Genre, MediaFile> 
             // sort items
         }
         List<Genre> selectedItems = Util.subList(allItems, firstResult, maxResults);
-        for (int i=0; i < selectedItems.size(); i++) {
+        for (int i = 0; i < selectedItems.size(); i++) {
             Genre item = selectedItems.get(i);
-            didl.addContainer(createContainer(item, (int) (i+firstResult)));
+            didl.addContainer(createContainer(item, (int) (i + firstResult)));
         }
         return createBrowseResult(didl, (int) didl.getCount(), allItems.size());
     }
@@ -98,7 +98,7 @@ public class GenreUpnpProcessor extends UpnpContentProcessor <Genre, MediaFile> 
         return getDispatcher().getMediaFileProcessor().getMediaFileDao().getSongsByGenre(item.getName(), 0, Integer.MAX_VALUE, allFolders);
     }
 
-    public void addChild(DIDLContent didl, MediaFile child) throws Exception {
+    public void addChild(DIDLContent didl, MediaFile child) {
         didl.addItem(getDispatcher().getMediaFileProcessor().createItem(child));
     }
 }

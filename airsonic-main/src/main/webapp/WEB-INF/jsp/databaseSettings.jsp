@@ -35,7 +35,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form commandName="command" action="databaseSettings.view" method="post">
+<form:form modelAttribute="command" action="databaseSettings.view" method="post">
     <p><fmt:message key="databasesettings.moreinfo"/></p>
 
     <table style="white-space:nowrap" class="indent">

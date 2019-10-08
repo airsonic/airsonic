@@ -19,7 +19,7 @@
 
             <img src="<spring:theme code="logoImage"/>" alt="">
 
-            <div class="loginmessagetop"><sub:wiki text="${model.loginMessage}"/></div>
+            <div class="loginmessagetop">${model.loginMessage}</div>
 
             <input required type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
 

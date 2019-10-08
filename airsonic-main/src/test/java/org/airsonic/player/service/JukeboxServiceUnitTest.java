@@ -12,7 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(value = MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class JukeboxServiceUnitTest {
 
     private JukeboxService jukeboxService;
@@ -92,7 +92,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void updateJukebox() throws Exception {
+    public void updateJukebox() {
         // When
         jukeboxService.updateJukebox(legacyJukeboxPlayer, 0);
         // Then
@@ -140,7 +140,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void startWithJukeboxPlayer() throws Exception {
+    public void startWithJukeboxPlayer() {
         // When
         jukeboxService.start(jukeboxPlayer);
         // Then
@@ -148,7 +148,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void startWithLegacyJukeboxPlayer() throws Exception {
+    public void startWithLegacyJukeboxPlayer() {
         // When
         jukeboxService.start(legacyJukeboxPlayer);
 
@@ -157,7 +157,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void playWithJukeboxPlayer() throws Exception {
+    public void playWithJukeboxPlayer() {
         // When
         jukeboxService.play(jukeboxPlayer);
         // Then
@@ -165,7 +165,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void playWithLegacyJukeboxPlayer() throws Exception {
+    public void playWithLegacyJukeboxPlayer() {
         // When
         jukeboxService.play(legacyJukeboxPlayer);
         // Then
@@ -173,7 +173,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void stopWithJukeboxPlayer() throws Exception {
+    public void stopWithJukeboxPlayer() {
         // When
         jukeboxService.stop(jukeboxPlayer);
         // Then
@@ -181,7 +181,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void stopWithLegacyJukeboxPlayer() throws Exception {
+    public void stopWithLegacyJukeboxPlayer() {
         // When
         jukeboxService.stop(legacyJukeboxPlayer);
         // Then
@@ -190,7 +190,7 @@ public class JukeboxServiceUnitTest {
 
 
     @Test
-    public void skipWithJukeboxPlayer() throws Exception {
+    public void skipWithJukeboxPlayer() {
         // When
         jukeboxService.skip(jukeboxPlayer, 0, 1);
         // Then
@@ -198,7 +198,7 @@ public class JukeboxServiceUnitTest {
     }
 
     @Test
-    public void skipWithLegacyJukeboxPlayer() throws Exception {
+    public void skipWithLegacyJukeboxPlayer() {
         // When
         jukeboxService.skip(legacyJukeboxPlayer, 0, 1);
         // Then

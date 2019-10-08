@@ -26,6 +26,7 @@ import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.service.search.IndexManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,16 +64,18 @@ public class MusicFolderSettingsController {
     private AlbumDao albumDao;
     @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
+    private IndexManager indexManager;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "musicFolderSettings";
     }
 
     @ModelAttribute
     protected void formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
                                        @RequestParam(value = "expunge",required = false) String expunge,
-                                       Model model) throws Exception {
+                                       Model model) {
         MusicFolderSettingsCommand command = new MusicFolderSettingsCommand();
 
         if (scanNow != null) {
@@ -98,6 +101,14 @@ public class MusicFolderSettingsController {
 
 
     private void expunge() {
+
+        // to be before dao#expunge
+        LOG.debug("Cleaning search index...");
+        indexManager.startIndexing();
+        indexManager.expunge();
+        indexManager.stopIndexing();
+        LOG.debug("Search index cleanup complete.");
+
         LOG.debug("Cleaning database...");
         LOG.debug("Deleting non-present artists...");
         artistDao.expunge();
@@ -114,7 +125,7 @@ public class MusicFolderSettingsController {
     }
 
     @PostMapping
-    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
             if (musicFolderInfo.isDelete()) {

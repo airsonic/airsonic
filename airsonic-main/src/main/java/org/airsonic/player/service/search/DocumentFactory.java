@@ -25,9 +25,22 @@ import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.NumericField;
+import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
+import org.apache.lucene.document.IntPoint;
+import org.apache.lucene.document.SortedDocValuesField;
+import org.apache.lucene.document.StoredField;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.index.IndexOptions;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.util.BytesRef;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.stereotype.Component;
+
+import java.util.function.BiConsumer;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * A factory that generates the documents to be stored in the index.
@@ -35,17 +48,100 @@ import org.springframework.stereotype.Component;
 @Component
 public class DocumentFactory {
 
-    /**
-     * Normalize the genre string.
-     * 
-     * @param genre genre string
-     * @return genre string normalized
-     * @deprecated should be resolved with tokenizer or filter
-     */
-    @Deprecated
-    private String normalizeGenre(String genre) {
-        return genre.toLowerCase().replace(" ", "").replace("-", "");
+    private static final FieldType TYPE_ID;
+
+    private static final FieldType TYPE_ID_NO_STORE;
+
+    private static final FieldType TYPE_KEY;
+
+    static {
+
+        TYPE_ID = new FieldType();
+        TYPE_ID.setIndexOptions(IndexOptions.DOCS);
+        TYPE_ID.setTokenized(false);
+        TYPE_ID.setOmitNorms(true);
+        TYPE_ID.setStored(true);
+        TYPE_ID.freeze();
+
+        TYPE_ID_NO_STORE = new FieldType();
+        TYPE_ID_NO_STORE.setIndexOptions(IndexOptions.DOCS);
+        TYPE_ID_NO_STORE.setTokenized(false);
+        TYPE_ID_NO_STORE.setOmitNorms(true);
+        TYPE_ID_NO_STORE.setStored(false);
+        TYPE_ID_NO_STORE.freeze();
+
+        TYPE_KEY = new FieldType();
+        TYPE_KEY.setIndexOptions(IndexOptions.DOCS);
+        TYPE_KEY.setTokenized(false);
+        TYPE_KEY.setOmitNorms(true);
+        TYPE_KEY.setStored(false);
+        TYPE_KEY.freeze();
+
     }
+
+    @FunctionalInterface
+    private interface Consumer<T, U, V> {
+        void accept(T t, U u, V v);
+
+    }
+
+    ;
+
+    private BiConsumer<@NonNull Document, @NonNull Integer> fieldId = (doc, value) -> {
+        doc.add(new StoredField(FieldNames.ID, Integer.toString(value), TYPE_ID));
+    };
+
+    private BiConsumer<@NonNull Document, @NonNull Integer> fieldFolderId = (doc, value) -> {
+        doc.add(new StoredField(FieldNames.FOLDER_ID, Integer.toString(value), TYPE_ID_NO_STORE));
+    };
+
+    private Consumer<@NonNull Document, @NonNull String, @NonNull String> fieldKey = (doc, field, value) -> {
+        doc.add(new StoredField(field, value, TYPE_KEY));
+    };
+
+    private BiConsumer<@NonNull  Document, @NonNull String> fieldMediatype = (doc, value) ->
+        fieldKey.accept(doc, FieldNames.MEDIA_TYPE, value);
+
+    private BiConsumer<@NonNull Document, @NonNull String> fieldFolderPath = (doc, value) -> 
+        fieldKey.accept(doc, FieldNames.FOLDER, value);
+
+    private BiConsumer<@NonNull Document, @Nullable String> fieldGenre = (doc, value) -> {
+        if (isEmpty(value)) {
+            return;
+        }
+        fieldKey.accept(doc, FieldNames.GENRE, value);
+    };
+
+    private Consumer<@NonNull Document, @NonNull String, @Nullable Integer> fieldYear = (doc, fieldName, value) -> {
+        if (isEmpty(value)) {
+            return;
+        }
+        doc.add(new IntPoint(fieldName, value));
+    };
+
+    private Consumer<@NonNull Document, @NonNull String, @Nullable String> fieldWords = (doc, fieldName, value) -> {
+        if (isEmpty(value)) {
+            return;
+        }
+        doc.add(new TextField(fieldName, value, Store.NO));
+        doc.add(new SortedDocValuesField(fieldName, new BytesRef(value)));
+    };
+
+    public final Term createPrimarykey(Integer id) {
+        return new Term(FieldNames.ID, Integer.toString(id));
+    };
+
+    public final Term createPrimarykey(Album album) {
+        return createPrimarykey(album.getId());
+    };
+
+    public final Term createPrimarykey(Artist artist) {
+        return createPrimarykey(artist.getId());
+    };
+
+    public final Term createPrimarykey(MediaFile mediaFile) {
+        return createPrimarykey(mediaFile.getId());
+    };
 
     /**
      * Create a document.
@@ -56,21 +152,10 @@ public class DocumentFactory {
      */
     public Document createAlbumDocument(MediaFile mediaFile) {
         Document doc = new Document();
-        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
-                .setIntValue(mediaFile.getId()));
-
-        if (mediaFile.getArtist() != null) {
-            doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (mediaFile.getAlbumName() != null) {
-            doc.add(new Field(FieldNames.ALBUM, mediaFile.getAlbumName(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (mediaFile.getFolder() != null) {
-            doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
-                    Field.Index.NOT_ANALYZED_NO_NORMS));
-        }
+        fieldId.accept(doc, mediaFile.getId());
+        fieldWords.accept(doc, FieldNames.ARTIST, mediaFile.getArtist());
+        fieldWords.accept(doc, FieldNames.ALBUM, mediaFile.getAlbumName());
+        fieldFolderPath.accept(doc, mediaFile.getFolder());
         return doc;
     }
 
@@ -83,17 +168,9 @@ public class DocumentFactory {
      */
     public Document createArtistDocument(MediaFile mediaFile) {
         Document doc = new Document();
-        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
-                .setIntValue(mediaFile.getId()));
-
-        if (mediaFile.getArtist() != null) {
-            doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (mediaFile.getFolder() != null) {
-            doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
-                    Field.Index.NOT_ANALYZED_NO_NORMS));
-        }
+        fieldId.accept(doc, mediaFile.getId());
+        fieldWords.accept(doc, FieldNames.ARTIST, mediaFile.getArtist());
+        fieldFolderPath.accept(doc, mediaFile.getFolder());
         return doc;
     }
 
@@ -106,20 +183,10 @@ public class DocumentFactory {
      */
     public Document createAlbumId3Document(Album album) {
         Document doc = new Document();
-        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false).setIntValue(album.getId()));
-
-        if (album.getArtist() != null) {
-            doc.add(new Field(FieldNames.ARTIST, album.getArtist(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (album.getName() != null) {
-            doc.add(new Field(FieldNames.ALBUM, album.getName(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (album.getFolderId() != null) {
-            doc.add(new NumericField(FieldNames.FOLDER_ID, Field.Store.NO, true)
-                    .setIntValue(album.getFolderId()));
-        }
+        fieldId.accept(doc, album.getId());
+        fieldWords.accept(doc, FieldNames.ARTIST, album.getArtist());
+        fieldWords.accept(doc, FieldNames.ALBUM, album.getName());
+        fieldFolderId.accept(doc, album.getFolderId());
         return doc;
     }
 
@@ -131,14 +198,22 @@ public class DocumentFactory {
      * @return document
      * @since legacy
      */
+    /*
+     *  XXX 3.x -> 8.x :
+     *  Only null check specification of createArtistId3Document is different from legacy.
+     *  (The reason is only to simplify the function.)
+     *  
+     *  Since the field of domain object Album is nonnull,
+     *  null check was not performed.
+     *  
+     *  In implementation ARTIST and ALBUM became nullable,
+     *  but null is not input at this point in data flow.
+     */
     public Document createArtistId3Document(Artist artist, MusicFolder musicFolder) {
         Document doc = new Document();
-        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
-                .setIntValue(artist.getId()));
-        doc.add(new Field(FieldNames.ARTIST, artist.getName(), Field.Store.YES,
-                Field.Index.ANALYZED));
-        doc.add(new NumericField(FieldNames.FOLDER_ID, Field.Store.NO, true)
-                .setIntValue(musicFolder.getId()));
+        fieldId.accept(doc, artist.getId());
+        fieldWords.accept(doc, FieldNames.ARTIST, artist.getName());
+        fieldFolderId.accept(doc, musicFolder.getId());
         return doc;
     }
 
@@ -151,30 +226,13 @@ public class DocumentFactory {
      */
     public Document createSongDocument(MediaFile mediaFile) {
         Document doc = new Document();
-        doc.add(new NumericField(FieldNames.ID, Field.Store.YES, false)
-                .setIntValue(mediaFile.getId()));
-        doc.add(new Field(FieldNames.MEDIA_TYPE, mediaFile.getMediaType().name(), Field.Store.NO,
-                Field.Index.ANALYZED_NO_NORMS));
-        if (mediaFile.getTitle() != null) {
-            doc.add(new Field(FieldNames.TITLE, mediaFile.getTitle(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (mediaFile.getArtist() != null) {
-            doc.add(new Field(FieldNames.ARTIST, mediaFile.getArtist(), Field.Store.YES,
-                    Field.Index.ANALYZED));
-        }
-        if (mediaFile.getGenre() != null) {
-            doc.add(new Field(FieldNames.GENRE, normalizeGenre(mediaFile.getGenre()),
-                    Field.Store.NO, Field.Index.ANALYZED));
-        }
-        if (mediaFile.getYear() != null) {
-            doc.add(new NumericField(FieldNames.YEAR, Field.Store.NO, true)
-                    .setIntValue(mediaFile.getYear()));
-        }
-        if (mediaFile.getFolder() != null) {
-            doc.add(new Field(FieldNames.FOLDER, mediaFile.getFolder(), Field.Store.NO,
-                    Field.Index.NOT_ANALYZED_NO_NORMS));
-        }
+        fieldId.accept(doc, mediaFile.getId());
+        fieldMediatype.accept(doc, mediaFile.getMediaType().name());
+        fieldWords.accept(doc, FieldNames.TITLE, mediaFile.getTitle());
+        fieldWords.accept(doc, FieldNames.ARTIST, mediaFile.getArtist());
+        fieldGenre.accept(doc, mediaFile.getGenre());
+        fieldYear.accept(doc, FieldNames.YEAR, mediaFile.getYear());
+        fieldFolderPath.accept(doc, mediaFile.getFolder());
         return doc;
     }
 

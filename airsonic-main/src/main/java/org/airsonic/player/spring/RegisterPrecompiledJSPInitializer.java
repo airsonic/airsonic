@@ -28,7 +28,7 @@ public class RegisterPrecompiledJSPInitializer implements ServletContextInitiali
 
     @Override
     public void onStartup(ServletContext servletContext) {
-        if(SettingsService.isDevelopmentMode()) {
+        if (SettingsService.isDevelopmentMode()) {
             logger.debug("Not registering precompiled jsps");
         } else {
             logger.debug("Registering precompiled jsps");
@@ -64,6 +64,9 @@ public class RegisterPrecompiledJSPInitializer implements ServletContextInitiali
             jaxbContext = new JAXBDataBinding(WebApp.class).getContext();
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             WebApp webapp = (WebApp) unmarshaller.unmarshal(webXmlIS);
+            try {
+                webXmlIS.close();
+            } catch (java.io.IOException e) {}
             return webapp;
         } catch (JAXBException e) {
             throw new RuntimeException("Could not parse precompiled-jsp-web.xml", e);

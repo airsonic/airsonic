@@ -25,6 +25,7 @@ import org.mockito.stubbing.Answer;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -93,7 +94,7 @@ public class PlaylistServiceTestImport {
         builder.append(mf3.getAbsolutePath()).append("\n");
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
-        InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
         String path = "/path/to/"+playlistName+".m3u";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
@@ -127,7 +128,7 @@ public class PlaylistServiceTestImport {
         builder.append("File3=").append(mf3.getAbsolutePath()).append("\n");
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
-        InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
         String path = "/path/to/"+playlistName+".pls";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
@@ -164,7 +165,7 @@ public class PlaylistServiceTestImport {
         builder.append("    </trackList>\n" + "</playlist>\n");
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
-        InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes("UTF-8"));
+        InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
         String path = "/path/to/"+playlistName+".xspf";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
@@ -188,7 +189,7 @@ public class PlaylistServiceTestImport {
         }
 
         @Override
-        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+        public Object answer(InvocationOnMock invocationOnMock) {
             Playlist playlist = invocationOnMock.getArgumentAt(0, Playlist.class);
             playlist.setId(id);
             return null;
@@ -198,7 +199,7 @@ public class PlaylistServiceTestImport {
     private class MediaFileHasEverything implements Answer {
 
         @Override
-        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+        public Object answer(InvocationOnMock invocationOnMock) {
             File file = invocationOnMock.getArgumentAt(0, File.class);
             MediaFile mediaFile = new MediaFile();
             mediaFile.setPath(file.getPath());

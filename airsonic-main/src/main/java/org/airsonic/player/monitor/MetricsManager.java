@@ -79,7 +79,7 @@ public class MetricsManager {
      */
     public TimerBuilder condition(boolean ifTrue) {
         if (metricsActivatedByConfiguration()) {
-            if (ifTrue == false) {
+            if (!ifTrue) {
                 return conditionFalseTimerBuilderSingleton;
             }
             return new TimerBuilder();

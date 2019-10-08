@@ -38,7 +38,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,7 +47,7 @@ import java.util.stream.Collectors;
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping(value = {"/ext/share/**"})
+@RequestMapping("/ext/share/**")
 public class ExternalPlayerController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExternalPlayerController.class);
@@ -72,7 +71,7 @@ public class ExternalPlayerController {
         String shareName = ControllerUtils.extractMatched(request);
         LOG.debug("Share name is {}", shareName);
 
-        if(StringUtils.isBlank(shareName)) {
+        if (StringUtils.isBlank(shareName)) {
             LOG.warn("Could not find share with shareName " + shareName);
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
@@ -99,10 +98,10 @@ public class ExternalPlayerController {
         return new ModelAndView("externalPlayer", "model", map);
     }
 
-    private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) throws IOException {
+    private List<MediaFileWithUrlInfo> getSongs(HttpServletRequest request, Share share, Player player) {
         Date expires = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication instanceof JWTAuthenticationToken) {
+        if (authentication instanceof JWTAuthenticationToken) {
             DecodedJWT token = jwtSecurityService.verify((String) authentication.getCredentials());
             expires = token.getExpiresAt();
         }

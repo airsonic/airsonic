@@ -34,9 +34,6 @@ import java.util.Map;
  */
 public enum IndexType {
 
-    /*
-     * Boosts is a factor for search scores, which is 1 by default.
-     */
     SONG(
         fieldNames(
             FieldNames.TITLE,
@@ -47,23 +44,23 @@ public enum IndexType {
     ALBUM(
         fieldNames(
             FieldNames.ALBUM,
-            FieldNames.ARTIST,
-            FieldNames.FOLDER),
+            FieldNames.ARTIST), 
+            // FieldNames.FOLDER), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
         boosts(
             entry(FieldNames.ALBUM, 2F))),
 
     ALBUM_ID3(
         fieldNames(
             FieldNames.ALBUM,
-            FieldNames.ARTIST,
-            FieldNames.FOLDER_ID),
+            FieldNames.ARTIST),
+            // FieldNames.FOLDER_ID), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
         boosts(
             entry(FieldNames.ALBUM, 2F))),
 
     ARTIST(
         fieldNames(
-            FieldNames.ARTIST,
-            FieldNames.FOLDER),
+            FieldNames.ARTIST),
+            // FieldNames.FOLDER), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
         boosts(
             entry(FieldNames.ARTIST, 1F))),
 
@@ -75,6 +72,13 @@ public enum IndexType {
 
     ;
 
+    /**
+     * Define the field's applied boost value when searching IndexType.
+     * 
+     * @param entry {@link #entry(String, float)}.
+     *              When specifying multiple values, enumerate entries.
+     * @return Map of boost values ​​to be applied to the field
+     */
     @SafeVarargs
     private static final Map<String, Float> boosts(SimpleEntry<String, Float>... entry) {
         Map<String, Float> m = new HashMap<>();
@@ -82,17 +86,21 @@ public enum IndexType {
         return Collections.unmodifiableMap(m);
     }
 
-    /*
-     * The current state is implemented to set the same value as legacy.
-     * However unlike legacy, it has been changed
-     * so that different values ​​can be set for each field.
-     * When setting two or more boost values,
-     * it is desirable to differentiate the values.
+    /**
+     * Create an entry representing the boost value for the field.
+     * 
+     * @param k Field name defined by FieldNames
+     * @param v Boost value
      */
     private static final SimpleEntry<String, Float> entry(String k, float v) {
         return new AbstractMap.SimpleEntry<>(k, v);
     }
 
+    /**
+     * Defines the field that the input value is to search for
+     * when searching IndexType.
+     * If you specify multiple values, list the field names.
+     */
     private static final String[] fieldNames(String... names) {
         return Arrays.stream(names).toArray(String[]::new);
     }
@@ -109,11 +117,9 @@ public enum IndexType {
     /**
      * Returns a map of fields and boost values.
      * 
-     * @return map of fields and boost values
+     * @return Map of fields and boost values
      * @since legacy
-     */
-    /*
-     * See the lucene documentation for boost specifications.
+     * @see org.apache.lucene.search.BoostQuery
      */
     public Map<String, Float> getBoosts() {
         return boosts;
@@ -124,12 +130,6 @@ public enum IndexType {
      * 
      * @return Fields mainly used in multi-field search
      * @since legacy
-     */
-    /*
-     * It maintains a fairly early implementation
-     * and can be considered as an argument of MultiFieldQueryParser.
-     * In fact, the fields and boosts used in the search are difficult topics
-     * that can be determined by the search requirements.
      */
     public String[] getFields() {
         return fields;

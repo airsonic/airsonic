@@ -7,7 +7,25 @@ script:
 
 matrix:
   include:
+  - name: coverity
+    script:
+      - echo "coverity scan script"
+    install:
+      - echo "coverity scan install"
+    addons:
+      coverity_scan:
+        project:
+          name: "airsonic/airsonic"
+          description: "A Free and Open Source community driven media server"
+        notification_email: "airsonic@tutanota.com"
+        build_command_prepend:
+        build_command: mvn -B -q clean package -DskipTests=true
+        branch_pattern: master
   - jdk: openjdk8
   - jdk: oraclejdk9
+    before_install:
+        # The OpenJDK9's CA bundle is outdated, so we're using the system's ones.
+        - rm "${JAVA_HOME}/lib/security/cacerts"
+        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
   - jdk: openjdk11
   - jdk: openjdk12
