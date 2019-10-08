@@ -245,8 +245,10 @@ public class TranscodingService {
                 return createDownsampledInputStream(parameters);
             }
 
+        } catch (IOException x) {
+            LOG.warn("Transcoder failed: {}. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x.toString());
         } catch (Exception x) {
-            LOG.warn("Failed to transcode " + parameters.getMediaFile() + ". Using original.", x);
+            LOG.warn("Transcoder failed. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x);
         }
 
         return new FileInputStream(parameters.getMediaFile().getFile());
