@@ -24,14 +24,14 @@ import java.nio.charset.Charset;
 @Component
 public class RegisterPrecompiledJSPInitializer implements ServletContextInitializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(RegisterPrecompiledJSPInitializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RegisterPrecompiledJSPInitializer.class);
 
     @Override
     public void onStartup(ServletContext servletContext) {
         if (SettingsService.isDevelopmentMode()) {
-            logger.debug("Not registering precompiled jsps");
+            LOG.debug("Not registering precompiled jsps");
         } else {
-            logger.debug("Registering precompiled jsps");
+            LOG.debug("Registering precompiled jsps");
             registerPrecompiledJSPs(servletContext);
         }
     }
@@ -39,14 +39,14 @@ public class RegisterPrecompiledJSPInitializer implements ServletContextInitiali
     private static void registerPrecompiledJSPs(ServletContext servletContext) {
         WebApp webApp = parseXmlFragment();
         for (ServletDef def :  webApp.getServletDefs()) {
-            logger.trace("Registering precompiled JSP: {} -> {}", def.getName(), def.getSclass());
+            LOG.trace("Registering precompiled JSP: {} -> {}", def.getName(), def.getSclass());
             ServletRegistration.Dynamic reg = servletContext.addServlet(def.getName(), def.getSclass());
             // Need to set loadOnStartup somewhere between 0 and 128. 0 is highest priority. 99 should be fine
             reg.setLoadOnStartup(99);
         }
 
         for (ServletMappingDef mapping : webApp.getServletMappingDefs()) {
-            logger.trace("Mapping servlet: {} -> {}", mapping.getName(), mapping.getUrlPattern());
+            LOG.trace("Mapping servlet: {} -> {}", mapping.getName(), mapping.getUrlPattern());
             servletContext.getServletRegistration(mapping.getName()).addMapping(mapping.getUrlPattern());
         }
     }

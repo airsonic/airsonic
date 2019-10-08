@@ -255,6 +255,13 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.airsonic</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>1.0-RELEASE</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.owasp</groupId>
