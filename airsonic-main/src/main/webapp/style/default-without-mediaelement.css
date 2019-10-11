@@ -69,6 +69,11 @@ a.disabled, a.disabled span, span.disabled {
     color: #bbb;
 }
 
+/* Player controls */
+a.player-control:hover {
+    text-decoration: none;
+}
+
 /* Color for warning messages. */
 .warning {
     color: red;

@@ -891,14 +891,14 @@
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onClear()">
+                        <a href="javascript:onClear()" class="player-control">
                             <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onShuffle()" id="shuffleQueue">
+                        <a href="javascript:onShuffle()" id="shuffleQueue" class="player-control">
                             <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
@@ -906,7 +906,7 @@
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
                         <td style="white-space:nowrap;">
                           <span class="header">
-                            <a href="javascript:onToggleRepeat()" id="repeatQueue">
+                            <a href="javascript:onToggleRepeat()" id="repeatQueue" class="player-control">
                               <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
@@ -914,7 +914,7 @@
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onUndo()" id="undoQueue">
+                        <a href="javascript:onUndo()" id="undoQueue" class="player-control">
                           <img src="<spring:theme code="undoImage"/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
                         </a>
                       </span>  |</td>
@@ -922,7 +922,7 @@
                     <c:if test="${model.user.settingsRole}">
                         <td style="white-space:nowrap;">
                           <span class="header">
-                            <a href="playerSettings.view?id=${model.player.id}" target="main">
+                            <a href="playerSettings.view?id=${model.player.id}" target="main" class="player-control">
                               <img src="<spring:theme code="settingsImage"/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
