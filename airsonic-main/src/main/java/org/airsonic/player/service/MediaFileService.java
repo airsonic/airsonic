@@ -153,10 +153,10 @@ public class MediaFileService {
         if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION
                 && !settingsService.isIgnoreFileTimestamps()
                 && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
-            LOG.debug("Detected unmodified file");
+            LOG.debug("Detected unmodified file (id {}, path {})", mediaFile.getId(), mediaFile.getPath());
             return mediaFile;
         }
-        LOG.debug("Updating database file from disk");
+        LOG.debug("Updating database file from disk (id {}, path {})", mediaFile.getId(), mediaFile.getPath());
         mediaFile = createMediaFile(mediaFile.getFile());
         mediaFileDao.createOrUpdateMediaFile(mediaFile);
         return mediaFile;
