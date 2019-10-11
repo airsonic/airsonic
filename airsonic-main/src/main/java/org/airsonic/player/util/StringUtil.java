@@ -279,10 +279,7 @@ public final class StringUtil {
      * @throws IOException If an I/O error occurs.
      */
     public static String[] readLines(InputStream in) throws IOException {
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             List<String> result = new ArrayList<String>();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim();
@@ -294,7 +291,6 @@ public final class StringUtil {
 
         } finally {
             FileUtil.closeQuietly(in);
-            FileUtil.closeQuietly(reader);
         }
     }
 

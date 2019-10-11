@@ -29,14 +29,12 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
@@ -188,21 +186,17 @@ public class VersionService {
      * @param resourceName The resource name.
      * @return The first line of the resource.
      */
-    private String readLineFromResource(String resourceName) {
+    private String readLineFromResource(@NonNull String resourceName) {
         InputStream in = VersionService.class.getResourceAsStream(resourceName);
         if (in == null) {
             return null;
         }
-        BufferedReader reader = null;
-        try {
 
-            reader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             return reader.readLine();
-
         } catch (IOException x) {
             return null;
         } finally {
-            FileUtil.closeQuietly(reader);
             FileUtil.closeQuietly(in);
         }
     }

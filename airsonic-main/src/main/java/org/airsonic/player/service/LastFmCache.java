@@ -53,14 +53,10 @@ public class LastFmCache extends Cache {
 
     @Override
     public InputStream load(String cacheEntryName) {
-        FileInputStream in = null;
-        try {
-            in = new FileInputStream(getXmlFile(cacheEntryName));
+        try (FileInputStream in = new FileInputStream(getXmlFile(cacheEntryName))) {
             return new ByteArrayInputStream(IOUtils.toByteArray(in));
         } catch (Exception e) {
             return null;
-        } finally {
-            FileUtil.closeQuietly(in);
         }
     }
 

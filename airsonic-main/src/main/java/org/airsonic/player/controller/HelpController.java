@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,9 +98,8 @@ public class HelpController {
     }
 
     private static List<String> getLatestLogEntries(File logFile) {
-        try {
-            List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
-            ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset());
+        List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
+        try (ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset())) {
             String current;
             while ((current = reader.readLine()) != null) {
                 if (lines.size() >= LOG_LINES_TO_SHOW) {
@@ -108,7 +108,7 @@ public class HelpController {
                 lines.add(0, current);
             }
             return lines;
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.warn("Could not open log file " + logFile, e);
             return null;
         }
