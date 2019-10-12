@@ -87,39 +87,39 @@ public class DocumentFactory {
 
     ;
 
-    private BiConsumer<@NonNull Document, @NonNull Integer> fieldId = (doc, value) -> {
+    private final BiConsumer<@NonNull Document, @NonNull Integer> fieldId = (doc, value) -> {
         doc.add(new StoredField(FieldNames.ID, Integer.toString(value), TYPE_ID));
     };
 
-    private BiConsumer<@NonNull Document, @NonNull Integer> fieldFolderId = (doc, value) -> {
+    private final BiConsumer<@NonNull Document, @NonNull Integer> fieldFolderId = (doc, value) -> {
         doc.add(new StoredField(FieldNames.FOLDER_ID, Integer.toString(value), TYPE_ID_NO_STORE));
     };
 
-    private Consumer<@NonNull Document, @NonNull String, @NonNull String> fieldKey = (doc, field, value) -> {
+    private final Consumer<@NonNull Document, @NonNull String, @NonNull String> fieldKey = (doc, field, value) -> {
         doc.add(new StoredField(field, value, TYPE_KEY));
     };
 
-    private BiConsumer<@NonNull  Document, @NonNull String> fieldMediatype = (doc, value) ->
+    private final BiConsumer<@NonNull  Document, @NonNull String> fieldMediatype = (doc, value) ->
         fieldKey.accept(doc, FieldNames.MEDIA_TYPE, value);
 
-    private BiConsumer<@NonNull Document, @NonNull String> fieldFolderPath = (doc, value) -> 
+    private final BiConsumer<@NonNull Document, @NonNull String> fieldFolderPath = (doc, value) ->
         fieldKey.accept(doc, FieldNames.FOLDER, value);
 
-    private BiConsumer<@NonNull Document, @Nullable String> fieldGenre = (doc, value) -> {
+    private final BiConsumer<@NonNull Document, @Nullable String> fieldGenre = (doc, value) -> {
         if (isEmpty(value)) {
             return;
         }
         fieldKey.accept(doc, FieldNames.GENRE, value);
     };
 
-    private Consumer<@NonNull Document, @NonNull String, @Nullable Integer> fieldYear = (doc, fieldName, value) -> {
+    private final Consumer<@NonNull Document, @NonNull String, @Nullable Integer> fieldYear = (doc, fieldName, value) -> {
         if (isEmpty(value)) {
             return;
         }
         doc.add(new IntPoint(fieldName, value));
     };
 
-    private Consumer<@NonNull Document, @NonNull String, @Nullable String> fieldWords = (doc, fieldName, value) -> {
+    private final Consumer<@NonNull Document, @NonNull String, @Nullable String> fieldWords = (doc, fieldName, value) -> {
         if (isEmpty(value)) {
             return;
         }

@@ -25,8 +25,8 @@ package org.airsonic.player.command;
  * @author Sindre Mehus
  */
 public class EnumHolder {
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 
     public EnumHolder(String name, String description) {
         this.name = name;

@@ -29,9 +29,9 @@ import java.util.Date;
  */
 public class PodcastEpisode {
 
-    private Integer id;
+    private final Integer id;
     private Integer mediaFileId;
-    private Integer channelId;
+    private final Integer channelId;
     private String url;
     private String path;
     private String title;

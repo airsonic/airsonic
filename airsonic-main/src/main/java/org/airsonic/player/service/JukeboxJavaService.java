@@ -23,16 +23,16 @@ public class JukeboxJavaService {
 
     private static final float DEFAULT_GAIN = 0.75f;
 
-    private AudioScrobblerService audioScrobblerService;
-    private StatusService statusService;
-    private SecurityService securityService;
-    private MediaFileService mediaFileService;
-    private JavaPlayerFactory javaPlayerFactory;
+    private final AudioScrobblerService audioScrobblerService;
+    private final StatusService statusService;
+    private final SecurityService securityService;
+    private final MediaFileService mediaFileService;
+    private final JavaPlayerFactory javaPlayerFactory;
 
 
     private TransferStatus status;
-    private Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new HashMap<>();
-    private Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new HashMap<>();
+    private final Map<Integer, com.github.biconou.AudioPlayer.api.Player> activeAudioPlayers = new HashMap<>();
+    private final Map<String, List<com.github.biconou.AudioPlayer.api.Player>> activeAudioPlayersPerMixer = new HashMap<>();
     private final static String DEFAULT_MIXER_ENTRY_KEY = "_default";
 
 

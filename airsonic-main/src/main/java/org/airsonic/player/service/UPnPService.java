@@ -65,7 +65,7 @@ public class UPnPService {
     @Autowired
     @Qualifier("dispatchingContentDirectory")
     private CustomContentDirectory dispatchingContentDirectory;
-    private AtomicReference<Boolean> running = new AtomicReference<>(false);
+    private final AtomicReference<Boolean> running = new AtomicReference<>(false);
 
     @PostConstruct
     public void init() {

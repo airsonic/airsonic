@@ -54,13 +54,13 @@ import java.util.List;
  */
 public class UrlTag extends BodyTagSupport {
 
-    private String DEFAULT_ENCODING = "Utf8Hex";
+    private final String DEFAULT_ENCODING = "Utf8Hex";
     private static final Logger LOG = LoggerFactory.getLogger(UrlTag.class);
 
     private String var;
     private String value;
     private String encoding = DEFAULT_ENCODING;
-    private List<Parameter> parameters = new ArrayList<Parameter>();
+    private final List<Parameter> parameters = new ArrayList<Parameter>();
 
     public int doStartTag() {
         parameters.clear();
@@ -191,8 +191,8 @@ public class UrlTag extends BodyTagSupport {
      * A URL query parameter.
      */
     private static class Parameter {
-        private String name;
-        private String value;
+        private final String name;
+        private final String value;
 
         private Parameter(String name, String value) {
             this.name = name;

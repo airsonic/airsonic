@@ -41,7 +41,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
     // ================================================================================================
 
     private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsContextMapper.class);
-    private String passwordAttributeName = "userPassword";
+    private final String passwordAttributeName = "userPassword";
 
     @Autowired
     SecurityService securityService;

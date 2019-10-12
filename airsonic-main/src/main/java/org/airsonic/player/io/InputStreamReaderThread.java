@@ -38,9 +38,9 @@ public class InputStreamReaderThread extends Thread {
 
     private static final Logger LOG = LoggerFactory.getLogger(InputStreamReaderThread.class);
 
-    private InputStream input;
-    private String name;
-    private boolean log;
+    private final InputStream input;
+    private final String name;
+    private final boolean log;
 
     public InputStreamReaderThread(InputStream input, String name, boolean log) {
         super(name + " InputStreamLogger");

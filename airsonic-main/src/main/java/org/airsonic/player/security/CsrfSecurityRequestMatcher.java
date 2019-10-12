@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  */
 @Component
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
-    private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
-    private Collection<RegexRequestMatcher> whiteListedMatchers;
+    private final Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
+    private final Collection<RegexRequestMatcher> whiteListedMatchers;
 
     public CsrfSecurityRequestMatcher() {
         Collection<RegexRequestMatcher> whiteListedMatchers = new ArrayList<>();

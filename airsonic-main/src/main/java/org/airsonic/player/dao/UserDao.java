@@ -65,8 +65,8 @@ public class UserDao extends AbstractDao {
     private static final Integer ROLE_ID_JUKEBOX = 10;
     private static final Integer ROLE_ID_SHARE = 11;
 
-    private UserRowMapper userRowMapper = new UserRowMapper();
-    private UserSettingsRowMapper userSettingsRowMapper = new UserSettingsRowMapper();
+    private final UserRowMapper userRowMapper = new UserRowMapper();
+    private final UserSettingsRowMapper userSettingsRowMapper = new UserSettingsRowMapper();
 
     private final String userTableQuote;
 

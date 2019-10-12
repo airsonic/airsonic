@@ -23,7 +23,7 @@ public class LegacyDatabaseStartupTestCase {
 
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule() {
+        final HomeRule airsonicRule = new HomeRule() {
             @Override
             protected void before() throws Throwable {
                 super.before();

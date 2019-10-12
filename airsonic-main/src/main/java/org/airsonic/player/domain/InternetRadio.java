@@ -29,7 +29,7 @@ import java.util.Date;
  */
 public class InternetRadio {
 
-    private Integer id;
+    private final Integer id;
     private String name;
     private String streamUrl;
     private String homepageUrl;

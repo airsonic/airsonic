@@ -36,7 +36,7 @@ public abstract class AbstractAirsonicHomeTest implements AirsonicHomeTest {
 
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule homeRule = new HomeRule();
+        final HomeRule homeRule = new HomeRule();
 
         @Override
         public Statement apply(Statement base, Description description) {
@@ -50,10 +50,10 @@ public abstract class AbstractAirsonicHomeTest implements AirsonicHomeTest {
      * so this class can hold the state.
      * When executing in parallel, subclasses should override this.
      */
-    private static AtomicBoolean dataBasePopulated = new AtomicBoolean();
+    private static final AtomicBoolean dataBasePopulated = new AtomicBoolean();
 
     // Above.
-    private static AtomicBoolean dataBaseReady = new AtomicBoolean();
+    private static final AtomicBoolean dataBaseReady = new AtomicBoolean();
 
     protected final static Function<String, String> resolveBaseMediaPath = (childPath) -> {
         return MusicFolderTestData.resolveBaseMediaPath().concat(childPath);

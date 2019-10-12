@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AnalyzerFactoryTestCase {
 
-    private AnalyzerFactory analyzerFactory = new AnalyzerFactory();
+    private final AnalyzerFactory analyzerFactory = new AnalyzerFactory();
 
     /**
      * Test for the number of character separators per field.

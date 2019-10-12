@@ -30,7 +30,7 @@ import java.io.File;
  * @author Pierre-Alexandre Losson -- http://www.telio.be/blog -- plosson@users.sourceforge.net
  */
 public class MonitoredDiskFileItemFactory extends DiskFileItemFactory {
-    private UploadListener listener;
+    private final UploadListener listener;
 
     public MonitoredDiskFileItemFactory(UploadListener listener) {
         super();

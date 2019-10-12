@@ -50,7 +50,7 @@ public class ShoutCastOutputStream extends OutputStream {
     /**
      * The underlying output stream to decorate.
      */
-    private OutputStream out;
+    private final OutputStream out;
 
     /**
      * What to write in the SHOUTcast metadata is fetched from the playlist.
@@ -67,7 +67,7 @@ public class ShoutCastOutputStream extends OutputStream {
      */
     private String previousStreamTitle;
 
-    private SettingsService settingsService;
+    private final SettingsService settingsService;
 
     /**
      * Creates a new SHOUTcast-decorated stream for the given output stream.

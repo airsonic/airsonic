@@ -21,23 +21,23 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class InternetRadioServiceTest {
 
-    String TEST_RADIO_NAME = "Test Radio";
-    String TEST_RADIO_HOMEPAGE = "http://example.com";
-    String TEST_PLAYLIST_URL_MOVE = "http://example.com/stream_move.m3u";
-    String TEST_PLAYLIST_URL_MOVE_LOOP = "http://example.com/stream_infinity_move.m3u";
-    String TEST_PLAYLIST_URL_LARGE = "http://example.com/stream_infinity_repeat.m3u";
-    String TEST_PLAYLIST_URL_LARGE_2 = "http://example.com/stream_infinity_big.m3u";
-    String TEST_PLAYLIST_URL_1 = "http://example.com/stream1.m3u";
-    String TEST_PLAYLIST_URL_2 = "http://example.com/stream2.m3u";
-    String TEST_STREAM_URL_1 = "http://example.com/stream1";
-    String TEST_STREAM_URL_2 = "http://example.com/stream2";
-    String TEST_STREAM_URL_3 = "http://example.com/stream3";
-    String TEST_STREAM_URL_4 = "http://example.com/stream4";
-    String TEST_STREAM_PLAYLIST_CONTENTS_1 = (
+    final String TEST_RADIO_NAME = "Test Radio";
+    final String TEST_RADIO_HOMEPAGE = "http://example.com";
+    final String TEST_PLAYLIST_URL_MOVE = "http://example.com/stream_move.m3u";
+    final String TEST_PLAYLIST_URL_MOVE_LOOP = "http://example.com/stream_infinity_move.m3u";
+    final String TEST_PLAYLIST_URL_LARGE = "http://example.com/stream_infinity_repeat.m3u";
+    final String TEST_PLAYLIST_URL_LARGE_2 = "http://example.com/stream_infinity_big.m3u";
+    final String TEST_PLAYLIST_URL_1 = "http://example.com/stream1.m3u";
+    final String TEST_PLAYLIST_URL_2 = "http://example.com/stream2.m3u";
+    final String TEST_STREAM_URL_1 = "http://example.com/stream1";
+    final String TEST_STREAM_URL_2 = "http://example.com/stream2";
+    final String TEST_STREAM_URL_3 = "http://example.com/stream3";
+    final String TEST_STREAM_URL_4 = "http://example.com/stream4";
+    final String TEST_STREAM_PLAYLIST_CONTENTS_1 = (
         "http://example.com/stream1\n" +
         "http://example.com/stream2\n"
     );
-    String TEST_STREAM_PLAYLIST_CONTENTS_2 = (
+    final String TEST_STREAM_PLAYLIST_CONTENTS_2 = (
         "#EXTM3U\n" +
         "#EXTINF:123, Sample artist - Sample title\n" +
         "http://example.com/stream3\n" +

@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 public class DaoTestCaseBean2 {
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule();
+        final HomeRule airsonicRule = new HomeRule();
         @Override
         public Statement apply(Statement base, Description description) {
             Statement newBase = airsonicRule.apply(base, description);

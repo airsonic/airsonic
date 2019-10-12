@@ -222,8 +222,8 @@ public class UploadController {
      * Receives callbacks as the file upload progresses.
      */
     private class UploadListenerImpl implements UploadListener {
-        private TransferStatus status;
-        private long start;
+        private final TransferStatus status;
+        private final long start;
 
         private UploadListenerImpl(TransferStatus status) {
             this.status = status;

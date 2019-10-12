@@ -99,11 +99,11 @@ public class PodcastController  {
      * Contains information about a single Podcast.
      */
     public static class Podcast {
-        private String name;
-        private String publishDate;
-        private String enclosureUrl;
-        private long length;
-        private String type;
+        private final String name;
+        private final String publishDate;
+        private final String enclosureUrl;
+        private final long length;
+        private final String type;
 
         public Podcast(String name, String publishDate, String enclosureUrl, long length, String type) {
             this.name = name;

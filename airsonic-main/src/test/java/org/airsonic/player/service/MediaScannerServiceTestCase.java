@@ -60,7 +60,7 @@ public class MediaScannerServiceTestCase {
 
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule();
+        final HomeRule airsonicRule = new HomeRule();
 
         @Override
         public Statement apply(Statement base, Description description) {
@@ -99,7 +99,7 @@ public class MediaScannerServiceTestCase {
     private SettingsService settingsService;
 
     @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Autowired
     ResourceLoader resourceLoader;

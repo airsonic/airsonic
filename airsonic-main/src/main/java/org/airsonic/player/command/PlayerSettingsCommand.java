@@ -231,8 +231,8 @@ public class PlayerSettingsCommand {
      * Holds the transcoding and whether it is active for the given player.
      */
     public static class TranscodingHolder {
-        private Transcoding transcoding;
-        private boolean isActive;
+        private final Transcoding transcoding;
+        private final boolean isActive;
 
         public TranscodingHolder(Transcoding transcoding, boolean isActive) {
             this.transcoding = transcoding;

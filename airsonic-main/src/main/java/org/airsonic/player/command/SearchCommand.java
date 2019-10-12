@@ -107,10 +107,10 @@ public class SearchCommand {
     }
 
     public static class Match {
-        private MediaFile mediaFile;
-        private String title;
-        private String album;
-        private String artist;
+        private final MediaFile mediaFile;
+        private final String title;
+        private final String album;
+        private final String artist;
 
         public Match(MediaFile mediaFile, String title, String album, String artist) {
             this.mediaFile = mediaFile;

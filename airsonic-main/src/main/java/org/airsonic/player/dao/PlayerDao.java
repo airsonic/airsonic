@@ -47,8 +47,8 @@ public class PlayerDao extends AbstractDao {
     @Autowired
     private PlayerDaoPlayQueueFactory playerDaoPlayQueueFactory;
 
-    private PlayerRowMapper rowMapper = new PlayerRowMapper();
-    private Map<Integer, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<Integer, PlayQueue>());
+    private final PlayerRowMapper rowMapper = new PlayerRowMapper();
+    private final Map<Integer, PlayQueue> playlists = Collections.synchronizedMap(new HashMap<Integer, PlayQueue>());
 
     /**
      * Returns all players.

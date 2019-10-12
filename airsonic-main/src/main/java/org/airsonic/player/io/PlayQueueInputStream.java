@@ -52,7 +52,7 @@ public class PlayQueueInputStream extends InputStream {
     private final MediaFileService mediaFileService;
     private MediaFile currentFile;
     private InputStream currentInputStream;
-    private SearchService searchService;
+    private final SearchService searchService;
 
     public PlayQueueInputStream(Player player, TransferStatus status, Integer maxBitRate, String preferredTargetFormat,
                                 VideoTranscodingSettings videoTranscodingSettings, TranscodingService transcodingService,

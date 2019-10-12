@@ -35,7 +35,7 @@ import java.net.URL;
 @Service
 public class NetworkService {
 
-    private static UrlPathHelper urlPathHelper = new UrlPathHelper();
+    private static final UrlPathHelper urlPathHelper = new UrlPathHelper();
     private static final String X_FORWARDED_SERVER = "X-Forwarded-Server";
     private static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
     private static final String X_FORWARDED_HOST = "X-Forwarded-Host";

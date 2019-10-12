@@ -113,7 +113,7 @@ public final class Util {
         return result;
     }
 
-    static ObjectMapper objectMapper = new ObjectMapper();
+    static final ObjectMapper objectMapper = new ObjectMapper();
     public static String debugObject(Object object) {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);

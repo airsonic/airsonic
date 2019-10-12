@@ -8,7 +8,7 @@ import java.util.Collection;
 public class JWTAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String token;
-    private String requestedPath;
+    private final String requestedPath;
 
     public static final String USERNAME_ANONYMOUS = "anonymous";
 

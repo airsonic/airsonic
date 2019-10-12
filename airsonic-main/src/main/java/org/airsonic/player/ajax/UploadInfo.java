@@ -26,8 +26,8 @@ package org.airsonic.player.ajax;
  */
 public class UploadInfo {
 
-    private long bytesUploaded;
-    private long bytesTotal;
+    private final long bytesUploaded;
+    private final long bytesTotal;
 
     public UploadInfo(long bytesUploaded, long bytesTotal) {
         this.bytesUploaded = bytesUploaded;

@@ -86,13 +86,13 @@ public class IndexManager {
     /**
      * File supplier for index directory.
      */
-    private Supplier<File> rootIndexDirectory = () ->
+    private final Supplier<File> rootIndexDirectory = () ->
         new File(SettingsService.getAirsonicHome(), INDEX_ROOT_DIR_NAME.concat(Integer.toString(INDEX_VERSION)));
 
     /**
      * Returns the directory of the specified index
      */
-    private Function<IndexType, File> getIndexDirectory = (indexType) ->
+    private final Function<IndexType, File> getIndexDirectory = (indexType) ->
         new File(rootIndexDirectory.get(), indexType.toString().toLowerCase());
 
     @Autowired
@@ -110,9 +110,9 @@ public class IndexManager {
     @Autowired
     private AlbumDao albumDao;
 
-    private EnumMap<IndexType, SearcherManager> searchers = new EnumMap<>(IndexType.class);
+    private final EnumMap<IndexType, SearcherManager> searchers = new EnumMap<>(IndexType.class);
 
-    private EnumMap<IndexType, IndexWriter> writers = new EnumMap<>(IndexType.class);
+    private final EnumMap<IndexType, IndexWriter> writers = new EnumMap<>(IndexType.class);
 
     public void index(Album album) {
         Term primarykey = documentFactory.createPrimarykey(album);

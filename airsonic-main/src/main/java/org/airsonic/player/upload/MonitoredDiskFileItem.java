@@ -32,7 +32,7 @@ import java.io.OutputStream;
  */
 public class MonitoredDiskFileItem extends DiskFileItem {
     private MonitoredOutputStream mos;
-    private UploadListener listener;
+    private final UploadListener listener;
 
     public MonitoredDiskFileItem(String fieldName, String contentType, boolean isFormField, String fileName, int sizeThreshold,
                                  File repository, UploadListener listener) {

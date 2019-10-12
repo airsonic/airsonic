@@ -246,8 +246,8 @@ public class TransferStatus {
      * A sample containing a timestamp and the number of bytes transferred up to that point in time.
      */
     public static class Sample {
-        private long bytesTransfered;
-        private long timestamp;
+        private final long bytesTransfered;
+        private final long timestamp;
 
         /**
          * Creates a new sample.

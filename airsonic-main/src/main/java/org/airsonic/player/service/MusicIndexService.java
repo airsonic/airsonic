@@ -242,7 +242,7 @@ public class MusicIndexService {
 
     private static class MusicIndexComparator implements Comparator<MusicIndex>, Serializable {
 
-        private List<MusicIndex> indexes;
+        private final List<MusicIndex> indexes;
 
         public MusicIndexComparator(List<MusicIndex> indexes) {
             this.indexes = indexes;

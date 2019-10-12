@@ -36,7 +36,7 @@ import java.util.List;
  */
 public class MusicFolder implements Serializable {
 
-    private Integer id;
+    private final Integer id;
     private File path;
     private String name;
     private boolean isEnabled;

@@ -36,9 +36,9 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class UserSettingsValidator implements Validator {
 
-    private SecurityService securityService;
-    private SettingsService settingsService;
-    private HttpServletRequest request;
+    private final SecurityService securityService;
+    private final SettingsService settingsService;
+    private final HttpServletRequest request;
 
     public UserSettingsValidator(SecurityService securityService, SettingsService settingsService, HttpServletRequest request) {
         this.securityService = securityService;

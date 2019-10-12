@@ -28,13 +28,13 @@ import java.util.Date;
  */
 public class Avatar {
 
-    private int id;
-    private String name;
-    private Date createdDate;
-    private String mimeType;
-    private int width;
-    private int height;
-    private byte[] data;
+    private final int id;
+    private final String name;
+    private final Date createdDate;
+    private final String mimeType;
+    private final int width;
+    private final int height;
+    private final byte[] data;
 
     public Avatar(int id, String name, Date createdDate, String mimeType, int width, int height, byte[] data) {
         this.id = id;

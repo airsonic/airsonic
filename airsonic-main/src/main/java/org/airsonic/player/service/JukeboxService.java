@@ -29,8 +29,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class JukeboxService {
 
-    private JukeboxLegacySubsonicService jukeboxLegacySubsonicService;
-    private JukeboxJavaService jukeboxJavaService;
+    private final JukeboxLegacySubsonicService jukeboxLegacySubsonicService;
+    private final JukeboxJavaService jukeboxJavaService;
 
     public JukeboxService(JukeboxLegacySubsonicService jukeboxLegacySubsonicService,
                           JukeboxJavaService jukeboxJavaService) {

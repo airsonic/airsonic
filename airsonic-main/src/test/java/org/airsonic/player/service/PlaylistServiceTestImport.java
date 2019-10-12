@@ -57,7 +57,7 @@ public class PlaylistServiceTestImport {
     SecurityService securityService;
 
     @Rule
-    public TemporaryFolder folder = new TemporaryFolder();
+    public final TemporaryFolder folder = new TemporaryFolder();
 
     @Captor
     ArgumentCaptor<Playlist> actual;

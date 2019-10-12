@@ -65,10 +65,10 @@ public class RESTRequestParameterProcessingFilter implements Filter {
     private final JAXBWriter jaxbWriter = new JAXBWriter();
     private AuthenticationManager authenticationManager;
     private SecurityService securityService;
-    private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+    private final AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
     private ApplicationEventPublisher eventPublisher;
 
-    private static RequestMatcher requiresAuthenticationRequestMatcher = new RegexRequestMatcher("/rest/.+",null);
+    private static final RequestMatcher requiresAuthenticationRequestMatcher = new RegexRequestMatcher("/rest/.+",null);
 
     protected boolean requiresAuthentication(HttpServletRequest request,
                                              HttpServletResponse response) {

@@ -42,7 +42,7 @@ public class QueryFactoryTestCase {
 
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule homeRule = new HomeRule();
+        final HomeRule homeRule = new HomeRule();
 
         @Override
         public Statement apply(Statement base, Description description) {

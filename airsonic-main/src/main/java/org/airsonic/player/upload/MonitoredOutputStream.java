@@ -28,8 +28,8 @@ import java.io.OutputStream;
  * @author Pierre-Alexandre Losson -- http://www.telio.be/blog -- plosson@users.sourceforge.net
  */
 public class MonitoredOutputStream extends OutputStream {
-    private OutputStream target;
-    private UploadListener listener;
+    private final OutputStream target;
+    private final UploadListener listener;
 
     public MonitoredOutputStream(OutputStream target, UploadListener listener) {
         this.target = target;

@@ -33,7 +33,7 @@ public enum CoverArtScheme {
     MEDIUM(160),
     LARGE(300);
 
-    private int size;
+    private final int size;
 
     CoverArtScheme(int size) {
         this.size = size;
