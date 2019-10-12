@@ -48,6 +48,13 @@ public class Album {
     public Album() {
     }
 
+    public Album(String path, String name, String artist, Date created) {
+        this.path = path;
+        this.name = name;
+        this.artist = artist;
+        this.created = created;
+    }
+
     public Album(int id, String path, String name, String artist, int songCount, int durationSeconds, String coverArtPath,
             Integer year, String genre, int playCount, Date lastPlayed, String comment, Date created, Date lastScanned,
             boolean present, Integer folderId, String musicBrainzReleaseId) {

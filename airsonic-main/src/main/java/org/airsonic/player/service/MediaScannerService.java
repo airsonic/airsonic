@@ -281,11 +281,7 @@ public class MediaScannerService {
 
         Album album = albumDao.getAlbumForFile(file);
         if (album == null) {
-            album = new Album();
-            album.setPath(file.getParentPath());
-            album.setName(file.getAlbumName());
-            album.setArtist(artist);
-            album.setCreated(file.getChanged());
+            album = new Album(file.getParentPath(), file.getAlbumName(), artist, file.getChanged());
         }
         if (file.getMusicBrainzReleaseId() != null) {
             album.setMusicBrainzReleaseId(file.getMusicBrainzReleaseId());
