@@ -338,8 +338,7 @@ public class CoverArtController implements LastModified {
 
             BufferedImage temp = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2 = temp.createGraphics();
-            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                    RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g2.drawImage(thumb, 0, 0, temp.getWidth(), temp.getHeight(), null);
             g2.dispose();
 
@@ -564,7 +563,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public long lastModified() {
-            return -1;
+            return -1L;
         }
 
         @Override
@@ -688,10 +687,7 @@ public class CoverArtController implements LastModified {
             this.album = album;
             this.width = width;
             this.height = height;
-
-            int hash = key.hashCode();
-            int rgb = COLORS[Math.abs(hash) % COLORS.length];
-            this.color = new Color(rgb);
+            this.color = new Color(COLORS[Math.abs(key.hashCode()) % COLORS.length]);
         }
 
         public void paintCover() {
@@ -702,7 +698,7 @@ public class CoverArtController implements LastModified {
             graphics.fillRect(0, 0, width, height);
 
             int y = height * 2 / 3;
-            graphics.setPaint(new GradientPaint(0, y, new Color(82, 82, 82), 0, height, Color.BLACK));
+            graphics.setPaint(new GradientPaint(0.0f, y, new Color(82, 82, 82), 0.0f, height, Color.BLACK));
             graphics.fillRect(0, y, width, height / 3);
 
             graphics.setPaint(Color.WHITE);
