@@ -196,21 +196,19 @@ public class MediaFileService {
         List<MediaFile> result = new ArrayList<MediaFile>();
         for (MediaFile child : mediaFileDao.getChildrenOf(parent.getPath())) {
             child = checkLastModified(child, useFastCache);
-            if (child.isDirectory() && includeDirectories && includeMediaFile(child)) {
-                result.add(child);
-            }
-            if (child.isFile() && includeFiles && includeMediaFile(child)) {
-                result.add(child);
+            if (includeMediaFile(child)) {
+                if (child.isDirectory() && includeDirectories) {
+                    result.add(child);
+                }
+                if (child.isFile() && includeFiles) {
+                    result.add(child);
+                }
             }
         }
 
         if (sort) {
             Comparator<MediaFile> comparator = new MediaFileComparator(settingsService.isSortAlbumsByYear());
-            // Note: Intentionally not using Collections.sort() since it can be problematic on Java 7.
-            // http://www.oracle.com/technetwork/java/javase/compatibility-417013.html#jdk7
-            Set<MediaFile> set = new TreeSet<MediaFile>(comparator);
-            set.addAll(result);
-            result = new ArrayList<MediaFile>(set);
+            result.sort(comparator);
         }
 
         return result;
@@ -415,10 +413,7 @@ public class MediaFileService {
 
     public boolean includeMediaFile(File candidate) {
         String suffix = FilenameUtils.getExtension(candidate.getName()).toLowerCase();
-        if (!isExcluded(candidate) && (FileUtil.isDirectory(candidate) || isAudioFile(suffix) || isVideoFile(suffix))) {
-            return true;
-        }
-        return false;
+        return !isExcluded(candidate) && (FileUtil.isDirectory(candidate) || isAudioFile(suffix) || isVideoFile(suffix));
     }
 
     public List<File> filterMediaFiles(File[] candidates) {
