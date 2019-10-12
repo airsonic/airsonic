@@ -103,7 +103,6 @@ public class CoverArtController implements LastModified {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
-        LOG.trace("handleRequest - " + coverArtRequest);
         Integer size = ServletRequestUtils.getIntParameter(request, "size");
 
         // Send fallback image if no ID is given. (No need to cache it, since it will be cached in browser.)
@@ -115,7 +114,6 @@ public class CoverArtController implements LastModified {
         try {
             // Optimize if no scaling is required.
             if (size == null && coverArtRequest.getCoverArt() != null) {
-                LOG.trace("sendUnscaled - " + coverArtRequest);
                 sendUnscaled(coverArtRequest, response);
                 return;
             }
