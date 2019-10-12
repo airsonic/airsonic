@@ -290,10 +290,9 @@ public class CoverArtController implements LastModified {
         if (jaudiotaggerParser.isApplicable(file)) {
             LOG.trace("Using Jaudio Tagger for reading artwork from {}", file);
             MediaFile mediaFile = mediaFileService.getMediaFile(file);
-            Artwork artwork;
             try {
                 LOG.trace("Reading artwork from file {}", mediaFile);
-                artwork = jaudiotaggerParser.getArtwork(mediaFile);
+                Artwork artwork = jaudiotaggerParser.getArtwork(mediaFile);
                 is = new ByteArrayInputStream(artwork.getBinaryData());
                 mimeType = artwork.getMimeType();
             } catch (Exception e) {
@@ -325,7 +324,6 @@ public class CoverArtController implements LastModified {
                 LOG.error("Failed to create thumbnail cache " + dir);
             }
         }
-
         return dir;
     }
 
