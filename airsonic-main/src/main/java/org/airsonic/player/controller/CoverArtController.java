@@ -207,16 +207,12 @@ public class CoverArtController implements LastModified {
         if (response.getContentType() == null) {
             response.setContentType(StringUtil.getMimeType("jpeg"));
         }
-        InputStream in = null;
-        try {
-            in = getClass().getResourceAsStream("default_cover.jpg");
+        try(InputStream in = getClass().getResourceAsStream("default_cover.jpg")) {
             BufferedImage image = ImageIO.read(in);
             if (size != null) {
                 image = scale(image, size, size);
             }
             ImageIO.write(image, "jpeg", response.getOutputStream());
-        } finally {
-            FileUtil.closeQuietly(in);
         }
     }
 
