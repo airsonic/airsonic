@@ -168,10 +168,10 @@ public class SubsonicRESTController {
         license.setEmail("airsonic@github.com");
         license.setValid(true);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1900 + 100);
-        XMLGregorianCalendar georgianCalendar = jaxbWriter.convertCalendar(calendar);
-        license.setLicenseExpires(georgianCalendar);
-        license.setTrialExpires(georgianCalendar);
+        calendar.add(Calendar.YEAR, 100);
+        XMLGregorianCalendar farFuture = jaxbWriter.convertCalendar(calendar);
+        license.setLicenseExpires(farFuture);
+        license.setTrialExpires(farFuture);
 
         Response res = createResponse();
         res.setLicense(license);
