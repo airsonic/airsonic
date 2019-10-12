@@ -197,7 +197,7 @@ public class CoverArtController implements LastModified {
         if (response.getContentType() == null) {
             response.setContentType(StringUtil.getMimeType("jpeg"));
         }
-        try(InputStream in = getClass().getResourceAsStream("default_cover.jpg")) {
+        try (InputStream in = getClass().getResourceAsStream("default_cover.jpg")) {
             BufferedImage image = ImageIO.read(in);
             if (size != null) {
                 image = scale(image, size, size);
@@ -358,7 +358,7 @@ public class CoverArtController implements LastModified {
 
         public BufferedImage createImage(int size) {
             if (coverArt != null) {
-                try (InputStream in = getImageInputStream(coverArt)){
+                try (InputStream in = getImageInputStream(coverArt)) {
                     String reason;
                     if (in == null) {
                         reason = "getImageInputStream";
