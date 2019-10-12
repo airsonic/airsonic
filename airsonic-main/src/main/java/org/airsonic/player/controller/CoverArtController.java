@@ -95,7 +95,9 @@ public class CoverArtController implements LastModified {
 
     public long getLastModified(HttpServletRequest request) {
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
-        //        LOG.info("getLastModified - " + coverArtRequest + ": " + new Date(result));
+        if (coverArtRequest == null) {
+            return -1L;
+        }
         return coverArtRequest.lastModified();
     }
 
