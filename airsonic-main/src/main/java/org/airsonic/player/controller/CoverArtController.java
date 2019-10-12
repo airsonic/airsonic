@@ -141,18 +141,15 @@ public class CoverArtController implements LastModified {
         }
 
         if (id.startsWith(ALBUM_COVERART_PREFIX)) {
-            return createAlbumCoverArtRequest(Integer.valueOf(id.replace(ALBUM_COVERART_PREFIX, "")));
+            return createAlbumCoverArtRequest(Integer.parseInt(id.replace(ALBUM_COVERART_PREFIX, "")));
+        } else if (id.startsWith(ARTIST_COVERART_PREFIX)) {
+            return createArtistCoverArtRequest(Integer.parseInt(id.replace(ARTIST_COVERART_PREFIX, "")));
+        } else if (id.startsWith(PLAYLIST_COVERART_PREFIX)) {
+            return createPlaylistCoverArtRequest(Integer.parseInt(id.replace(PLAYLIST_COVERART_PREFIX, "")));
+        } else if (id.startsWith(PODCAST_COVERART_PREFIX)) {
+            return createPodcastCoverArtRequest(Integer.parseInt(id.replace(PODCAST_COVERART_PREFIX, "")), request);
         }
-        if (id.startsWith(ARTIST_COVERART_PREFIX)) {
-            return createArtistCoverArtRequest(Integer.valueOf(id.replace(ARTIST_COVERART_PREFIX, "")));
-        }
-        if (id.startsWith(PLAYLIST_COVERART_PREFIX)) {
-            return createPlaylistCoverArtRequest(Integer.valueOf(id.replace(PLAYLIST_COVERART_PREFIX, "")));
-        }
-        if (id.startsWith(PODCAST_COVERART_PREFIX)) {
-            return createPodcastCoverArtRequest(Integer.valueOf(id.replace(PODCAST_COVERART_PREFIX, "")), request);
-        }
-        return createMediaFileCoverArtRequest(Integer.valueOf(id), request);
+        return createMediaFileCoverArtRequest(Integer.parseInt(id), request);
     }
 
     private CoverArtRequest createAlbumCoverArtRequest(int id) {
