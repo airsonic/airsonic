@@ -620,12 +620,9 @@ public class CoverArtController implements LastModified {
 
         @Override
         public BufferedImage createImage(int size) {
-            int height;
-            height = size;
+            int height = size;
             int width = height * 16 / 9;
-            InputStream in = null;
-            try {
-                in = getImageInputStreamForVideo(mediaFile, width, height, offset);
+            try (InputStream in = getImageInputStreamForVideo(mediaFile, width, height, offset)) {
                 BufferedImage result = ImageIO.read(in);
                 if (result != null) {
                     return result;
@@ -633,8 +630,6 @@ public class CoverArtController implements LastModified {
                 LOG.warn("Failed to decode cover art for " + mediaFile);
             } catch (IOException x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
-            } finally {
-                FileUtil.closeQuietly(in);
             }
             return createAutoCover(width, height);
         }
