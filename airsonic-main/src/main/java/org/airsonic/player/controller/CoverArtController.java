@@ -102,7 +102,8 @@ public class CoverArtController implements LastModified {
     }
 
     @GetMapping
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public void handleRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletRequestBindingException, IOException {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
         Integer size = ServletRequestUtils.getIntParameter(request, "size");
@@ -126,7 +127,7 @@ public class CoverArtController implements LastModified {
             }
             File cachedImage = getCachedImage(coverArtRequest, size);
             sendImage(cachedImage, response);
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.debug("Sending fallback as an exception was encountered during normal cover art processing", e);
             sendFallback(size, response);
         }
@@ -275,7 +276,7 @@ public class CoverArtController implements LastModified {
      * Returns an input stream to the image in the given file.  If the file is an audio file,
      * the embedded album art is returned.
      */
-    private InputStream getImageInputStream(File file) throws IOException {
+    private InputStream getImageInputStream(File file) throws FileNotFoundException {
         return getImageInputStreamWithType(file).getLeft();
     }
 
@@ -283,7 +284,7 @@ public class CoverArtController implements LastModified {
      * Returns an input stream to the image in the given file.  If the file is an audio file,
      * the embedded album art is returned. In addition returns the mime type
      */
-    private Pair<InputStream, String> getImageInputStreamWithType(File file) throws IOException {
+    private Pair<InputStream, String> getImageInputStreamWithType(File file) throws FileNotFoundException {
         InputStream is;
         String mimeType;
         if (jaudiotaggerParser.isApplicable(file)) {
@@ -306,7 +307,7 @@ public class CoverArtController implements LastModified {
         return Pair.of(is, mimeType);
     }
 
-    private InputStream getImageInputStreamForVideo(MediaFile mediaFile, int width, int height, int offset) throws Exception {
+    private InputStream getImageInputStreamForVideo(MediaFile mediaFile, int width, int height, int offset) throws IOException {
         VideoTranscodingSettings videoSettings = new VideoTranscodingSettings(width, height, offset, 0, false);
         TranscodingService.Parameters parameters = new TranscodingService.Parameters(mediaFile, videoSettings);
         String command = settingsService.getVideoImageCommand();
@@ -396,7 +397,7 @@ public class CoverArtController implements LastModified {
                         }
                     }
                     LOG.warn("Failed to process cover art " + coverArt + ": " + reason + " failed");
-                } catch (Throwable x) {
+                } catch (IOException x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
                 } finally {
                     FileUtil.closeQuietly(in);
@@ -645,8 +646,8 @@ public class CoverArtController implements LastModified {
                 if (result != null) {
                     return result;
                 }
-                LOG.warn("Failed to process cover art for " + mediaFile + ": {}", result);
-            } catch (Throwable x) {
+                LOG.warn("Failed to decode cover art for " + mediaFile);
+            } catch (IOException x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
             } finally {
                 FileUtil.closeQuietly(in);
