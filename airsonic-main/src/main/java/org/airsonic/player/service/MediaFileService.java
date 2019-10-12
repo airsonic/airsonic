@@ -413,7 +413,8 @@ public class MediaFileService {
 
     public boolean includeMediaFile(File candidate) {
         String suffix = FilenameUtils.getExtension(candidate.getName()).toLowerCase();
-        return !isExcluded(candidate) && (FileUtil.isDirectory(candidate) || isAudioFile(suffix) || isVideoFile(suffix));
+        return !isExcluded(candidate) &&
+                (FileUtil.isDirectory(candidate) || isAudioFile(suffix) || isVideoFile(suffix));
     }
 
     public List<File> filterMediaFiles(File[] candidates) {
