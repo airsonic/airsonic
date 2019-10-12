@@ -29,3 +29,5 @@ matrix:
         - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
   - jdk: openjdk11
   - jdk: openjdk12
+  - jdk: openjdk13
+  - jdk: openjdk-ea
