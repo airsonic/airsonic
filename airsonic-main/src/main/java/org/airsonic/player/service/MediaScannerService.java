@@ -159,64 +159,56 @@ public class MediaScannerService {
         LOG.info("Starting to scan media library.");
         Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
         LOG.debug("New last scan date is " + lastScanned);
+        // Maps from artist name to album count.
+        Map<String, Integer> albumCount = new HashMap<String, Integer>();
+        Genres genres = new Genres();
 
-        try {
+        scanCount = 0;
+        statistics.reset();
 
-            // Maps from artist name to album count.
-            Map<String, Integer> albumCount = new HashMap<String, Integer>();
-            Genres genres = new Genres();
+        mediaFileService.setMemoryCacheEnabled(false);
+        indexManager.startIndexing();
 
-            scanCount = 0;
-            statistics.reset();
-
-            mediaFileService.setMemoryCacheEnabled(false);
-            indexManager.startIndexing();
-
-            mediaFileService.clearMemoryCache();
-
-            // Recurse through all files on disk.
-            for (MusicFolder musicFolder : settingsService.getAllMusicFolders()) {
-                MediaFile root = mediaFileService.getMediaFile(musicFolder.getPath(), false);
-                scanFile(root, musicFolder, lastScanned, albumCount, genres, false);
-            }
-
-            // Scan podcast folder.
-            File podcastFolder = new File(settingsService.getPodcastFolder());
-            if (podcastFolder.exists()) {
-                scanFile(mediaFileService.getMediaFile(podcastFolder), new MusicFolder(podcastFolder, null, true, null),
-                         lastScanned, albumCount, genres, true);
-            }
-
-            LOG.info("Scanned media library with " + scanCount + " entries.");
-
-            LOG.info("Marking non-present files.");
-            mediaFileDao.markNonPresent(lastScanned);
-            LOG.info("Marking non-present artists.");
-            artistDao.markNonPresent(lastScanned);
-            LOG.info("Marking non-present albums.");
-            albumDao.markNonPresent(lastScanned);
-
-            // Update statistics
-            statistics.incrementArtists(albumCount.size());
-            for (Integer albums : albumCount.values()) {
-                statistics.incrementAlbums(albums);
-            }
-
-            // Update genres
-            mediaFileDao.updateGenres(genres.getGenres());
-
-            settingsService.setMediaLibraryStatistics(statistics);
-            settingsService.setLastScanned(lastScanned);
-            settingsService.save(false);
-            LOG.info("Completed media library scan.");
-
-        } catch (Throwable x) {
-            LOG.error("Failed to scan media library.", x);
-        } finally {
-            mediaFileService.setMemoryCacheEnabled(true);
-            indexManager.stopIndexing();
-            scanning = false;
+        mediaFileService.clearMemoryCache();
+        // Recurse through all files on disk.
+        for (MusicFolder musicFolder : settingsService.getAllMusicFolders()) {
+            MediaFile root = mediaFileService.getMediaFile(musicFolder.getPath(), false);
+            scanFile(root, musicFolder, lastScanned, albumCount, genres, false);
         }
+
+        // Scan podcast folder.
+        File podcastFolder = new File(settingsService.getPodcastFolder());
+        if (podcastFolder.exists()) {
+            scanFile(mediaFileService.getMediaFile(podcastFolder), new MusicFolder(podcastFolder, null, true, null),
+                     lastScanned, albumCount, genres, true);
+        }
+
+        LOG.info("Scanned media library with " + scanCount + " entries.");
+
+        LOG.info("Marking non-present files.");
+        mediaFileDao.markNonPresent(lastScanned);
+        LOG.info("Marking non-present artists.");
+        artistDao.markNonPresent(lastScanned);
+        LOG.info("Marking non-present albums.");
+        albumDao.markNonPresent(lastScanned);
+
+        // Update statistics
+        statistics.incrementArtists(albumCount.size());
+        for (Integer albums : albumCount.values()) {
+            statistics.incrementAlbums(albums);
+        }
+
+        // Update genres
+        mediaFileDao.updateGenres(genres.getGenres());
+
+        settingsService.setMediaLibraryStatistics(statistics);
+        settingsService.setLastScanned(lastScanned);
+        settingsService.save(false);
+        LOG.info("Completed media library scan.");
+
+        mediaFileService.setMemoryCacheEnabled(true);
+        indexManager.stopIndexing();
+        scanning = false;
     }
 
     private void scanFile(MediaFile file, MusicFolder musicFolder, Date lastScanned,
