@@ -35,12 +35,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.LastModified;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Semaphore;
 
 /**
  * Controller which produces cover art images.
@@ -86,12 +85,6 @@ public class CoverArtController implements LastModified {
     private AlbumDao albumDao;
     @Autowired
     private JaudiotaggerParser jaudiotaggerParser;
-    private Semaphore semaphore;
-
-    @PostConstruct
-    public void init() {
-        semaphore = new Semaphore(settingsService.getCoverArtConcurrency());
-    }
 
     public long getLastModified(HttpServletRequest request) {
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
@@ -226,43 +219,38 @@ public class CoverArtController implements LastModified {
         }
     }
 
+    /**
+     * Return the image corresponding to the given request, from the cache if present, or create it otherwise.
+     * @param size The desired size of the image
+     * @return The cached image
+     */
     private File getCachedImage(CoverArtRequest request, int size) throws IOException {
-        String hash = DigestUtils.md5Hex(request.getKey());
-        String encoding = request.getCoverArt() != null ? "jpeg" : "png";
-        File cachedImage = new File(getImageCacheDirectory(size), hash + "." + encoding);
+        String format = request.getCoverArt() != null ? "jpeg" : "png";
+        String filename = DigestUtils.md5Hex(request.getKey()) + "." + format;
+        File cachedImage = new File(getImageCacheDirectory(size), filename);
 
-        // Synchronize to avoid concurrent writing to the same file.
-        synchronized (hash.intern()) {
-
-            // Is cache missing or obsolete?
-            if (!cachedImage.exists() || request.lastModified() > cachedImage.lastModified()) {
-//                LOG.info("Cache MISS - " + request + " (" + size + ")");
-                OutputStream out = null;
-                try {
-                    semaphore.acquire();
-                    BufferedImage image = request.createImage(size);
-                    if (image == null) {
-                        throw new Exception("Unable to decode image.");
-                    }
-                    out = new FileOutputStream(cachedImage);
-                    ImageIO.write(image, encoding, out);
-
-                } catch (Throwable x) {
-                    // Delete corrupt (probably empty) thumbnail cache.
-                    LOG.warn("Failed to create thumbnail for " + request, x);
-                    FileUtil.closeQuietly(out);
-                    cachedImage.delete();
-                    throw new IOException("Failed to create thumbnail for " + request + ". " + x.getMessage());
-
-                } finally {
-                    semaphore.release();
-                    FileUtil.closeQuietly(out);
-                }
-            } else {
-//                LOG.info("Cache HIT - " + request + " (" + size + ")");
-            }
+        if (cachedImage.exists() && request.lastModified() <= cachedImage.lastModified()) {
+            LOG.debug("Cache HIT - " + request + " (" + size + ")");
             return cachedImage;
+        } else {
+            LOG.debug("Cache MISS - " + request + " (" + size + ")");
+            BufferedImage image = request.createImage(size);
+            if (image == null) {
+                throw new IOException("Failed to create thumbnail for " + request + ": Unable to decode image");
+            }
+            return writeCachedImage(request, image, cachedImage, format);
         }
+    }
+
+    synchronized private File writeCachedImage(CoverArtRequest request, BufferedImage image, File cachedImage, String format) throws IOException {
+        try (OutputStream out = new FileOutputStream(cachedImage)) {
+            ImageIO.write(image, format, out);
+        } catch (IOException x) {
+            // Delete the corrupt (probably empty) thumbnail cache.
+            cachedImage.delete();
+            throw new IOException("Failed to create thumbnail for " + request + ". " + x.getMessage());
+        }
+        return cachedImage;
     }
 
     /**
