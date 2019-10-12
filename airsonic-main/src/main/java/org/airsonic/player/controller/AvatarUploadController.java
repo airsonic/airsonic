@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -78,12 +79,10 @@ public class AvatarUploadController  {
         Map<String, Object> map = new HashMap<String, Object>();
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
-        List<?> items = upload.parseRequest(request);
+        List<FileItem> items = upload.parseRequest(request);
 
         // Look for file items.
-        for (Object o : items) {
-            FileItem item = (FileItem) o;
-
+        for (FileItem item : items) {
             if (!item.isFormField()) {
                 String fileName = item.getName();
                 byte[] data = item.get();
@@ -109,7 +108,7 @@ public class AvatarUploadController  {
         try {
             image = ImageIO.read(new ByteArrayInputStream(data));
             if (image == null) {
-                throw new Exception("Failed to decode incoming image: " + fileName + " (" + data.length + " bytes).");
+                throw new IOException("Failed to decode incoming image: " + fileName + " (" + data.length + " bytes).");
             }
             int width = image.getWidth();
             int height = image.getHeight();
@@ -117,7 +116,7 @@ public class AvatarUploadController  {
 
             // Scale down image if necessary.
             if (width > MAX_AVATAR_SIZE || height > MAX_AVATAR_SIZE) {
-                double scaleFactor = MAX_AVATAR_SIZE / (double) Math.max(width, height);
+                double scaleFactor = MAX_AVATAR_SIZE / (double)Math.max(width, height);
                 height = (int) (height * scaleFactor);
                 width = (int) (width * scaleFactor);
                 image = CoverArtController.scale(image, width, height);
@@ -131,7 +130,7 @@ public class AvatarUploadController  {
             settingsService.setCustomAvatar(avatar, username);
             LOG.info("Created avatar '" + fileName + "' (" + data.length + " bytes) for user " + username);
 
-        } catch (Exception x) {
+        } catch (IOException x) {
             LOG.warn("Failed to upload personal image: " + x, x);
             map.put("error", x);
         }

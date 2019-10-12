@@ -220,7 +220,7 @@
             </c:url>
             <span style="white-space:nowrap;">
                 <form:radiobutton id="avatar-${avatar.id}" path="avatarId" value="${avatar.id}"/>
-                <label for="avatar-${avatar.id}"><img src="${avatarUrl}" alt="${avatar.name}" width="${avatar.width}" height="${avatar.height}" style="padding-right:2em;padding-bottom:1em"/></label>
+                <label for="avatar-${avatar.id}"><img src="${avatarUrl}" alt="${fn:escapeXml(avatar.name)}" width="${avatar.width}" height="${avatar.height}" style="padding-right:2em;padding-bottom:1em"/></label>
             </span>
         </c:forEach>
     </p>
@@ -236,7 +236,7 @@
                     <sub:param name="username" value="${command.user.username}"/>
                     <sub:param name="forceCustom" value="true"/>
                 </sub:url>
-                <img src="${avatarUrl}" alt="${command.customAvatar.name}" width="${command.customAvatar.width}" height="${command.customAvatar.height}" style="padding-right:2em"/>
+                <img src="${avatarUrl}" alt="${fn:escapeXml(command.customAvatar.name)}" width="${command.customAvatar.width}" height="${command.customAvatar.height}" style="padding-right:2em"/>
             </c:if>
         </label>
     </p>
