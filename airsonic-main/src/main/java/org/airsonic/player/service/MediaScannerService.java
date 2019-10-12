@@ -89,21 +89,18 @@ public class MediaScannerService {
             }
         };
 
-        long daysBetween = settingsService.getIndexCreationInterval();
-        int hour = settingsService.getIndexCreationHour();
-
+        int daysBetween = settingsService.getIndexCreationInterval();
         if (daysBetween == -1) {
             LOG.info("Automatic media scanning disabled.");
             return;
         }
 
-        Date now = new Date();
         Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
-        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.HOUR_OF_DAY, settingsService.getIndexCreationHour());
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
 
+        Date now = new Date();
         if (cal.getTime().before(now)) {
             cal.add(Calendar.DATE, 1);
         }
