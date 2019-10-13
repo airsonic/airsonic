@@ -267,17 +267,16 @@ public final class StringUtil {
         }
 
         String[] elements = s.split("_");
-
-        if (elements.length == 0) {
-            return new Locale(s, "", "");
+        switch (elements.length) {
+            case 0:
+                return new Locale(s, "", "");
+            case 1:
+                return new Locale(elements[0], "", "");
+            case 2:
+                return new Locale(elements[0], elements[1], "");
+            default:
+                return new Locale(elements[0], elements[1], elements[2]);
         }
-        if (elements.length == 1) {
-            return new Locale(elements[0], "", "");
-        }
-        if (elements.length == 2) {
-            return new Locale(elements[0], elements[1], "");
-        }
-        return new Locale(elements[0], elements[1], elements[2]);
     }
 
     /**
