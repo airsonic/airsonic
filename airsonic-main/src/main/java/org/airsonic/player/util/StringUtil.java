@@ -20,7 +20,6 @@
 package org.airsonic.player.util;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -43,6 +42,8 @@ import java.util.regex.Pattern;
 public final class StringUtil {
 
     public static final String ENCODING_UTF8 = "UTF-8";
+
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("\"([^\"]*)\"|(\\S+)");
 
     private static final String[][] MIME_TYPES = {
             {"mp3", "audio/mpeg"},
@@ -195,16 +196,14 @@ public final class StringUtil {
             return new String[0];
         }
 
-        Pattern pattern = Pattern.compile("\".*?\"|\\S+");
-        Matcher matcher = pattern.matcher(input);
-
-        List<String> result = new ArrayList<String>();
-        while (matcher.find()) {
-            String element = matcher.group();
-            if (element.startsWith("\"") && element.endsWith("\"") && element.length() > 1) {
-                element = element.substring(1, element.length() - 1);
+        List<String> result = new ArrayList<>();
+        Matcher m = SPLIT_PATTERN.matcher(input);
+        while (m.find()) {
+            if (m.group(1) != null) {
+                result.add(m.group(1)); // quoted string
+            } else {
+                result.add(m.group(2)); // unquoted string
             }
-            result.add(element);
         }
 
         return result.toArray(new String[result.size()]);
