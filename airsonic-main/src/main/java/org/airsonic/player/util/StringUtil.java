@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.util;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang.StringUtils;
 
@@ -321,9 +322,9 @@ public final class StringUtil {
      *
      * @param s The string to decode.
      * @return The decoded string.
-     * @throws Exception If an error occurs.
+     * @throws DecoderException If an error occurs.
      */
-    public static String utf8HexDecode(String s) throws Exception {
+    public static String utf8HexDecode(String s) throws DecoderException {
         if (s == null) {
             return null;
         }
