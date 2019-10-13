@@ -28,10 +28,10 @@ import org.airsonic.player.service.StatusService;
 import org.airsonic.player.upload.MonitoredDiskFileItemFactory;
 import org.airsonic.player.upload.UploadListener;
 import org.airsonic.player.util.FileUtil;
-import org.airsonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,7 +127,7 @@ public class UploadController {
                         File targetFile = new File(dir, new File(fileName).getName());
 
                         if (!securityService.isUploadAllowed(targetFile)) {
-                            throw new Exception("Permission denied: " + StringUtil.toHtml(targetFile.getPath()));
+                            throw new Exception("Permission denied: " + StringEscapeUtils.escapeHtml(targetFile.getPath()));
                         }
 
                         if (!dir.exists()) {
@@ -174,13 +174,13 @@ public class UploadController {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 File entryFile = new File(file.getParentFile(), entry.getName());
                 if (!entryFile.toPath().normalize().startsWith(file.getParentFile().toPath())) {
-                    throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
+                    throw new Exception("Bad zip filename: " + StringEscapeUtils.escapeHtml(entryFile.getPath()));
                 }
 
                 if (!entry.isDirectory()) {
 
                     if (!securityService.isUploadAllowed(entryFile)) {
-                        throw new Exception("Permission denied: " + StringUtil.toHtml(entryFile.getPath()));
+                        throw new Exception("Permission denied: " + StringEscapeUtils.escapeHtml(entryFile.getPath()));
                     }
 
                     entryFile.getParentFile().mkdirs();

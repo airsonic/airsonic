@@ -22,6 +22,7 @@ package org.airsonic.player.ajax;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
 import org.airsonic.player.util.StringUtil;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.directwebremoting.WebContext;
 import org.directwebremoting.WebContextFactory;
@@ -129,14 +130,14 @@ public class NowPlayingService {
                 avatarUrl = url + "avatar.view?usernameUtf8Hex=" + StringUtil.utf8HexEncode(username);
             }
 
-            String tooltip = StringUtil.toHtml(artist) + " &ndash; " + StringUtil.toHtml(title);
+            String tooltip = StringEscapeUtils.escapeHtml(artist) + " &ndash; " + StringEscapeUtils.escapeHtml(title);
 
             if (StringUtils.isNotBlank(player.getName())) {
                 username += "@" + player.getName();
             }
-            artist = StringUtil.toHtml(StringUtils.abbreviate(artist, 25));
-            title = StringUtil.toHtml(StringUtils.abbreviate(title, 25));
-            username = StringUtil.toHtml(StringUtils.abbreviate(username, 25));
+            artist = StringEscapeUtils.escapeHtml(StringUtils.abbreviate(artist, 25));
+            title = StringEscapeUtils.escapeHtml(StringUtils.abbreviate(title, 25));
+            username = StringEscapeUtils.escapeHtml(StringUtils.abbreviate(username, 25));
 
             long minutesAgo = status.getMinutesAgo();
 

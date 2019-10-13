@@ -25,8 +25,8 @@ import org.airsonic.player.service.LastFmService;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.util.FileUtil;
-import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -109,7 +109,7 @@ public class CoverArtService {
                 // Check permissions.
                 File newCoverFile = new File(path, "cover." + suffix);
                 if (!securityService.isWriteAllowed(newCoverFile)) {
-                    throw new Exception("Permission denied: " + StringUtil.toHtml(newCoverFile.getPath()));
+                    throw new Exception("Permission denied: " + StringEscapeUtils.escapeHtml(newCoverFile.getPath()));
                 }
 
                 // If file exists, create a backup.

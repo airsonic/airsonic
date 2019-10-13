@@ -20,6 +20,7 @@
 package org.airsonic.player.util;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -42,14 +43,6 @@ import java.util.regex.Pattern;
 public final class StringUtil {
 
     public static final String ENCODING_UTF8 = "UTF-8";
-
-    private static final String[][] HTML_SUBSTITUTIONS = {
-            {"&", "&amp;"},
-            {"<", "&lt;"},
-            {">", "&gt;"},
-            {"'", "&#39;"},
-            {"\"", "&#34;"},
-    };
 
     private static final String[][] MIME_TYPES = {
             {"mp3", "audio/mpeg"},
@@ -95,40 +88,6 @@ public final class StringUtil {
      * Disallow external instantiation.
      */
     private StringUtil() {
-    }
-
-    /**
-     * Returns the specified string converted to a format suitable for
-     * HTML. All single-quote, double-quote, greater-than, less-than and
-     * ampersand characters are replaces with their corresponding HTML
-     * Character Entity code.
-     *
-     * @param s the string to convert
-     * @return the converted string
-     */
-    public static String toHtml(String s) {
-        if (s == null) {
-            return null;
-        }
-        for (String[] substitution : HTML_SUBSTITUTIONS) {
-            if (s.contains(substitution[0])) {
-                s = s.replaceAll(substitution[0], substitution[1]);
-            }
-        }
-        return s;
-    }
-
-
-    /**
-     * Removes the suffix (the substring after the last dot) of the given string. The dot is
-     * also removed.
-     *
-     * @param s The string in question, e.g., "foo.mp3".
-     * @return The string without the suffix, e.g., "foo".
-     */
-    public static String removeSuffix(String s) {
-        int index = s.lastIndexOf('.');
-        return index == -1 ? s : s.substring(0, index);
     }
 
     /**
