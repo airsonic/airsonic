@@ -33,6 +33,7 @@ import java.text.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Miscellaneous string utility methods.
@@ -249,12 +250,9 @@ public final class StringUtil {
             return new int[0];
         }
 
-        String[] strings = StringUtils.split(s);
-        int[] ints = new int[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            ints[i] = Integer.parseInt(strings[i]);
-        }
-        return ints;
+        return Stream.of(StringUtils.split(s))
+                .mapToInt(Integer::parseInt)
+                .toArray();
     }
 
     /**
