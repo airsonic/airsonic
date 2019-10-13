@@ -256,15 +256,6 @@ public final class StringUtil {
     }
 
     /**
-     * Determines whether a is equal to b, taking null into account.
-     *
-     * @return Whether a and b are equal, or both null.
-     */
-    public static boolean isEqual(Object a, Object b) {
-        return Objects.equals(a, b);
-    }
-
-    /**
      * Parses a locale from the given string.
      *
      * @param s The locale string. Should be formatted as per the documentation in {@link Locale#toString()}.
