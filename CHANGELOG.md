@@ -3,7 +3,7 @@
 # airsonic/airsonic
 # -->
 
-## v10.4.1 - ?
+## v10.4.1 - 14 Oct 2019
 
 ### Fixes
 
