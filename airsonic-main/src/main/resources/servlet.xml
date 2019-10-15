@@ -12,10 +12,10 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <mvc:annotation-driven />
-    <context:component-scan base-package="org.airsonic.player.controller,
+    <!-- <mvc:annotation-driven /> -->
+    <!-- <context:component-scan base-package="org.airsonic.player.controller,
         org.airsonic.player.validator,
-        org.airsonic.player.security"/>
+        org.airsonic.player.security"/> -->
 
 
     <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">

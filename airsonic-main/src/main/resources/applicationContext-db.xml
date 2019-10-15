@@ -7,11 +7,11 @@
     <import resource="applicationContext-db-embed.xml" />
     <import resource="applicationContext-db-legacy.xml" />
 
-    <tx:annotation-driven/>
+    <!-- <tx:annotation-driven/> -->
 
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <constructor-arg ref="dataSource"/>
-    </bean>
+    </bean> -->
 
     <bean id="daoHelper" class="org.airsonic.player.dao.GenericDaoHelper">
         <constructor-arg name="dataSource" ref="dataSource" />

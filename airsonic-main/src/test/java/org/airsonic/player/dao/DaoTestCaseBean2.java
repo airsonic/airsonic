@@ -33,7 +33,6 @@ public class DaoTestCaseBean2 {
     @Autowired
     GenericDaoHelper genericDaoHelper;
 
-
     JdbcTemplate getJdbcTemplate() {
         return genericDaoHelper.getJdbcTemplate();
     }

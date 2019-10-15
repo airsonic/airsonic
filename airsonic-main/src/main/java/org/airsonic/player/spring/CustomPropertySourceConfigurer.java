@@ -15,6 +15,7 @@ public class CustomPropertySourceConfigurer implements
 
     public static final String DATASOURCE_CONFIG_TYPE = "DatabaseConfigType";
 
+    @Override
     public void initialize(ConfigurableWebApplicationContext ctx) {
 
         ApacheCommonsConfigurationService configurationService = new ApacheCommonsConfigurationService();

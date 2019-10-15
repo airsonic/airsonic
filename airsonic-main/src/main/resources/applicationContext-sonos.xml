@@ -13,7 +13,8 @@
         </jaxws:outFaultInterceptors>
     </jaxws:endpoint>
 
-    <bean id="sonosHelper" class="org.airsonic.player.service.sonos.SonosHelper">
+    <!-- The following is instantiated by ComponentScan -->
+    <!-- <bean id="sonosHelper" class="org.airsonic.player.service.sonos.SonosHelper">
         <property name="mediaFileService" ref="mediaFileService"/>
         <property name="settingsService" ref="settingsService"/>
         <property name="playlistService" ref="playlistService"/>
@@ -25,6 +26,6 @@
         <property name="lastFmService" ref="lastFmService"/>
         <property name="podcastService" ref="podcastService"/>
         <property name="mediaFileDao" ref="mediaFileDao"/>
-    </bean>
+    </bean> -->
 
 </beans>

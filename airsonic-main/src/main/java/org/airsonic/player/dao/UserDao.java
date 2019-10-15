@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,9 +71,12 @@ public class UserDao extends AbstractDao {
 
     private final String userTableQuote;
 
+    DataSourceTransactionManager transactionManager;
+
     @Autowired
-    public UserDao(String userTableQuote) {
+    public UserDao(String userTableQuote, DataSourceTransactionManager transactionManager) {
         this.userTableQuote = userTableQuote;
+        this.transactionManager = transactionManager;
     }
 
     /**
@@ -326,6 +330,7 @@ public class UserDao extends AbstractDao {
     }
 
     private class UserRowMapper implements RowMapper<User> {
+        @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new User(rs.getString(1),
                     decrypt(rs.getString(2)),
@@ -338,6 +343,7 @@ public class UserDao extends AbstractDao {
     }
 
     private static class UserSettingsRowMapper implements RowMapper<UserSettings> {
+        @Override
         public UserSettings mapRow(ResultSet rs, int rowNum) throws SQLException {
             int col = 1;
             UserSettings settings = new UserSettings(rs.getString(col++));

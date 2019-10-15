@@ -1,11 +1,13 @@
 package org.airsonic.player.api.jukebox;
 
 import org.airsonic.player.TestCaseUtils;
+import org.airsonic.player.controller.SubsonicRESTController;
 import org.airsonic.player.dao.*;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.service.sonos.SonosHelper;
 import org.airsonic.player.util.HomeRule;
 import org.airsonic.player.util.StringUtil;
 import org.junit.*;
@@ -14,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -35,9 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = AbstractAirsonicRestApiJukeboxIntTest.Config.class)
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public abstract class AbstractAirsonicRestApiJukeboxIntTest {
 
     @ClassRule
@@ -56,6 +57,9 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
         public PlayerDaoPlayQueueFactory playerDaoPlayQueueFactory() {
             return new SpiedPlayerDaoPlayQueueFactory();
         }
+
+        @MockBean
+        private SonosHelper sonosHelper;
     }
 
     protected static final String CLIENT_NAME = "airsonic";
@@ -133,7 +137,7 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
     public void setup() throws Exception {
         populateDatabase();
 
-        testJukeboxPlayer = findTestJukeboxPlayer();
+        testJukeboxPlayer = spy(findTestJukeboxPlayer());
         assertThat(testJukeboxPlayer).isNotNull();
         reset(testJukeboxPlayer.getPlayQueue());
         testJukeboxPlayer.getPlayQueue().clear();
@@ -151,7 +155,7 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
     }
 
     private String convertDateToString(Date date) {
-       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.000'Z'");
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
        return formatter.format(date);
     }
@@ -175,10 +179,7 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].suffix").value(mediaFile.getFormat()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].duration").value(mediaFile.getDurationSeconds()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].bitRate").value(mediaFile.getBitRate()).match(result);
-
-            // The path is absolute, we remove the folder source with replace the folder with nothing
-            // and the "/" they stay with substring(1), must be a method in mediaFile for method to obtain the relative path is same every where.
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value(mediaFile.getPath().replace(mediaFile.getFolder(), "").substring(1)).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value(SubsonicRESTController.getRelativePath(mediaFile, settingsService)).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isVideo").value(mediaFile.isVideo()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].playCount").isNumber().match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].created").value(convertDateToString(mediaFile.getCreated())).match(result);

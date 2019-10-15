@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,12 +44,11 @@ public class AirsonicRestApiIntTest {
     }
 
     @Test
+    @WithMockUser(username = "admin")
     public void pingTest() throws Exception {
         mvc.perform(get("/rest/ping")
                 .param("v", AIRSONIC_API_VERSION)
                 .param("c", CLIENT_NAME)
-                .param("u", AIRSONIC_USER)
-                .param("p", AIRSONIC_PASSWORD)
                 .param("f", EXPECTED_FORMAT)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

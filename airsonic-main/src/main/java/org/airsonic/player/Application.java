@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
@@ -33,7 +32,7 @@ import java.lang.reflect.Method;
         JmxAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class,
         DataSourceAutoConfiguration.class,
-        DataSourceTransactionManagerAutoConfiguration.class,
+//        DataSourceTransactionManagerAutoConfiguration.class,
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
 @Configuration
@@ -52,15 +51,15 @@ public class Application extends SpringBootServletInitializer
      * @return a registration bean.
      */
     @Bean
-    public ServletRegistrationBean dwrServletRegistrationBean() {
-        ServletRegistrationBean servlet = new ServletRegistrationBean(new DwrServlet(), "/dwr/*");
+    public ServletRegistrationBean<DwrServlet> dwrServletRegistrationBean() {
+        ServletRegistrationBean<DwrServlet> servlet = new ServletRegistrationBean<>(new DwrServlet(), "/dwr/*");
         servlet.addInitParameter("crossDomainSessionSecurity","false");
         return servlet;
     }
 
     @Bean
-    public ServletRegistrationBean cxfServletBean() {
-        return new ServletRegistrationBean(new org.apache.cxf.transport.servlet.CXFServlet(), "/ws/*");
+    public ServletRegistrationBean<org.apache.cxf.transport.servlet.CXFServlet> cxfServletBean() {
+        return new ServletRegistrationBean<>(new org.apache.cxf.transport.servlet.CXFServlet(), "/ws/*");
     }
 
     @Bean
@@ -69,9 +68,9 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public FilterRegistrationBean bootstrapVerificationFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(bootstrapVerificationFiler());
+    public FilterRegistrationBean<Filter> bootstrapVerificationFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(bootstrapVerificationFilter());
         registration.addUrlPatterns("/*");
         registration.setName("BootstrapVerificationFilter");
         registration.setOrder(1);
@@ -79,13 +78,13 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public Filter bootstrapVerificationFiler() {
+    public Filter bootstrapVerificationFilter() {
         return new BootstrapVerificationFilter();
     }
 
     @Bean
-    public FilterRegistrationBean parameterDecodingFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<Filter> parameterDecodingFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(parameterDecodingFilter());
         registration.addUrlPatterns("/*");
         registration.setName("ParameterDecodingFilter");
@@ -99,8 +98,8 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public FilterRegistrationBean restFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<Filter> restFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(restFilter());
         registration.addUrlPatterns("/rest/*");
         registration.setName("RESTFilter");
@@ -114,8 +113,8 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public FilterRegistrationBean requestEncodingFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<Filter> requestEncodingFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(requestEncodingFilter());
         registration.addUrlPatterns("/*");
         registration.addInitParameter("encoding", "UTF-8");
@@ -130,8 +129,8 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public FilterRegistrationBean cacheFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<Filter> cacheFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(cacheFilter());
         registration.addUrlPatterns("/icons/*", "/style/*", "/script/*", "/dwr/*", "/icons/*", "/coverArt.view", "/avatar.view");
         registration.addInitParameter("Cache-Control", "max-age=36000");
@@ -146,8 +145,8 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public FilterRegistrationBean noCacheFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<Filter> noCacheFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(noCacheFilter());
         registration.addUrlPatterns("/statusChart.view", "/userChart.view", "/playQueue.view", "/podcastChannels.view", "/podcastChannel.view", "/help.view", "/top.view", "/home.view");
         registration.addInitParameter("Cache-Control", "no-cache, post-check=0, pre-check=0");
@@ -164,8 +163,8 @@ public class Application extends SpringBootServletInitializer
     }
 
     @Bean
-    public FilterRegistrationBean metricsFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<Filter> metricsFilterRegistration() {
+        FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         registration.setFilter(metricsFilter());
         registration.setOrder(7);
         return registration;
