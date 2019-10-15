@@ -7,7 +7,8 @@ following sections to make it easier to assist you.
 
 *Describe your problem here. Describe what you want to happen, and what happens
 if you try to do it. If you have a stack trace or any logs, please format them using
-githubs triple backquote notation*
+github's triple-backquote notation, or if they are large you may also consider
+attaching them as a file or gist.*
 
 ### Steps to reproduce
 
@@ -24,10 +25,12 @@ files, ensure you are legally permitted to share copies!*
  * **Airsonic version**: *the version listed on the About page*
  * **Operating system**: *the operating system you're running Airsonic on.
    Linux, what distribution; Windows or Mac, what version?*
+ * **Java version**: *the Java version you are using to run Airsonic.*
  * **Proxy server**: *if running Airsonic behind a proxy, what server and
    version? Otherwise,* None
  * **Client**: *what browser and version you use to access the Airsonic web
    interface, or the name and version of another app you're using.*
+ * **Language**: *which langauge/internationalization is in use*
 
 ## Additional notes
 

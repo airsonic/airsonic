@@ -1,19 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/moment-2.18.1.min.js"/>"></script>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <%@ include file="playQueueCast.jsp" %>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/webfx/luna.css"/>">
+    <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -34,13 +31,30 @@
 <span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
 
 <script type="text/javascript" language="javascript">
+
+    // These variables store the media player state, received from DWR in the
+    // playQueueCallback function below.
+
+    // List of songs (of type PlayQueueInfo.Entry)
     var songs = null;
+
+    // Stream URL of the media being played
     var currentStreamUrl = null;
+
+    // Is autorepeat enabled?
     var repeatEnabled = false;
-    var radioEnabled = false;
+
+    // Is the "shuffle radio" playing? (More > Shuffle Radio)
+    var shuffleRadioEnabled = false;
+
+    // Is the "internet radio" playing?
+    var internetRadioEnabled = false;
+
+    // Is the play queue visible? (Initially hidden if set to "auto-hide" in the settings)
     var isVisible = ${model.autoHide ? 'false' : 'true'};
+
+    // Initialize the Cast player (ChromeCast support)
     var CastPlayer = new CastPlayer();
-    var ignore = false;
 
     function init() {
         <c:if test="${model.autoHide}">initAutoHide();</c:if>
@@ -55,7 +69,7 @@
                 }
             }});
 
-        <c:if test="${model.player.web}">createPlayer();</c:if>
+        <c:if test="${model.player.web}">createMediaElementPlayer();</c:if>
 
         $("#playlistBody").sortable({
             stop: function(event, ui) {
@@ -84,6 +98,40 @@
                 return trclone;
             }
         });
+
+        /** Toggle between <a> and <span> in order to disable play queue action buttons */
+        $.fn.toggleLink = function(newState) {
+            $(this).each(function(ix, elt) {
+
+                var node, currentState;
+                if (elt.tagName.toLowerCase() === "a") currentState = true;
+                else if (elt.tagName.toLowerCase() === "span") currentState = false;
+                else return true;
+                if (typeof newState === 'undefined') newState = !currentState;
+                if (newState === currentState) return true;
+
+                if (newState) node = document.createElement("a");
+                else node = document.createElement("span");
+
+                node.innerHTML = elt.innerHTML;
+                if (elt.hasAttribute("id")) node.setAttribute("id", elt.getAttribute("id"));
+                if (elt.hasAttribute("style")) node.setAttribute("style", elt.getAttribute("style"));
+                if (elt.hasAttribute("class")) node.setAttribute("class", elt.getAttribute("class"));
+
+                if (newState) {
+                    if (elt.hasAttribute("data-href")) node.setAttribute("href", elt.getAttribute("data-href"));
+                    node.classList.remove("disabled");
+                    node.removeAttribute("aria-disabled");
+                } else {
+                    if (elt.hasAttribute("href")) node.setAttribute("data-href", elt.getAttribute("href"));
+                    node.classList.add("disabled");
+                    node.setAttribute("aria-disabled", "true");
+                }
+
+                elt.parentNode.replaceChild(node, elt);
+                return true;
+            });
+        };
 
         getPlayQueue();
     }
@@ -148,8 +196,17 @@
         onNext(repeatEnabled);
     }
 
-    function createPlayer() {
-        $('#audioPlayer').get(0).addEventListener("ended", onEnded);
+    function createMediaElementPlayer() {
+        // Manually run MediaElement.js initialization.
+        //
+        // Warning: Bugs will happen if MediaElement.js is not initialized when
+        // we modify the media elements (e.g. adding event handlers). Running
+        // MediaElement.js's automatic initialization does not guarantee that
+        // (it depends on when we call createMediaElementPlayer at load time).
+        $('#audioPlayer').mediaelementplayer();
+
+        // Once playback reaches the end, go to the next song, if any.
+        $('#audioPlayer').on("ended", onEnded);
     }
 
     function getPlayQueue() {
@@ -167,15 +224,17 @@
     }
 
     /**
-     * Start playing from the current playlist
+     * Start/resume playing from the current playlist
      */
     function onStart() {
         if (CastPlayer.castSession) {
             CastPlayer.playCast();
         } else if ($('#audioPlayer').get(0)) {
-            var audioPlayer = $('#audioPlayer');
-            if(audioPlayer.paused) {
-                skip(0, audioPlayer.currentTime);
+            if ($('#audioPlayer').get(0).src) {
+                $('#audioPlayer').get(0).play();  // Resume playing if the player was paused
+            }
+            else {
+                skip(0);  // Start the first track if the player was not yet loaded
             }
         } else {
             playQueueService.start(playQueueCallback);
@@ -205,8 +264,9 @@
             var playing = CastPlayer.mediaSession && CastPlayer.mediaSession.playerState == chrome.cast.media.PlayerState.PLAYING;
             if (playing) onStop();
             else onStart();
-        } else if ($('#audioPlayer')) {
-            if (!$('#audioPlayer').get(0).paused) onStop();
+        } else if ($('#audioPlayer').get(0)) {
+            var playing = $("#audioPlayer").get(0).paused != null && !$("#audioPlayer").get(0).paused;
+            if (playing) onStop();
             else onStart();
         } else {
             playQueueService.toggleStartStop(playQueueCallback);
@@ -228,7 +288,7 @@
     /**
      * Increase or decrease volume by a certain amount
      *
-     * @param amount to add or remove from the current volume
+     * @param gain amount to add or remove from the current volume
      */
     function onGainAdd(gain) {
         if (CastPlayer.castSession) {
@@ -237,11 +297,11 @@
             if (volume < 0) volume = 0;
             CastPlayer.setCastVolume(volume / 100, false);
             $("#castVolume").slider("option", "value", volume); // Need to update UI
-        } else if ($('#audioPlayer')) {
-            var volume = parseInt($('#audioPlayer').get(0).volume) + gain;
+        } else if ($('#audioPlayer').get(0)) {
+            var volume = parseFloat($('#audioPlayer').get(0).volume)*100 + gain;
             if (volume > 100) volume = 100;
             if (volume < 0) volume = 0;
-            $('#audioPlayer').get(0).volume = volume;
+            $('#audioPlayer').get(0).volume = volume / 100;
         } else {
             var volume = parseInt($("#jukeboxVolume").slider("option", "value")) + gain;
             if (volume > 100) volume = 100;
@@ -267,7 +327,7 @@
     }
     function onNext(wrap) {
         var index = parseInt(getCurrentSongIndex()) + 1;
-        if (radioEnabled && index >= songs.length) {
+        if (shuffleRadioEnabled && index >= songs.length) {
             playQueueService.reloadSearchCriteria(function(playQueue) {
                 playQueueCallback(playQueue);
                 onSkip(index);
@@ -289,6 +349,9 @@
     }
     function onPlayPlaylist(id, index) {
         playQueueService.playPlaylist(id, index, playQueueCallback);
+    }
+    function onPlayInternetRadio(id, index) {
+        playQueueService.playInternetRadio(id, index, playQueueCallback);
     }
     function onPlayTopSong(id, index) {
         playQueueService.playTopSong(id, index, playQueueCallback);
@@ -360,7 +423,7 @@
         playQueueService.sortByAlbum(playQueueCallback);
     }
     function onSavePlayQueue() {
-        var positionMillis = $('#audioPlayer') ? Math.round(1000.0 * $('#audioPlayer').get(0).currentTime) : 0;
+        var positionMillis = $('#audioPlayer').get(0) ? Math.round(1000.0 * $('#audioPlayer').get(0).currentTime) : 0;
         playQueueService.savePlayQueue(getCurrentSongIndex(), positionMillis);
         $().toastmessage("showSuccessToast", "<fmt:message key="playlist.toast.saveplayqueue"/>");
     }
@@ -410,24 +473,52 @@
     function playQueueCallback(playQueue) {
         songs = playQueue.entries;
         repeatEnabled = playQueue.repeatEnabled;
-        radioEnabled = playQueue.radioEnabled;
+        shuffleRadioEnabled = playQueue.shuffleRadioEnabled;
+        internetRadioEnabled = playQueue.internetRadioEnabled;
+
+        // If an internet radio has no sources, display a message to the user.
+        if (internetRadioEnabled && songs.length == 0) {
+            top.main.$().toastmessage("showErrorToast", "<fmt:message key="playlist.toast.radioerror"/>");
+            onStop();
+        }
+
         if ($("#start")) {
             $("#start").toggle(!playQueue.stopEnabled);
             $("#stop").toggle(playQueue.stopEnabled);
         }
 
         if ($("#toggleRepeat")) {
-            if (radioEnabled) {
+            if (shuffleRadioEnabled) {
                 $("#toggleRepeat").html("<fmt:message key="playlist.repeat_radio"/>");
             } else if (repeatEnabled) {
-                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_on"/>");
+                $("#toggleRepeat").attr('src', '<spring:theme code="repeatOn"/>');
+                $("#toggleRepeat").attr('alt', 'Repeat On');
             } else {
-                $("#toggleRepeat").html("<fmt:message key="playlist.repeat_off"/>");
+                $("#toggleRepeat").attr('src', '<spring:theme code="repeatOff"/>');
+                $("#toggleRepeat").attr('alt', 'Repeat Off');
             }
         }
 
+        // Disable some UI items if internet radio is playing
+        $("select#moreActions #loadPlayQueue").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #savePlayQueue").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #savePlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #downloadPlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sharePlaylist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByTrack").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByAlbum").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #sortByArtist").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #selectAll").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #selectNone").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #removeSelected").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #download").prop("disabled", internetRadioEnabled);
+        $("select#moreActions #appendPlaylist").prop("disabled", internetRadioEnabled);
+        $("#shuffleQueue").toggleLink(!internetRadioEnabled);
+        $("#repeatQueue").toggleLink(!internetRadioEnabled);
+        $("#undoQueue").toggleLink(!internetRadioEnabled);
+
         if (songs.length == 0) {
-            $("#songCountAndDuration").html("");
+            $("#songCountAndDuration").text("");
             $("#empty").show();
         } else {
             $("#songCountAndDuration").html(songs.length + " <fmt:message key="playlist2.songs"/> &ndash; " + playQueue.durationAsString);
@@ -445,13 +536,28 @@
             var id = i + 1;
             dwr.util.cloneNode("pattern", { idSuffix:id });
             if ($("#trackNumber" + id)) {
-                $("#trackNumber" + id).html(song.trackNumber);
+                $("#trackNumber" + id).text(song.trackNumber);
             }
-            if (song.starred) {
-                $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
+
+            if (!internetRadioEnabled) {
+                // Show star/remove buttons in all cases...
+                $("#starSong" + id).show();
+                $("#removeSong" + id).show();
+                $("#songIndex" + id).show();
+
+                // Show star rating
+                if (song.starred) {
+                    $("#starSong" + id).attr("src", "<spring:theme code='ratingOnImage'/>");
+                } else {
+                    $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
+                }
             } else {
-                $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
+                // ...except from when internet radio is playing.
+                $("#starSong" + id).hide();
+                $("#removeSong" + id).hide();
+                $("#songIndex" + id).hide();
             }
+
             if ($("#currentImage" + id) && song.streamUrl == currentStreamUrl) {
                 $("#currentImage" + id).show();
                 if (isJavaJukeboxPresent()) {
@@ -459,40 +565,53 @@
                 }
             }
             if ($("#title" + id)) {
-                $("#title" + id).html(song.title);
+                $("#title" + id).text(song.title);
                 $("#title" + id).attr("title", song.title);
             }
             if ($("#titleUrl" + id)) {
-                $("#titleUrl" + id).html(song.title);
+                $("#titleUrl" + id).text(song.title);
                 $("#titleUrl" + id).attr("title", song.title);
                 $("#titleUrl" + id).click(function () {onSkip(this.id.substring(8) - 1)});
             }
             if ($("#album" + id)) {
-                $("#album" + id).html(song.album);
+                $("#album" + id).text(song.album);
                 $("#album" + id).attr("title", song.album);
                 $("#albumUrl" + id).attr("href", song.albumUrl);
+                // Open external internet radio links in new windows
+                if (internetRadioEnabled) {
+                    $("#albumUrl" + id).attr({
+                        target: "_blank",
+                        rel: "noopener noreferrer",
+                    });
+                }
             }
             if ($("#artist" + id)) {
-                $("#artist" + id).html(song.artist);
+                $("#artist" + id).text(song.artist);
                 $("#artist" + id).attr("title", song.artist);
             }
             if ($("#genre" + id)) {
-                $("#genre" + id).html(song.genre);
+                $("#genre" + id).text(song.genre);
             }
             if ($("#year" + id)) {
-                $("#year" + id).html(song.year);
+                // If song.year is not an int, this will return NaN, which
+                // conveniently returns false in all boolean operations.
+                if (parseInt(song.year) > 0) {
+                    $("#year" + id).text(song.year);
+                } else {
+                    $("#year" + id).text("");
+                }
             }
             if ($("#bitRate" + id)) {
-                $("#bitRate" + id).html(song.bitRate);
+                $("#bitRate" + id).text(song.bitRate);
             }
             if ($("#duration" + id)) {
-                $("#duration" + id).html(song.durationAsString);
+                $("#duration" + id).text(song.durationAsString);
             }
             if ($("#format" + id)) {
-                $("#format" + id).html(song.format);
+                $("#format" + id).text(song.format);
             }
             if ($("#fileSize" + id)) {
-                $("#fileSize" + id).html(song.fileSize);
+                $("#fileSize" + id).text(song.fileSize);
             }
 
             $("#pattern" + id).addClass((i % 2 == 0) ? "bgcolor1" : "bgcolor2");
@@ -530,6 +649,35 @@
         }
     }
 
+    function loadMediaElementPlayer(song, position) {
+        var player = $('#audioPlayer').get(0);
+
+        // Is this a new song?
+        if (player.src != song.streamUrl) {
+            // Stop the current playing song and change the media source.
+            player.src = song.streamUrl;
+            // Inform MEJS that we need to load a new media source. The
+            // 'canplay' event will be fired once playback is possible.
+            player.load();
+            // The 'skip' function takes a 'position' argument. We don't
+            // usually send it, and in this case it's better to do nothing.
+            // Otherwise, the 'canplay' event will also be fired after
+            // setting 'currentTime'.
+            if (position && position > 0) {
+                player.currentTime = position;
+            }
+
+        // Are we seeking on an already-playing song?
+        } else {
+            // Seeking also starts playing. The 'canplay' event will be
+            // fired after setting 'currentTime'.
+            player.currentTime = position || 0;
+        }
+
+        // Start playback immediately.
+        player.play();
+    }
+
     function skip(index, position) {
         if (index < 0 || index >= songs.length) {
             return;
@@ -539,13 +687,12 @@
         currentStreamUrl = song.streamUrl;
         updateCurrentImage();
 
+        // Handle ChromeCast player.
         if (CastPlayer.castSession) {
             CastPlayer.loadCastMedia(song, position);
+        // Handle MediaElement (HTML5) player.
         } else {
-            $('#audioPlayer').get(0).src = song.streamUrl;
-            $('#audioPlayer').get(0).load();
-            $('#audioPlayer').get(0).play();
-            console.log(song.streamUrl);
+            loadMediaElementPlayer(song, position);
         }
 
         updateWindowTitle(song);
@@ -688,15 +835,15 @@
                     </c:if>
                     <c:if test="${model.player.web}">
                         <td>
-                            <div id="player" style="width:340px; height:40px;padding-right:10px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": "true"}' width="340px" height"40px"/>
+                            <div id="player" style="width:340px; height:40px">
+                                <audio id="audioPlayer" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
-                                    <img id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
-                                    <img id="castPause" src="<spring:theme code="castPauseImage"/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
-                                    <img id="castMuteOn" src="<spring:theme code="volumeImage"/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
-                                    <img id="castMuteOff" src="<spring:theme code="muteImage"/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
+                                    <img alt="Play" id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
+                                    <img alt="Pause" id="castPause" src="<spring:theme code="castPauseImage"/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
+                                    <img alt="Mute on" id="castMuteOn" src="<spring:theme code="volumeImage"/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
+                                    <img alt="Mute off" id="castMuteOff" src="<spring:theme code="muteImage"/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
                                 </div>
                                 <div style="float:left">
                                     <div id="castVolume" style="width:80px;height:4px;margin-left:10px;margin-right:10px;margin-top:8px"></div>
@@ -708,15 +855,15 @@
                             </div>
                         </td>
                         <td>
-                            <img id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
-                            <img id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast on" id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast off" id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
                     <c:if test="${model.user.streamRole and not model.player.web}">
                         <td>
-                            <img id="start" src="<spring:theme code="castPlayImage"/>" onclick="onStart()" style="cursor:pointer">
-                            <img id="stop" src="<spring:theme code="castPauseImage"/>" onclick="onStop()" style="cursor:pointer; display:none">
+                            <img alt="Start" id="start" src="<spring:theme code="castPlayImage"/>" onclick="onStart()" style="cursor:pointer">
+                            <img alt="Stop" id="stop" src="<spring:theme code="castPauseImage"/>" onclick="onStop()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
@@ -735,24 +882,50 @@
 
                     <c:if test="${model.player.web}">
                         <td><span class="header">
-                            <img src="<spring:theme code="backImage"/>" alt="" onclick="onPrevious()" style="cursor:pointer"></span>
+                            <img src="<spring:theme code="backImage"/>" alt="Play next" title="Play next" onclick="onPrevious()" style="cursor:pointer"></span>
                         </td>
                         <td><span class="header">
-                            <img src="<spring:theme code="forwardImage"/>" alt="" onclick="onNext(false)" style="cursor:pointer"></span>
+                            <img src="<spring:theme code="forwardImage"/>" alt="Play next" title="Play next" onclick="onNext(false)" style="cursor:pointer"></span> |
                         </td>
                     </c:if>
 
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onClear()"><fmt:message key="playlist.clear"/></a></span> |</td>
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onShuffle()"><fmt:message key="playlist.shuffle"/></a></span> |</td>
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onClear()" class="player-control">
+                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
+                        </a>
+                      </span> |</td>
+
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onShuffle()" id="shuffleQueue" class="player-control">
+                            <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
+                        </a>
+                      </span> |</td>
 
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
-                        <td style="white-space:nowrap;"><span class="header"><a href="javascript:onToggleRepeat()"><span id="toggleRepeat"><fmt:message key="playlist.repeat_on"/></span></a></span>  |</td>
+                        <td style="white-space:nowrap;">
+                          <span class="header">
+                            <a href="javascript:onToggleRepeat()" id="repeatQueue" class="player-control">
+                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
+                            </a>
+                          </span> |</td>
                     </c:if>
 
-                    <td style="white-space:nowrap;"><span class="header"><a href="javascript:onUndo()"><fmt:message key="playlist.undo"/></a></span>  |</td>
+                    <td style="white-space:nowrap;">
+                      <span class="header">
+                        <a href="javascript:onUndo()" id="undoQueue" class="player-control">
+                          <img src="<spring:theme code="undoImage"/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
+                        </a>
+                      </span>  |</td>
 
                     <c:if test="${model.user.settingsRole}">
-                        <td style="white-space:nowrap;"><span class="header"><a href="playerSettings.view?id=${model.player.id}" target="main"><fmt:message key="playlist.settings"/></a></span>  |</td>
+                        <td style="white-space:nowrap;">
+                          <span class="header">
+                            <a href="playerSettings.view?id=${model.player.id}" target="main" class="player-control">
+                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
+                            </a>
+                          </span> |</td>
                     </c:if>
 
                     <td style="white-space:nowrap;"><select id="moreActions" onchange="actionSelected(this.options[selectedIndex].id)">
@@ -799,10 +972,10 @@
         <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
             <td class="fit">
                 <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code="ratingOffImage"/>"
-                     style="cursor:pointer" alt="" title=""></td>
+                     style="cursor:pointer;height:18px;" alt="" title=""></td>
             <td class="fit">
                 <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
-                     style="cursor:pointer" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
+                     style="cursor:pointer; height:18px;" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
             <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">

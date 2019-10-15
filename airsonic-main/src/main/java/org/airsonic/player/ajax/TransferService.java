@@ -25,6 +25,7 @@ import org.directwebremoting.WebContextFactory;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+
 /**
  * Provides AJAX-enabled services for retrieving the status of ongoing transfers.
  * This class is used by the DWR framework (http://getahead.ltd.uk/dwr/).

@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.airsonic.player</groupId>
         <artifactId>airsonic</artifactId>
-        <version>10.2.0-SNAPSHOT</version>
+        <version>10.5.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>3.4.1</version>
+            <version>3.8.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.ldap</groupId>
@@ -140,21 +140,38 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>3.0.3</version>
+            <version>8.2.0</version>
         </dependency>
-
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.2.9</version>
-            <scope>runtime</scope>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>8.2.0</version>
         </dependency>
-        
         <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.10.3</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- connection pool manager, fixes #860 (external database performance) -->  
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.5.0</version>
+            <scope>runtime</scope>
+            <!-- this wants to pull in commons-logging v1.2 which conflicts with other dependencies -->
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
@@ -185,9 +202,21 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.checkerframework</groupId>
+			<artifactId>checker-qual</artifactId>
+			<scope>compile</scope>
+			<version>2.5.2</version>
+		</dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -207,15 +236,9 @@
         </dependency>
 
         <dependency>
-            <groupId>radeox</groupId>
-            <artifactId>radeox</artifactId>
-            <version>1.0-b2</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.directwebremoting</groupId>
             <artifactId>dwr</artifactId>
-            <version>3.0.2-RELEASE</version>
+            <version>3.0.rc1</version>
         </dependency>
 
         <!--Needed by dwr-->
@@ -224,6 +247,15 @@
             <artifactId>yuicompressor</artifactId>
             <version>2.4.8</version>
             <scope>runtime</scope>
+            <!-- Necessary to avoid StringIndexOutOfBoundsException when running as a JAR -->
+            <!-- See: https://github.com/yui/yuicompressor/issues/161 -->
+            <!-- See also: https://stackoverflow.com/questions/8429095 -->
+            <exclusions>
+              <exclusion>
+                <artifactId>js</artifactId>
+                <groupId>rhino</groupId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -257,7 +289,7 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-            <version>2.5.0</version>
+            <version>2.6.11</version>
         </dependency>
 
         <dependency>
@@ -315,25 +347,26 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- UPNP / DLNA -->
         <dependency>
             <groupId>org.fourthline.cling</groupId>
             <artifactId>cling-core</artifactId>
-            <version>2.1.2</version>
+            <version>2.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.fourthline.cling</groupId>
             <artifactId>cling-support</artifactId>
-            <version>2.1.2</version>
+            <version>2.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>org.seamless</groupId>
             <artifactId>seamless-util</artifactId>
-            <version>1.1.2</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
@@ -407,9 +440,15 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
+            <version>1.9.4</version>
             <!-- commons-configuration2 requires during runtime -->
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -500,6 +539,13 @@
             </exclusions>
         </dependency>
 
+        <!-- Provided by the servlet container, but found by dependency:analyze even if used via reflection -->
+        <dependency>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-io</artifactId>
+          <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -518,8 +564,29 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.2</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>42.2.5</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -609,6 +676,31 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jspc-maven-plugin</artifactId>
+                <version>9.4.19.v20190610</version>
+                <executions>
+                    <execution>
+                        <id>jspc</id>
+                        <goals>
+                            <goal>jspc</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <!-- Since we are using spring boot - we do not have a web.xml so there is no sense
+                            enabling merging. Furthermore, we output the webXmlFragment to the target/classes
+                            directory such that it will be on the classpath for use during runtime -->
+                            <mergeFragment>false</mergeFragment>
+                            <webXmlFragment>${project.build.outputDirectory}/precompiled-jsp-web.xml</webXmlFragment>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

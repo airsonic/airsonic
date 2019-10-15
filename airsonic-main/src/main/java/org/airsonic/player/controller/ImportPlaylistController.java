@@ -30,8 +30,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,10 +55,10 @@ public class ImportPlaylistController {
     @Autowired
     private PlaylistService playlistService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String handlePost(RedirectAttributes redirectAttributes,
-                                           HttpServletRequest request
-                                           ) throws Exception {
+                                HttpServletRequest request
+    ) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         try {
@@ -78,7 +79,7 @@ public class ImportPlaylistController {
                         String format = StringUtils.lowerCase(FilenameUtils.getExtension(item.getName()));
                         String username = securityService.getCurrentUsername(request);
                         Playlist playlist = playlistService.importPlaylist(username, playlistName, fileName,
-                                                                           item.getInputStream(), null);
+                                item.getInputStream(), null);
                         map.put("playlist", playlist);
                     }
                 }
@@ -91,7 +92,7 @@ public class ImportPlaylistController {
         return "redirect:importPlaylist";
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public String handleGet() {
         return "importPlaylist";
     }

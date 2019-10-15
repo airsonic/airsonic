@@ -463,12 +463,7 @@ public class MediaFile {
     }
 
     public static Function<MediaFile, Integer> toId() {
-        return new Function<MediaFile, Integer>() {
-            @Override
-            public Integer apply(MediaFile from) {
-                return from.getId();
-            }
-        };
+        return from -> from.getId();
     }
 
     public static enum MediaType {

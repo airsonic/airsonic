@@ -40,6 +40,7 @@ public class DefaultMetaDataParser extends MetaDataParser {
     public DefaultMetaDataParser(SettingsService settingsService) {
         this.settingsService = settingsService;
     }
+
     /**
      * Parses meta data for the given file.
      *

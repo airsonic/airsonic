@@ -78,7 +78,7 @@ public class NowPlayingService {
      *
      * @return Details about what all users are currently playing.
      */
-    public List<NowPlayingInfo> getNowPlaying() throws Exception {
+    public List<NowPlayingInfo> getNowPlaying() {
         try {
             return convert(statusService.getPlayStatuses());
         } catch (Throwable x) {

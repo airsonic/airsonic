@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -76,21 +76,6 @@
         <attribute>
             <description>The byte count.</description>
             <name>bytes</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
-        <description>
-            Renders a Wiki text with markup to HTML, using the Radeox render engine.
-        </description>
-        <name>wiki</name>
-        <tag-class>org.airsonic.player.taglib.WikiTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>The Wiki markup text.</description>
-            <name>text</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

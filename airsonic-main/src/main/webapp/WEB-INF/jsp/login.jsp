@@ -10,7 +10,7 @@
     </script>
 
 </head>
-<body style="min-width:550px" class="mainframe bgcolor1" onload="document.getElementById('j_username').focus()">
+<body style="min-width:550px" class="mainframe bgcolor1">
 
     <form action="<c:url value="/login"/>" method="POST">
         <sec:csrfInput />
@@ -19,18 +19,18 @@
 
             <img src="<spring:theme code="logoImage"/>" alt="">
 
-            <div class="loginmessagetop"><sub:wiki text="${model.loginMessage}"/></div>
+            <div class="loginmessagetop">${model.loginMessage}</div>
 
-            <input type="text" id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
+            <input required type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
 
-            <input type="password" name="j_password" tabindex="2" placeholder="<fmt:message key="login.password"/>">
+            <input required type="password" autocomplete="off"  name="j_password" tabindex="2" placeholder="<fmt:message key="login.password"/>">
 
             <input name="submit" type="submit" value="<fmt:message key="login.login"/>" tabindex="4"></td>
 
             <div class="details">
                 <div id="loginremember">
                     <label for="remember"><fmt:message key="login.remember"/></label>
-                    <input type="checkbox" name="remember-me" id="remember" class="checkbox" tabindex="3">
+                    <input type="checkbox" name="remember-me" id="remember" tabindex="3">
                 </div>
 
                 <a href="recover.view"><fmt:message key="login.recover"/></a>

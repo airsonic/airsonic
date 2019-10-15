@@ -25,8 +25,8 @@ import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.VersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,8 +50,8 @@ public class RightController  {
     @Autowired
     private VersionService versionService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
+    @GetMapping
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
         ModelAndView result = new ModelAndView("right");
 

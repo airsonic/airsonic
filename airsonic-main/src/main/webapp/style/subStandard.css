@@ -54,11 +54,6 @@ table {
     background-image:url( "../icons/subStandard/back.png" );
 }
 
-/* Forward image. */
-.forward {
-    background-image:url( "../icons/subStandard/forward.png" );
-}
-
 /* Links. */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
     color: #FFFFFF;

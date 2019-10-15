@@ -96,8 +96,8 @@ public class SecurityService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("IS_AUTHENTICATED_ANONYMOUSLY"));
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        for (int i = 0; i < roles.length; i++) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + roles[i].toUpperCase()));
+        for (String role : roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
         }
         return authorities;
     }
@@ -135,9 +135,9 @@ public class SecurityService implements UserDetailsService {
 
     /**
      * Returns the user with the given username
-     * @param username
+     * @param username The username to look for
      * @param caseSensitive If false, will do a case insensitive search
-     * @return
+     * @return The corresponding User
      */
     public User getUserByName(String username, boolean caseSensitive) {
         return userDao.getUserByName(username, caseSensitive);

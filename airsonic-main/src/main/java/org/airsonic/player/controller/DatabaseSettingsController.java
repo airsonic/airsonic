@@ -27,9 +27,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -39,13 +40,13 @@ public class DatabaseSettingsController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected String displayForm() throws Exception {
+    @GetMapping
+    protected String displayForm() {
         return "databaseSettings";
     }
 
     @ModelAttribute
-    protected void formBackingObject(Model model) throws Exception {
+    protected void formBackingObject(Model model) {
         DatabaseSettingsCommand command = new DatabaseSettingsCommand();
         command.setConfigType(settingsService.getDatabaseConfigType());
         command.setEmbedDriver(settingsService.getDatabaseConfigEmbedDriver());
@@ -58,14 +59,14 @@ public class DatabaseSettingsController {
         model.addAttribute("command", command);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String onSubmit(@ModelAttribute("command") @Validated DatabaseSettingsCommand command,
                               BindingResult bindingResult,
-                              RedirectAttributes redirectAttributes) throws Exception {
+                              RedirectAttributes redirectAttributes) {
         if (!bindingResult.hasErrors()) {
             settingsService.resetDatabaseToDefault();
             settingsService.setDatabaseConfigType(command.getConfigType());
-            switch(command.getConfigType()) {
+            switch (command.getConfigType()) {
                 case EMBED:
                     settingsService.setDatabaseConfigEmbedDriver(command.getEmbedDriver());
                     settingsService.setDatabaseConfigEmbedPassword(command.getEmbedPassword());
@@ -79,7 +80,7 @@ public class DatabaseSettingsController {
                 default:
                     break;
             }
-            if(command.getConfigType() != DataSourceConfigType.LEGACY) {
+            if (command.getConfigType() != DataSourceConfigType.LEGACY) {
                 settingsService.setDatabaseMysqlVarcharMaxlength(command.getMysqlVarcharMaxlength());
                 settingsService.setDatabaseUsertableQuote(command.getUsertableQuote());
             }

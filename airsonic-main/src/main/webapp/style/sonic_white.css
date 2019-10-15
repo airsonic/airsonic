@@ -52,11 +52,6 @@ h2, b, tr {
     background-image:url( "../icons/sonic_white/back.png" );
 }
 
-/* Forward image */
-.forward {
-    background-image:url( "../icons/sonic_white/forward.png" );
-}
-
 
 /* Link colour */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {

@@ -65,7 +65,7 @@ public class RangeOutputStreamTestCase extends TestCase {
     private void doTestWrap(int first, Integer last, int sourceSize, int bufferSize) throws Exception {
         byte[] source = createSource(sourceSize);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        OutputStream rangeOut = RangeOutputStream.wrap(out, new HttpRange((long) first, last == null ? null : last.longValue()));
+        OutputStream rangeOut = RangeOutputStream.wrap(out, new HttpRange(first, last == null ? null : last.longValue()));
         copy(source, rangeOut, bufferSize);
         verify(out.toByteArray(), first, last, sourceSize);
     }

@@ -26,8 +26,7 @@
 
             if (uploadInfo.bytesTotal > 0) {
                 var percent = Math.ceil((uploadInfo.bytesUploaded / uploadInfo.bytesTotal) * 100);
-                var width = parseInt(percent * 3.5) + 'px';
-                progressBarContent.style.width = width;
+                progressBarContent.style.width = parseInt(percent * 3.5) + 'px';
                 progressText.innerHTML = percent + "<fmt:message key="more.upload.progress"/>";
                 progressBar.style.display = "block";
                 progressText.style.display = "block";
@@ -60,7 +59,8 @@
             try {
                 var data = JSON.parse(localStorage.getItem("randomPlayQueue"));
             } catch(e) { return; }
-            elements = form.getElementsByTagName("input");
+            if (data == null ) { return; }
+            var elements = form.getElementsByTagName("input");
             for (var i = 0; i < elements.length; i++) {
                 if (elements[i].type == "hidden") continue;
                 if (elements[i].type == "submit") continue;
@@ -85,7 +85,7 @@
         function saveShuffleForm() {
             if (!isLocalStorageEnabled()) return;
             var form = document.getElementById("randomPlayQueue");
-            var data = {}
+            var data = {};
             var elements = [];
             elements = form.getElementsByTagName("input");
             for (var i = 0; i < elements.length; i++) {
@@ -262,7 +262,7 @@
     </form>
 </c:if>
 
-<a href="https://airsonic.github.io/docs/apps/" target="_blank"><img alt="Apps" src="<c:url value="/icons/default_light/apps.png"/>" style="float: right;margin-left: 3em; margin-right: 3em"/></a>
+<a href="https://airsonic.github.io/docs/apps/" target="_blank" rel="noopener noreferrer"><img alt="Apps" src="<c:url value="/icons/default_light/apps.png"/>" style="float: right;margin-left: 3em; margin-right: 3em"/></a>
 
 <h2>
     <img src="<spring:theme code="androidImage"/>" alt=""/>
@@ -303,7 +303,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="checkbox" checked name="unzip" id="unzip" class="checkbox"/>
+                    <input type="checkbox" checked name="unzip" id="unzip"/>
                     <label for="unzip"><fmt:message key="more.upload.unzip"/></label>
                 </td>
             </tr>

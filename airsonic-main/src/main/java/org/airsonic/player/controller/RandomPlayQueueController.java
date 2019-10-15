@@ -30,8 +30,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,12 +57,12 @@ public class RandomPlayQueueController {
     @Autowired
     private SettingsService settingsService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected String handleRandomPlayQueue(
             ModelMap model,
             HttpServletRequest request,
             HttpServletResponse response,
-            @RequestParam(value = "size") int size,
+            @RequestParam("size") Integer size,
             @RequestParam(value = "genre", required = false) String genre,
             @RequestParam(value = "year", required = false) String year,
             @RequestParam(value = "songRating", required = false) String songRating,
@@ -86,6 +86,10 @@ public class RandomPlayQueueController {
         Date maxLastPlayedDate = null;
         boolean doesShowStarredSongs = false;
         boolean doesShowUnstarredSongs = false;
+
+        if (size == null) {
+            size = 24;
+        }
 
         // Handle the genre filter
         if (StringUtils.equalsIgnoreCase("any", genre)) {
@@ -235,6 +239,7 @@ public class RandomPlayQueueController {
 
         if (autoRandom != null) {
             playQueue.setRandomSearchCriteria(criteria);
+            playQueue.setInternetRadio(null);
         }
 
         // Render the 'reload' view to reload the play queue and the main page

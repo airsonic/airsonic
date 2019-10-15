@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import org.airsonic.player.util.BoundedList;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.File;
 
@@ -230,12 +230,12 @@ public class TransferStatus {
      *
      * @param active Whether this transfer is active.
      */
-    public void setActive(boolean active) {
+    public synchronized void setActive(boolean active) {
         this.active = active;
 
         if (active) {
-            setBytesSkipped(0L);
-            setBytesTotal(0L);
+            bytesSkipped = 0L;
+            bytesTotal = 0L;
             setBytesTransfered(0L);
         } else {
             createSample(getBytesTransfered(), true);
@@ -281,16 +281,14 @@ public class TransferStatus {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("TransferStatus-").append(hashCode()).append(" [player: ").append(player.getId()).append(", file: ");
-        builder.append(file).append(", terminated: ").append(terminated).append(", active: ").append(active).append("]");
-        return builder.toString();
+        return "TransferStatus-" + hashCode() + " [player: " + player.getId() + ", file: " +
+                file + ", terminated: " + terminated + ", active: " + active + "]";
     }
 
     /**
      * Contains recent history of samples.
      */
-    public static class SampleHistory extends BoundedList<Sample> {
+    public static class SampleHistory extends CircularFifoQueue<Sample> {
 
         public SampleHistory() {
             super(HISTORY_LENGTH);
@@ -299,6 +297,10 @@ public class TransferStatus {
         public SampleHistory(SampleHistory other) {
             super(HISTORY_LENGTH);
             addAll(other);
+        }
+
+        public Sample getLast() {
+            return this.get(this.size() - 1);
         }
     }
 }

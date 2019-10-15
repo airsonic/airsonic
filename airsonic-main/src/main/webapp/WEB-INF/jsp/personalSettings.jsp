@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 
     <script type="text/javascript" language="javascript">
         function enableLastFmFields() {
@@ -27,7 +27,7 @@
 <h2>${fn:escapeXml(title)}</h2>
 
 <fmt:message key="common.default" var="defaultTitle"/>
-<form:form method="post" action="personalSettings.view" commandName="command">
+<form:form method="post" action="personalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 
@@ -208,7 +208,7 @@
 
     <p style="padding-top:1em;padding-bottom:1em">
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em"/>
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
     </p>
 
     <h2><fmt:message key="personalsettings.avatar.title"/></h2>

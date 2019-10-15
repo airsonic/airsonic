@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 </head>
 
 <body class="mainframe bgcolor1">
@@ -16,7 +16,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form method="post" action="generalSettings.view" commandName="command">
+<form:form method="post" action="generalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 
@@ -151,14 +151,13 @@
             <td>
                 <form:textarea path="loginMessage" rows="5" cols="70"/>
                 <c:import url="helpToolTip.jsp"><c:param name="topic" value="loginmessage"/></c:import>
-                <fmt:message key="main.wiki"/>
             </td>
         </tr>
 
         <tr>
             <td colspan="2" style="padding-top:1.5em">
                 <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-                <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+                <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
             </td>
         </tr>
 

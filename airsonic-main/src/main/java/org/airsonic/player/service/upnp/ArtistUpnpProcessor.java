@@ -64,12 +64,12 @@ public class ArtistUpnpProcessor extends UpnpContentProcessor <Artist, Album> {
         List<MusicFolder> allFolders = getDispatcher().getSettingsService().getAllMusicFolders();
         List<Artist> allArtists = getArtistDao().getAlphabetialArtists(0, Integer.MAX_VALUE, allFolders);
         // alpha artists doesn't quite work :P
-        allArtists.sort((Artist o1, Artist o2)->o1.getName().replaceAll("\\W", "").compareToIgnoreCase(o2.getName().replaceAll("\\W", "")));
+        allArtists.sort((Artist o1, Artist o2) -> o1.getName().replaceAll("\\W", "").compareToIgnoreCase(o2.getName().replaceAll("\\W", "")));
 
         return allArtists;
     }
 
-    public Artist getItemById(String id) throws Exception {
+    public Artist getItemById(String id) {
         return getArtistDao().getArtist(Integer.parseInt(id));
     }
 
@@ -88,7 +88,7 @@ public class ArtistUpnpProcessor extends UpnpContentProcessor <Artist, Album> {
         return allAlbums;
     }
 
-    public void addChild(DIDLContent didl, Album album) throws Exception {
+    public void addChild(DIDLContent didl, Album album) {
         didl.addContainer(getAlbumProcessor().createContainer(album));
     }
 

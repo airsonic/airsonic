@@ -17,6 +17,12 @@
         <constructor-arg name="dataSource" ref="dataSource" />
     </bean>
 
+    <import resource="applicationContext-db-jndi.xml" />
+    <import resource="applicationContext-db-embed.xml" />
+    <import resource="applicationContext-db-legacy.xml" />
+
+    <tx:annotation-driven/>
+
     <bean id="rollbackFile" class="java.io.File">
         <constructor-arg type="java.io.File" index="0" value="#{T(org.airsonic.player.service.SettingsService).airsonicHome}" />
         <constructor-arg type="java.lang.String" index="1" value="rollback.sql" />

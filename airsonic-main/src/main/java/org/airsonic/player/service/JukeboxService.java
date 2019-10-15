@@ -19,29 +19,26 @@
  */
 package org.airsonic.player.service;
 
-import org.airsonic.player.domain.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.airsonic.player.domain.Player;
+import org.airsonic.player.domain.PlayerTechnology;
 import org.springframework.stereotype.Service;
 
 /**
- *
- *
- * @author R?mi Cocula
+ * @author Rémi Cocula
  */
 @Service
 public class JukeboxService {
 
-    private static final Logger log = LoggerFactory.getLogger(JukeboxService.class);
-
-    @Autowired
     private JukeboxLegacySubsonicService jukeboxLegacySubsonicService;
-    @Autowired
     private JukeboxJavaService jukeboxJavaService;
 
+    public JukeboxService(JukeboxLegacySubsonicService jukeboxLegacySubsonicService,
+                          JukeboxJavaService jukeboxJavaService) {
+        this.jukeboxLegacySubsonicService = jukeboxLegacySubsonicService;
+        this.jukeboxJavaService = jukeboxJavaService;
+    }
 
-    public void setGain(Player airsonicPlayer,float gain) {
+    public void setGain(Player airsonicPlayer, float gain) {
         switch (airsonicPlayer.getTechnology()) {
             case JUKEBOX:
                 jukeboxLegacySubsonicService.setGain(gain);
@@ -74,13 +71,9 @@ public class JukeboxService {
 
     /**
      * This method should be removed when the jukebox is controlled only through rest api.
-     *
-     * @param airsonicPlayer
-     * @param offset
-     * @throws Exception
      */
     @Deprecated
-    public void updateJukebox(Player airsonicPlayer, int offset) throws Exception {
+    public void updateJukebox(Player airsonicPlayer, int offset) {
         if (airsonicPlayer.getTechnology().equals(PlayerTechnology.JUKEBOX)) {
             jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,offset);
         }
@@ -97,10 +90,55 @@ public class JukeboxService {
     }
 
     /**
+     * Plays the playQueue of a jukebox player starting at the first item of the queue.
+     */
+    public void play(Player airsonicPlayer) {
+        switch (airsonicPlayer.getTechnology()) {
+            case JUKEBOX:
+                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
+                break;
+            case JAVA_JUKEBOX:
+                jukeboxJavaService.play(airsonicPlayer);
+                break;
+        }
+    }
+
+    public void start(Player airsonicPlayer) {
+        switch (airsonicPlayer.getTechnology()) {
+            case JUKEBOX:
+                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
+                break;
+            case JAVA_JUKEBOX:
+                jukeboxJavaService.start(airsonicPlayer);
+                break;
+        }
+    }
+
+    public void stop(Player airsonicPlayer) {
+        switch (airsonicPlayer.getTechnology()) {
+            case JUKEBOX:
+                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
+                break;
+            case JAVA_JUKEBOX:
+                jukeboxJavaService.stop(airsonicPlayer);
+                break;
+        }
+    }
+
+    public void skip(Player airsonicPlayer,int index,int offset) {
+        switch (airsonicPlayer.getTechnology()) {
+            case JUKEBOX:
+                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,offset);
+                break;
+            case JAVA_JUKEBOX:
+                jukeboxJavaService.skip(airsonicPlayer,index,offset);
+                break;
+        }
+    }
+
+    /**
      * This method is only here due to legacy considerations and should be removed
      * if the jukeboxLegacySubsonicService is removed.
-     * @param airsonicPlayer
-     * @return
      */
     @Deprecated
     public boolean canControl(Player airsonicPlayer) {
@@ -116,67 +154,4 @@ public class JukeboxService {
         }
         return false;
     }
-
-    /**
-     * Plays the playQueue of a jukebox player starting at the first item of the queue.
-     *
-     * @param airsonicPlayer
-     * @throws Exception
-     */
-    public void play(Player airsonicPlayer) throws Exception {
-        switch (airsonicPlayer.getTechnology()) {
-            case JUKEBOX:
-                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
-                break;
-            case JAVA_JUKEBOX:
-                jukeboxJavaService.play(airsonicPlayer);
-                break;
-        }
-    }
-
-
-    public void start(Player airsonicPlayer) throws Exception {
-        switch (airsonicPlayer.getTechnology()) {
-            case JUKEBOX:
-                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
-                break;
-            case JAVA_JUKEBOX:
-                jukeboxJavaService.start(airsonicPlayer);
-                break;
-        }
-    }
-
-    public void stop(Player airsonicPlayer) throws Exception {
-        switch (airsonicPlayer.getTechnology()) {
-            case JUKEBOX:
-                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
-                break;
-            case JAVA_JUKEBOX:
-                jukeboxJavaService.stop(airsonicPlayer);
-                break;
-        }
-    }
-
-    public void skip(Player airsonicPlayer,int index,int offset) throws Exception {
-        switch (airsonicPlayer.getTechnology()) {
-            case JUKEBOX:
-                jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,offset);
-                break;
-            case JAVA_JUKEBOX:
-                jukeboxJavaService.skip(airsonicPlayer,index,offset);
-                break;
-        }
-    }
-
-
-    /* properties setters */
-
-    public void setJukeboxLegacySubsonicService(JukeboxLegacySubsonicService jukeboxLegacySubsonicService) {
-        this.jukeboxLegacySubsonicService = jukeboxLegacySubsonicService;
-    }
-
-    public void setJukeboxJavaService(JukeboxJavaService jukeboxJavaService) {
-        this.jukeboxJavaService = jukeboxJavaService;
-    }
-
 }

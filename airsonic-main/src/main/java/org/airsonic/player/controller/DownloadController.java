@@ -26,21 +26,21 @@ import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.Util;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +87,7 @@ public class DownloadController implements LastModified {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);
@@ -177,8 +177,8 @@ public class DownloadController implements LastModified {
         LOG.info("Downloaded '" + FileUtil.getShortPath(file) + "' to " + status.getPlayer());
     }
 
-    private String encodeAsRFC5987(String string) throws UnsupportedEncodingException {
-        byte[] stringAsByteArray = string.getBytes("UTF-8");
+    private String encodeAsRFC5987(String string) {
+        byte[] stringAsByteArray = string.getBytes(StandardCharsets.UTF_8);
         char[] digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         byte[] attrChar = {'!', '#', '$', '&', '+', '-', '.', '^', '_', '`', '|', '~', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         StringBuilder sb = new StringBuilder();
@@ -235,12 +235,12 @@ public class DownloadController implements LastModified {
         for (MediaFile mediaFile : filesToDownload) {
             zip(out, mediaFile.getParentFile(), mediaFile.getFile(), status, range);
             if (coverArtFile != null && coverArtFile.exists()) {
-                if (mediaFile.getFile().getCanonicalPath() == coverArtFile.getCanonicalPath()) {
+                if (mediaFile.getFile().getCanonicalPath().equals(coverArtFile.getCanonicalPath())) {
                     cover_embedded = true;
                 }
             }
         }
-        if (coverArtFile != null && coverArtFile.exists() && cover_embedded == false) {
+        if (coverArtFile != null && coverArtFile.exists() && !cover_embedded) {
             zip(out, coverArtFile.getParentFile(), coverArtFile, status, range);
         }
 
@@ -307,7 +307,7 @@ public class DownloadController implements LastModified {
             }
         } finally {
             out.flush();
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -368,9 +368,8 @@ public class DownloadController implements LastModified {
      */
     private long computeCrc(File file) throws IOException {
         CRC32 crc = new CRC32();
-        InputStream in = new FileInputStream(file);
 
-        try {
+        try (InputStream in = new FileInputStream(file)) {
 
             byte[] buf = new byte[8192];
             int n = in.read(buf);
@@ -379,8 +378,6 @@ public class DownloadController implements LastModified {
                 n = in.read(buf);
             }
 
-        } finally {
-            in.close();
         }
 
         return crc.getValue();

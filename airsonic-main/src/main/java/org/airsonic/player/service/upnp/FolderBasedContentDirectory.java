@@ -39,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -181,7 +180,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         return createBrowseResult(didl, selectedChildren.size(), allChildren.size());
     }
 
-    private void addContainerOrItem(DIDLContent didl, MediaFile mediaFile) throws Exception {
+    private void addContainerOrItem(DIDLContent didl, MediaFile mediaFile) {
         if (mediaFile.isFile()) {
             didl.addItem(createItem(mediaFile));
         } else {
@@ -189,7 +188,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         }
     }
 
-    private Item createItem(MediaFile song) throws Exception {
+    private Item createItem(MediaFile song) {
         MediaFile parent = mediaFileService.getParentOf(song);
         MusicTrack item = new MusicTrack();
         item.setId(String.valueOf(song.getId()));
@@ -214,7 +213,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         return item;
     }
 
-    private Container createContainer(MediaFile mediaFile) throws Exception {
+    private Container createContainer(MediaFile mediaFile) {
         Container container = mediaFile.isAlbum() ? createAlbumContainer(mediaFile) : new MusicAlbum();
         container.setId(CONTAINER_ID_FOLDER_PREFIX + mediaFile.getId());
         container.setTitle(mediaFile.getName());
@@ -231,7 +230,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         return container;
     }
 
-    private Container createAlbumContainer(MediaFile album) throws Exception {
+    private Container createAlbumContainer(MediaFile album) {
         MusicAlbum container = new MusicAlbum();
         container.setAlbumArtURIs(new URI[]{getAlbumArtUrl(album)});
 
@@ -266,7 +265,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         return container;
     }
 
-    private URI getAlbumArtUrl(MediaFile album) throws URISyntaxException {
+    private URI getAlbumArtUrl(MediaFile album) {
         return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(getBaseUrl() + "/ext/coverArt.view")
                 .queryParam("id", album.getId())
                 .queryParam("size", CoverArtScheme.LARGE.getSize()))

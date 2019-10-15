@@ -3,7 +3,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
     <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
     <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
@@ -143,10 +143,10 @@
     </table>
 
     <div class="forward" style="float:left;padding-right:1.5em">
-        <a href="javascript:noop()" onclick="onSavePlaylist()"><fmt:message key="playlist.save"/></a>
+        <a href="#" onclick="onSavePlaylist()"><fmt:message key="playlist.save"/></a>
     </div>
     <div class="forward" style="float: left">
-        <a href="javascript:noop()" onclick="onPlayAll()"><fmt:message key="main.playall"/></a>
+        <a href="#" onclick="onPlayAll()"><fmt:message key="main.playall"/></a>
     </div>
     <div style="clear: both"></div>
 

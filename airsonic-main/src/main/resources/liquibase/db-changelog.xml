@@ -5,10 +5,11 @@
     <property name="binary_type" dbms="hsqldb" value="binary" />
     <property name="binary_type" value="blob" />
     <property name="curr_date_expr" value="current_timestamp" />
-    <property name="varchar_type" dbms="mysql" value="varchar(${mysqlVarcharLimit})" />
+    <property name="varchar_type" dbms="mariadb,mysql" value="varchar(${mysqlVarcharLimit})" />
     <property name="varchar_type" value="varchar" />
     <include file="legacy/legacy-changelog.xml" relativeToChangelogFile="true"/>
     <include file="6.2/changelog.xml" relativeToChangelogFile="true"/>
     <include file="6.3/changelog.xml" relativeToChangelogFile="true"/>
     <include file="6.4/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="10.2/changelog.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

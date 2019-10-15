@@ -23,7 +23,7 @@ import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
-import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.service.search.IndexManager;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -44,7 +44,6 @@ import java.util.*;
 @Service
 public class MediaScannerService {
 
-    private static final int INDEX_VERSION = 15;
     private static final Logger LOG = LoggerFactory.getLogger(MediaScannerService.class);
 
     private MediaLibraryStatistics statistics;
@@ -54,7 +53,7 @@ public class MediaScannerService {
     @Autowired
     private SettingsService settingsService;
     @Autowired
-    private SearchService searchService;
+    private IndexManager indexManager;
     @Autowired
     private PlaylistService playlistService;
     @Autowired
@@ -69,13 +68,13 @@ public class MediaScannerService {
 
     @PostConstruct
     public void init() {
-        deleteOldIndexFiles();
+        indexManager.initializeIndexDirectory();
         statistics = settingsService.getMediaLibraryStatistics();
         schedule();
     }
 
     public void initNoSchedule() {
-        deleteOldIndexFiles();
+        indexManager.deleteOldIndexFiles();
         statistics = settingsService.getMediaLibraryStatistics();
     }
 
@@ -156,6 +155,7 @@ public class MediaScannerService {
             public void run() {
                 doScanLibrary();
                 playlistService.importPlaylists();
+                mediaFileDao.checkpoint();
             }
         };
 
@@ -178,7 +178,7 @@ public class MediaScannerService {
             statistics.reset();
 
             mediaFileService.setMemoryCacheEnabled(false);
-            searchService.startIndexing();
+            indexManager.startIndexing();
 
             mediaFileService.clearMemoryCache();
 
@@ -222,7 +222,7 @@ public class MediaScannerService {
             LOG.error("Failed to scan media library.", x);
         } finally {
             mediaFileService.setMemoryCacheEnabled(true);
-            searchService.stopIndexing();
+            indexManager.stopIndexing();
             scanning = false;
         }
     }
@@ -236,13 +236,13 @@ public class MediaScannerService {
 
         LOG.trace("Scanning file {}", file.getPath());
 
-        searchService.index(file);
-
         // Update the root folder if it has changed.
         if (!musicFolder.getPath().getPath().equals(file.getFolder())) {
             file.setFolder(musicFolder.getPath().getPath());
             mediaFileDao.createOrUpdateMediaFile(file);
         }
+
+        indexManager.index(file);
 
         if (file.isDirectory()) {
             for (MediaFile child : mediaFileService.getChildrenOf(file, true, false, false, false)) {
@@ -330,7 +330,7 @@ public class MediaScannerService {
         album.setPresent(true);
         albumDao.createOrUpdateAlbum(album);
         if (firstEncounter) {
-            searchService.index(album);
+            indexManager.index(album);
         }
 
         // Update the file's album artist, if necessary.
@@ -369,7 +369,7 @@ public class MediaScannerService {
         artistDao.createOrUpdateArtist(artist);
 
         if (firstEncounter) {
-            searchService.index(artist, musicFolder);
+            indexManager.index(artist, musicFolder);
         }
     }
 
@@ -382,41 +382,8 @@ public class MediaScannerService {
         return statistics;
     }
 
-    /**
-     * Deletes old versions of the index file.
-     */
-    private void deleteOldIndexFiles() {
-        for (int i = 2; i < INDEX_VERSION; i++) {
-            File file = getIndexFile(i);
-            try {
-                if (FileUtil.exists(file)) {
-                    if (file.delete()) {
-                        LOG.info("Deleted old index file: " + file.getPath());
-                    }
-                }
-            } catch (Exception x) {
-                LOG.warn("Failed to delete old index file: " + file.getPath(), x);
-            }
-        }
-    }
-
-    /**
-     * Returns the index file for the given index version.
-     *
-     * @param version The index version.
-     * @return The index file for the given index version.
-     */
-    private File getIndexFile(int version) {
-        File home = SettingsService.getAirsonicHome();
-        return new File(home, "airsonic" + version + ".index");
-    }
-
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
-    }
-
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
     }
 
     public void setMediaFileService(MediaFileService mediaFileService) {

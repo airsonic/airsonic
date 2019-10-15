@@ -30,9 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,8 +58,8 @@ public class PlayerSettingsController  {
     @Autowired
     private TranscodingService transcodingService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected String displayForm() throws Exception {
+    @GetMapping
+    protected String displayForm() {
         return "playerSettings";
     }
 
@@ -106,13 +107,14 @@ public class PlayerSettingsController  {
         command.setAdmin(user.isAdminRole());
 
         command.setJavaJukeboxMixers(Arrays.stream(AudioSystemUtils.listAllMixers()).map(info -> info.getName()).toArray(String[]::new));
-        command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
-
+        if (player != null) {
+            command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
+        }
         model.addAttribute("command",command);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    @PostMapping
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) {
         Player player = playerService.getPlayerById(command.getPlayerId());
         if (player != null) {
             player.setAutoControlEnabled(command.isAutoControlEnabled());

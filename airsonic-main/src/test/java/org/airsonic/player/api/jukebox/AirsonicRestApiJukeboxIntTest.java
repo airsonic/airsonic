@@ -27,12 +27,12 @@ public class AirsonicRestApiJukeboxIntTest extends AbstractAirsonicRestApiJukebo
 
     @Override
     protected void createTestPlayer() {
-        Player jukeBoxPlayer = new Player();
-        jukeBoxPlayer.setName(JUKEBOX_PLAYER_NAME);
-        jukeBoxPlayer.setUsername("admin");
-        jukeBoxPlayer.setClientId(CLIENT_NAME + "-jukebox");
-        jukeBoxPlayer.setTechnology(PlayerTechnology.JAVA_JUKEBOX);
-        playerService.createPlayer(jukeBoxPlayer);
+        Player jukeboxPlayer = new Player();
+        jukeboxPlayer.setName(JUKEBOX_PLAYER_NAME);
+        jukeboxPlayer.setUsername("admin");
+        jukeboxPlayer.setClientId(CLIENT_NAME + "-jukebox");
+        jukeboxPlayer.setTechnology(PlayerTechnology.JAVA_JUKEBOX);
+        playerService.createPlayer(jukeboxPlayer);
     }
 
 }

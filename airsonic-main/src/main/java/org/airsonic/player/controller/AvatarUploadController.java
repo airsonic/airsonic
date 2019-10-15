@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
@@ -43,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +65,7 @@ public class AvatarUploadController  {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         String username = securityService.getCurrentUsername(request);
@@ -104,7 +103,7 @@ public class AvatarUploadController  {
         return new ModelAndView("avatarUploadResult","model",map);
     }
 
-    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) throws IOException {
+    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) {
 
         BufferedImage image;
         try {
@@ -118,7 +117,7 @@ public class AvatarUploadController  {
 
             // Scale down image if necessary.
             if (width > MAX_AVATAR_SIZE || height > MAX_AVATAR_SIZE) {
-                double scaleFactor = (double) MAX_AVATAR_SIZE / (double) Math.max(width, height);
+                double scaleFactor = MAX_AVATAR_SIZE / (double) Math.max(width, height);
                 height = (int) (height * scaleFactor);
                 width = (int) (width * scaleFactor);
                 image = CoverArtController.scale(image, width, height);

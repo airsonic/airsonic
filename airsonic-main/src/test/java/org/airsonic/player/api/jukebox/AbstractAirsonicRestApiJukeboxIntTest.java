@@ -9,6 +9,7 @@ import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.sonos.SonosHelper;
 import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MusicFolderTestData;
 import org.airsonic.player.util.StringUtil;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -62,8 +63,8 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
         private SonosHelper sonosHelper;
     }
 
-    protected static final String CLIENT_NAME = "airsonic";
-    protected static final String JUKEBOX_PLAYER_NAME = CLIENT_NAME + "-jukebox";
+    static final String CLIENT_NAME = "airsonic";
+    static final String JUKEBOX_PLAYER_NAME = CLIENT_NAME + "-jukebox";
     private static final String EXPECTED_FORMAT = "json";
     private static String AIRSONIC_API_VERSION;
 

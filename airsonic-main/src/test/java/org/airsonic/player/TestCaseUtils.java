@@ -4,6 +4,8 @@ import org.airsonic.player.controller.JAXBWriter;
 import org.airsonic.player.dao.DaoHelper;
 import org.airsonic.player.service.MediaScannerService;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TestCaseUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestCaseUtils.class);
 
   private static File airsonicHomeDirForTest = null;
 
@@ -33,7 +37,7 @@ public class TestCaseUtils {
       } catch (IOException e) {
         throw new RuntimeException("Error while creating temporary AIRSONIC_HOME directory for tests");
       }
-      System.out.println("AIRSONIC_HOME directory will be "+airsonicHomeDirForTest.getAbsolutePath());
+      LOG.info("AIRSONIC_HOME directory will be {}", airsonicHomeDirForTest.getAbsolutePath());
     }
     return airsonicHomeDirForTest.getAbsolutePath();
   }
@@ -48,18 +52,16 @@ public class TestCaseUtils {
 
   /**
    * Cleans the AIRSONIC_HOME directory used for tests.
-   *
-   * @throws IOException
-     */
+   */
   public static void cleanAirsonicHomeForTest() throws IOException {
 
     File airsonicHomeDir = new File(airsonicHomePathForTest());
     if (airsonicHomeDir.exists() && airsonicHomeDir.isDirectory()) {
-      System.out.println("Delete airsonic home (ie. "+airsonicHomeDir.getAbsolutePath()+").");
+      LOG.debug("Delete airsonic home (ie. {}).", airsonicHomeDir.getAbsolutePath());
       try {
         FileUtils.deleteDirectory(airsonicHomeDir);
       } catch (IOException e) {
-        System.out.println("Error while deleting airsonic home.");
+        LOG.warn("Error while deleting airsonic home.");
         e.printStackTrace();
         throw e;
       }
@@ -79,20 +81,14 @@ public class TestCaseUtils {
                     "from information_schema.system_tables " +
                     "where table_name not like 'SYSTEM%'"
             , String.class);
-    Map<String, Integer> nbRecords =
-            tableNames.stream()
-                    .collect(Collectors.toMap(table -> table, table -> recordsInTable(table,daoHelper)));
 
-    return nbRecords;
+      return tableNames.stream()
+              .collect(Collectors.toMap(table -> table, table -> recordsInTable(table,daoHelper)));
   }
 
   /**
    * Counts records in a table.
-   *
-   * @param tableName
-   * @param daoHelper
-   * @return
-     */
+   */
   public static Integer recordsInTable(String tableName, DaoHelper daoHelper) {
     return daoHelper.getJdbcTemplate().queryForObject("select count(1) from " + tableName,Integer.class);
   }

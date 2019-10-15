@@ -40,7 +40,7 @@ public class MusicFolderDaoTestCase extends DaoTestCaseBean2 {
     MusicFolderDao musicFolderDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from music_folder");
     }
 

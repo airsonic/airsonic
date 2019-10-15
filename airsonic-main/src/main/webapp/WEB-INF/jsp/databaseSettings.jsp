@@ -35,7 +35,7 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form commandName="command" action="databaseSettings.view" method="post">
+<form:form modelAttribute="command" action="databaseSettings.view" method="post">
     <p><fmt:message key="databasesettings.moreinfo"/></p>
 
     <table style="white-space:nowrap" class="indent">
@@ -119,7 +119,7 @@
 
     <p>
         <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <a href="nowPlaying.view"><input type="button" value="<fmt:message key="common.cancel"/>"></a>
     </p>
 
 </form:form>

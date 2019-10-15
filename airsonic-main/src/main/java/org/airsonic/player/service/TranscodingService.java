@@ -245,8 +245,10 @@ public class TranscodingService {
                 return createDownsampledInputStream(parameters);
             }
 
+        } catch (IOException x) {
+            LOG.warn("Transcoder failed: {}. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x.toString());
         } catch (Exception x) {
-            LOG.warn("Failed to transcode " + parameters.getMediaFile() + ". Using original.", x);
+            LOG.warn("Transcoder failed. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x);
         }
 
         return new FileInputStream(parameters.getMediaFile().getFile());
@@ -328,10 +330,10 @@ public class TranscodingService {
             title = "Unknown Song";
         }
         if (album == null) {
-            title = "Unknown Album";
+            album = "Unknown Album";
         }
         if (artist == null) {
-            title = "Unknown Artist";
+            artist = "Unknown Artist";
         }
 
         List<String> result = new LinkedList<String>(Arrays.asList(StringUtil.split(command)));
@@ -413,7 +415,7 @@ public class TranscodingService {
         List<Transcoding> transcodingsForPlayer = getTranscodingsForPlayer(player);
         for (Transcoding transcoding : transcodingsForPlayer) {
             // special case for now as video must have a transcoding
-            if(mediaFile.isVideo() && StringUtils.equalsIgnoreCase(preferredTargetFormat, transcoding.getTargetFormat())) {
+            if (mediaFile.isVideo() && StringUtils.equalsIgnoreCase(preferredTargetFormat, transcoding.getTargetFormat())) {
                 LOG.debug("Detected source to target format match for video");
                 return transcoding;
             }

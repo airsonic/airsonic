@@ -21,7 +21,7 @@ public class MetricsManager {
     // Main metrics registry
     private static final MetricRegistry metrics = new MetricRegistry();
 
-    private static Boolean metricsActivatedByConfiguration = null;
+    private static volatile Boolean metricsActivatedByConfiguration = null;
     private static Object _lock = new Object();
 
     // Potential metrics reporters
@@ -50,15 +50,12 @@ public class MetricsManager {
                 }
             }
         }
-        return metricsActivatedByConfiguration.booleanValue();
+        return metricsActivatedByConfiguration;
     }
 
     /**
      * Creates a {@link Timer} whose name is based on a class name and a
      * qualified name.
-     * @param clazz
-     * @param name
-     * @return
      */
     public Timer timer(Class clazz, String name) {
         if (metricsActivatedByConfiguration()) {
@@ -71,9 +68,6 @@ public class MetricsManager {
     /**
      * Creates a {@link Timer} whose name is based on an object's class name and a
      * qualified name.
-     * @param ref
-     * @param name
-     * @return
      */
     public Timer timer(Object ref, String name) {
         return timer(ref.getClass(),name);
@@ -83,13 +77,10 @@ public class MetricsManager {
      * Initiate a {@link TimerBuilder} using a condition.
      * If the condition is false, a void {@link Timer} will finally be built thus
      * no timer will be registered in the Metrics registry.
-     *
-     * @param ifTrue
-     * @return
      */
     public TimerBuilder condition(boolean ifTrue) {
         if (metricsActivatedByConfiguration()) {
-            if (ifTrue == false) {
+            if (!ifTrue) {
                 return conditionFalseTimerBuilderSingleton;
             }
             return new TimerBuilder();

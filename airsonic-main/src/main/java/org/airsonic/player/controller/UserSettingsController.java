@@ -38,10 +38,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,19 +66,17 @@ public class UserSettingsController {
     private SettingsService settingsService;
     @Autowired
     private TranscodingService transcodingService;
-    @Autowired
-    private UserSettingsValidator userSettingsValidator;
 
     @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(userSettingsValidator);
+    protected void initBinder(WebDataBinder binder, HttpServletRequest request) {
+        binder.addValidators(new UserSettingsValidator(securityService, settingsService, request));
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected String displayForm(HttpServletRequest request, Model model) throws Exception {
         UserSettingsCommand command;
-        if(!model.containsAttribute("command")) {
-             command = new UserSettingsCommand();
+        if (!model.containsAttribute("command")) {
+            command = new UserSettingsCommand();
 
             User user = getUser(request);
             if (user != null) {
@@ -86,6 +85,7 @@ public class UserSettingsController {
                 UserSettings userSettings = settingsService.getUserSettings(user.getUsername());
                 command.setTranscodeSchemeName(userSettings.getTranscodeScheme().name());
                 command.setAllowedMusicFolderIds(Util.toIntArray(getAllowedMusicFolderIds(user)));
+                command.setCurrentUser(securityService.getCurrentUser(request).getUsername().equals(user.getUsername()));
             } else {
                 command.setNewUser(true);
                 command.setStreamRole(true);
@@ -95,7 +95,6 @@ public class UserSettingsController {
         } else {
             command = (UserSettingsCommand) model.asMap().get("command");
         }
-        command.setAdmin(User.USERNAME_ADMIN.equals(command.getUsername()));
         command.setUsers(securityService.getAllUsers());
         command.setTranscodingSupported(transcodingService.isDownsamplingSupported(null));
         command.setTranscodeDirectory(transcodingService.getTranscodeDirectory().getPath());
@@ -129,10 +128,10 @@ public class UserSettingsController {
         return result;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws Exception {
+    @PostMapping
+    protected String doSubmitAction(@ModelAttribute("command") @Validated UserSettingsCommand command, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        if(!bindingResult.hasErrors()) {
+        if (!bindingResult.hasErrors()) {
             if (command.isDeleteUser()) {
                 deleteUser(command);
             } else if (command.isNewUser()) {
@@ -154,7 +153,7 @@ public class UserSettingsController {
     private Integer getUserIndex(UserSettingsCommand command) {
         List<User> allUsers = securityService.getAllUsers();
         for (int i = 0; i < allUsers.size(); i++) {
-            if(StringUtils.equalsIgnoreCase(allUsers.get(i).getUsername(), command.getUsername())) {
+            if (StringUtils.equalsIgnoreCase(allUsers.get(i).getUsername(), command.getUsername())) {
                 return i;
             }
         }

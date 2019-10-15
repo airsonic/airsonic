@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
 </head>
 <body class="mainframe bgcolor1">
 <script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
@@ -77,7 +77,7 @@ $(document).ready(function() {
             </tr>
         </table>
 
-        <form:form commandName="command" method="post" action="playerSettings.view">
+        <form:form modelAttribute="command" method="post" action="playerSettings.view">
             <form:hidden path="playerId"/>
 
             <table class="ruleTable indent">
@@ -196,7 +196,7 @@ $(document).ready(function() {
             </c:if>
 
             <input type="submit" value="<fmt:message key="common.save"/>" style="margin-top:1em;margin-right:0.3em">
-            <input type="button" value="<fmt:message key="common.cancel"/>" style="margin-top:1em" onclick="location.href='nowPlaying.view'">
+            <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-top:1em"></a>
         </form:form>
     </c:otherwise>
 </c:choose>

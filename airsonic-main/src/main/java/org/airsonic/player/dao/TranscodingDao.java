@@ -88,7 +88,7 @@ public class TranscodingDao extends AbstractDao {
     @Transactional
     public void createTranscoding(Transcoding transcoding) {
         Integer existingMax = getJdbcTemplate().queryForObject("select max(id) from transcoding2", Integer.class);
-        if(existingMax == null) {
+        if (existingMax == null) {
             existingMax = 0;
         }
         transcoding.setId(existingMax + 1);

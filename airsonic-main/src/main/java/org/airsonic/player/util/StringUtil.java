@@ -20,7 +20,6 @@
 package org.airsonic.player.util;
 
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -28,12 +27,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +41,6 @@ import java.util.regex.Pattern;
  */
 public final class StringUtil {
 
-    public static final String ENCODING_LATIN = "ISO-8859-1";
     public static final String ENCODING_UTF8 = "UTF-8";
     private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -64,6 +60,7 @@ public final class StringUtil {
             {"ogx", "application/ogg"},
             {"aac", "audio/mp4"},
             {"m4a", "audio/mp4"},
+            {"m4b", "audio/mp4"},
             {"flac", "audio/flac"},
             {"wav", "audio/x-wav"},
             {"wma", "audio/x-ms-wma"},
@@ -204,25 +201,25 @@ public final class StringUtil {
         // More than 1 TB?
         if (byteCount >= 1024L * 1024 * 1024 * 1024) {
             NumberFormat teraByteFormat = new DecimalFormat("0.00 TB", new DecimalFormatSymbols(locale));
-            return teraByteFormat.format( ((double) byteCount ) / ((double) 1024 * 1024 * 1024 * 1024));
+            return teraByteFormat.format(byteCount / ((double) 1024 * 1024 * 1024 * 1024));
         }
      
         // More than 1 GB?
         if (byteCount >= 1024L * 1024 * 1024) {
             NumberFormat gigaByteFormat = new DecimalFormat("0.00 GB", new DecimalFormatSymbols(locale));
-            return gigaByteFormat.format((double) byteCount / ((double) 1024 * 1024 * 1024));
+            return gigaByteFormat.format(byteCount / ((double) 1024 * 1024 * 1024));
         }
 
         // More than 1 MB?
         if (byteCount >= 1024L * 1024) {
             NumberFormat megaByteFormat = new DecimalFormat("0.0 MB", new DecimalFormatSymbols(locale));
-            return megaByteFormat.format((double) byteCount / ((double) 1024 * 1024));
+            return megaByteFormat.format(byteCount / ((double) 1024 * 1024));
         }
 
         // More than 1 KB?
         if (byteCount >= 1024L) {
             NumberFormat kiloByteFormat = new DecimalFormat("0 KB", new DecimalFormatSymbols(locale));
-            return kiloByteFormat.format((double) byteCount / ((double) 1024));
+            return kiloByteFormat.format((double) byteCount / 1024);
         }
 
         return byteCount + " B";
@@ -289,15 +286,15 @@ public final class StringUtil {
             List<String> result = new ArrayList<String>();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim();
-                if (!line.startsWith("#") && line.length() > 0) {
+                if (!line.startsWith("#") && !line.isEmpty()) {
                     result.add(line);
                 }
             }
             return result.toArray(new String[result.size()]);
 
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(reader);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(reader);
         }
     }
 
@@ -327,7 +324,7 @@ public final class StringUtil {
      * @return Whether a and b are equal, or both null.
      */
     public static boolean isEqual(Object a, Object b) {
-        return a == null ? b == null : a.equals(b);
+        return Objects.equals(a, b);
     }
 
     /**
@@ -388,11 +385,7 @@ public final class StringUtil {
             return null;
         }
         byte[] utf8;
-        try {
-            utf8 = s.getBytes(ENCODING_UTF8);
-        } catch (UnsupportedEncodingException x) {
-            throw new RuntimeException(x);
-        }
+        utf8 = s.getBytes(StandardCharsets.UTF_8);
         return String.valueOf(Hex.encodeHex(utf8));
     }
 
@@ -407,7 +400,7 @@ public final class StringUtil {
         if (s == null) {
             return null;
         }
-        return new String(Hex.decodeHex(s.toCharArray()), ENCODING_UTF8);
+        return new String(Hex.decodeHex(s.toCharArray()), StandardCharsets.UTF_8);
     }
 
     /**
@@ -423,7 +416,7 @@ public final class StringUtil {
 
         try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
-            return new String(Hex.encodeHex(md5.digest(s.getBytes(ENCODING_UTF8))));
+            return new String(Hex.encodeHex(md5.digest(s.getBytes(StandardCharsets.UTF_8))));
         } catch (Exception x) {
             throw new RuntimeException(x.getMessage(), x);
         }
