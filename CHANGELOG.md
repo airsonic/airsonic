@@ -3,6 +3,19 @@
 # airsonic/airsonic
 # -->
 
+## v10.4.1 - 14 Oct 2019
+
+### Fixes
+
+- Last song in a play queue no longer repeats (#1254)
+- Add database support for MariaDB (#1188)
+
+### Developer
+
+- Replace dead repository (teleal.org) with a new one (#1277)
+- Some dependencies updated to new minor versions in order to fix CVEs
+- Some backported changes to make tests pass more reliably
+
 ## v10.4.0 - 13 Jul 2019
 
 Fixes:
