@@ -1,8 +1,10 @@
 
 package org.airsonic.player.service.search;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
+import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -10,10 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for Analyzer.
@@ -218,7 +218,7 @@ public class AnalyzerFactoryTestCase {
             }
         });
 
-  }
+    }
 
     /**
      * Simple test on FullWidth.
@@ -480,18 +480,18 @@ public class AnalyzerFactoryTestCase {
         assertEquals(asList("abc", "def"), toTermString("~ABC~DEF~"));
         assertEquals(asList("abc", "def"), toTermString("*ABC*DEF*"));
         assertEquals(asList("abc", "def"), toTermString("?ABC?DEF?"));
-        assertEquals(asList("abc:def"), toTermString(":ABC:DEF:"));		// XXX 3.x -> 8.x : abc def -> abc:def
+        assertEquals(asList("abc:def"), toTermString(":ABC:DEF:"));             // XXX 3.x -> 8.x : abc def -> abc:def
         assertEquals(asList("abc", "def"), toTermString("-ABC-DEF-"));
         assertEquals(asList("abc", "def"), toTermString("/ABC/DEF/"));
         /*
          * XXX 3.x -> 8.x : _abc_def_　in UAX#29.
          * Since the effect is large, trim with Filter.
          */
-        assertEquals(asList("abc_def"), toTermString("_ABC_DEF_"));		// XXX 3.x -> 8.x : abc def -> abc_def
+        assertEquals(asList("abc_def"), toTermString("_ABC_DEF_"));             // XXX 3.x -> 8.x : abc def -> abc_def
         assertEquals(asList("abc", "def"), toTermString(",ABC,DEF,"));
         assertEquals(asList("abc.def"), toTermString(".ABC.DEF."));
-        assertEquals(asList("abc", "def"), toTermString("&ABC&DEF&"));		// XXX 3.x -> 8.x : abc&def -> abc def
-        assertEquals(asList("abc", "def"), toTermString("@ABC@DEF@"));		// XXX 3.x -> 8.x : abc@def -> abc def
+        assertEquals(asList("abc", "def"), toTermString("&ABC&DEF&"));          // XXX 3.x -> 8.x : abc&def -> abc def
+        assertEquals(asList("abc", "def"), toTermString("@ABC@DEF@"));          // XXX 3.x -> 8.x : abc@def -> abc def
         assertEquals(asList("abc'def"), toTermString("'ABC'DEF'"));
 
         // trim and delimiter and number
@@ -511,15 +511,15 @@ public class AnalyzerFactoryTestCase {
         assertEquals(asList("abc1", "def"), toTermString("*ABC1*DEF*"));
         assertEquals(asList("abc1", "def"), toTermString("?ABC1?DEF?"));
         assertEquals(asList("abc1", "def"), toTermString(":ABC1:DEF:"));
-        assertEquals(asList("abc1", "def"), toTermString(",ABC1,DEF,"));	// XXX 3.x -> 8.x : abc1,def -> abc1 def
-        assertEquals(asList("abc1", "def"), toTermString("-ABC1-DEF-"));	// XXX 3.x -> 8.x : abc1-def -> abc1 def
-        assertEquals(asList("abc1", "def"), toTermString("/ABC1/DEF/"));	// XXX 3.x -> 8.x : abc1/def -> abc1 def
+        assertEquals(asList("abc1", "def"), toTermString(",ABC1,DEF,"));        // XXX 3.x -> 8.x : abc1,def -> abc1 def
+        assertEquals(asList("abc1", "def"), toTermString("-ABC1-DEF-"));        // XXX 3.x -> 8.x : abc1-def -> abc1 def
+        assertEquals(asList("abc1", "def"), toTermString("/ABC1/DEF/"));        // XXX 3.x -> 8.x : abc1/def -> abc1 def
         /*
          * XXX 3.x -> 8.x : _abc1_def_　in UAX#29.
          * Since the effect is large, trim with Filter.
          */
         assertEquals(asList("abc1_def"), toTermString("_ABC1_DEF_"));
-        assertEquals(asList("abc1", "def"), toTermString(".ABC1.DEF."));	// XXX 3.x -> 8.x : abc1.def -> abc1 def
+        assertEquals(asList("abc1", "def"), toTermString(".ABC1.DEF."));        // XXX 3.x -> 8.x : abc1.def -> abc1 def
         assertEquals(asList("abc1", "def"), toTermString("&ABC1&DEF&"));
         assertEquals(asList("abc1", "def"), toTermString("@ABC1@DEF@"));
         assertEquals(asList("abc1", "def"), toTermString("'ABC1'DEF'"));
@@ -630,8 +630,6 @@ public class AnalyzerFactoryTestCase {
         assertEquals(1, terms.size());
         assertEquals("{ }", terms.get(0));
     }
-    
-    
     
     private List<String> toTermString(String str) {
         return toTermString(null, str);

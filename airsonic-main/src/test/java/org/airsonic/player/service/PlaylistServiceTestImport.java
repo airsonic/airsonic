@@ -95,7 +95,7 @@ public class PlaylistServiceTestImport {
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
-        String path = "/path/to/"+playlistName+".m3u";
+        String path = "/path/to/" + playlistName + ".m3u";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
         verify(playlistDao).setFilesInPlaylist(eq(23), medias.capture());
@@ -129,7 +129,7 @@ public class PlaylistServiceTestImport {
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
-        String path = "/path/to/"+playlistName+".pls";
+        String path = "/path/to/" + playlistName + ".pls";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
         verify(playlistDao).setFilesInPlaylist(eq(23), medias.capture());
@@ -166,7 +166,7 @@ public class PlaylistServiceTestImport {
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
-        String path = "/path/to/"+playlistName+".xspf";
+        String path = "/path/to/" + playlistName + ".xspf";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
         verify(playlistDao).setFilesInPlaylist(eq(23), medias.capture());
