@@ -4,12 +4,6 @@ package org.airsonic.player.service.search;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.MusicFolderDao;
 import org.airsonic.player.domain.Album;
@@ -22,12 +16,16 @@ import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
 import org.airsonic.player.domain.SearchResult;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.service.search.IndexType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.subsonic.restapi.ArtistID3;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class SearchServiceTestCase extends AbstractAirsonicHomeTest {
 
