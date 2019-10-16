@@ -224,7 +224,7 @@ public class UserDao extends AbstractDao {
                 settings.getAvatarScheme().name(), settings.getSystemAvatarId(), settings.getChanged(),
                 settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
                 settings.isViewAsList(), settings.getDefaultAlbumList().getId(), settings.isQueueFollowingSongs(),
-                settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled(),
+                settings.isShowSideBar(), 60 /* Unused listReloadDelay */, settings.isKeyboardShortcutsEnabled(),
                 settings.getPaginationSize());
     }
 
@@ -384,7 +384,7 @@ public class UserDao extends AbstractDao {
             settings.setDefaultAlbumList(AlbumListType.fromId(rs.getString(col++)));
             settings.setQueueFollowingSongs(rs.getBoolean(col++));
             settings.setShowSideBar(rs.getBoolean(col++));
-            settings.setListReloadDelay((Integer) rs.getObject(col++));
+            col++;  // Skip the now unused listReloadDelay
             settings.setKeyboardShortcutsEnabled(rs.getBoolean(col++));
             settings.setPaginationSize(rs.getInt(col++));
 
