@@ -293,7 +293,9 @@
                     <version>2.22.0</version>
                         <configuration>
                             <!-- #1186 Temporarily skip a test. -->
-                            <excludes>org.airsonic.player.service.search.*TestCase.java</excludes>
+                            <excludes>
+                                <exclude>org.airsonic.player.service.search.*TestCase.java</exclude>
+                            </excludes>
                         </configuration>
                 </plugin>
                 <plugin>
