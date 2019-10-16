@@ -3,7 +3,7 @@ package org.airsonic.player.service.playlist;
 import chameleon.playlist.*;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.MediaFileService;
-import org.airsonic.player.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -87,7 +87,7 @@ public class DefaultPlaylistImportHandler implements PlaylistImportHandler {
             errors.add(e.getMessage());
         }
 
-        return Pair.create(mediaFiles, errors);
+        return Pair.of(mediaFiles, errors);
     }
 
     @Override

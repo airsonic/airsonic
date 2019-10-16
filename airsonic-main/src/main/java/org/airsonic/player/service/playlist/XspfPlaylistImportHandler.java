@@ -6,7 +6,7 @@ import chameleon.playlist.xspf.Playlist;
 import chameleon.playlist.xspf.StringContainer;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.MediaFileService;
-import org.airsonic.player.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -60,7 +60,7 @@ public class XspfPlaylistImportHandler implements PlaylistImportHandler {
                 errors.add(errorMsg);
             }
         });
-        return Pair.create(mediaFiles, errors);
+        return Pair.of(mediaFiles, errors);
     }
 
     @Override
