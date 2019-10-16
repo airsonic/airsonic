@@ -2,17 +2,18 @@ package org.airsonic.player;
 
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
+import org.airsonic.player.service.SettingsService;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.config.ConfigFileApplicationListener;
+import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -21,17 +22,21 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.context.support.StandardServletEnvironment;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 @SpringBootApplication(exclude = {
         JmxAutoConfiguration.class,
-        JdbcTemplateAutoConfiguration.class,
-        DataSourceAutoConfiguration.class,
+//        JdbcTemplateAutoConfiguration.class,
+//        DataSourceAutoConfiguration.class,
 //        DataSourceTransactionManagerAutoConfiguration.class,
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
@@ -227,7 +232,23 @@ public class Application extends SpringBootServletInitializer
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String airsonicProperties = SettingsService.getPropertyFile().getAbsolutePath();
+
+        // set it to parse airsonic.properties
+        System.setProperty(ConfigFileApplicationListener.CONFIG_ADDITIONAL_LOCATION_PROPERTY, airsonicProperties);
+
+        // set active profile
+        ConfigurableEnvironment env = new StandardServletEnvironment();
+        new PropertiesPropertySourceLoader().load(airsonicProperties, new FileSystemResource(airsonicProperties))
+                .forEach(x -> env.getPropertySources().addLast(x));
+
+        String activeProfile = env.getProperty("DatabaseConfigType");
+        if (activeProfile == null) {
+            activeProfile = "legacy";
+        }
+        System.setProperty(ConfigFileApplicationListener.ACTIVE_PROFILES_PROPERTY, activeProfile);
+
         SpringApplicationBuilder builder = new SpringApplicationBuilder();
         doConfigure(builder).run(args);
     }

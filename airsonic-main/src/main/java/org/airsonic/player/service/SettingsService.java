@@ -336,7 +336,7 @@ public class SettingsService {
         }
     }
 
-    static File getPropertyFile() {
+    public static File getPropertyFile() {
         File propertyFile = getAirsonicHome();
         return new File(propertyFile, getFileSystemAppName() + ".properties");
     }
