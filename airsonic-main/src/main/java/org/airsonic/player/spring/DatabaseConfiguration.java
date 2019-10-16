@@ -51,8 +51,8 @@ public class DatabaseConfiguration {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
         dataSource.setUrl(SettingsService.getDefaultJDBCUrl());
-        dataSource.setUsername("sa");
-        dataSource.setPassword("");
+        dataSource.setUsername(SettingsService.getDefaultJDBCUsername());
+        dataSource.setPassword(SettingsService.getDefaultJDBCPassword());
         return dataSource;
     }
 

@@ -286,12 +286,24 @@ public class SettingsService {
         return home.contains("libresonic") ? "libresonic" : "airsonic";
     }
 
+    public static String getDefaultJDBCPath() {
+        return getAirsonicHome().getPath() + "/db/" + getFileSystemAppName();
+    }
+
     public static String getDefaultJDBCUrl() {
-        return "jdbc:hsqldb:file:" + getAirsonicHome().getPath() + "/db/" + getFileSystemAppName() + ";sql.enforce_size=false";
+        return "jdbc:hsqldb:file:" + getDefaultJDBCPath() + ";sql.enforce_size=false";
     }
 
     public static int getDefaultUPnPPort() {
         return Optional.ofNullable(System.getProperty(KEY_UPNP_PORT)).map(x -> Integer.parseInt(x)).orElse(DEFAULT_UPNP_PORT);
+    }
+
+    public static String getDefaultJDBCUsername() {
+        return "sa";
+    }
+
+    public static String getDefaultJDBCPassword() {
+        return "";
     }
 
     public static File getLogFile() {
