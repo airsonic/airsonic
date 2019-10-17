@@ -901,7 +901,7 @@ public class SettingsService {
                 String[] lines = StringUtil.readLines(in);
 
                 for (String line : lines) {
-                    locales.add(parseLocale(line));
+                    locales.add(StringUtil.parseLocale(line));
                 }
 
             } catch (IOException x) {
@@ -910,21 +910,6 @@ public class SettingsService {
             }
         }
         return locales.toArray(new Locale[locales.size()]);
-    }
-
-    private Locale parseLocale(String line) {
-        String[] s = line.split("_");
-        String language = s[0];
-        String country = "";
-        String variant = "";
-
-        if (s.length > 1) {
-            country = s[1];
-        }
-        if (s.length > 2) {
-            variant = s[2];
-        }
-        return new Locale(language, country, variant);
     }
 
     /**
