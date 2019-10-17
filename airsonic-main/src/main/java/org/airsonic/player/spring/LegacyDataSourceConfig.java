@@ -1,7 +1,7 @@
 package org.airsonic.player.spring;
 
-import org.airsonic.player.service.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,18 +14,27 @@ import javax.sql.DataSource;
 @Configuration
 @Profile("legacy")
 public class LegacyDataSourceConfig {
+    @Value("#{ systemProperties['DatabaseConfigEmbedUrl'] ?: T(org.airsonic.player.service.SettingsService).defaultJDBCUrl }")
+    private String url;
+    @Value("${DatabaseConfigEmbedUsername:sa}")
+    private String user;
+    @Value("${DatabaseConfigEmbedPassword:}")
+    private String password;
+    @Value("${DatabaseConfigEmbedDriver:org.hsqldb.jdbcDriver}")
+    private String driver;
+
     @Bean
     public DataSource dataSource() {
         return DataSourceBuilder.create()
                 // need this because the hsqldb driver doesn't support Connection.isValid for
                 // pools (old driver)
-                .type(DriverManagerDataSource.class).username("sa").password("")
-                .url(SettingsService.getDefaultJDBCUrl()).driverClassName("org.hsqldb.jdbcDriver").build();
+                .type(DriverManagerDataSource.class).username(user).password(password).url(url).driverClassName(driver)
+                .build();
     }
 
     @Bean
     @Autowired
-    public JdbcTemplate jdbcTemplate(DataSource ds) {
-        return new JdbcTemplate(ds);
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 }
