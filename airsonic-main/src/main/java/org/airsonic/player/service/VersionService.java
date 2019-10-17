@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -86,7 +87,7 @@ public class VersionService {
             try {
                 localVersion = new Version(readLineFromResource("/version.txt"));
                 LOG.info("Resolved local Airsonic version to: " + localVersion);
-            } catch (Exception x) {
+            } catch (RuntimeException x) {
                 LOG.warn("Failed to resolve local Airsonic version.", x);
             }
         }
@@ -126,7 +127,7 @@ public class VersionService {
             try {
                 String date = readLineFromResource("/build_date.txt");
                 localBuildDate = DATE_FORMAT.parse(date);
-            } catch (Exception x) {
+            } catch (ParseException x) {
                 LOG.warn("Failed to resolve local Airsonic build date.", x);
             }
         }
@@ -143,7 +144,7 @@ public class VersionService {
         if (localBuildNumber == null) {
             try {
                 localBuildNumber = readLineFromResource("/build_number.txt");
-            } catch (Exception x) {
+            } catch (RuntimeException x) {
                 LOG.warn("Failed to resolve local Airsonic build number.", x);
             }
         }
@@ -193,16 +194,11 @@ public class VersionService {
         if (in == null) {
             return null;
         }
-        BufferedReader reader = null;
-        try {
-
-            reader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             return reader.readLine();
-
         } catch (IOException x) {
             return null;
         } finally {
-            FileUtil.closeQuietly(reader);
             FileUtil.closeQuietly(in);
         }
     }
@@ -215,16 +211,15 @@ public class VersionService {
         boolean isOutdated = now - lastVersionFetched > LAST_VERSION_FETCH_INTERVAL;
 
         if (isOutdated) {
+            lastVersionFetched = now;
             try {
-                lastVersionFetched = now;
                 readLatestVersion();
-            } catch (Exception x) {
+            } catch (IOException x) {
                 LOG.warn("Failed to resolve latest Airsonic version.", x);
             }
         }
     }
 
-    private final String JSON_PATH = "$..tag_name";
     private final Pattern VERSION_REGEX = Pattern.compile("^v(.*)");
     private static final String VERSION_URL = "https://api.github.com/repos/airsonic/airsonic/releases";
 
@@ -249,7 +244,7 @@ public class VersionService {
             return;
         }
 
-        List<String> unsortedTags = JsonPath.read(content, JSON_PATH);
+        List<String> unsortedTags = JsonPath.read(content, "$..tag_name");
 
         Function<String, Version> convertToVersion = s -> {
             Matcher match = VERSION_REGEX.matcher(s);
