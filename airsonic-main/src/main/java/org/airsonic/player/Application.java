@@ -3,13 +3,14 @@ package org.airsonic.player;
 import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
 import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.spring.HsqlDatabase;
+import org.airsonic.player.util.Util;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
@@ -27,6 +28,8 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.support.StandardServletEnvironment;
 
+import liquibase.database.DatabaseFactory;
+
 import javax.servlet.Filter;
 import javax.servlet.ServletContextListener;
 
@@ -35,8 +38,8 @@ import java.lang.reflect.Method;
 
 @SpringBootApplication(exclude = {
         JmxAutoConfiguration.class,
-        MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
-        LiquibaseAutoConfiguration.class})
+        MultipartAutoConfiguration.class // TODO: update to use spring boot builtin multipart support
+})
 @Configuration
 @ImportResource({"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
@@ -245,6 +248,13 @@ public class Application extends SpringBootServletInitializer
             activeProfile = "legacy";
         }
         System.setProperty(ConfigFileApplicationListener.ACTIVE_PROFILES_PROPERTY, activeProfile);
+
+        // set migration properties
+        System.setProperty("migrationRollbackFile",
+                SettingsService.getAirsonicHome().getAbsolutePath() + "/rollback.sql");
+        System.setProperty("migrationDefaultMusicFolder", Util.getDefaultMusicFolder());
+        // add support for our "special" ancient hqldb that doesn't support schemas
+        DatabaseFactory.getInstance().register(new HsqlDatabase());
 
         SpringApplicationBuilder builder = new SpringApplicationBuilder();
         doConfigure(builder).run(args);

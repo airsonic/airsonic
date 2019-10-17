@@ -7,8 +7,6 @@
 
     <context:property-placeholder />
 
-    <import resource="applicationContext-db.xml" />
-
     <!-- DAO's -->
     
     <context:component-scan base-package="org.airsonic.player.dao, 

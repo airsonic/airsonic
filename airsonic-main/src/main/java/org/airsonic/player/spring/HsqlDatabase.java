@@ -16,4 +16,10 @@ public class HsqlDatabase extends liquibase.database.core.HsqlDatabase {
             return false;
         }
     }
+
+    @Override
+    public int getPriority() {
+        // to ensure this instance gets selected instead of the parent
+        return super.getPriority() + 1;
+    }
 }
