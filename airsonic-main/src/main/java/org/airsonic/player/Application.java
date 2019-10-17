@@ -35,16 +35,13 @@ import java.lang.reflect.Method;
 
 @SpringBootApplication(exclude = {
         JmxAutoConfiguration.class,
-//        JdbcTemplateAutoConfiguration.class,
-//        DataSourceAutoConfiguration.class,
-//        DataSourceTransactionManagerAutoConfiguration.class,
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
 @Configuration
 @ImportResource({"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
-        "classpath:/applicationContext-sonos.xml",
-        "classpath:/servlet.xml"})
+        "classpath:/applicationContext-sonos.xml"
+})
 public class Application extends SpringBootServletInitializer
         implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
 
