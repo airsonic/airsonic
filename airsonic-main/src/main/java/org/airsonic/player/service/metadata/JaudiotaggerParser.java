@@ -36,6 +36,7 @@ import org.jaudiotagger.tag.reference.GenreTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -53,6 +54,7 @@ import java.util.regex.Pattern;
  * @author Sindre Mehus
  */
 @Service
+@Order(1)
 public class JaudiotaggerParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(JaudiotaggerParser.class);
@@ -193,7 +195,7 @@ public class JaudiotaggerParser extends MetaDataParser {
      * Returns all tags supported by id3v1.
      */
     public static SortedSet<String> getID3V1Genres() {
-        return new TreeSet<String>(GenreTypes.getInstanceOf().getAlphabeticalValueList());
+        return new TreeSet<>(GenreTypes.getInstanceOf().getAlphabeticalValueList());
     }
 
     /**

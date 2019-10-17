@@ -22,15 +22,20 @@ package org.airsonic.player.service.metadata;
 import java.io.File;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 /**
  * Factory for creating meta-data parsers.
  *
  * @author Sindre Mehus
  */
+@Component
 public class MetaDataParserFactory {
 
     private List<MetaDataParser> parsers;
 
+    @Autowired
     public void setParsers(List<MetaDataParser> parsers) {
         this.parsers = parsers;
     }
