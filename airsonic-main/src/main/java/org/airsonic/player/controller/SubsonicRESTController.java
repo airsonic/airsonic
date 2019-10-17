@@ -53,6 +53,7 @@ import org.subsonic.restapi.PodcastStatus;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import java.util.*;
 
@@ -164,13 +165,13 @@ public class SubsonicRESTController {
         request = wrapRequest(request);
         License license = new License();
 
-
         license.setEmail("airsonic@github.com");
         license.setValid(true);
-        Date farFuture = new Date();
-        farFuture.setYear(farFuture.getYear() + 100);
-        license.setLicenseExpires(jaxbWriter.convertDate(farFuture));
-        license.setTrialExpires(jaxbWriter.convertDate(farFuture));
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.YEAR, 100);
+        XMLGregorianCalendar farFuture = jaxbWriter.convertCalendar(calendar);
+        license.setLicenseExpires(farFuture);
+        license.setTrialExpires(farFuture);
 
         Response res = createResponse();
         res.setLicense(license);
