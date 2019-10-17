@@ -41,7 +41,7 @@ import java.lang.reflect.Method;
         MultipartAutoConfiguration.class // TODO: update to use spring boot builtin multipart support
 })
 @Configuration
-@ImportResource({"classpath:/applicationContext-service.xml",
+@ImportResource({
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml"
 })
