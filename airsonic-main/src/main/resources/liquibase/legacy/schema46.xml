@@ -64,13 +64,12 @@
         </preConditions>
         <createTable tableName="player_transcoding2">
             <column name="player_id" type="int">
-                <constraints nullable="false" foreignKeyName="pt2_p_fk" referencedTableName="player" referencedColumnNames="id" deleteCascade="true"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="pt2_p_fk" referencedTableName="player" referencedColumnNames="id" deleteCascade="true"/>
             </column>
             <column name="transcoding_id" type="int" >
-                <constraints nullable="false" foreignKeyName="pt2_t_fk" referencedTableName="transcoding2" referencedColumnNames="id" deleteCascade="true"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="pt2_t_fk" referencedTableName="transcoding2" referencedColumnNames="id" deleteCascade="true"/>
             </column>
         </createTable>
-        <addPrimaryKey tableName="player_transcoding2" columnNames="player_id,transcoding_id" />
         <sql>
             insert into player_transcoding2(player_id, transcoding_id)
             select distinct p.id, t.id from player p, transcoding2 t

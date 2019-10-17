@@ -97,13 +97,12 @@
         </preConditions>
         <createTable tableName="user_role">
             <column name="username" type="${varchar_type}">
-                <constraints nullable="false" foreignKeyName="ur_u_fk" referencedTableName="user" referencedColumnNames="username"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="ur_u_fk" referencedTableName="user" referencedColumnNames="username"/>
             </column>
             <column name="role_id" type="int" >
-                <constraints nullable="false" foreignKeyName="ur_r_fk" referencedTableName="role" referencedColumnNames="id"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="ur_r_fk" referencedTableName="role" referencedColumnNames="id"/>
             </column>
         </createTable>
-        <addPrimaryKey tableName="user_role" columnNames="username,role_id" />
         <insert tableName="user_role">
             <column name="username" value="admin"/>
             <column name="role_id" valueNumeric="1" />

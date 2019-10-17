@@ -218,13 +218,12 @@
         </preConditions>
         <createTable tableName="player_transcoding">
             <column name="player_id" type="int">
-                <constraints nullable="false" foreignKeyName="pt_p_fk" referencedTableName="player" referencedColumnNames="id" deleteCascade="true"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="pt_p_fk" referencedTableName="player" referencedColumnNames="id" deleteCascade="true"/>
             </column>
             <column name="transcoding_id" type="int" >
-                <constraints nullable="false" foreignKeyName="pt_t_fk" referencedTableName="transcoding" referencedColumnNames="id" deleteCascade="true"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="pt_t_fk" referencedTableName="transcoding" referencedColumnNames="id" deleteCascade="true"/>
             </column>
         </createTable>
-        <addPrimaryKey tableName="player_transcoding" columnNames="player_id,transcoding_id" />
         <rollback>
             <dropTable tableName="player_transcoding" />
         </rollback>

@@ -23,16 +23,15 @@
         </preConditions>
         <createTable tableName="user_rating">
             <column name="username" type="${varchar_type}">
-                <constraints nullable="false" foreignKeyName="ura_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true"/>
+                <constraints nullable="false" primaryKey="true" foreignKeyName="ura_u_fk" referencedTableName="user" referencedColumnNames="username" deleteCascade="true"/>
             </column>
             <column name="path" type="${varchar_type}" >
-                <constraints nullable="false" />
+                <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="rating" type="double" >
                 <constraints nullable="false" />
             </column>
         </createTable>
-        <addPrimaryKey tableName="user_rating" columnNames="username,path" />
         <sql>
             insert into user_rating select 'admin', path, rating from music_file_info
             where rating is not null and rating > 0
