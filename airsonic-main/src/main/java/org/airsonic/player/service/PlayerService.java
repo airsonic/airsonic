@@ -28,7 +28,6 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -48,7 +47,6 @@ import java.util.List;
  * @see Player
  */
 @Service
-@DependsOn("liquibase")
 public class PlayerService {
 
     private static final String COOKIE_NAME = "player";
@@ -309,7 +307,7 @@ public class PlayerService {
         playerDao.createPlayer(player);
 
         List<Transcoding> transcodings = transcodingService.getAllTranscodings();
-        List<Transcoding> defaultActiveTranscodings = new ArrayList<Transcoding>();
+        List<Transcoding> defaultActiveTranscodings = new ArrayList<>();
         for (Transcoding transcoding : transcodings) {
             if (transcoding.isDefaultActive()) {
                 defaultActiveTranscodings.add(transcoding);
