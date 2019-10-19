@@ -1,5 +1,7 @@
 package org.airsonic.player;
 
+import liquibase.database.DatabaseFactory;
+
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.spring.HsqlDatabase;
 import org.airsonic.player.util.Util;
@@ -19,8 +21,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.context.support.StandardServletEnvironment;
-
-import liquibase.database.DatabaseFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

@@ -1,7 +1,6 @@
 package org.airsonic.player;
 
-import javax.servlet.Filter;
-import javax.servlet.ServletContextListener;
+import net.sf.ehcache.constructs.web.ShutdownListener;
 
 import org.airsonic.player.filter.BootstrapVerificationFilter;
 import org.airsonic.player.filter.MetricsFilter;
@@ -16,7 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
-import net.sf.ehcache.constructs.web.ShutdownListener;
+import javax.servlet.Filter;
+import javax.servlet.ServletContextListener;
 
 @Configuration
 @ImportResource({ "classpath:/applicationContext-cache.xml", "classpath:/applicationContext-sonos.xml" })
