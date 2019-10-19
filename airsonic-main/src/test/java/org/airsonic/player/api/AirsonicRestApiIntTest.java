@@ -2,15 +2,19 @@ package org.airsonic.player.api;
 
 import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MigrationConstantsRule;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -22,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles({ "legacy" })
 @AutoConfigureMockMvc
 public class AirsonicRestApiIntTest {
 
@@ -36,7 +41,7 @@ public class AirsonicRestApiIntTest {
     private MockMvc mvc;
 
     @ClassRule
-    public static final HomeRule classRule = new HomeRule(); // sets airsonic.home to a temporary dir
+    public static TestRule rules = RuleChain.outerRule(new HomeRule()).around(new MigrationConstantsRule());
 
     @BeforeClass
     public static void setupClass() {

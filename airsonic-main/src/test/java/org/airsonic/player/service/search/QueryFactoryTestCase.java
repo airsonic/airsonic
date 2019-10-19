@@ -4,20 +4,13 @@ package org.airsonic.player.service.search;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
-import org.airsonic.player.util.HomeRule;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.lucene.search.Query;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
-
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,29 +23,9 @@ import static org.junit.Assert.assertEquals;
  * These cases have the purpose of observing the current situation
  * and observing the impact of upgrading Lucene.
  */
-@ContextConfiguration(
-        locations = {
-                "/applicationContext-service.xml",
-                "/applicationContext-cache.xml",
-                "/applicationContext-testdb.xml",
-                "/applicationContext-mockSonos.xml" })
-@DirtiesContext(
-    classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@RunWith(SpringRunner.class)
+@Import({ QueryFactory.class, AnalyzerFactory.class })
 public class QueryFactoryTestCase {
-
-    @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule homeRule = new HomeRule();
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return homeRule.apply(spring, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Autowired
     private QueryFactory queryFactory;
@@ -69,7 +42,7 @@ public class QueryFactoryTestCase {
 
     private static final MusicFolder MUSIC_FOLDER1 =
             new MusicFolder(FID1, new File(PATH1), "music1", true, new java.util.Date());
-    private static final MusicFolder MUSIC_FOLDER2 = 
+    private static final MusicFolder MUSIC_FOLDER2 =
             new MusicFolder(FID2, new File(PATH2), "music2", true, new java.util.Date());
 
     private static final List<MusicFolder> SINGLE_FOLDERS = Arrays.asList(MUSIC_FOLDER1);
@@ -80,7 +53,7 @@ public class QueryFactoryTestCase {
      * XXX 3.x -> 8.x :
      * It does not change the basic functional requirements for the query.
      * However, some minor improvements are included.
-     * 
+     *
      *  - Use 'Or' instead of 'SpanOr'.
      *    This is suitable for 8.x document definition and query grammar.
      *    A more rigorous comparison.
@@ -93,7 +66,7 @@ public class QueryFactoryTestCase {
      *    Currently, these are "key" strings, both in the requirements and in the implementation.
      *    The legacy "normalize" is dirty code that compensates for the incomplete analytics implementation
      *    and is not necessary as long as proper key comparison can be done.
-     *    
+     *
      *    => Treating these strictly as keys enables DB reference.
      *       For example, can support multi-genre by creating a new genre field that implements another Tokenizer.
      *

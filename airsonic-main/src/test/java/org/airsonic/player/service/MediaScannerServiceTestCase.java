@@ -3,30 +3,30 @@ package org.airsonic.player.service;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import com.google.common.io.Resources;
+
 import org.airsonic.player.dao.*;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
-import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.domain.Album;
 import org.airsonic.player.domain.Artist;
 import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MigrationConstantsRule;
 import org.airsonic.player.util.MusicFolderTestData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
-
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
@@ -50,27 +50,15 @@ import static org.junit.Assert.assertNotNull;
  * At runtime, the subsonic_home dir is set to target/test-classes/org/airsonic/player/service/mediaScannerServiceTestCase.
  * An empty database is created on the fly.
  */
-@ContextConfiguration(locations = {
-        "/applicationContext-service.xml",
-        "/applicationContext-cache.xml",
-        "/applicationContext-testdb.xml",
-        "/applicationContext-mockSonos.xml"})
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ActiveProfiles({ "legacy" })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MediaScannerServiceTestCase {
 
     @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule();
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return airsonicRule.apply(spring, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    public static TestRule rules = RuleChain.outerRule(new HomeRule()).around(new MigrationConstantsRule());
 
     private final MetricRegistry metrics = new MetricRegistry();
 
@@ -100,9 +88,6 @@ public class MediaScannerServiceTestCase {
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-    @Autowired
-    ResourceLoader resourceLoader;
 
 
     /**
@@ -151,7 +136,7 @@ public class MediaScannerServiceTestCase {
 
         // display out metrics report
         ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-                .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         reporter.report();
@@ -161,12 +146,11 @@ public class MediaScannerServiceTestCase {
 
     @Test
     public void testSpecialCharactersInFilename() throws Exception {
-        Resource resource = resourceLoader.getResource("MEDIAS/piano.mp3");
         String directoryName = "Muff1nman\u2019s \uFF0FMusic";
         String fileName = "Muff1nman\u2019s\uFF0FPiano.mp3";
         File artistDir = temporaryFolder.newFolder(directoryName);
         File musicFile = artistDir.toPath().resolve(fileName).toFile();
-        IOUtils.copy(resource.getInputStream(), new FileOutputStream(musicFile));
+        Resources.copy(Resources.getResource("MEDIAS/piano.mp3"), new FileOutputStream(musicFile));
 
         MusicFolder musicFolder = new MusicFolder(1, temporaryFolder.getRoot(), "Music", true, new Date());
         musicFolderDao.createMusicFolder(musicFolder);

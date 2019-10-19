@@ -1,54 +1,52 @@
 package org.airsonic.player.service;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.rules.RuleChain;
+import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.util.HomeRule;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.airsonic.player.util.MigrationConstantsRule;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
 
-@ContextConfiguration(locations = {
-        "/applicationContext-service.xml",
-        "/applicationContext-cache.xml",
-        "/applicationContext-testdb.xml",
-        "/applicationContext-mockSonos.xml"})
+import javax.sql.DataSource;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@ActiveProfiles({ "legacy" })
 public class LegacyDatabaseStartupTestCase {
-
     @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule() {
-            @Override
-            protected void before() throws Throwable {
-                super.before();
-                String homeParent = TestCaseUtils.airsonicHomePathForTest();
-                System.setProperty("airsonic.home", TestCaseUtils.airsonicHomePathForTest());
-                TestCaseUtils.cleanAirsonicHomeForTest();
-                File dbDirectory = new File(homeParent, "/db");
-                FileUtils.forceMkdir(dbDirectory);
-                org.airsonic.player.util.FileUtils.copyResourcesRecursively(getClass().getResource("/db/pre-liquibase/db"), new File(homeParent));
-            }
-        };
+    public static TestRule rules = RuleChain.outerRule(new HomeRule()).around(new MigrationConstantsRule());
 
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return airsonicRule.apply(spring, description);
-        }
-    };
+    @BeforeClass
+    public static void setupOnce() throws Exception {
+        String homeParent = TestCaseUtils.airsonicHomePathForTest();
+        File dbDirectory = new File(homeParent, "/db");
+        FileUtils.forceMkdir(dbDirectory);
+        org.airsonic.player.util.FileUtils.copyResourcesRecursively(
+                LegacyDatabaseStartupTestCase.class.getResource("/db/pre-liquibase/db"), new File(homeParent));
 
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+        // have to change the url here because old db files are libresonic
+        System.setProperty("DatabaseConfigEmbedUrl",
+                SettingsService.getDefaultJDBCUrl().replaceAll("airsonic$", "libresonic"));
+    }
+
+    @Autowired
+    private DataSource datasource;
 
     @Test
     public void testStartup() {
-        System.out.println("Successful startup");
+        assertThat(datasource).isNotNull();
     }
 
 }
