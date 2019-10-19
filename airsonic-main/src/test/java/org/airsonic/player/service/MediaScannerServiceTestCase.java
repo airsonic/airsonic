@@ -5,11 +5,15 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.common.io.Resources;
 
+import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.dao.*;
 import org.airsonic.player.domain.Album;
 import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MigrationConstantsRule;
+import org.airsonic.player.util.MusicFolderTestData;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -19,15 +23,12 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.util.HomeRule;
-import org.airsonic.player.util.MigrationConstantsRule;
-import org.airsonic.player.util.MusicFolderTestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
