@@ -248,6 +248,7 @@
                                 <encoding>UTF-8</encoding>
                                 <consoleOutput>true</consoleOutput>
                                 <failOnViolation>true</failOnViolation>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             </configuration>
                             <goals>
                                 <goal>check</goal>
@@ -291,7 +292,9 @@
                     <version>2.22.0</version>
                         <configuration>
                             <!-- #1186 Temporarily skip a test. -->
-                            <excludes>org.airsonic.player.service.search.*TestCase.java</excludes>
+                            <excludes>
+                                <exclude>org.airsonic.player.service.search.*TestCase.java</exclude>
+                            </excludes>
                         </configuration>
                 </plugin>
                 <plugin>

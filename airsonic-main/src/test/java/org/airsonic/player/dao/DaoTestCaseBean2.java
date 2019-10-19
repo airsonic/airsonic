@@ -1,10 +1,10 @@
 package org.airsonic.player.dao;
 
+import org.airsonic.player.util.HomeRule;
 import org.junit.ClassRule;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.airsonic.player.util.HomeRule;
 import org.airsonic.player.util.MigrationConstantsRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

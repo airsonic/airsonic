@@ -20,12 +20,14 @@ import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles({ "legacy" })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 /*
  * Abstract class for scanning MusicFolder.
  */

@@ -1,13 +1,7 @@
 
 package org.airsonic.player.service.search;
 
-import static org.springframework.util.ObjectUtils.isEmpty;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.google.common.base.Function;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
@@ -17,7 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.google.common.base.Function;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 /*
  * Tests to prove what kind of strings/chars can be used in the genre field.
@@ -63,7 +62,7 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
     public void testQueryEscapeRequires() {
 
         Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
-        new RandomSearchCriteria(Integer.MAX_VALUE, // count
+            new RandomSearchCriteria(Integer.MAX_VALUE, // count
                 s, // genre,
                 null, // fromYear
                 null, // toYear
@@ -194,7 +193,7 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
     public void testBrackets() {
 
         Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
-        new RandomSearchCriteria(Integer.MAX_VALUE, // count
+            new RandomSearchCriteria(Integer.MAX_VALUE, // count
                 s, // genre,
                 null, // fromYear
                 null, // toYear
@@ -268,7 +267,7 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
     public void testOthers() {
 
         Function<String, RandomSearchCriteria> simpleStringCriteria = s ->
-        new RandomSearchCriteria(Integer.MAX_VALUE, // count
+            new RandomSearchCriteria(Integer.MAX_VALUE, // count
                 s, // genre,
                 null, // fromYear
                 null, // toYear

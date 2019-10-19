@@ -1,5 +1,7 @@
 package org.airsonic.player.service;
 
+import org.airsonic.player.TestCaseUtils;
+import org.airsonic.player.util.HomeRule;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -7,8 +9,6 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.util.HomeRule;
 import org.airsonic.player.util.MigrationConstantsRule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

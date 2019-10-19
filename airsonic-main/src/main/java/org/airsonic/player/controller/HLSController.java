@@ -25,9 +25,9 @@ import org.airsonic.player.service.JWTSecurityService;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.PlayerService;
 import org.airsonic.player.service.SecurityService;
-import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -128,11 +128,11 @@ public class HLSController {
         }
         int kbps = Integer.parseInt(matcher.group(1));
         if (matcher.group(3) == null) {
-            return new Pair<Integer, Dimension>(kbps, null);
+            return Pair.of(kbps, null);
         } else {
             int width = Integer.parseInt(matcher.group(3));
             int height = Integer.parseInt(matcher.group(4));
-            return new Pair<Integer, Dimension>(kbps, new Dimension(width, height));
+            return Pair.of(kbps, new Dimension(width, height));
         }
     }
 
@@ -143,7 +143,7 @@ public class HLSController {
 
         String contextPath = getContextPath(request);
         for (Pair<Integer, Dimension> bitRate : bitRates) {
-            Integer kbps = bitRate.getFirst();
+            Integer kbps = bitRate.getLeft();
             writer.println("#EXT-X-STREAM-INF:PROGRAM-ID=1,BANDWIDTH=" + kbps * 1000L);
             UriComponentsBuilder url = (UriComponentsBuilder.fromUriString(contextPath + "ext/hls/hls.m3u8")
                     .queryParam("id", id)
@@ -151,7 +151,7 @@ public class HLSController {
                     .queryParam("bitRate", kbps));
             jwtSecurityService.addJWTToken(url);
             writer.print(url.toUriString());
-            Dimension dimension = bitRate.getSecond();
+            Dimension dimension = bitRate.getRight();
             if (dimension != null) {
                 writer.print("@" + dimension.width + "x" + dimension.height);
             }
@@ -188,8 +188,8 @@ public class HLSController {
         builder.queryParam("player", player.getId());
         builder.queryParam("duration", duration);
         if (bitRate != null) {
-            builder.queryParam("maxBitRate", bitRate.getFirst());
-            Dimension dimension = bitRate.getSecond();
+            builder.queryParam("maxBitRate", bitRate.getLeft());
+            Dimension dimension = bitRate.getRight();
             if (dimension != null) {
                 builder.queryParam("size", dimension.width);
                 builder.queryParam("x", dimension.height);

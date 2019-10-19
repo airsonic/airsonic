@@ -31,9 +31,9 @@ import org.airsonic.player.domain.User;
 import org.airsonic.player.service.playlist.PlaylistExportHandler;
 import org.airsonic.player.service.playlist.PlaylistImportHandler;
 import org.airsonic.player.util.FileUtil;
-import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,11 +192,11 @@ public class PlaylistService {
 
         Pair<List<MediaFile>, List<String>> result = importHandler.handle(inputSpecificPlaylist);
 
-        if (result.getFirst().isEmpty() && !result.getSecond().isEmpty()) {
+        if (result.getLeft().isEmpty() && !result.getRight().isEmpty()) {
             throw new Exception("No songs in the playlist were found.");
         }
 
-        for (String error : result.getSecond()) {
+        for (String error : result.getRight()) {
             LOG.warn("File in playlist '" + fileName + "' not found: " + error);
         }
         Date now = new Date();
@@ -215,7 +215,7 @@ public class PlaylistService {
             playlist = existingPlaylist;
         }
 
-        setFilesInPlaylist(playlist.getId(), result.getFirst());
+        setFilesInPlaylist(playlist.getId(), result.getLeft());
 
         return playlist;
     }

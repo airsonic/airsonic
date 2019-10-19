@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Unit test of {@link PlayQueue}.
@@ -319,6 +320,11 @@ public class PlayQueueTestCase extends TestCase {
         @Override
         public boolean equals(Object o) {
             return this == o;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, track, album, artist);
         }
     }
 }
