@@ -95,12 +95,10 @@ public class TestCaseUtils {
 
 
   public static ApplicationContext loadSpringApplicationContext(String baseResources) {
-    String applicationContextService = baseResources + "applicationContext-service.xml";
     String applicationContextCache = baseResources + "applicationContext-cache.xml";
 
     String[] configLocations = new String[]{
             TestCaseUtils.class.getClass().getResource(applicationContextCache).toString(),
-            TestCaseUtils.class.getClass().getResource(applicationContextService).toString()
     };
     return new ClassPathXmlApplicationContext(configLocations);
   }
