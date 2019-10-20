@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<stringtables xmlns="http://sonos.com/sonosapi">
+    <stringtable rev="1" xml:lang="en-US">
+		<string stringId="ServicePromo">Welcome! This string is displayed in the 'Add Service' wizard.</string>
+        <string stringId="STAR_TRACK">Star Track</string>
+        <string stringId="SUCCESS_STAR">Track has been starred</string>
+        <string stringId="Error0Message">An example of a SMAPI Custom Error Message.</string>
+    </stringtable>
+	<stringtable rev="1" xml:lang="da-DK">
+		<string stringId="ServicePromo">Velkommen! Denne streng vises i guiden 'Tilføj service.'</string>
+		<string stringId="STAR_TRACK">Stjernemarkér nummer</string>
+		<string stringId="SUCCESS_STAR">Nummeret er stjernemarkeret</string>
+		<string stringId="Error0Message">Et eksempel på en SMAPI brugerdefineret fejlmeddelelse.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="de-DE">
+		<string stringId="ServicePromo">Herzlich Willkommen! Diese Zeichenkette wird in Assistenten der 'Dienst hinzufügen' angezeigt.</string>
+		<string stringId="STAR_TRACK">Titel mit Sternchen kennzeichnen</string>
+		<string stringId="SUCCESS_STAR">Titel wurde mit Sternchen gekennzeichnet</string>
+		<string stringId="Error0Message">Ein Beispiel für eine SMAPI Benutzerdefinierte Fehlermeldung.</string>
+	</stringtable>
+    <stringtable rev="1" xml:lang="es-ES">
+		<string stringId="ServicePromo">¡Bienvenido! Esta cadena se muestra en el asistente de 'Agregar servicio.'</string>
+		<string stringId="STAR_TRACK">Destacar pista</string>
+		<string stringId="SUCCESS_STAR">Se ha destacado la pista</string>
+		<string stringId="Error0Message">Un ejemplo de un mensaje de error SMAPI personalizado.</string>
+    </stringtable>
+	<stringtable rev="1" xml:lang="fr-FR">
+		<string stringId="ServicePromo">Bienvenue! Cette chaîne est affichée dans l'assistant «Ajouter un service».</string>
+		<string stringId="STAR_TRACK">Marquer la piste d’une étoile</string>
+		<string stringId="SUCCESS_STAR">La piste a été marquée d'une étoile</string>
+		<string stringId="Error0Message">Un exemple d'un message d'erreur SMAPI personnalisés.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="it-IT">
+		<string stringId="ServicePromo">Benvenuto! Questa stringa viene visualizzata nella procedura guidata 'Aggiungi Service.'</string>
+		<string stringId="STAR_TRACK">Dai una stella alla traccia</string>
+		<string stringId="SUCCESS_STAR">È stata data una stella alla traccia</string>
+		<string stringId="Error0Message">Un esempio di un messaggio di errore SMAPI personalizzato.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="ja-JP">
+		<string stringId="ServicePromo">ようこそ！この文字列は、「追加サービス」ウィザードが表示されます。</string>
+		<string stringId="STAR_TRACK">スター トラック</string>
+		<string stringId="SUCCESS_STAR">トラックがスターとなりました</string>
+		<string stringId="Error0Message">SMAPIカスタムエラーメッセージの例。</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="nb-NO">
+		<string stringId="ServicePromo">Velkommen! Denne strengen vises i 'Legg til tjeneste' veiviseren.</string>
+		<string stringId="STAR_TRACK">Stjernemerk spor</string>
+		<string stringId="SUCCESS_STAR">Sporet er stjernemerket</string>
+		<string stringId="Error0Message">Et eksempel på en SMAPI definert feilmelding.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="nl-NL">
+		<string stringId="ServicePromo">Welkom! Deze tekst wordt weergegeven in de wizard 'Dienst toevoegen.'</string>
+		<string stringId="STAR_TRACK">Ster geven aan track</string>
+		<string stringId="SUCCESS_STAR">Track heeft een ster</string>
+		<string stringId="Error0Message">Een voorbeeld van een SMAPI Custom Error Message.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="pt-BR">
+		<string stringId="ServicePromo">Bem-vindo! Esta seqüência é exibida no assistente 'Adicionar Serviço.'</string>
+		<string stringId="STAR_TRACK">Estrela faixa</string>
+		<string stringId="SUCCESS_STAR">A faixa foi classificada com estrelas</string>
+		<string stringId="Error0Message">Un examplo de errors SMAPI que podem ser personalizados.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="sv-SE">
+		<string stringId="ServicePromo">Välkomna! Denna sträng visas i 'Lägg till tjänst' guiden.</string>
+		<string stringId="STAR_TRACK">Märk spår med stjärna</string>
+		<string stringId="SUCCESS_STAR">Spåret har märkts med stjärna</string>
+		<string stringId="Error0Message">Ett exempel på en SMAPI anpassat felmeddelande.</string>
+	</stringtable>
+	<stringtable rev="1" xml:lang="zh-CN">
+		<string stringId="ServicePromo">欢迎！此字符串显示在“添加服务”向导。</string>
+		<string stringId="STAR_TRACK">为曲目标记星号</string>
+		<string stringId="SUCCESS_STAR">曲目已有星号标记</string>
+		<string stringId="Error0Message">一个SMAPI自定义错误消息的示例。</string>
+	</stringtable>
+</stringtables>
