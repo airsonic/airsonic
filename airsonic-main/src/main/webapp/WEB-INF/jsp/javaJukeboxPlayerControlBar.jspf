@@ -11,8 +11,8 @@
                 </td>
             </c:if>
             <td>
-                <img alt="Start" id="startIcon" src="<spring:theme code="castPlayImage"/>" onclick="onJavaJukeboxStart()" style="cursor:pointer">
-                <img alt="Pause" id="pauseIcon" src="<spring:theme code="castPauseImage"/>" onclick="onJavaJukeboxStop()" style="cursor:pointer; display:none">
+                <img alt="Start" id="startIcon" src="<spring:theme code='castPlayImage'/>" onclick="onJavaJukeboxStart()" style="cursor:pointer">
+                <img alt="Pause" id="pauseIcon" src="<spring:theme code='castPauseImage'/>" onclick="onJavaJukeboxStop()" style="cursor:pointer; display:none">
             </td>
             <td><span id="playingPositionDisplay" class="javaJukeBoxPlayerControlBarSongTime"/></td>
             <td style="white-space:nowrap;">
@@ -20,7 +20,7 @@
             </td>
             <td><span id="playingDurationDisplay" class="javaJukeBoxPlayerControlBarSongTime"/></td>
             <td style="white-space:nowrap;">
-                <img src="<spring:theme code="volumeImage"/>" alt="">
+                <img src="<spring:theme code='volumeImage'/>" alt="">
             </td>
             <td style="white-space:nowrap;">
                 <div id="javaJukeboxVolumeSlider" style="width:80px;height:4px"></div>

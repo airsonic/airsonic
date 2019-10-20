@@ -2,9 +2,9 @@
 
 <html><head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/tagService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/tagService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
 </head>
 <body class="mainframe bgcolor1">
 
@@ -159,6 +159,6 @@
 
 </table>
 
-<p><input type="submit" id="save" value="<fmt:message key="common.save"/>" onclick="updateTags()"/></p>
+<p><input type="submit" id="save" value="<fmt:message key='common.save'/>" onclick="updateTags()"/></p>
 <div class="warning" id="errors"/>
 </body></html>

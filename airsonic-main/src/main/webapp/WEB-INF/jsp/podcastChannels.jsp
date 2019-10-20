@@ -26,7 +26,7 @@
 </head><body class="mainframe bgcolor1">
 
 <h1 style="padding-bottom: 1em">
-    <img src="<spring:theme code="podcastLargeImage"/>" alt="">
+    <img src="<spring:theme code='podcastLargeImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="podcastreceiver.title"/></span>
 </h1>
 
@@ -104,7 +104,7 @@
             <tr>
                 <td><fmt:message key="podcastreceiver.subscribe"/></td>
                 <td><input type="text" name="add" value="http://" style="width:30em" onclick="select()"/></td>
-                <td><input type="submit" value="<fmt:message key="common.ok"/>"/></td>
+                <td><input type="submit" value="<fmt:message key='common.ok'/>"/></td>
             </tr>
         </table>
     </form:form>

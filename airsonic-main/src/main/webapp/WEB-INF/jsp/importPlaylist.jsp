@@ -31,7 +31,7 @@
 </div>
 <form method="post" enctype="multipart/form-data" action="importPlaylist.view?${_csrf.parameterName}=${_csrf.token}">
     <input type="file" id="file" name="file" size="40"/>
-    <input type="submit" value="<fmt:message key="common.ok"/>"/>
+    <input type="submit" value="<fmt:message key='common.ok'/>"/>
 </form>
 
 

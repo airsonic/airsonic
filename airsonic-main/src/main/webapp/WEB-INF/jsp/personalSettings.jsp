@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
     <script type="text/javascript" language="javascript">
         function enableLastFmFields() {
@@ -14,8 +14,8 @@
 </head>
 
 <body class="mainframe bgcolor1" onload="enableLastFmFields()">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
+<script type="text/javascript" src="<c:url value='/script/wz_tooltip.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/script/tip_balloon.js'/>"></script>
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="personal"/>
@@ -207,8 +207,8 @@
     </table>
 
     <p style="padding-top:1em;padding-bottom:1em">
-        <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em"/>
-        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
+        <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em"/>
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key='common.cancel'/>"></a>
     </p>
 
     <h2><fmt:message key="personalsettings.avatar.title"/></h2>
@@ -247,7 +247,7 @@
         <tr>
             <td style="padding-right:1em"><fmt:message key="personalsettings.avatar.changecustom"/></td>
             <td style="padding-right:1em"><input type="file" id="file" name="file" size="40"/></td>
-            <td style="padding-right:1em"><input type="submit" value="<fmt:message key="personalsettings.avatar.upload"/>"/></td>
+            <td style="padding-right:1em"><input type="submit" value="<fmt:message key='personalsettings.avatar.upload'/>"/></td>
         </tr>
     </table>
 </form>
