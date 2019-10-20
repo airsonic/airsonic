@@ -118,6 +118,7 @@
         <rollback/>
     </changeSet>
     <changeSet id="schema43_003" author="muff1nman">
+        <validCheckSum>8:8ecc02a5ec4edb410a8babd0a8245216</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="user" columnName="email" />

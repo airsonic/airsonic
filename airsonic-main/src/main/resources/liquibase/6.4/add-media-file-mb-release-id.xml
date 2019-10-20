@@ -3,6 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
     <changeSet id="add-media-file-mb-release-id" author="fxthomas">
+        <validCheckSum>8:fd01642a58f1fae9d908253d455e2255</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="media_file" columnName="mb_release_id" />
