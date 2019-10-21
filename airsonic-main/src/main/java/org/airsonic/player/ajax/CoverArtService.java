@@ -160,7 +160,9 @@ public class CoverArtService {
     private void backup(File newCoverFile, File backup) {
         if (newCoverFile.exists()) {
             if (backup.exists()) {
-                backup.delete();
+                if (!backup.delete()) {
+                    LOG.warn("Failed to delete " + backup);
+                }
             }
             if (newCoverFile.renameTo(backup)) {
                 LOG.info("Backed up old image file to " + backup);

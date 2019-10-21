@@ -44,7 +44,7 @@ import java.util.Arrays;
 @Service
 public class DispatchingContentDirectory extends CustomContentDirectory {
 
-    public static final Logger LOG = LoggerFactory.getLogger(DispatchingContentDirectory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DispatchingContentDirectory.class);
 
     public static final String CONTAINER_ID_ROOT = "0";
     public static final String CONTAINER_ID_PLAYLIST_PREFIX = "playlist";

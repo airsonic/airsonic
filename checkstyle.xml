@@ -64,6 +64,7 @@
             <property name="allowEmptyMethods" value="true"/>
             <property name="allowEmptyTypes" value="true"/>
         </module>
+        <module name="org.airsonic.checkstyle.LoggerNameCheck"/>
     </module>
 
     <module name="UniqueProperties"/>

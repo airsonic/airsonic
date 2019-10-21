@@ -579,7 +579,9 @@ public class PodcastService {
                 if (isEpisodeDeleted(episode)) {
                     LOG.info("Podcast " + episode.getUrl() + " was deleted. Aborting download.");
                     FileUtil.closeQuietly(out);
-                    file.delete();
+                    if (!file.delete()) {
+                        LOG.warn("Unable to delete " + file);
+                    }
                 } else {
                     addMediaFileIdToEpisodes(Arrays.asList(episode));
                     episode.setBytesDownloaded(bytesDownloaded);

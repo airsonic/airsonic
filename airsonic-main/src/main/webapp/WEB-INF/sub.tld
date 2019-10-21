@@ -83,21 +83,6 @@
 
     <tag>
         <description>
-            Renders a Wiki text with markup to HTML, using the Radeox render engine.
-        </description>
-        <name>wiki</name>
-        <tag-class>org.airsonic.player.taglib.WikiTag</tag-class>
-        <body-content>JSP</body-content>
-        <attribute>
-            <description>The Wiki markup text.</description>
-            <name>text</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-
-    <tag>
-        <description>
             Escapes the characters in a string using JavaScript rules.
         </description>
         <name>escapeJavaScript</name>

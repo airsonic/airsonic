@@ -55,7 +55,7 @@ public class ShoutCastOutputStream extends OutputStream {
     /**
      * What to write in the SHOUTcast metadata is fetched from the playlist.
      */
-    private PlayQueue playQueue;
+    final private PlayQueue playQueue;
 
     /**
      * Keeps track of the number of bytes written (excluding meta-data).  Between 0 and {@link #META_DATA_INTERVAL}.
