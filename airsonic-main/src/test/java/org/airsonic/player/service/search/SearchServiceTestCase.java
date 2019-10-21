@@ -126,12 +126,26 @@ public class SearchServiceTestCase extends AbstractAirsonicHomeTest {
                 result.getAlbums().size());
         Assert.assertEquals("(14) Specify album '" + query + "', and get a song. MediaFile SIZE is",
                 2, result.getMediaFiles().size());
-        Assert.assertEquals("(15) Specify album '" + query + "', and get songs. The first song is ",
-                "01 - Gaspard de la Nuit - i. Ondine", result.getMediaFiles().get(0).getTitle());
-        Assert.assertEquals(
-                "(16) Specify album '" + query + "', and get songs. The second song is ",
-                "02 - Gaspard de la Nuit - ii. Le Gibet", result.getMediaFiles().get(1).getTitle());
 
+        /*
+         * The result is not sort, so the album can be arrive in any order. So we didn't have AssertJ or Hamcrest.
+         * We use a test before test, but we really use hamcrest!
+         */
+        if(result.getMediaFiles().get(0).getTitle().startsWith("01")) {
+            Assert.assertEquals("(15) Specify album '" + query + "', and get songs. The first song is ",
+                    "01 - Gaspard de la Nuit - i. Ondine", result.getMediaFiles().get(0).getTitle());
+            Assert.assertEquals(
+                    "(16) Specify album '" + query + "', and get songs. The second song is ",
+                    "02 - Gaspard de la Nuit - ii. Le Gibet", result.getMediaFiles().get(1).getTitle());
+
+        // else we test in reverse order.
+        } else {
+            Assert.assertEquals("(15) Specify album '" + query + "', and get songs. The first song is ",
+                    "01 - Gaspard de la Nuit - i. Ondine", result.getMediaFiles().get(1).getTitle());
+            Assert.assertEquals(
+                    "(16) Specify album '" + query + "', and get songs. The second song is ",
+                    "02 - Gaspard de la Nuit - ii. Le Gibet", result.getMediaFiles().get(0).getTitle());
+        }
         // *** testSearchByName() ***
 
         /*

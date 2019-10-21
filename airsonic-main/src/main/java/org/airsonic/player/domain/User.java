@@ -28,10 +28,14 @@ public class User {
 
     public static final String USERNAME_ADMIN = "admin";
     public static final String USERNAME_GUEST = "guest";
+    public static final String USERNAME_SONOS = "sonos";
+
 
     private final String username;
     private String password;
     private String email;
+    private String sonosid;
+    private String linkcode;
     private boolean ldapAuthenticated;
     private long bytesStreamed;
     private long bytesDownloaded;
@@ -202,6 +206,22 @@ public class User {
 
     public void setShareRole(boolean shareRole) {
         isShareRole = shareRole;
+    }
+
+    public String getSonosid() {
+        return sonosid;
+    }
+
+    public void setSonosid(String sonosid) {
+        this.sonosid = sonosid;
+    }
+
+    public String getLinkcode() {
+        return linkcode;
+    }
+
+    public void setLinkcode(String linkcode) {
+        this.linkcode = linkcode;
     }
 
     @Override
