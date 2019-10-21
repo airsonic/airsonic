@@ -228,7 +228,7 @@ public final class StringUtil {
     /**
      * Formats a duration with minutes and seconds, e.g., "93:45"
      */
-    public static String formatDuration(int seconds) {
+    public static String formatDurationMSS(int seconds) {
         int minutes = seconds / 60;
         int secs = seconds % 60;
 
