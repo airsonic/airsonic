@@ -34,18 +34,7 @@ import java.lang.reflect.Method;
         DataSourceTransactionManagerAutoConfiguration.class,
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
-@Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = {
-        "org.airsonic.player.ajax",
-        "org.airsonic.player.controller",
-        "org.airsonic.player.dao",
-        "org.airsonic.player.i18n",
-        "org.airsonic.player.monitor",
-        "org.airsonic.player.security",
-        "org.airsonic.player.service",
-        "org.airsonic.player.spring",
-        "org.airsonic.player.validator"})
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
