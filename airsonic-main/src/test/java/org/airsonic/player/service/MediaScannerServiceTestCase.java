@@ -151,7 +151,7 @@ public class MediaScannerServiceTestCase {
 
         // display out metrics report
         ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-                .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         reporter.report();

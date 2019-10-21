@@ -32,7 +32,7 @@ public class MetricsManager {
 
             // Start a Metrics JMX reporter
             reporter = JmxReporter.forRegistry(metrics)
-                    .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                    .convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MILLISECONDS)
                     .build();
             reporter.start();
