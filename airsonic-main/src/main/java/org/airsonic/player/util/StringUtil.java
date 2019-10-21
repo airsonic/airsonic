@@ -226,19 +226,33 @@ public final class StringUtil {
     }
 
     /**
-     * Formats a duration with minutes and seconds, e.g., "93:45"
+     * Formats a duration with minutes and seconds, e.g., "4:34" or "93:45"
      */
     public static String formatDurationMSS(int seconds) {
-        int minutes = seconds / 60;
-        int secs = seconds % 60;
-
-        StringBuilder builder = new StringBuilder(6);
-        builder.append(minutes).append(":");
-        if (secs < 10) {
-            builder.append("0");
+        if (seconds < 0) {
+            throw new IllegalArgumentException("seconds must be >= 0");
         }
-        builder.append(secs);
-        return builder.toString();
+        return String.format("%d:%02d", seconds / 60, seconds % 60);
+    }
+
+    /**
+     * Formats a duration with H:MM:SS, e.g., "1:33:45"
+     */
+    public static String formatDurationHMMSS(int seconds) {
+        int hours = seconds / 3600;
+        seconds -= hours * 3600;
+
+        return String.format("%d:%s%s", hours, seconds < 600 ? "0" : "", formatDurationMSS(seconds));
+    }
+
+    /**
+     * Formats a duration to M:SS or H:MM:SS
+     */
+    public static String formatDuration(int seconds) {
+        if (seconds >= 3600) {
+            return formatDurationHMMSS(seconds);
+        }
+        return formatDurationMSS(seconds);
     }
 
     /**

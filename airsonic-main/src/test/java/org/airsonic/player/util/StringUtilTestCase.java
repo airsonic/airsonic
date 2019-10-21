@@ -95,6 +95,34 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in formatDurationMSS().", "121:40", StringUtil.formatDurationMSS(7300));
     }
 
+    public void testFormatDurationHMMSS() {
+        assertEquals("Error in formatDurationHMMSS().", "0:00:00", StringUtil.formatDurationHMMSS(0));
+        assertEquals("Error in formatDurationHMMSS().", "0:00:05", StringUtil.formatDurationHMMSS(5));
+        assertEquals("Error in formatDurationHMMSS().", "0:00:10", StringUtil.formatDurationHMMSS(10));
+        assertEquals("Error in formatDurationHMMSS().", "0:00:59", StringUtil.formatDurationHMMSS(59));
+        assertEquals("Error in formatDurationHMMSS().", "0:01:00", StringUtil.formatDurationHMMSS(60));
+        assertEquals("Error in formatDurationHMMSS().", "0:01:01", StringUtil.formatDurationHMMSS(61));
+        assertEquals("Error in formatDurationHMMSS().", "0:01:10", StringUtil.formatDurationHMMSS(70));
+        assertEquals("Error in formatDurationHMMSS().", "0:10:00", StringUtil.formatDurationHMMSS(600));
+        assertEquals("Error in formatDurationHMMSS().", "0:45:50", StringUtil.formatDurationHMMSS(2750));
+        assertEquals("Error in formatDurationHMMSS().", "1:23:45", StringUtil.formatDurationHMMSS(5025));
+        assertEquals("Error in formatDurationHMMSS().", "2:01:40", StringUtil.formatDurationHMMSS(7300));
+    }
+
+    public void testFormatDuration() {
+        assertEquals("Error in formatDuration().", "0:00", StringUtil.formatDuration(0));
+        assertEquals("Error in formatDuration().", "0:05", StringUtil.formatDuration(5));
+        assertEquals("Error in formatDuration().", "0:10", StringUtil.formatDuration(10));
+        assertEquals("Error in formatDuration().", "0:59", StringUtil.formatDuration(59));
+        assertEquals("Error in formatDuration().", "1:00", StringUtil.formatDuration(60));
+        assertEquals("Error in formatDuration().", "1:01", StringUtil.formatDuration(61));
+        assertEquals("Error in formatDuration().", "1:10", StringUtil.formatDuration(70));
+        assertEquals("Error in formatDuration().", "10:00", StringUtil.formatDuration(600));
+        assertEquals("Error in formatDuration().", "45:50", StringUtil.formatDuration(2750));
+        assertEquals("Error in formatDuration().", "1:23:45", StringUtil.formatDuration(5025));
+        assertEquals("Error in formatDuration().", "2:01:40", StringUtil.formatDuration(7300));
+    }
+
     public void testSplit() {
         doTestSplit("u2 rem \"greatest hits\"", "u2", "rem", "greatest hits");
         doTestSplit("u2", "u2");
