@@ -69,7 +69,7 @@ public class SonosServiceRegistration {
 
         private String fieldValue;
 
-        AuthenticationType(String fieldValue){
+        AuthenticationType(String fieldValue) {
             this.fieldValue = fieldValue;
         }
 
@@ -102,7 +102,7 @@ public class SonosServiceRegistration {
 
         // Need the csrf token on each request
         String csrfToken = retrieveCsrfToken(controllerUrl);
-        if(csrfToken != null){
+        if (csrfToken != null) {
             params.add(Pair.of("csrfToken", csrfToken));
         }
 
@@ -171,14 +171,14 @@ public class SonosServiceRegistration {
         Document doc = Jsoup.connect(controllerUrl).get();
         Element element = doc.selectFirst("input[name='csrfToken']");
 
-        if(element != null ){
+        if (element != null) {
             return element.attributes().get("value");
         }
 
         return null;
     }
 
-    private RequestConfig getDefaultRequestConfig(){
+    private RequestConfig getDefaultRequestConfig() {
         return RequestConfig.custom()
                 .setConnectTimeout(20 * 1000) // 20 seconds
                 .setSocketTimeout(20 * 1000) // 20 seconds

@@ -131,7 +131,7 @@ public class SearchServiceTestCase extends AbstractAirsonicHomeTest {
          * The result is not sort, so the album can be arrive in any order. So we didn't have AssertJ or Hamcrest.
          * We use a test before test, but we really use hamcrest!
          */
-        if(result.getMediaFiles().get(0).getTitle().startsWith("01")) {
+        if (result.getMediaFiles().get(0).getTitle().startsWith("01")) {
             Assert.assertEquals("(15) Specify album '" + query + "', and get songs. The first song is ",
                     "01 - Gaspard de la Nuit - i. Ondine", result.getMediaFiles().get(0).getTitle());
             Assert.assertEquals(

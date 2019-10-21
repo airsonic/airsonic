@@ -57,7 +57,7 @@ public class SonosLinkInterceptor extends AbstractSoapInterceptor {
     @Override
     public void handleMessage(SoapMessage message) throws Fault {
         try {
-            if(!settingsService.isSonosEnabled()){
+            if (!settingsService.isSonosEnabled()) {
                 throw new SonosSoapFault.LoginUnauthorized();
             }
 
@@ -67,20 +67,20 @@ public class SonosLinkInterceptor extends AbstractSoapInterceptor {
             if (action != null && openMethod.contains(action)) {
                 LOG.debug("Unable to process SOAP message: " + message.toString());
 
-            } else if( action != null && authenticationType == AuthenticationType.APPLICATION_LINK) {
+            } else if (action != null && authenticationType == AuthenticationType.APPLICATION_LINK) {
 
                 String sonosLinkToken = getToken(message);
                 if (sonosLinkToken != null) {
                     securityService.authenticate(sonosLinkToken);
                 }
-            } else if( action != null && authenticationType == AuthenticationType.ANONYMOUS){
+            } else if (action != null && authenticationType == AuthenticationType.ANONYMOUS) {
                 securityService.authenticate();
             } else {
                 LOG.debug("Unable to process SOAP message : " + message.toString());
                 throw new SonosSoapFault.LoginUnauthorized();
             }
         } catch (JAXBException e) {
-           throw new SonosSoapFault.LoginUnauthorized();
+            throw new SonosSoapFault.LoginUnauthorized();
         }
 
     }

@@ -80,7 +80,7 @@ public class SonosSettingsController {
         return new ModelAndView("sonosSettings", "model", map);
     }
 
-    private  Map<String, Object> getModel(HttpServletRequest request){
+    private  Map<String, Object> getModel(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("sonosEnabled", settingsService.isSonosEnabled());
         map.put("sonosServiceName", settingsService.getSonosServiceName());

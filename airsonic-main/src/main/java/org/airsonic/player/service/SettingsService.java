@@ -1483,11 +1483,11 @@ public class SettingsService {
     }
 
 
-    public String getSonosLinkMethod(){
+    public String getSonosLinkMethod() {
         return getString(KEY_SONOS_LINK_METHOD, DEFAULT_SONOS_LINK_METHOD);
     }
 
-    public void setSonosLinkMethod(String linkMethod){
+    public void setSonosLinkMethod(String linkMethod) {
         setString(KEY_SONOS_LINK_METHOD, linkMethod);
     }
 

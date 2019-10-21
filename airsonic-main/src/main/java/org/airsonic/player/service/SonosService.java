@@ -340,7 +340,7 @@ public class SonosService implements SonosSoap {
             MediaFile song = mediaFileService.getMediaFile(id);
 
             response.setGetMediaMetadataResult(sonosHelper.forSong(song, getUsername(), getRequest()));
-        }catch (SecurityException e){
+        } catch (SecurityException e) {
             LOG.debug("Login denied", e);
             throw new SonosSoapFault.LoginUnauthorized();
         }

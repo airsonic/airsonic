@@ -91,7 +91,7 @@ public class JWTSecurityService {
     /**
      * Create an unexpiring token
      */
-    public String createSonosToken(String username, String householdId, String linkCode){
+    public String createSonosToken(String username, String householdId, String linkCode) {
         return JWT.create()
                 .withClaim(CLAIM_USERNAME, username)
                 .withClaim(CLAIM_HOUSEHOLDID, householdId)

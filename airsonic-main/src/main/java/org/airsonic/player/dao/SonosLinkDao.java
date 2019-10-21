@@ -32,12 +32,12 @@ public class SonosLinkDao extends AbstractDao {
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void removeAll(){
+    public void removeAll() {
         String sql = "delete from sonoslink;";
         update(sql);
     }
 
-    private static class SonosLinkRowMapper implements RowMapper<SonosLink>{
+    private static class SonosLinkRowMapper implements RowMapper<SonosLink> {
         public SonosLink mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new SonosLink(rs.getString(1),
                     rs.getString(2),
