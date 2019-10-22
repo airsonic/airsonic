@@ -60,6 +60,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema35_005" author="muff1nman">
+        <validCheckSum>8:d428266eb794ae2f1361a6eec0f67672</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="system_avatar" />
@@ -91,6 +92,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema35_006" author="muff1nman">
+        <validCheckSum>8:60a4f99dea63d7813457a1b8f981f763</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="custom_avatar" />
@@ -125,6 +127,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema35_007" author="muff1nman">
+        <validCheckSum>8:653b5e40160877def2fe855b03f8ed42</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="user_settings" columnName="avatar_scheme" />

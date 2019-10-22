@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema52_002" author="muff1nman">
+        <validCheckSum>8:9eab62bc3d9cba6a9cfdbc58110a7df8</validCheckSum>
         <validCheckSum>7:8fde86035edbca443a54b1861ae70819</validCheckSum>
         <validCheckSum>7:e7e0f04cd4691ec2b5d955b449e0154b</validCheckSum>
         <preConditions onFail="MARK_RAN">
@@ -53,6 +54,7 @@
         </addColumn>
     </changeSet>
     <changeSet id="schema52_004" author="muff1nman">
+        <validCheckSum>8:a23c4e58cf64a1a76cb2c990342a4890</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="play_queue" />
