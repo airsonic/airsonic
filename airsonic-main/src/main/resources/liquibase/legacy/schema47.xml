@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_002" author="muff1nman">
+        <validCheckSum>8:6a093828880a904bd57feebc0c01ebd1</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="media_file" />
@@ -116,6 +117,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_003" author="muff1nman">
+        <validCheckSum>8:6e1ae92177617c5dad56d1ba85b241c0</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="artist" />
@@ -153,6 +155,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_004" author="muff1nman">
+        <validCheckSum>8:024d07d67c14a4c993d0cb124396c99c</validCheckSum>
         <validCheckSum>7:a3a788d87fd58508ecb4acac39e255c6</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
@@ -246,6 +249,7 @@
         </createIndex>
     </changeSet>
     <changeSet id="schema47_006" author="muff1nman">
+        <validCheckSum>8:2483df97b4b9984bd6ab324d837dcfcb</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="starred_media_file" />
@@ -277,6 +281,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_007" author="muff1nman">
+        <validCheckSum>8:32fc5e9da67a1547e7ef41241f9d198c</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="starred_album" />
@@ -308,6 +313,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_008" author="muff1nman">
+        <validCheckSum>8:f0c5210bccdb697dda5ab5c67f7cfe8b</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="starred_artist" />
@@ -339,6 +345,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_009" author="muff1nman">
+        <validCheckSum>8:d23ef0e36774d376d3893c4e4f77fc08</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="playlist" />
@@ -376,6 +383,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_010" author="muff1nman">
+        <validCheckSum>8:d284dccefde5e604a9bd4e736484fc80</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="playlist" columnName="imported_from" />
@@ -410,6 +418,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_012" author="muff1nman">
+        <validCheckSum>8:15f0f633935a0478e63be5544ac0adcb</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="playlist_user" />
@@ -432,6 +441,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema47_013" author="muff1nman">
+        <validCheckSum>8:9c7f948604127f8800ef527181bc4f59</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="bookmark" />

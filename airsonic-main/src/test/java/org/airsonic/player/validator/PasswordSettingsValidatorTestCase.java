@@ -17,7 +17,7 @@ public class PasswordSettingsValidatorTestCase extends TestCase {
         psc.setPassword("1234");
     }
 
-    private Errors validatePassword(){
+    private Errors validatePassword() {
         PasswordSettingsValidator psv = new PasswordSettingsValidator();
         Errors errors = new BeanPropertyBindingResult(psc, "psv");
         psv.validate(psc, errors);

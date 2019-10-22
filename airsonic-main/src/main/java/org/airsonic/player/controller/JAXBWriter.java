@@ -42,6 +42,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -174,5 +175,13 @@ public class JAXBWriter {
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(date);
         return datatypeFactory.newXMLGregorianCalendar(c).normalize();
+    }
+
+    public XMLGregorianCalendar convertCalendar(Calendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+
+        return datatypeFactory.newXMLGregorianCalendar((GregorianCalendar)calendar).normalize();
     }
 }

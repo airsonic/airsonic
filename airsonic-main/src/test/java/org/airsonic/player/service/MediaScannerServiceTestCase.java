@@ -4,10 +4,14 @@ import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
 import com.google.common.io.Resources;
-
+import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.dao.*;
+import org.airsonic.player.domain.Album;
+import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MusicFolderTestData;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -15,11 +19,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.domain.Album;
-import org.airsonic.player.domain.Artist;
-import org.airsonic.player.util.HomeRule;
-import org.airsonic.player.util.MusicFolderTestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
@@ -28,9 +27,9 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -143,7 +142,7 @@ public class MediaScannerServiceTestCase {
 
         // display out metrics report
         ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-                .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         reporter.report();
