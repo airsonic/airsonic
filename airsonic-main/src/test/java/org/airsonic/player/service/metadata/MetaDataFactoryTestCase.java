@@ -49,7 +49,9 @@ public class MetaDataFactoryTestCase {
     @ClassRule
     public static TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    private static File someMp3, someFlv, someJunk;
+    private static File someMp3;
+    private static File someFlv;
+    private static File someJunk;
 
     @BeforeClass
     public static void createTestFiles() throws IOException {
