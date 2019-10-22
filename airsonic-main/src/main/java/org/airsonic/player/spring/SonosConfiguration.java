@@ -2,7 +2,6 @@ package org.airsonic.player.spring;
 
 import org.airsonic.player.service.SonosService;
 import org.airsonic.player.service.sonos.SonosFaultInterceptor;
-import org.airsonic.player.service.sonos.SonosHelper;
 import org.apache.cxf.jaxws.EndpointImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,21 +16,11 @@ import java.util.Collections;
 public class SonosConfiguration {
 
     @Bean
-    public SonosFaultInterceptor sonosFaultInterceptor() {
-        return new SonosFaultInterceptor();
-    }
-
-    @Bean
-    public Endpoint sonosEndpoint(SonosService sonosService) {
+    public Endpoint sonosEndpoint(SonosService sonosService, SonosFaultInterceptor sonosFaultInterceptor) {
         EndpointImpl endpoint = new EndpointImpl(sonosService);
         endpoint.publish("/Sonos");
-        endpoint.setOutFaultInterceptors(Collections.singletonList(sonosFaultInterceptor()));
+        endpoint.setOutFaultInterceptors(Collections.singletonList(sonosFaultInterceptor));
         return endpoint;
-    }
-
-    @Bean
-    public SonosHelper sonosHelper() {
-        return new SonosHelper();
     }
 
 }

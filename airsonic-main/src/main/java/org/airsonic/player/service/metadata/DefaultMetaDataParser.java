@@ -33,7 +33,7 @@ import java.io.File;
  * @author Sindre Mehus
  */
 @Service
-@Order(1000)
+@Order(200)
 public class DefaultMetaDataParser extends MetaDataParser {
 
     @Autowired

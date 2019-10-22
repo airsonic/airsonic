@@ -1,58 +1,23 @@
 package org.airsonic.player.spring;
 
+import java.util.Properties;
+
 import org.airsonic.player.controller.PodcastController;
-import org.airsonic.player.service.SecurityService;
-import org.airsonic.player.service.SettingsService;
-import org.airsonic.player.theme.CustomThemeResolver;
-import org.airsonic.player.theme.CustomThemeSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.web.servlet.ThemeResolver;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
-import java.util.Properties;
 
 @Configuration
-public class ServletConfiguration {
-
-    @Bean
-    public SimpleUrlHandlerMapping urlMapping(PodcastController podcastController) {
-        SimpleUrlHandlerMapping handlerMapping = new SimpleUrlHandlerMapping();
-        handlerMapping.setAlwaysUseFullPath(true);
-        Properties properties = new Properties();
-        properties.put("/podcast/**", podcastController);
-        handlerMapping.setMappings(properties);
-        return handlerMapping;
-    }
-
-    @Bean
-    public ResourceBundleMessageSource messageSource() {
-        ResourceBundleMessageSource resourceMessageSource = new ResourceBundleMessageSource();
-        resourceMessageSource.setBasename("org.airsonic.player.i18n.ResourceBundle");
-        return resourceMessageSource;
-    }
-
-    @Bean
-    public CustomThemeSource themeSource(SettingsService settingsService) {
-        CustomThemeSource customThemeSource = new CustomThemeSource();
-        customThemeSource.setBasenamePrefix("org.airsonic.player.theme.");
-        customThemeSource.setSettingsService(settingsService);
-        return customThemeSource;
-    }
-
-    @Bean
-    public ThemeResolver themeResolver(SecurityService securityService, SettingsService settingsService) {
-        CustomThemeResolver customThemeResolver = new CustomThemeResolver();
-        customThemeResolver.setSecurityService(securityService);
-        customThemeResolver.setSettingsService(settingsService);
-        return customThemeResolver;
-    }
-
-    @Bean
+@EnableWebMvc
+public class ServletConfiguration extends WebMvcConfigurerAdapter {
+	@Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setViewClass(JstlView.class);
@@ -60,4 +25,27 @@ public class ServletConfiguration {
         resolver.setSuffix(".jsp");
         return resolver;
     }
+	
+    @Bean
+    public SimpleUrlHandlerMapping urlMapping(PodcastController podcastController) {
+        SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
+        
+        // Default is intmax, so need to set a higher priority than
+        // ResourceHttpRequestHandler below (which is intmax-1). Otherwise, that will
+        // intercept every request before it gets here
+        mapping.setOrder(Integer.MAX_VALUE - 2);
+        
+        mapping.setAlwaysUseFullPath(true);
+        
+        Properties properties = new Properties();
+        properties.put("/podcast/**", podcastController);
+        mapping.setMappings(properties);
+        
+        return mapping;
+    }
+
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/**").addResourceLocations("/");
+	}
 }

@@ -24,6 +24,7 @@ import org.airsonic.player.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,7 +72,7 @@ public class UserDao extends AbstractDao {
     private final String userTableQuote;
 
     @Autowired
-    public UserDao(String userTableQuote) {
+    public UserDao(@Value("${DatabaseUsertableQuote:}") String userTableQuote) {
         this.userTableQuote = userTableQuote;
     }
 

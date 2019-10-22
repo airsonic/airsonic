@@ -81,14 +81,10 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    public String userTableQuote(@Value("${DatabaseUsertableQuote:}") String value) {
-        return value;
-    }
-
-    @Bean
     public SpringLiquibase liquibase(DataSource dataSource,
                                      @Value("${DatabaseMysqlMaxlength:512}")
                                      String mysqlVarcharLimit,
+                                     @Value("${DatabaseUsertableQuote:}")
                                      String userTableQuote) {
         SpringLiquibase springLiquibase = new SpringLiquibase();
         springLiquibase.setDataSource(dataSource);
