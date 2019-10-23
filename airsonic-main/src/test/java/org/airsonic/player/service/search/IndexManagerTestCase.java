@@ -26,8 +26,6 @@ import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.SearchCriteria;
 import org.airsonic.player.domain.SearchResult;
 import org.airsonic.player.service.SearchService;
-import org.airsonic.player.service.search.IndexManager;
-import org.airsonic.player.service.search.IndexType;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,9 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.springframework.util.ObjectUtils.isEmpty;

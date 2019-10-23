@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema28_002" author="muff1nman">
+        <validCheckSum>8:df10cf4177190084441bc819d0a1e1c3</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_settings" />
@@ -99,6 +100,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema28_003" author="muff1nman">
+        <validCheckSum>8:22047927537571b66b940c3da4c522ee</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="transcoding" />

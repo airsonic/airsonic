@@ -16,7 +16,7 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.3.1</cxf.version>
+        <cxf.version>3.3.3</cxf.version>
     </properties>
 
     <repositories>
@@ -112,17 +112,17 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.10.0.pr3</version>
+                <version>2.10.0</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.10.0.pr3</version>
+                <version>2.10.0</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.10.0.pr3</version>
+                <version>2.10.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -249,6 +249,7 @@
                                 <encoding>UTF-8</encoding>
                                 <consoleOutput>true</consoleOutput>
                                 <failOnViolation>true</failOnViolation>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             </configuration>
                             <goals>
                                 <goal>check</goal>
@@ -266,7 +267,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>5.1.0</version>
+                    <version>5.2.2</version>
                     <inherited>true</inherited>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
@@ -292,7 +293,9 @@
                     <version>2.22.0</version>
                         <configuration>
                             <!-- #1186 Temporarily skip a test. -->
-                            <excludes>org.airsonic.player.service.search.*TestCase.java</excludes>
+                            <excludes>
+                                <exclude>org.airsonic.player.service.search.*TestCase.java</exclude>
+                            </excludes>
                         </configuration>
                 </plugin>
                 <plugin>

@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema36_002" author="muff1nman">
+        <validCheckSum>8:b32e656eb1338a3ecaeec3cfe3c2b8c3</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="player" columnName="technology" />

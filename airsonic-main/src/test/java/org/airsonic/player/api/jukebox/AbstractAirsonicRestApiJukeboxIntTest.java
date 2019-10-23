@@ -152,9 +152,9 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
     }
 
     private String convertDateToString(Date date) {
-       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-       formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-       return formatter.format(date);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return formatter.format(date);
     }
 
     private ResultMatcher playListItem1isCorrect() {

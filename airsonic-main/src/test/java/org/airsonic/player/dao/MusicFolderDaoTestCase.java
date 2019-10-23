@@ -18,10 +18,10 @@
  Based upon Subsonic, Copyright 2009 (C) Sindre Mehus
  */
 package org.airsonic.player.dao;
+import org.airsonic.player.domain.MusicFolder;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.airsonic.player.domain.MusicFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;

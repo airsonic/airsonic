@@ -31,6 +31,7 @@
         <rollback />
     </changeSet>
     <changeSet id="schema45_003" author="muff1nman">
+        <validCheckSum>8:958f3a4e916720a8867885a2cf940d54</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="share" />

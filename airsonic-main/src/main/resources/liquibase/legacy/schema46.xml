@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema46_002" author="muff1nman">
+        <validCheckSum>8:a06ad5c377b5e13418ff69d33c6dc496</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="transcoding2" />

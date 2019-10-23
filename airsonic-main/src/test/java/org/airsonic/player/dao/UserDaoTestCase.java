@@ -1,11 +1,11 @@
 package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.AvatarScheme;
+import org.airsonic.player.domain.TranscodeScheme;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.domain.UserSettings;
 import org.junit.Before;
 import org.junit.Test;
-import org.airsonic.player.domain.TranscodeScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
@@ -51,7 +51,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
 
     @Test
     public void testCreateUserTransactionalError() {
-        User user = new User ("muff1nman", "secret", "noemail") {
+        User user = new User("muff1nman", "secret", "noemail") {
             @Override
             public boolean isPlaylistRole() {
                 throw new RuntimeException();

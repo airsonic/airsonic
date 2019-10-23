@@ -47,6 +47,7 @@
         </createIndex>
     </changeSet>
     <changeSet id="schema53_003" author="muff1nman">
+        <validCheckSum>8:354ba24098a5afe59761b39a36060298</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="user_settings" columnName="default_album_list" />
@@ -71,6 +72,7 @@
         </addColumn>
     </changeSet>
     <changeSet id="schema53_005" author="muff1nman">
+        <validCheckSum>8:a7e207e75eb9fbe25c2f911e89a26f21</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="podcast_channel" columnName="image_url" />

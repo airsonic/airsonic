@@ -16,6 +16,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema29_002" author="muff1nman">
+        <validCheckSum>8:fe1e8eafd7b3d08d810350d9a02c0f7b</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_rating" />
