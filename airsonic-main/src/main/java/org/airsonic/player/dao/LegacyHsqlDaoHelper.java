@@ -2,11 +2,12 @@ package org.airsonic.player.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import javax.annotation.PreDestroy;
-import javax.sql.DataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,13 +15,11 @@ import java.sql.SQLException;
 /**
  * Special Dao Helper with additional features for managing the legacy embedded HSQL database.
  */
+@Configuration("daoHelper")
+@Profile("legacy")
 public class LegacyHsqlDaoHelper extends GenericDaoHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(LegacyHsqlDaoHelper.class);
-
-    public LegacyHsqlDaoHelper(DataSource dataSource) {
-        super(dataSource);
-    }
 
     @Override
     public void checkpoint() {

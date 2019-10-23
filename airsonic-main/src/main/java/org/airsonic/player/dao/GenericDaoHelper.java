@@ -1,25 +1,27 @@
 package org.airsonic.player.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
+@Configuration("daoHelper")
+@Profile("!legacy")
+@ConditionalOnMissingBean
 public class GenericDaoHelper implements DaoHelper {
 
-    final JdbcTemplate jdbcTemplate;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
-    final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Autowired
+    NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    final DataSource dataSource;
-
-    public GenericDaoHelper(
-            DataSource dataSource
-    ) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
+    @Autowired
+    DataSource dataSource;
 
     @Override
     public JdbcTemplate getJdbcTemplate() {
