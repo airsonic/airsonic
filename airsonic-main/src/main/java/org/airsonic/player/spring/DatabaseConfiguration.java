@@ -1,5 +1,7 @@
 package org.airsonic.player.spring;
 
+import liquibase.database.DatabaseFactory;
+import liquibase.integration.spring.SpringLiquibase;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.Util;
 import org.apache.commons.dbcp2.BasicDataSource;
@@ -69,6 +71,9 @@ public class DatabaseConfiguration {
                                      String mysqlVarcharLimit,
                                      @Value("${DatabaseUsertableQuote:}")
                                      String userTableQuote) {
+        // add support for our hqldb that doesn't support schemas
+        DatabaseFactory.getInstance().register(new HsqlDatabase());
+        
         SpringLiquibase springLiquibase = new SpringLiquibase();
         springLiquibase.setDataSource(dataSource);
         springLiquibase.setChangeLog("classpath:liquibase/db-changelog.xml");
