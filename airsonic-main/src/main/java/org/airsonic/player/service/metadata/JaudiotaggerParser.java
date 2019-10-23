@@ -36,6 +36,7 @@ import org.jaudiotagger.tag.reference.GenreTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -53,6 +54,7 @@ import java.util.regex.Pattern;
  * @author Sindre Mehus
  */
 @Service
+@Order(0)
 public class JaudiotaggerParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(JaudiotaggerParser.class);

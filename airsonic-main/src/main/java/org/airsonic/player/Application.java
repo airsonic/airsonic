@@ -1,6 +1,5 @@
 package org.airsonic.player;
 
-import net.sf.ehcache.constructs.web.ShutdownListener;
 import org.airsonic.player.filter.*;
 import org.directwebremoting.servlet.DwrServlet;
 import org.slf4j.Logger;
@@ -19,12 +18,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
 import org.springframework.util.ReflectionUtils;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletContextListener;
 
 import java.lang.reflect.Method;
 
@@ -35,11 +31,6 @@ import java.lang.reflect.Method;
         DataSourceTransactionManagerAutoConfiguration.class,
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
-@Configuration
-@ImportResource({"classpath:/applicationContext-service.xml",
-        "classpath:/applicationContext-cache.xml",
-        "classpath:/applicationContext-sonos.xml",
-        "classpath:/servlet.xml"})
 public class Application extends SpringBootServletInitializer implements EmbeddedServletContainerCustomizer {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
@@ -59,11 +50,6 @@ public class Application extends SpringBootServletInitializer implements Embedde
     @Bean
     public ServletRegistrationBean cxfServletBean() {
         return new ServletRegistrationBean(new org.apache.cxf.transport.servlet.CXFServlet(), "/ws/*");
-    }
-
-    @Bean
-    public ServletContextListener ehCacheShutdownListener() {
-        return new ShutdownListener();
     }
 
     @Bean

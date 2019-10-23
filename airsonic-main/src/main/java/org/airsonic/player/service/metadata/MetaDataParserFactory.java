@@ -19,6 +19,9 @@
  */
 package org.airsonic.player.service.metadata;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.io.File;
 import java.util.List;
 
@@ -27,11 +30,13 @@ import java.util.List;
  *
  * @author Sindre Mehus
  */
+@Component
 public class MetaDataParserFactory {
 
     private List<MetaDataParser> parsers;
 
-    public void setParsers(List<MetaDataParser> parsers) {
+    @Autowired
+    public MetaDataParserFactory(List<MetaDataParser> parsers) {
         this.parsers = parsers;
     }
 
