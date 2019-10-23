@@ -40,6 +40,7 @@
         </addColumn>
     </changeSet>
     <changeSet id="schema32_004" author="muff1nman">
+        <validCheckSum>8:8f6db2abc741f08aab64771fc1064c03</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="podcast_channel" />
@@ -64,6 +65,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema32_005" author="muff1nman">
+        <validCheckSum>8:95f9f9399c94a8672b6d5102ba2b0a80</validCheckSum>
         <validCheckSum>7:0d4fbe2adcca829c14d12a5b1a8229c5</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
