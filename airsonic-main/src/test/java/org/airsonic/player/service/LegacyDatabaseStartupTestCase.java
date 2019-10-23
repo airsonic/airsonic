@@ -8,17 +8,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
 
-@ContextConfiguration(locations = {
-        "/applicationContext-service.xml",
-        "/applicationContext-cache.xml",
-        "/applicationContext-testdb.xml",
-        "/applicationContext-mockSonos.xml"})
+@SpringBootTest
 public class LegacyDatabaseStartupTestCase {
 
     @ClassRule
