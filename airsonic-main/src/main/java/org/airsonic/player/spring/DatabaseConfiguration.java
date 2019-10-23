@@ -4,7 +4,6 @@ import liquibase.database.DatabaseFactory;
 import liquibase.integration.spring.SpringLiquibase;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.Util;
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -49,8 +48,7 @@ public class DatabaseConfiguration {
     @Profile("embed")
     public DataSource embedDataSource() {
         return DataSourceBuilder.create()
-                //connection pool
-                .type(BasicDataSource.class)
+                //find connection pool automatically
                 .username(user)
                 .password(password)
                 .driverClassName(driver)
