@@ -2,29 +2,17 @@ package org.airsonic.player.dao;
 
 import org.airsonic.player.util.HomeRule;
 import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.context.junit4.SpringRunner;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class DaoTestCaseBean2 {
     @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule();
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement newBase = airsonicRule.apply(base, description);
-            return super.apply(newBase, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
+    public static final HomeRule airsonicRule = new HomeRule();
 
     @Autowired
     GenericDaoHelper genericDaoHelper;

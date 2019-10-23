@@ -3,45 +3,31 @@ package org.airsonic.player.service;
 import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.util.HomeRule;
 import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.rules.SpringClassRule;
-import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
+import java.io.IOException;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 public class LegacyDatabaseStartupTestCase {
 
     @ClassRule
-    public static final SpringClassRule classRule = new SpringClassRule() {
-        HomeRule airsonicRule = new HomeRule() {
-            @Override
-            protected void before() throws Throwable {
-                super.before();
-                String homeParent = TestCaseUtils.airsonicHomePathForTest();
-                System.setProperty("airsonic.home", TestCaseUtils.airsonicHomePathForTest());
-                TestCaseUtils.cleanAirsonicHomeForTest();
-                File dbDirectory = new File(homeParent, "/db");
-                FileUtils.forceMkdir(dbDirectory);
-                org.airsonic.player.util.FileUtils.copyResourcesRecursively(getClass().getResource("/db/pre-liquibase/db"), new File(homeParent));
-            }
-        };
-
-        @Override
-        public Statement apply(Statement base, Description description) {
-            Statement spring = super.apply(base, description);
-            return airsonicRule.apply(spring, description);
-        }
-    };
-
-    @Rule
-    public final SpringMethodRule springMethodRule = new SpringMethodRule();
-
+    public static final HomeRule airsonicRule = new HomeRule();
+    
+    @BeforeClass
+    public static void setupOnce() throws IOException {
+        String homeParent = TestCaseUtils.airsonicHomePathForTest();
+        File dbDirectory = new File(homeParent, "/db");
+        FileUtils.forceMkdir(dbDirectory);
+        org.airsonic.player.util.FileUtils.copyResourcesRecursively(LegacyDatabaseStartupTestCase.class.getResource("/db/pre-liquibase/db"), new File(homeParent));
+    }
+    
     @Test
     public void testStartup() {
         System.out.println("Successful startup");
