@@ -1,15 +1,12 @@
 package org.airsonic.player.service.metadata;
 
-import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.HomeRule;
-import org.apache.commons.io.FileUtils;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -20,7 +17,6 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MetaDataFactoryTestCase {
 
     @ClassRule
@@ -35,12 +31,6 @@ public class MetaDataFactoryTestCase {
 
     @BeforeClass
     public static void createTestFiles() throws IOException {
-        String homeParent = TestCaseUtils.airsonicHomePathForTest();
-        
-        File dbDirectory = new File(homeParent, "/db");
-        FileUtils.forceMkdir(dbDirectory);
-        org.airsonic.player.util.FileUtils.copyResourcesRecursively(MetaDataFactoryTestCase.class.getResource("/db/pre-liquibase/db"), new File(homeParent));
-        
         someMp3 = temporaryFolder.newFile("some.mp3");
         someFlv = temporaryFolder.newFile("some.flv");
         someJunk = temporaryFolder.newFile("some.junk");
