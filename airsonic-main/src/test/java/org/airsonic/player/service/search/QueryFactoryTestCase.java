@@ -4,15 +4,12 @@ package org.airsonic.player.service.search;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
-import org.airsonic.player.util.HomeRule;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.lucene.search.Query;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
@@ -29,14 +26,9 @@ import static org.junit.Assert.assertEquals;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@DirtiesContext(
-    classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@Import({ QueryFactory.class, AnalyzerFactory.class })
 public class QueryFactoryTestCase {
 
-    @ClassRule
-    public static final HomeRule airsonicRule = new HomeRule();
-    
     @Autowired
     private QueryFactory queryFactory;
 
