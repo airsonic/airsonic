@@ -213,6 +213,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema28_004" author="muff1nman">
+        <validCheckSum>8:7079d0b6d0cd7b644d2d4526b9d72f07</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="player_transcoding" />

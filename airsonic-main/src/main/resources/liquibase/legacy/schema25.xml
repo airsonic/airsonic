@@ -92,7 +92,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema25_005" author="muff1nman">
-        <validCheckSum>8:4d92e7c97abc6f197f1236b0353ec2f7</validCheckSum>
+        <validCheckSum>8:73d2b294465ee42488a8f0238cf686cc</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_role" />
