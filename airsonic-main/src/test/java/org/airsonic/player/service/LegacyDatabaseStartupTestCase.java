@@ -7,11 +7,16 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.File;
 import java.io.IOException;
+
+import javax.sql.DataSource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -28,9 +33,12 @@ public class LegacyDatabaseStartupTestCase {
         org.airsonic.player.util.FileUtils.copyResourcesRecursively(LegacyDatabaseStartupTestCase.class.getResource("/db/pre-liquibase/db"), new File(homeParent));
     }
     
+    @Autowired
+    DataSource dataSource;
+    
     @Test
     public void testStartup() {
-        System.out.println("Successful startup");
+        assertThat(dataSource).isNotNull();
     }
 
 }
