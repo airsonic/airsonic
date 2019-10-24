@@ -19,7 +19,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.io.ByteArrayInputStream;
@@ -190,7 +190,7 @@ public class PlaylistServiceTestImport {
 
         @Override
         public Object answer(InvocationOnMock invocationOnMock) {
-            Playlist playlist = invocationOnMock.getArgumentAt(0, Playlist.class);
+            Playlist playlist = invocationOnMock.getArgument(0);
             playlist.setId(id);
             return null;
         }
@@ -200,7 +200,7 @@ public class PlaylistServiceTestImport {
 
         @Override
         public Object answer(InvocationOnMock invocationOnMock) {
-            File file = invocationOnMock.getArgumentAt(0, File.class);
+            File file = invocationOnMock.getArgument(0);
             MediaFile mediaFile = new MediaFile();
             mediaFile.setPath(file.getPath());
             return mediaFile;

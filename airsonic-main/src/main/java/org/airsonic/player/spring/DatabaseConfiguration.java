@@ -5,7 +5,7 @@ import liquibase.integration.spring.SpringLiquibase;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.Util;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

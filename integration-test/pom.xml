@@ -89,7 +89,12 @@
         <dependency>
             <groupId>com.spotify</groupId>
             <artifactId>docker-client</artifactId>
-            <version>8.14.5</version>
+            <version>8.16.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,13 +120,11 @@
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
-            <version>2.6.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-matchers</artifactId>
-            <version>2.6.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
@@ -26,7 +26,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableWebMvc
-public class ServletConfiguration extends WebMvcConfigurerAdapter {
+public class ServletConfiguration implements WebMvcConfigurer {
     /**
      * Registers the DWR servlet.
      *

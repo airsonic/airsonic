@@ -83,7 +83,7 @@ public class SecurityService implements UserDetailsService {
 
         return new org.springframework.security.core.userdetails.User(
                 username,
-                user.getPassword(),
+                "{noop}" + user.getPassword(),
                 !user.isLdapAuthenticated(),
                 true,
                 true,
