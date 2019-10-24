@@ -266,17 +266,11 @@ public final class StringUtil {
             return null;
         }
 
-        String[] elements = s.split("_");
-        switch (elements.length) {
-            case 0:
-                return new Locale(s, "", "");
-            case 1:
-                return new Locale(elements[0], "", "");
-            case 2:
-                return new Locale(elements[0], elements[1], "");
-            default:
-                return new Locale(elements[0], elements[1], elements[2]);
+        List<String> elements = new ArrayList<>(Arrays.asList(s.split("_", 3)));
+        while (elements.size() < 3) {
+            elements.add("");
         }
+        return new Locale(elements.get(0), elements.get(1), elements.get(2));
     }
 
     /**
