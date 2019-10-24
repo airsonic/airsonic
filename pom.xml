@@ -349,6 +349,7 @@
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat:tomcat-annotations-api:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat.embed:tomcat-embed-el*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>*javax*:*</ignoredUsedUndeclaredDependency>
+                                <ignoredUsedUndeclaredDependency>org.hamcrest:*</ignoredUsedUndeclaredDependency>
                             </ignoredUsedUndeclaredDependencies>
                             <ignoredUnusedDeclaredDependencies>
                                 <ignoredUnusedDeclaredDependency>com.sun.mail:jakarta.mail*</ignoredUnusedDeclaredDependency>
@@ -358,6 +359,7 @@
                                 <!-- Needed for airsonic-booter to load Airsonic correctly -->
                                 <ignoredUnusedDeclaredDependency>org.springframework.security:*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot*</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>jakarta.xml.ws:jakarta.xml.ws-api</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>
