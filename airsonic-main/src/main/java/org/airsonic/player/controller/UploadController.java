@@ -27,7 +27,6 @@ import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.StatusService;
 import org.airsonic.player.upload.MonitoredDiskFileItemFactory;
 import org.airsonic.player.upload.UploadListener;
-import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -184,12 +183,10 @@ public class UploadController {
                     }
 
                     entryFile.getParentFile().mkdirs();
-                    InputStream inputStream = null;
-                    OutputStream outputStream = null;
-                    try {
-                        inputStream = zipFile.getInputStream(entry);
-                        outputStream = new FileOutputStream(entryFile);
-
+                    try (
+                            OutputStream outputStream = new FileOutputStream(entryFile);
+                            InputStream inputStream = zipFile.getInputStream(entry)
+                    ) {
                         byte[] buf = new byte[8192];
                         while (true) {
                             int n = inputStream.read(buf);
@@ -198,19 +195,14 @@ public class UploadController {
                             }
                             outputStream.write(buf, 0, n);
                         }
-
                         LOG.info("Unzipped " + entryFile);
                         unzippedFiles.add(entryFile);
-                    } finally {
-                        FileUtil.closeQuietly(inputStream);
-                        FileUtil.closeQuietly(outputStream);
                     }
                 }
             }
 
             zipFile.close();
             file.delete();
-
         }
     }
 

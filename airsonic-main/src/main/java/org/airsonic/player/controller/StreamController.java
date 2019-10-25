@@ -26,7 +26,6 @@ import org.airsonic.player.io.ShoutCastOutputStream;
 import org.airsonic.player.security.JWTAuthenticationToken;
 import org.airsonic.player.service.*;
 import org.airsonic.player.service.sonos.SonosHelper;
-import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.HttpRange;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
@@ -86,7 +85,6 @@ public class StreamController {
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TransferStatus status = null;
-        PlayQueueInputStream in = null;
         Player player = playerService.getPlayer(request, response, false, true);
         User user = securityService.getUserByName(player.getUsername());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -225,10 +223,11 @@ public class StreamController {
 
             status = statusService.createStreamStatus(player);
 
-            in = new PlayQueueInputStream(player, status, maxBitRate, preferredTargetFormat, videoTranscodingSettings,
-                    transcodingService, audioScrobblerService, mediaFileService, searchService);
-
-            try (OutputStream out = makeOutputStream(request, response, range, isSingleFile, player, settingsService)) {
+            try (
+                PlayQueueInputStream in = new PlayQueueInputStream(player, status, maxBitRate, preferredTargetFormat, videoTranscodingSettings,
+                        transcodingService, audioScrobblerService, mediaFileService, searchService);
+                OutputStream out = makeOutputStream(request, response, range, isSingleFile, player, settingsService)
+            ) {
                 final int BUFFER_SIZE = 2048;
                 byte[] buf = new byte[BUFFER_SIZE];
 
@@ -278,9 +277,7 @@ public class StreamController {
                 securityService.updateUserByteCounts(user, status.getBytesTransfered(), 0L, 0L);
                 statusService.removeStreamStatus(status);
             }
-            FileUtil.closeQuietly(in);
         }
-        return;
     }
 
     /**

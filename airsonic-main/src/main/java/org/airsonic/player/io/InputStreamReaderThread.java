@@ -50,18 +50,14 @@ public class InputStreamReaderThread extends Thread {
     }
 
     public void run() {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(input));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 if (log) {
                     LOG.info('(' + name + ") " + line);
                 }
             }
-        } catch (IOException x) {
-            // Intentionally ignored.
+        } catch (IOException ignored) {
         } finally {
-            FileUtil.closeQuietly(reader);
             FileUtil.closeQuietly(input);
         }
     }
