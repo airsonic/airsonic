@@ -34,7 +34,12 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Provides services for scanning the music library.
@@ -49,7 +54,9 @@ public class MediaScannerService {
     private MediaLibraryStatistics statistics;
 
     private boolean scanning;
-    private Timer timer;
+    
+    private ScheduledExecutorService scheduler;
+    
     @Autowired
     private SettingsService settingsService;
     @Autowired
@@ -82,18 +89,10 @@ public class MediaScannerService {
      * Schedule background execution of media library scanning.
      */
     public synchronized void schedule() {
-        if (timer != null) {
-            timer.cancel();
+        if (scheduler != null) {
+            scheduler.shutdown();
         }
-        timer = new Timer(true);
-
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                scanLibrary();
-            }
-        };
-
+        
         long daysBetween = settingsService.getIndexCreationInterval();
         int hour = settingsService.getIndexCreationHour();
 
@@ -101,23 +100,19 @@ public class MediaScannerService {
             LOG.info("Automatic media scanning disabled.");
             return;
         }
+        
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextRun = now.withHour(hour).withMinute(0).withSecond(0);
+        if (now.compareTo(nextRun) > 0)
+            nextRun = nextRun.plusDays(1);
 
-        Date now = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
-        cal.set(Calendar.HOUR_OF_DAY, hour);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
+        long initialDelay = ChronoUnit.MILLIS.between(now, nextRun);
+          
+        scheduler.scheduleAtFixedRate(() -> scanLibrary(), initialDelay, TimeUnit.DAYS.toMillis(daysBetween), TimeUnit.MILLISECONDS);
 
-        if (cal.getTime().before(now)) {
-            cal.add(Calendar.DATE, 1);
-        }
-
-        Date firstTime = cal.getTime();
-        long period = daysBetween * 24L * 3600L * 1000L;
-        timer.schedule(task, firstTime, period);
-
-        LOG.info("Automatic media library scanning scheduled to run every " + daysBetween + " day(s), starting at " + firstTime);
+        LOG.info("Automatic media library scanning scheduled to run every {} day(s), starting at {}", daysBetween, nextRun);
 
         // In addition, create index immediately if it doesn't exist on disk.
         if (settingsService.getLastScanned() == null) {
