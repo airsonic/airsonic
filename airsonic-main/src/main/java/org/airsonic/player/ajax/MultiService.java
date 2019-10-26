@@ -34,9 +34,9 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -106,7 +106,7 @@ public class MultiService {
         String username = securityService.getCurrentUsername(request);
         UserSettings userSettings = settingsService.getUserSettings(username);
         userSettings.setShowSideBar(show);
-        userSettings.setChanged(new Date());
+        userSettings.setChanged(Instant.now());
         settingsService.updateUserSettings(userSettings);
     }
 

@@ -21,7 +21,7 @@ package org.airsonic.player.domain;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * Represens a remote player.  A player has a unique ID, a user-defined name, a logged-on user,
@@ -41,7 +41,7 @@ public class Player {
     private boolean isDynamicIp = true;
     private boolean isAutoControlEnabled = true;
     private boolean isM3uBomEnabled = true;
-    private Date lastSeen;
+    private Instant lastSeen;
     private TranscodeScheme transcodeScheme = TranscodeScheme.OFF;
     private PlayQueue playQueue;
     private String javaJukeboxMixer;
@@ -217,7 +217,7 @@ public class Player {
      *
      * @return The time when the player was last seen.
      */
-    public Date getLastSeen() {
+    public Instant getLastSeen() {
         return lastSeen;
     }
 
@@ -226,7 +226,7 @@ public class Player {
      *
      * @param lastSeen The time when the player was last seen.
      */
-    public void setLastSeen(Date lastSeen) {
+    public void setLastSeen(Instant lastSeen) {
         this.lastSeen = lastSeen;
     }
 

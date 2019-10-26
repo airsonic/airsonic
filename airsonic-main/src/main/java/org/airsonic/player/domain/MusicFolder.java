@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -40,7 +40,7 @@ public class MusicFolder implements Serializable {
     private File path;
     private String name;
     private boolean isEnabled;
-    private Date changed;
+    private Instant changed;
 
     /**
      * Creates a new music folder.
@@ -51,7 +51,7 @@ public class MusicFolder implements Serializable {
      * @param enabled Whether the folder is enabled.
      * @param changed When the corresponding database entry was last changed.
      */
-    public MusicFolder(Integer id, File path, String name, boolean enabled, Date changed) {
+    public MusicFolder(Integer id, File path, String name, boolean enabled, Instant changed) {
         this.id = id;
         this.path = path;
         this.name = name;
@@ -67,7 +67,7 @@ public class MusicFolder implements Serializable {
      * @param enabled Whether the folder is enabled.
      * @param changed When the corresponding database entry was last changed.
      */
-    public MusicFolder(File path, String name, boolean enabled, Date changed) {
+    public MusicFolder(File path, String name, boolean enabled, Instant changed) {
         this(null, path, name, enabled, changed);
     }
 
@@ -139,7 +139,7 @@ public class MusicFolder implements Serializable {
      *
      * @return When the corresponding database entry was last changed.
      */
-    public Date getChanged() {
+    public Instant getChanged() {
         return changed;
     }
 
@@ -148,7 +148,7 @@ public class MusicFolder implements Serializable {
      *
      * @param changed When the corresponding database entry was last changed.
      */
-    public void setChanged(Date changed) {
+    public void setChanged(Instant changed) {
         this.changed = changed;
     }
 

@@ -91,7 +91,7 @@ public class AvatarDao extends AbstractDao {
 
     private static class AvatarRowMapper implements RowMapper<Avatar> {
         public Avatar mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Avatar(rs.getInt(1), rs.getString(2), rs.getTimestamp(3), rs.getString(4),
+            return new Avatar(rs.getInt(1), rs.getString(2), rs.getTimestamp(3).toInstant(), rs.getString(4),
                               rs.getInt(5), rs.getInt(6), rs.getBytes(7));
         }
     }

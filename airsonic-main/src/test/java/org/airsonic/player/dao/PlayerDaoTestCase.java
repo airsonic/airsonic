@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -39,7 +39,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBean2 {
         player.setAutoControlEnabled(false);
         player.setTechnology(PlayerTechnology.EXTERNAL_WITH_PLAYLIST);
         player.setClientId("android");
-        player.setLastSeen(new Date());
+        player.setLastSeen(Instant.now());
         player.setTranscodeScheme(TranscodeScheme.MAX_160);
 
         playerDao.createPlayer(player);
@@ -135,7 +135,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBean2 {
         player.setIpAddress("ipaddress");
         player.setDynamicIp(true);
         player.setAutoControlEnabled(false);
-        player.setLastSeen(new Date());
+        player.setLastSeen(Instant.now());
         player.setTranscodeScheme(TranscodeScheme.MAX_160);
 
         playerDao.updatePlayer(player);

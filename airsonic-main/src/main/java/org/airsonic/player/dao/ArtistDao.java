@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -155,11 +156,11 @@ public class ArtistDao extends AbstractDao {
                           rowMapper, args);
     }
 
-    public void markPresent(String artistName, Date lastScanned) {
+    public void markPresent(String artistName, Instant lastScanned) {
         update("update artist set present=?, last_scanned = ? where name=?", true, lastScanned, artistName);
     }
 
-    public void markNonPresent(Date lastScanned) {
+    public void markNonPresent(Instant lastScanned) {
         int minId = queryForInt("select min(id) from artist where last_scanned < ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from artist where last_scanned < ? and present", 0, lastScanned);
 
@@ -185,15 +186,15 @@ public class ArtistDao extends AbstractDao {
 
     public void starArtist(int artistId, String username) {
         unstarArtist(artistId, username);
-        update("insert into starred_artist(artist_id, username, created) values (?,?,?)", artistId, username, new Date());
+        update("insert into starred_artist(artist_id, username, created) values (?,?,?)", artistId, username, Instant.now());
     }
 
     public void unstarArtist(int artistId, String username) {
         update("delete from starred_artist where artist_id=? and username=?", artistId, username);
     }
 
-    public Date getArtistStarredDate(int artistId, String username) {
-        return queryForDate("select created from starred_artist where artist_id=? and username=?", null, artistId, username);
+    public Instant getArtistStarredDate(int artistId, String username) {
+        return queryForInstant("select created from starred_artist where artist_id=? and username=?", null, artistId, username);
     }
 
     private static class ArtistMapper implements RowMapper<Artist> {
@@ -203,7 +204,7 @@ public class ArtistDao extends AbstractDao {
                     rs.getString(2),
                     rs.getString(3),
                     rs.getInt(4),
-                    rs.getTimestamp(5),
+                    rs.getTimestamp(5).toInstant(),
                     rs.getBoolean(6),
                     rs.getInt(7));
         }

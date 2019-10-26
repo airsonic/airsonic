@@ -89,7 +89,7 @@ public class BookmarkDao extends AbstractDao {
     private static class BookmarkRowMapper implements RowMapper<Bookmark> {
         public Bookmark mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Bookmark(rs.getInt(1), rs.getInt(2), rs.getLong(3), rs.getString(4),
-                    rs.getString(5), rs.getTimestamp(6), rs.getTimestamp(7));
+                    rs.getString(5), rs.getTimestamp(6).toInstant(), rs.getTimestamp(7).toInstant());
         }
     }
 }

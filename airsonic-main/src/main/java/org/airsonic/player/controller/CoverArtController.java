@@ -435,7 +435,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public long lastModified() {
-            return coverArt != null ? coverArt.lastModified() : artist.getLastScanned().getTime();
+            return coverArt != null ? coverArt.lastModified() : artist.getLastScanned().toEpochMilli();
         }
 
         @Override
@@ -470,7 +470,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public long lastModified() {
-            return coverArt != null ? coverArt.lastModified() : album.getLastScanned().getTime();
+            return coverArt != null ? coverArt.lastModified() : album.getLastScanned().toEpochMilli();
         }
 
         @Override
@@ -505,7 +505,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public long lastModified() {
-            return playlist.getChanged().getTime();
+            return playlist.getChanged().toEpochMilli();
         }
 
         @Override
@@ -604,7 +604,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public long lastModified() {
-            return coverArt != null ? coverArt.lastModified() : dir.getChanged().getTime();
+            return coverArt != null ? coverArt.lastModified() : dir.getChanged().toEpochMilli();
         }
 
         @Override
@@ -661,7 +661,7 @@ public class CoverArtController implements LastModified {
 
         @Override
         public long lastModified() {
-            return mediaFile.getChanged().getTime();
+            return mediaFile.getChanged().toEpochMilli();
         }
 
         @Override

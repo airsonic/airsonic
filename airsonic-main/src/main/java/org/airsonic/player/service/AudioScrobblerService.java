@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -77,7 +78,7 @@ public class AudioScrobblerService {
      * @param submission Whether this is a submission or a now playing notification.
      * @param time       Event time, or {@code null} to use current time.
      */
-    public synchronized void register(MediaFile mediaFile, String username, boolean submission, Date time) {
+    public synchronized void register(MediaFile mediaFile, String username, boolean submission, Instant time) {
 
         if (thread == null) {
             thread = new RegistrationThread();
@@ -101,7 +102,7 @@ public class AudioScrobblerService {
         }
     }
 
-    private RegistrationData createRegistrationData(MediaFile mediaFile, String username, boolean submission, Date time) {
+    private RegistrationData createRegistrationData(MediaFile mediaFile, String username, boolean submission, Instant time) {
 
         if (mediaFile == null || mediaFile.isVideo()) {
             return null;
@@ -119,7 +120,7 @@ public class AudioScrobblerService {
         reg.album = mediaFile.getAlbumName();
         reg.title = mediaFile.getTitle();
         reg.duration = mediaFile.getDurationSeconds() == null ? 0 : mediaFile.getDurationSeconds();
-        reg.time = time == null ? new Date() : time;
+        reg.time = time == null ? Instant.now() : time;
         reg.submission = submission;
 
         return reg;
@@ -218,7 +219,7 @@ public class AudioScrobblerService {
         params.put("s", sessionId);
         params.put("a[0]", registrationData.artist);
         params.put("t[0]", registrationData.title);
-        params.put("i[0]", String.valueOf(registrationData.time.getTime() / 1000L));
+        params.put("i[0]", String.valueOf(registrationData.time.getEpochSecond()));
         params.put("o[0]", "P");
         params.put("r[0]", "");
         params.put("l[0]", String.valueOf(registrationData.duration));
@@ -319,7 +320,7 @@ public class AudioScrobblerService {
         private String album;
         private String title;
         private int duration;
-        private Date time;
+        private Instant time;
         public boolean submission;
     }
 

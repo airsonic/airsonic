@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -94,7 +94,7 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
     public void testCreateEpisode() {
         int channelId = createChannel();
         PodcastEpisode episode = new PodcastEpisode(null, channelId, "http://bar", "path", "title", "description",
-                new Date(), "12:34", null, null, PodcastStatus.NEW, null);
+                Instant.now(), "12:34", null, null, PodcastStatus.NEW, null);
         podcastDao.createEpisode(episode);
 
         PodcastEpisode newEpisode = podcastDao.getEpisodes(channelId).get(0);
@@ -108,7 +108,7 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
 
         int channelId = createChannel();
         PodcastEpisode episode = new PodcastEpisode(null, channelId, "http://bar", "path", "title", "description",
-                new Date(), "12:34", 3276213L, 2341234L, PodcastStatus.NEW, "error");
+                Instant.now(), "12:34", 3276213L, 2341234L, PodcastStatus.NEW, "error");
         podcastDao.createEpisode(episode);
 
         int episodeId = podcastDao.getEpisodes(channelId).get(0).getId();
@@ -120,11 +120,11 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
     public void testGetEpisodes() {
         int channelId = createChannel();
         PodcastEpisode a = new PodcastEpisode(null, channelId, "a", null, null, null,
-                new Date(3000), null, null, null, PodcastStatus.NEW, null);
+                Instant.ofEpochMilli(3000), null, null, null, PodcastStatus.NEW, null);
         PodcastEpisode b = new PodcastEpisode(null, channelId, "b", null, null, null,
-                new Date(1000), null, null, null, PodcastStatus.NEW, "error");
+                Instant.ofEpochMilli(1000), null, null, null, PodcastStatus.NEW, "error");
         PodcastEpisode c = new PodcastEpisode(null, channelId, "c", null, null, null,
-                new Date(2000), null, null, null, PodcastStatus.NEW, null);
+                Instant.ofEpochMilli(2000), null, null, null, PodcastStatus.NEW, null);
         PodcastEpisode d = new PodcastEpisode(null, channelId, "c", null, null, null,
                 null, null, null, null, PodcastStatus.NEW, "");
         podcastDao.createEpisode(a);
@@ -153,7 +153,7 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
         episode.setPath("c:/tmp");
         episode.setTitle("Title");
         episode.setDescription("Description");
-        episode.setPublishDate(new Date());
+        episode.setPublishDate(Instant.now());
         episode.setDuration("1:20");
         episode.setBytesTotal(87628374612L);
         episode.setBytesDownloaded(9086L);

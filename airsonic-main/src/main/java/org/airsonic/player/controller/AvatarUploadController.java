@@ -44,7 +44,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -126,7 +126,7 @@ public class AvatarUploadController  {
                 mimeType = StringUtil.getMimeType("jpeg");
                 map.put("resized", true);
             }
-            Avatar avatar = new Avatar(0, fileName, new Date(), mimeType, width, height, data);
+            Avatar avatar = new Avatar(0, fileName, Instant.now(), mimeType, width, height, data);
             settingsService.setCustomAvatar(avatar, username);
             LOG.info("Created avatar '" + fileName + "' (" + data.length + " bytes) for user " + username);
 

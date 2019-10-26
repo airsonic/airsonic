@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -132,12 +134,11 @@ public class PlayerDao extends AbstractDao {
      * @param days Number of days.
      */
     public void deleteOldPlayers(int days) {
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -days);
+        Instant lastSeen = Instant.now().minus(days, ChronoUnit.DAYS);
         String sql = "delete from player where name is null and client_id is null and (last_seen is null or last_seen < ?)";
-        int n = update(sql, cal.getTime());
+        int n = update(sql, lastSeen);
         if (n > 0) {
-            LOG.info("Deleted " + n + " player(s) that haven't been used after " + cal.getTime());
+            LOG.info("Deleted {} player(s) that haven't been used after {}", n, lastSeen);
         }
     }
 
@@ -187,7 +188,7 @@ public class PlayerDao extends AbstractDao {
             player.setIpAddress(rs.getString(col++));
             player.setAutoControlEnabled(rs.getBoolean(col++));
             player.setM3uBomEnabled(rs.getBoolean(col++));
-            player.setLastSeen(rs.getTimestamp(col++));
+            player.setLastSeen(rs.getTimestamp(col++).toInstant());
             col++; // Ignore cover art scheme.
             player.setTranscodeScheme(TranscodeScheme.valueOf(rs.getString(col++)));
             player.setDynamicIp(rs.getBoolean(col++));

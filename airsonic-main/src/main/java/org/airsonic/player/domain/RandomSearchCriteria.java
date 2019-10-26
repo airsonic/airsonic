@@ -21,7 +21,7 @@ package org.airsonic.player.domain;
 
 import org.airsonic.player.service.SearchService;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -37,8 +37,8 @@ public class RandomSearchCriteria {
     private final Integer fromYear;
     private final Integer toYear;
     private final List<MusicFolder> musicFolders;
-    private final Date minLastPlayedDate;
-    private final Date maxLastPlayedDate;
+    private final Instant minLastPlayedDate;
+    private final Instant maxLastPlayedDate;
     private final Integer minAlbumRating;
     private final Integer maxAlbumRating;
     private final Integer minPlayCount;
@@ -87,8 +87,8 @@ public class RandomSearchCriteria {
             Integer fromYear,
             Integer toYear,
             List<MusicFolder> musicFolders,
-            Date minLastPlayedDate,
-            Date maxLastPlayedDate,
+            Instant minLastPlayedDate,
+            Instant maxLastPlayedDate,
             Integer minAlbumRating,
             Integer maxAlbumRating,
             Integer minPlayCount,
@@ -134,11 +134,11 @@ public class RandomSearchCriteria {
         return musicFolders;
     }
 
-    public Date getMinLastPlayedDate() {
+    public Instant getMinLastPlayedDate() {
         return minLastPlayedDate;
     }
 
-    public Date getMaxLastPlayedDate() {
+    public Instant getMaxLastPlayedDate() {
         return maxLastPlayedDate;
     }
 

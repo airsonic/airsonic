@@ -53,6 +53,7 @@ import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -326,7 +327,7 @@ public class SonosService implements SonosSoap {
 
     @Override
     public CreateContainerResult createContainer(String containerType, String title, String parentId, String seedId) {
-        Date now = new Date();
+        Instant now = Instant.now();
         Playlist playlist = new Playlist();
         playlist.setName(title);
         playlist.setUsername(getUsername());

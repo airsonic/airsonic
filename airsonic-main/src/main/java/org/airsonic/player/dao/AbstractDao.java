@@ -27,8 +27,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.time.Instant;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -149,10 +149,10 @@ public class AbstractDao {
         return result;
     }
 
-    protected Date queryForDate(String sql, Date defaultValue, Object... args) {
+    protected Instant queryForInstant(String sql, Instant defaultValue, Object... args) {
         long t = System.nanoTime();
-        List<Date> list = getJdbcTemplate().queryForList(sql, args, Date.class);
-        Date result = list.isEmpty() ? defaultValue : list.get(0) == null ? defaultValue : list.get(0);
+        List<Instant> list = getJdbcTemplate().queryForList(sql, args, Instant.class);
+        Instant result = list.stream().findFirst().orElse(defaultValue);
         log(sql, t);
         return result;
     }

@@ -37,8 +37,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -138,7 +138,7 @@ public class PlayerService {
         String userAgent = request.getHeader("user-agent");
         if (isStreamRequest) {
             player.setType(userAgent);
-            player.setLastSeen(new Date());
+            player.setLastSeen(Instant.now());
             isUpdate = true;
         }
 

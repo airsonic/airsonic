@@ -34,9 +34,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -100,12 +100,10 @@ public class ShareService {
 
         Share share = new Share();
         share.setName(RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
-        share.setCreated(new Date());
+        share.setCreated(Instant.now());
         share.setUsername(securityService.getCurrentUsername(request));
 
-        Calendar expires = Calendar.getInstance();
-        expires.add(Calendar.YEAR, 1);
-        share.setExpires(expires.getTime());
+        share.setExpires(Instant.now().plus(1, ChronoUnit.YEARS));
 
         shareDao.createShare(share);
         for (MediaFile file : files) {

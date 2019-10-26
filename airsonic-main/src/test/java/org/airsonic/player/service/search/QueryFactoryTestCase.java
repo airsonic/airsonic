@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -68,9 +69,9 @@ public class QueryFactoryTestCase {
     private static final int FID2 = 20;
 
     private static final MusicFolder MUSIC_FOLDER1 =
-            new MusicFolder(FID1, new File(PATH1), "music1", true, new java.util.Date());
+            new MusicFolder(FID1, new File(PATH1), "music1", true, Instant.now());
     private static final MusicFolder MUSIC_FOLDER2 = 
-            new MusicFolder(FID2, new File(PATH2), "music2", true, new java.util.Date());
+            new MusicFolder(FID2, new File(PATH2), "music2", true, Instant.now());
 
     private static final List<MusicFolder> SINGLE_FOLDERS = Arrays.asList(MUSIC_FOLDER1);
     private static final List<MusicFolder> MULTI_FOLDERS  = Arrays.asList(MUSIC_FOLDER1, MUSIC_FOLDER2);

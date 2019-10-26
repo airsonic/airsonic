@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * @author Sindre Mehus
@@ -31,14 +31,14 @@ public class Artist {
     private String name;
     private String coverArtPath;
     private int albumCount;
-    private Date lastScanned;
+    private Instant lastScanned;
     private boolean present;
     private Integer folderId;
 
     public Artist() {
     }
 
-    public Artist(int id, String name, String coverArtPath, int albumCount, Date lastScanned, boolean present, Integer folderId) {
+    public Artist(int id, String name, String coverArtPath, int albumCount, Instant lastScanned, boolean present, Integer folderId) {
         this.id = id;
         this.name = name;
         this.coverArtPath = coverArtPath;
@@ -80,11 +80,11 @@ public class Artist {
         this.albumCount = albumCount;
     }
 
-    public Date getLastScanned() {
+    public Instant getLastScanned() {
         return lastScanned;
     }
 
-    public void setLastScanned(Date lastScanned) {
+    public void setLastScanned(Instant lastScanned) {
         this.lastScanned = lastScanned;
     }
 

@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.io.File;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -160,8 +161,8 @@ public class MediaScannerService {
 
     private void doScanLibrary() {
         LOG.info("Starting to scan media library.");
-        Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
-        LOG.debug("New last scan date is " + lastScanned);
+        Instant lastScanned = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        LOG.debug("New last scan date is {}", lastScanned);
 
         try {
 
@@ -222,7 +223,7 @@ public class MediaScannerService {
         }
     }
 
-    private void scanFile(MediaFile file, MusicFolder musicFolder, Date lastScanned,
+    private void scanFile(MediaFile file, MusicFolder musicFolder, Instant lastScanned,
                           Map<String, Integer> albumCount, Genres genres, boolean isPodcast) {
         scanCount++;
         if (scanCount % 250 == 0) {
@@ -279,7 +280,7 @@ public class MediaScannerService {
         }
     }
 
-    private void updateAlbum(MediaFile file, MusicFolder musicFolder, Date lastScanned, Map<String, Integer> albumCount) {
+    private void updateAlbum(MediaFile file, MusicFolder musicFolder, Instant lastScanned, Map<String, Integer> albumCount) {
         String artist = file.getAlbumArtist() != null ? file.getAlbumArtist() : file.getArtist();
         if (file.getAlbumName() == null || artist == null || file.getParentPath() == null || !file.isAudio()) {
             return;
@@ -335,7 +336,7 @@ public class MediaScannerService {
         }
     }
 
-    private void updateArtist(MediaFile file, MusicFolder musicFolder, Date lastScanned, Map<String, Integer> albumCount) {
+    private void updateArtist(MediaFile file, MusicFolder musicFolder, Instant lastScanned, Map<String, Integer> albumCount) {
         if (file.getAlbumArtist() == null || !file.isAudio()) {
             return;
         }

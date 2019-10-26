@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
-import java.util.Calendar;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class MoreController  {
         map.put("user", user);
         map.put("uploadDirectory", uploadDirectory);
         map.put("genres", mediaFileService.getGenres(false));
-        map.put("currentYear", Calendar.getInstance().get(Calendar.YEAR));
+        map.put("currentYear", LocalDate.now().getYear());
         map.put("musicFolders", musicFolders);
         map.put("clientSidePlaylist", player.isExternalWithPlaylist() || player.isWeb());
         map.put("brand", settingsService.getBrand());

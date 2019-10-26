@@ -30,6 +30,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.springframework.web.bind.ServletRequestUtils.getIntParameter;
@@ -171,7 +173,7 @@ public class HomeController  {
         List<Album> result = new ArrayList<>();
         for (MediaFile file : mediaFileService.getNewestAlbums(offset, count, musicFolders)) {
             Album album = createAlbum(file);
-            Date created = file.getCreated();
+            Instant created = file.getCreated();
             if (created == null) {
                 created = file.getChanged();
             }
@@ -217,7 +219,7 @@ public class HomeController  {
 
     private List<Integer> createDecades() {
         List<Integer> result = new ArrayList<>();
-        int decade = Calendar.getInstance().get(Calendar.YEAR) / 10;
+        int decade = LocalDate.now().getYear() / 10;
         for (int i = 0; i < 10; i++) {
             result.add((decade - i) * 10);
         }
@@ -250,8 +252,8 @@ public class HomeController  {
         private String coverArtPath;
         private String artist;
         private String albumTitle;
-        private Date created;
-        private Date lastPlayed;
+        private Instant created;
+        private Instant lastPlayed;
         private Integer playCount;
         private Integer rating;
         private int id;
@@ -297,19 +299,19 @@ public class HomeController  {
             this.albumTitle = albumTitle;
         }
 
-        public Date getCreated() {
+        public Instant getCreated() {
             return created;
         }
 
-        public void setCreated(Date created) {
+        public void setCreated(Instant created) {
             this.created = created;
         }
 
-        public Date getLastPlayed() {
+        public Instant getLastPlayed() {
             return lastPlayed;
         }
 
-        public void setLastPlayed(Date lastPlayed) {
+        public void setLastPlayed(Instant lastPlayed) {
             this.lastPlayed = lastPlayed;
         }
 

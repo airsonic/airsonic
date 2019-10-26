@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * A collection of media files that is shared with someone, and accessible via a direct URL.
@@ -33,16 +33,16 @@ public class Share {
     private String name;
     private String description;
     private String username;
-    private Date created;
-    private Date expires;
-    private Date lastVisited;
+    private Instant created;
+    private Instant expires;
+    private Instant lastVisited;
     private int visitCount;
 
     public Share() {
     }
 
-    public Share(int id, String name, String description, String username, Date created,
-            Date expires, Date lastVisited, int visitCount) {
+    public Share(int id, String name, String description, String username, Instant created,
+            Instant expires, Instant lastVisited, int visitCount) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -85,27 +85,27 @@ public class Share {
         this.username = username;
     }
 
-    public Date getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
-    public Date getExpires() {
+    public Instant getExpires() {
         return expires;
     }
 
-    public void setExpires(Date expires) {
+    public void setExpires(Instant expires) {
         this.expires = expires;
     }
 
-    public Date getLastVisited() {
+    public Instant getLastVisited() {
         return lastVisited;
     }
 
-    public void setLastVisited(Date lastVisited) {
+    public void setLastVisited(Instant lastVisited) {
         this.lastVisited = lastVisited;
     }
 

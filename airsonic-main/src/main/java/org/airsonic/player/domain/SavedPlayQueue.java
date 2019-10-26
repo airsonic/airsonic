@@ -19,7 +19,7 @@
 
 package org.airsonic.player.domain;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -38,11 +38,11 @@ public class SavedPlayQueue {
     private List<Integer> mediaFileIds;
     private Integer currentMediaFileId;
     private Long positionMillis;
-    private Date changed;
+    private Instant changed;
     private String changedBy;
 
     public SavedPlayQueue(Integer id, String username, List<Integer> mediaFileIds, Integer currentMediaFileId,
-                          Long positionMillis, Date changed, String changedBy) {
+                          Long positionMillis, Instant changed, String changedBy) {
         this.id = id;
         this.username = username;
         this.mediaFileIds = mediaFileIds;
@@ -92,11 +92,11 @@ public class SavedPlayQueue {
         this.positionMillis = positionMillis;
     }
 
-    public Date getChanged() {
+    public Instant getChanged() {
         return changed;
     }
 
-    public void setChanged(Date changed) {
+    public void setChanged(Instant changed) {
         this.changed = changed;
     }
 

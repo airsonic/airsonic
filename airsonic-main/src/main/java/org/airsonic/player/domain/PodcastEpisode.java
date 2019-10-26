@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * A Podcast episode belonging to a channel.
@@ -36,7 +36,7 @@ public class PodcastEpisode {
     private String path;
     private String title;
     private String description;
-    private Date publishDate;
+    private Instant publishDate;
     private String duration;
     private Long bytesTotal;
     private Long bytesDownloaded;
@@ -44,7 +44,7 @@ public class PodcastEpisode {
     private String errorMessage;
 
     public PodcastEpisode(Integer id, Integer channelId, String url, String path, String title,
-                          String description, Date publishDate, String duration, Long length, Long bytesDownloaded,
+                          String description, Instant publishDate, String duration, Long length, Long bytesDownloaded,
                           PodcastStatus status, String errorMessage) {
         this.id = id;
         this.channelId = channelId;
@@ -100,11 +100,11 @@ public class PodcastEpisode {
         this.description = description;
     }
 
-    public Date getPublishDate() {
+    public Instant getPublishDate() {
         return publishDate;
     }
 
-    public void setPublishDate(Date publishDate) {
+    public void setPublishDate(Instant publishDate) {
         this.publishDate = publishDate;
     }
 

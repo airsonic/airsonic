@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -333,7 +334,7 @@ public class AlbumDao extends AbstractDao {
         }
     }
 
-    public void markNonPresent(Date lastScanned) {
+    public void markNonPresent(Instant lastScanned) {
         int minId = queryForInt("select min(id) from album where last_scanned < ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from album where last_scanned < ? and present", 0, lastScanned);
 
@@ -359,15 +360,15 @@ public class AlbumDao extends AbstractDao {
 
     public void starAlbum(int albumId, String username) {
         unstarAlbum(albumId, username);
-        update("insert into starred_album(album_id, username, created) values (?,?,?)", albumId, username, new Date());
+        update("insert into starred_album(album_id, username, created) values (?,?,?)", albumId, username, Instant.now());
     }
 
     public void unstarAlbum(int albumId, String username) {
         update("delete from starred_album where album_id=? and username=?", albumId, username);
     }
 
-    public Date getAlbumStarredDate(int albumId, String username) {
-        return queryForDate("select created from starred_album where album_id=? and username=?", null, albumId, username);
+    public Instant getAlbumStarredDate(int albumId, String username) {
+        return queryForInstant("select created from starred_album where album_id=? and username=?", null, albumId, username);
     }
 
     private static class AlbumMapper implements RowMapper<Album> {
@@ -383,10 +384,10 @@ public class AlbumDao extends AbstractDao {
                     rs.getInt(8) == 0 ? null : rs.getInt(8),
                     rs.getString(9),
                     rs.getInt(10),
-                    rs.getTimestamp(11),
+                    rs.getTimestamp(11).toInstant(),
                     rs.getString(12),
-                    rs.getTimestamp(13),
-                    rs.getTimestamp(14),
+                    rs.getTimestamp(13).toInstant(),
+                    rs.getTimestamp(14).toInstant(),
                     rs.getBoolean(15),
                     rs.getInt(16),
                     rs.getString(17));

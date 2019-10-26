@@ -3,8 +3,8 @@ package org.airsonic.player.util;
 import org.airsonic.player.domain.MusicFolder;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MusicFolderTestData {
@@ -30,11 +30,11 @@ public class MusicFolderTestData {
     public static List<MusicFolder> getTestMusicFolders() {
         List<MusicFolder> liste = new ArrayList<>();
         File musicDir = new File(MusicFolderTestData.resolveMusicFolderPath());
-        MusicFolder musicFolder = new MusicFolder(1,musicDir,"Music",true,new Date());
+        MusicFolder musicFolder = new MusicFolder(1,musicDir,"Music",true,Instant.now());
         liste.add(musicFolder);
 
         File music2Dir = new File(MusicFolderTestData.resolveMusic2FolderPath());
-        MusicFolder musicFolder2 = new MusicFolder(2,music2Dir,"Music2",true,new Date());
+        MusicFolder musicFolder2 = new MusicFolder(2,music2Dir,"Music2",true,Instant.now());
         liste.add(musicFolder2);
         return liste;
     }

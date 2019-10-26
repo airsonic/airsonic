@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -157,7 +158,7 @@ public class StatusService {
             if (player == null || mediaFile == null) {
                 continue;
             }
-            Date time = new Date(System.currentTimeMillis() - streamStatus.getMillisSinceLastUpdate());
+            Instant time = Instant.now().minusMillis(streamStatus.getMillisSinceLastUpdate());
             result.put(player.getId(), new PlayStatus(mediaFile, player, time));
         }
         return new ArrayList<PlayStatus>(result.values());

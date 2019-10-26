@@ -39,6 +39,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -727,16 +728,16 @@ public class SettingsService {
         return getLong(KEY_SETTINGS_CHANGED, DEFAULT_SETTINGS_CHANGED);
     }
 
-    public Date getLastScanned() {
+    public Instant getLastScanned() {
         String lastScanned = getProperty(KEY_LAST_SCANNED, null);
-        return lastScanned == null ? null : new Date(Long.parseLong(lastScanned));
+        return lastScanned == null ? null : Instant.ofEpochMilli(Long.parseLong(lastScanned));
     }
 
-    void setLastScanned(Date date) {
+    void setLastScanned(Instant date) {
         if (date == null) {
             setProperty(KEY_LAST_SCANNED, null);
         } else {
-            setLong(KEY_LAST_SCANNED, date.getTime());
+            setLong(KEY_LAST_SCANNED, date.toEpochMilli());
         }
     }
 
@@ -1148,7 +1149,7 @@ public class SettingsService {
         settings.setListReloadDelay(60);
         settings.setLastFmUsername(null);
         settings.setLastFmPassword(null);
-        settings.setChanged(new Date());
+        settings.setChanged(Instant.now());
         settings.setPaginationSize(40);
 
         UserSettings.Visibility playlist = settings.getPlaylistVisibility();

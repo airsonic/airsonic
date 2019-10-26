@@ -37,6 +37,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -168,7 +169,7 @@ public class PlayQueueService {
         List<Integer> ids = MediaFile.toIdList(playQueue.getFiles());
 
         Integer currentId = currentSongIndex == -1 ? null : playQueue.getFile(currentSongIndex).getId();
-        SavedPlayQueue savedPlayQueue = new SavedPlayQueue(null, username, ids, currentId, positionMillis, new Date(), "Airsonic");
+        SavedPlayQueue savedPlayQueue = new SavedPlayQueue(null, username, ids, currentId, positionMillis, Instant.now(), "Airsonic");
         playQueueDao.savePlayQueue(savedPlayQueue);
     }
 

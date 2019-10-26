@@ -71,7 +71,7 @@ public class PlayQueueDao extends AbstractDao {
                                       null,
                                       rs.getInt(3),
                                       rs.getLong(4),
-                                      rs.getTimestamp(5),
+                                      rs.getTimestamp(5).toInstant(),
                                       rs.getString(6));
         }
     }

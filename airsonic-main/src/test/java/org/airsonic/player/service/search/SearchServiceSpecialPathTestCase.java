@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,13 +40,13 @@ public class SearchServiceSpecialPathTestCase extends AbstractAirsonicHomeTest {
             musicFolders = new ArrayList<>();
 
             File musicDir = new File(resolveBaseMediaPath.apply("Search/SpecialPath/accessible"));
-            musicFolders.add(new MusicFolder(1, musicDir, "accessible", true, new Date()));
+            musicFolders.add(new MusicFolder(1, musicDir, "accessible", true, Instant.now()));
 
             File music2Dir = new File(resolveBaseMediaPath.apply("Search/SpecialPath/accessible's"));
-            musicFolders.add(new MusicFolder(2, music2Dir, "accessible's", true, new Date()));
+            musicFolders.add(new MusicFolder(2, music2Dir, "accessible's", true, Instant.now()));
 
             File music3Dir = new File(resolveBaseMediaPath.apply("Search/SpecialPath/accessible+s"));
-            musicFolders.add(new MusicFolder(3, music3Dir, "accessible+s", true, new Date()));
+            musicFolders.add(new MusicFolder(3, music3Dir, "accessible+s", true, Instant.now()));
         }
         return musicFolders;
     }

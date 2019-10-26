@@ -24,7 +24,7 @@ import org.airsonic.player.domain.MusicFolder;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -187,7 +187,7 @@ public class MusicFolderSettingsCommand {
             if (name == null) {
                 name = file.getName();
             }
-            return new MusicFolder(id, new File(path), name, enabled, new Date());
+            return new MusicFolder(id, new File(path), name, enabled, Instant.now());
         }
 
         public boolean isExisting() {

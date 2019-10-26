@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -199,7 +200,7 @@ public class PlaylistService {
         for (String error : result.getRight()) {
             LOG.warn("File in playlist '" + fileName + "' not found: " + error);
         }
-        Date now = new Date();
+        Instant now = Instant.now();
         Playlist playlist;
         if (existingPlaylist == null) {
             playlist = new Playlist();
@@ -288,7 +289,7 @@ public class PlaylistService {
         for (Playlist playlist : allPlaylists) {
             if (fileName.equals(playlist.getImportedFrom())) {
                 existingPlaylist = playlist;
-                if (file.lastModified() <= playlist.getChanged().getTime()) {
+                if (file.lastModified() <= playlist.getChanged().toEpochMilli()) {
                     // Already imported and not changed since.
                     return;
                 }

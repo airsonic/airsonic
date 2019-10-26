@@ -29,8 +29,8 @@ import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -168,7 +168,7 @@ public class MediaScannerServiceTestCase {
         File musicFile = artistDir.toPath().resolve(fileName).toFile();
         IOUtils.copy(resource.getInputStream(), new FileOutputStream(musicFile));
 
-        MusicFolder musicFolder = new MusicFolder(1, temporaryFolder.getRoot(), "Music", true, new Date());
+        MusicFolder musicFolder = new MusicFolder(1, temporaryFolder.getRoot(), "Music", true, Instant.now());
         musicFolderDao.createMusicFolder(musicFolder);
         settingsService.clearMusicFolderCache();
         TestCaseUtils.execScan(mediaScannerService);
@@ -183,7 +183,7 @@ public class MediaScannerServiceTestCase {
 
         // Add the "Music3" folder to the database
         File musicFolderFile = new File(MusicFolderTestData.resolveMusic3FolderPath());
-        MusicFolder musicFolder = new MusicFolder(1, musicFolderFile, "Music3", true, new Date());
+        MusicFolder musicFolder = new MusicFolder(1, musicFolderFile, "Music3", true, Instant.now());
         musicFolderDao.createMusicFolder(musicFolder);
         settingsService.clearMusicFolderCache();
         TestCaseUtils.execScan(mediaScannerService);

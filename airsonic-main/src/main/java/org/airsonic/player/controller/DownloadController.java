@@ -81,7 +81,7 @@ public class DownloadController implements LastModified {
             if (mediaFile == null || mediaFile.isDirectory() || mediaFile.getChanged() == null) {
                 return -1;
             }
-            return mediaFile.getChanged().getTime();
+            return mediaFile.getChanged().toEpochMilli();
         } catch (ServletRequestBindingException e) {
             return -1;
         }

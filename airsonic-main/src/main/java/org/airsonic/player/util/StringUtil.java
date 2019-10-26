@@ -42,7 +42,6 @@ import java.util.regex.Pattern;
 public final class StringUtil {
 
     public static final String ENCODING_UTF8 = "UTF-8";
-    private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     private static final String[][] HTML_SUBSTITUTIONS = {
             {"&", "&amp;"},
@@ -117,25 +116,6 @@ public final class StringUtil {
             }
         }
         return s;
-    }
-
-
-    /**
-     * Formats the given date to a ISO-8601 date/time format, and UTC timezone.
-     * <p/>
-     * The returned date uses the following format: 2007-12-17T14:57:17
-     *
-     * @param date The date to format
-     * @return The corresponding ISO-8601 formatted string.
-     */
-    public static String toISO8601(Date date) {
-        if (date == null) {
-            return null;
-        }
-
-        synchronized (ISO_8601_DATE_FORMAT) {
-            return ISO_8601_DATE_FORMAT.format(date);
-        }
     }
 
     /**

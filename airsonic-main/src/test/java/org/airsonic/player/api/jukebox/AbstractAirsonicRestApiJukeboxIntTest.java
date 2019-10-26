@@ -24,9 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -151,10 +151,8 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
                 .findFirst().orElseThrow(() -> new RuntimeException("No player found in database"));
     }
 
-    private String convertDateToString(Date date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return formatter.format(date);
+    private String convertInstantToString(Instant date) {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneId.of("UTC")).format(date);
     }
 
     private ResultMatcher playListItem1isCorrect() {
@@ -182,7 +180,7 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value(mediaFile.getPath().replace(mediaFile.getFolder(), "").substring(1)).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isVideo").value(mediaFile.isVideo()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].playCount").isNumber().match(result);
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].created").value(convertDateToString(mediaFile.getCreated())).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].created").value(convertInstantToString(mediaFile.getCreated())).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].albumId").value(album.getId()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].artistId").value(artist.getId()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].type").value(mediaFile.getMediaType().name().toLowerCase()).match(result);

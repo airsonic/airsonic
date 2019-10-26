@@ -47,8 +47,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -194,7 +194,7 @@ public class UserSettingsController {
 
         UserSettings userSettings = settingsService.getUserSettings(command.getUsername());
         userSettings.setTranscodeScheme(TranscodeScheme.valueOf(command.getTranscodeSchemeName()));
-        userSettings.setChanged(new Date());
+        userSettings.setChanged(Instant.now());
         settingsService.updateUserSettings(userSettings);
 
         List<Integer> allowedMusicFolderIds = Util.toIntegerList(command.getAllowedMusicFolderIds());

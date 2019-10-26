@@ -35,10 +35,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -55,13 +54,13 @@ import java.util.regex.Pattern;
 @Service
 public class VersionService {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final Logger LOG = LoggerFactory.getLogger(VersionService.class);
 
     private Version localVersion;
     private Version latestFinalVersion;
     private Version latestBetaVersion;
-    private Date localBuildDate;
+    private LocalDate localBuildDate;
     private String localBuildNumber;
 
     /**
@@ -119,11 +118,11 @@ public class VersionService {
      * @return The build date for the locally installed Airsonic version, or <code>null</code>
      *         if the build date can't be resolved.
      */
-    public synchronized Date getLocalBuildDate() {
+    public synchronized LocalDate getLocalBuildDate() {
         if (localBuildDate == null) {
             try {
                 String date = readLineFromResource("/build_date.txt");
-                localBuildDate = DATE_FORMAT.parse(date);
+                localBuildDate = LocalDate.parse(date, DATE_FORMAT);
             } catch (Exception x) {
                 LOG.warn("Failed to resolve local Airsonic build date.", x);
             }

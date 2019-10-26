@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -95,7 +96,7 @@ public class PlaylistDao extends AbstractDao {
                 duration += file.getDurationSeconds();
             }
         }
-        update("update playlist set file_count=?, duration_seconds=?, changed=? where id=?", files.size(), duration, new Date(), id);
+        update("update playlist set file_count=?, duration_seconds=?, changed=? where id=?", files.size(), duration, Instant.now(), id);
     }
 
     public List<String> getPlaylistUsers(int playlistId) {
@@ -120,7 +121,7 @@ public class PlaylistDao extends AbstractDao {
     public void updatePlaylist(Playlist playlist) {
         update("update playlist set username=?, is_public=?, name=?, comment=?, changed=?, imported_from=? where id=?",
                 playlist.getUsername(), playlist.isShared(), playlist.getName(), playlist.getComment(),
-                new Date(), playlist.getImportedFrom(), playlist.getId());
+                Instant.now(), playlist.getImportedFrom(), playlist.getId());
     }
 
     private static class PlaylistMapper implements RowMapper<Playlist> {
@@ -133,8 +134,8 @@ public class PlaylistDao extends AbstractDao {
                     rs.getString(5),
                     rs.getInt(6),
                     rs.getInt(7),
-                    rs.getTimestamp(8),
-                    rs.getTimestamp(9),
+                    rs.getTimestamp(8).toInstant(),
+                    rs.getTimestamp(9).toInstant(),
                     rs.getString(10));
         }
     }

@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -152,7 +153,7 @@ public class MediaFileService {
     private MediaFile checkLastModified(MediaFile mediaFile, boolean useFastCache) {
         if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION
                 && !settingsService.isIgnoreFileTimestamps()
-                && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
+                && mediaFile.getChanged().toEpochMilli() >= FileUtil.lastModified(mediaFile.getFile()))) {
             LOG.debug("Detected unmodified file (id {}, path {})", mediaFile.getId(), mediaFile.getPath());
             return mediaFile;
         }
@@ -362,7 +363,7 @@ public class MediaFileService {
         files.removeIf(MediaFile::isVideo);
     }
 
-    public Date getMediaFileStarredDate(int id, String username) {
+    public Instant getMediaFileStarredDate(int id, String username) {
         return mediaFileDao.getMediaFileStarredDate(id, username);
     }
 
@@ -373,14 +374,14 @@ public class MediaFileService {
     }
 
     public void populateStarredDate(MediaFile mediaFile, String username) {
-        Date starredDate = mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username);
+        Instant starredDate = mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username);
         mediaFile.setStarredDate(starredDate);
     }
 
     private void updateChildren(MediaFile parent) {
 
         // Check timestamps.
-        if (parent.getChildrenLastUpdated().getTime() >= parent.getChanged().getTime()) {
+        if (parent.getChildrenLastUpdated().isAfter(parent.getChanged())) {
             return;
         }
 
@@ -475,16 +476,16 @@ public class MediaFileService {
         MediaFile existingFile = mediaFileDao.getMediaFile(file.getPath());
 
         MediaFile mediaFile = new MediaFile();
-        Date lastModified = new Date(FileUtil.lastModified(file));
+        Instant lastModified = Instant.ofEpochMilli(FileUtil.lastModified(file));
         mediaFile.setPath(file.getPath());
         mediaFile.setFolder(securityService.getRootFolderForFile(file));
         mediaFile.setParentPath(file.getParent());
         mediaFile.setChanged(lastModified);
-        mediaFile.setLastScanned(new Date());
+        mediaFile.setLastScanned(Instant.now());
         mediaFile.setPlayCount(existingFile == null ? 0 : existingFile.getPlayCount());
         mediaFile.setLastPlayed(existingFile == null ? null : existingFile.getLastPlayed());
         mediaFile.setComment(existingFile == null ? null : existingFile.getComment());
-        mediaFile.setChildrenLastUpdated(new Date(0));
+        mediaFile.setChildrenLastUpdated(Instant.now());
         mediaFile.setCreated(lastModified);
         mediaFile.setMediaType(MediaFile.MediaType.DIRECTORY);
         mediaFile.setPresent(true);
@@ -687,7 +688,7 @@ public class MediaFileService {
      * directory and album.
      */
     public void incrementPlayCount(MediaFile file) {
-        Date now = new Date();
+        Instant now = Instant.now();
         file.setLastPlayed(now);
         file.setPlayCount(file.getPlayCount() + 1);
         updateMediaFile(file);

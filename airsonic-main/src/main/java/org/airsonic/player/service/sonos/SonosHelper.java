@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.airsonic.player.service.NetworkService.getBaseUrl;
@@ -394,7 +395,7 @@ public class SonosHelper {
 
     private MediaList forDecades(int offset, int count) {
         List<MediaCollection> mediaCollections = new ArrayList<MediaCollection>();
-        int currentDecade = Calendar.getInstance().get(Calendar.YEAR) / 10;
+        int currentDecade = LocalDate.now().getYear() / 10;
         for (int i = 0; i < 10; i++) {
             int decade = (currentDecade - i) * 10;
             MediaCollection mediaCollection = new MediaCollection();

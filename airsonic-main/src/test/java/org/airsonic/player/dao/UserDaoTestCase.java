@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
@@ -216,7 +216,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         settings.setNowPlayingAllowed(true);
         settings.setAvatarScheme(AvatarScheme.SYSTEM);
         settings.setSystemAvatarId(1);
-        settings.setChanged(new Date(9412L));
+        settings.setChanged(Instant.ofEpochMilli(9412L));
         settings.setListReloadDelay(60);
         settings.setKeyboardShortcutsEnabled(true);
         settings.setPaginationSize(120);
@@ -242,7 +242,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         assertTrue("Error in getUserSettings().", userSettings.isNowPlayingAllowed());
         assertSame("Error in getUserSettings().", AvatarScheme.SYSTEM, userSettings.getAvatarScheme());
         assertEquals("Error in getUserSettings().", 1, userSettings.getSystemAvatarId().intValue());
-        assertEquals("Error in getUserSettings().", new Date(9412L), userSettings.getChanged());
+        assertEquals("Error in getUserSettings().", Instant.ofEpochMilli(9412L), userSettings.getChanged());
         assertEquals("Error in getUserSettings().", 60, userSettings.getListReloadDelay());
         assertTrue("Error in getUserSettings().", userSettings.isKeyboardShortcutsEnabled());
         assertEquals("Error in getUserSettings().", 120, userSettings.getPaginationSize());

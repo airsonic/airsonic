@@ -55,6 +55,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.airsonic.player.security.RESTRequestParameterProcessingFilter.decrypt;
@@ -167,9 +169,7 @@ public class SubsonicRESTController {
 
         license.setEmail("airsonic@github.com");
         license.setValid(true);
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, 100);
-        XMLGregorianCalendar farFuture = jaxbWriter.convertCalendar(calendar);
+        XMLGregorianCalendar farFuture = jaxbWriter.convertDate(Instant.now().plus(100, ChronoUnit.YEARS));
         license.setLicenseExpires(farFuture);
         license.setTrialExpires(farFuture);
 
@@ -239,7 +239,7 @@ public class SubsonicRESTController {
             for (MusicIndex.SortableArtistWithMediaFiles artist : entry.getValue()) {
                 for (MediaFile mediaFile : artist.getMediaFiles()) {
                     if (mediaFile.isDirectory()) {
-                        Date starredDate = mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username);
+                        Instant starredDate = mediaFileDao.getMediaFileStarredDate(mediaFile.getId(), username);
                         org.subsonic.restapi.Artist a = new org.subsonic.restapi.Artist();
                         index.getArtist().add(a);
                         a.setId(String.valueOf(mediaFile.getId()));
@@ -496,7 +496,7 @@ public class SubsonicRESTController {
         org.subsonic.restapi.Artist result = new org.subsonic.restapi.Artist();
         result.setId(String.valueOf(artist.getId()));
         result.setName(artist.getArtist());
-        Date starred = mediaFileDao.getMediaFileStarredDate(artist.getId(), username);
+        Instant starred = mediaFileDao.getMediaFileStarredDate(artist.getId(), username);
         result.setStarred(jaxbWriter.convertDate(starred));
         return result;
     }
@@ -954,9 +954,10 @@ public class SubsonicRESTController {
             }
         } else {
             playlist = new org.airsonic.player.domain.Playlist();
+            Instant now = Instant.now();
             playlist.setName(name);
-            playlist.setCreated(new Date());
-            playlist.setChanged(new Date());
+            playlist.setCreated(now);
+            playlist.setChanged(now);
             playlist.setShared(false);
             playlist.setUsername(username);
             playlistService.createPlaylist(playlist);
@@ -1427,9 +1428,9 @@ public class SubsonicRESTController {
                 LOG.warn("File to scrobble not found: " + id);
                 continue;
             }
-            Date time = times.length == 0 ? null : new Date(times[i]);
+            Instant time = times.length == 0 ? null : Instant.ofEpochMilli(times[i]);
 
-            statusService.addRemotePlay(new PlayStatus(file, player, time == null ? new Date() : time));
+            statusService.addRemotePlay(new PlayStatus(file, player, time == null ? Instant.now() : time));
             mediaFileService.incrementPlayCount(file);
             if (settingsService.getUserSettings(player.getUsername()).isLastFmEnabled()) {
                 audioScrobblerService.register(file, player.getUsername(), submission, time);
@@ -1738,7 +1739,7 @@ public class SubsonicRESTController {
         int mediaFileId = getRequiredIntParameter(request, "id");
         long position = getRequiredLongParameter(request, "position");
         String comment = request.getParameter("comment");
-        Date now = new Date();
+        Instant now = Instant.now();
 
         Bookmark bookmark = new Bookmark(0, mediaFileId, position, username, comment, now, now);
         bookmarkService.createOrUpdateBookmark(bookmark);
@@ -1794,7 +1795,6 @@ public class SubsonicRESTController {
         List<Integer> mediaFileIds = Util.toIntegerList(getIntParameters(request, "id"));
         Integer current = getIntParameter(request, "current");
         Long position = getLongParameter(request, "position");
-        Date changed = new Date();
         String changedBy = getRequiredStringParameter(request, "c");
 
         if (!mediaFileIds.contains(current)) {
@@ -1802,7 +1802,7 @@ public class SubsonicRESTController {
             return;
         }
 
-        SavedPlayQueue playQueue = new SavedPlayQueue(null, username, mediaFileIds, current, position, changed, changedBy);
+        SavedPlayQueue playQueue = new SavedPlayQueue(null, username, mediaFileIds, current, position, Instant.now(), changedBy);
         playQueueDao.savePlayQueue(playQueue);
         writeEmptyResponse(request, response);
     }
@@ -1850,7 +1850,7 @@ public class SubsonicRESTController {
         share.setDescription(request.getParameter("description"));
         long expires = getLongParameter(request, "expires", 0L);
         if (expires != 0) {
-            share.setExpires(new Date(expires));
+            share.setExpires(Instant.ofEpochMilli(expires));
         }
         shareService.updateShare(share);
 
@@ -1909,7 +1909,7 @@ public class SubsonicRESTController {
         String expiresString = request.getParameter("expires");
         if (expiresString != null) {
             long expires = Long.parseLong(expiresString);
-            share.setExpires(expires == 0L ? null : new Date(expires));
+            share.setExpires(expires == 0L ? null : Instant.ofEpochMilli(expires));
         }
         shareService.updateShare(share);
         writeEmptyResponse(request, response);

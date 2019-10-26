@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -33,7 +33,7 @@ public class SearchServiceSpecialGenreTestCase extends AbstractAirsonicHomeTest 
         if (isEmpty(musicFolders)) {
             musicFolders = new ArrayList<>();
             File musicDir = new File(resolveBaseMediaPath.apply("Search/SpecialGenre"));
-            musicFolders.add(new MusicFolder(1, musicDir, "accessible", true, new Date()));
+            musicFolders.add(new MusicFolder(1, musicDir, "accessible", true, Instant.now()));
         }
         return musicFolders;
     }

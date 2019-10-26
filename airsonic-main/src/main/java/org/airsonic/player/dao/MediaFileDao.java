@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -203,7 +204,7 @@ public class MediaFileDao extends AbstractDao {
     }
 
     public void deleteMediaFile(String path) {
-        update("update media_file set present=false, children_last_updated=? where path=?", new Date(0L), path);
+        update("update media_file set present=false, children_last_updated=? where path=?", Instant.MIN, path);
     }
 
     public List<Genre> getGenres(boolean sortByAlbum) {
@@ -634,27 +635,27 @@ public class MediaFileDao extends AbstractDao {
 
     public void starMediaFile(int id, String username) {
         unstarMediaFile(id, username);
-        update("insert into starred_media_file(media_file_id, username, created) values (?,?,?)", id, username, new Date());
+        update("insert into starred_media_file(media_file_id, username, created) values (?,?,?)", id, username, Instant.now());
     }
 
     public void unstarMediaFile(int id, String username) {
         update("delete from starred_media_file where media_file_id=? and username=?", id, username);
     }
 
-    public Date getMediaFileStarredDate(int id, String username) {
-        return queryForDate("select created from starred_media_file where media_file_id=? and username=?", null, id, username);
+    public Instant getMediaFileStarredDate(int id, String username) {
+        return queryForInstant("select created from starred_media_file where media_file_id=? and username=?", null, id, username);
     }
 
-    public void markPresent(String path, Date lastScanned) {
+    public void markPresent(String path, Instant lastScanned) {
         update("update media_file set present=?, last_scanned = ? where path=?", true, lastScanned, path);
     }
 
-    public void markNonPresent(Date lastScanned) {
+    public void markNonPresent(Instant lastScanned) {
         int minId = queryForInt("select min(id) from media_file where last_scanned < ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from media_file where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
-        Date childrenLastUpdated = new Date(0L);  // Used to force a children rescan if file is later resurrected.
+        Instant childrenLastUpdated = Instant.MIN;  // Used to force a children rescan if file is later resurrected.
         for (int id = minId; id <= maxId; id += batchSize) {
             update("update media_file set present=false, children_last_updated=? where id between ? and ? and " +
                             "last_scanned < ? and present",
@@ -713,12 +714,12 @@ public class MediaFileDao extends AbstractDao {
                     rs.getString(20),
                     rs.getString(21),
                     rs.getInt(22),
-                    rs.getTimestamp(23),
+                    rs.getTimestamp(23).toInstant(),
                     rs.getString(24),
-                    rs.getTimestamp(25),
-                    rs.getTimestamp(26),
-                    rs.getTimestamp(27),
-                    rs.getTimestamp(28),
+                    rs.getTimestamp(25).toInstant(),
+                    rs.getTimestamp(26).toInstant(),
+                    rs.getTimestamp(27).toInstant(),
+                    rs.getTimestamp(28).toInstant(),
                     rs.getBoolean(29),
                     rs.getInt(30),
                     rs.getString(31));
@@ -729,7 +730,7 @@ public class MediaFileDao extends AbstractDao {
         public MediaFile mapRow(ResultSet rs, int rowNum) throws SQLException {
             MediaFile file = new MediaFile();
             file.setPlayCount(rs.getInt(1));
-            file.setLastPlayed(rs.getTimestamp(2));
+            file.setLastPlayed(rs.getTimestamp(2).toInstant());
             file.setComment(rs.getString(3));
             return file;
         }

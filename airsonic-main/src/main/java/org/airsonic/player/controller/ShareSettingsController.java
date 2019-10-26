@@ -39,6 +39,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -102,10 +104,10 @@ public class ShareSettingsController {
 
         boolean deleteExpired = ServletRequestUtils.getBooleanParameter(request, "deleteExpired", false);
         if (deleteExpired) {
-            Date now = new Date();
+            Instant now = Instant.now();
             for (Share share : shareService.getSharesForUser(user)) {
-                Date expires = share.getExpires();
-                if (expires != null && expires.before(now)) {
+                Instant expires = share.getExpires();
+                if (expires != null && expires.isBefore(now)) {
                     shareService.deleteShare(share.getId());
                 }
             }
@@ -134,15 +136,13 @@ public class ShareSettingsController {
         return StringUtils.trimToNull(request.getParameter(name + "[" + id + "]"));
     }
 
-    private Date parseExpireIn(String expireIn) {
-        int days = Integer.parseInt(expireIn);
-        if (days == 0) {
+    private Instant parseExpireIn(String expireIn) {
+        long days = Long.parseLong(expireIn);
+        if (days == 0L) {
             return null;
         }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, days);
-        return calendar.getTime();
+        return Instant.now().plus(days, ChronoUnit.DAYS);
     }
 
     public static class ShareInfo {

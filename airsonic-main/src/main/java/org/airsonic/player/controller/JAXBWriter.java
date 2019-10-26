@@ -42,8 +42,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
 import java.util.GregorianCalendar;
 
 import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
@@ -167,21 +166,13 @@ public class JAXBWriter {
         writeResponse(request, response, res);
     }
 
-    public XMLGregorianCalendar convertDate(Date date) {
+    public XMLGregorianCalendar convertDate(Instant date) {
         if (date == null) {
             return null;
         }
 
         GregorianCalendar c = new GregorianCalendar();
-        c.setTime(date);
+        c.setTimeInMillis(date.toEpochMilli());
         return datatypeFactory.newXMLGregorianCalendar(c).normalize();
-    }
-
-    public XMLGregorianCalendar convertCalendar(Calendar calendar) {
-        if (calendar == null) {
-            return null;
-        }
-
-        return datatypeFactory.newXMLGregorianCalendar((GregorianCalendar)calendar).normalize();
     }
 }

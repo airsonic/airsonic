@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -150,7 +151,7 @@ public class RecoverController {
                     "--\n" +
                     "Your Airsonic server\n" +
                     "airsonic.github.io/");
-            message.setSentDate(new Date());
+            message.setSentDate(Date.from(Instant.now()));
 
             Transport trans = session.getTransport(prot);
             try {

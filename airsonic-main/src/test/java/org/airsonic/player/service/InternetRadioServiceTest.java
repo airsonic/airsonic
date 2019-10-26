@@ -13,7 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -59,12 +59,12 @@ public class InternetRadioServiceTest {
     public void setup() throws Exception {
 
         // Prepare a mock InternetRadio object
-        radio1 = new InternetRadio(1, TEST_RADIO_NAME, TEST_PLAYLIST_URL_1, TEST_RADIO_HOMEPAGE, true, new Date());
-        radio2 = new InternetRadio(2, TEST_RADIO_NAME, TEST_PLAYLIST_URL_2, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioMove = new InternetRadio(3, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioMoveLoop = new InternetRadio(3, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE_LOOP, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioLarge = new InternetRadio(4, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioLarge2 = new InternetRadio(5, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE_2, TEST_RADIO_HOMEPAGE, true, new Date());
+        radio1 = new InternetRadio(1, TEST_RADIO_NAME, TEST_PLAYLIST_URL_1, TEST_RADIO_HOMEPAGE, true, Instant.now());
+        radio2 = new InternetRadio(2, TEST_RADIO_NAME, TEST_PLAYLIST_URL_2, TEST_RADIO_HOMEPAGE, true, Instant.now());
+        radioMove = new InternetRadio(3, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE, TEST_RADIO_HOMEPAGE, true, Instant.now());
+        radioMoveLoop = new InternetRadio(3, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE_LOOP, TEST_RADIO_HOMEPAGE, true, Instant.now());
+        radioLarge = new InternetRadio(4, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE, TEST_RADIO_HOMEPAGE, true, Instant.now());
+        radioLarge2 = new InternetRadio(5, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE_2, TEST_RADIO_HOMEPAGE, true, Instant.now());
 
         // Prepare the mocked URL connection for the simple playlist
         HttpURLConnection mockURLConnection1 = Mockito.mock(HttpURLConnection.class);

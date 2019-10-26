@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import java.util.Date;
+import java.time.Instant;
 
 /**
  * An icon representing a user.
@@ -30,13 +30,13 @@ public class Avatar {
 
     private int id;
     private String name;
-    private Date createdDate;
+    private Instant createdDate;
     private String mimeType;
     private int width;
     private int height;
     private byte[] data;
 
-    public Avatar(int id, String name, Date createdDate, String mimeType, int width, int height, byte[] data) {
+    public Avatar(int id, String name, Instant createdDate, String mimeType, int width, int height, byte[] data) {
         this.id = id;
         this.name = name;
         this.createdDate = createdDate;
@@ -54,7 +54,7 @@ public class Avatar {
         return name;
     }
 
-    public Date getCreatedDate() {
+    public Instant getCreatedDate() {
         return createdDate;
     }
 

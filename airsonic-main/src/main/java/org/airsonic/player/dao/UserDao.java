@@ -377,7 +377,7 @@ public class UserDao extends AbstractDao {
             settings.setNowPlayingAllowed(rs.getBoolean(col++));
             settings.setAvatarScheme(AvatarScheme.valueOf(rs.getString(col++)));
             settings.setSystemAvatarId((Integer) rs.getObject(col++));
-            settings.setChanged(rs.getTimestamp(col++));
+            settings.setChanged(rs.getTimestamp(col++).toInstant());
             settings.setShowArtistInfoEnabled(rs.getBoolean(col++));
             settings.setAutoHidePlayQueue(rs.getBoolean(col++));
             settings.setViewAsList(rs.getBoolean(col++));

@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.domain;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 
@@ -55,7 +56,7 @@ public class UserSettings {
     private boolean nowPlayingAllowed;
     private AvatarScheme avatarScheme = AvatarScheme.NONE;
     private Integer systemAvatarId;
-    private Date changed = new Date();
+    private Instant changed = Instant.now();
     private int paginationSize;
 
     public UserSettings(String username) {
@@ -267,7 +268,7 @@ public class UserSettings {
      *
      * @return When the corresponding database entry was last changed.
      */
-    public Date getChanged() {
+    public Instant getChanged() {
         return changed;
     }
 
@@ -276,7 +277,7 @@ public class UserSettings {
      *
      * @param changed When the corresponding database entry was last changed.
      */
-    public void setChanged(Date changed) {
+    public void setChanged(Instant changed) {
         this.changed = changed;
     }
 

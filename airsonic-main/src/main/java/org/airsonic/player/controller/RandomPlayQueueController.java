@@ -37,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -82,8 +84,8 @@ public class RandomPlayQueueController {
         Integer maxAlbumRating = null;
         Integer minPlayCount = null;
         Integer maxPlayCount = null;
-        Date minLastPlayedDate = null;
-        Date maxLastPlayedDate = null;
+        Instant minLastPlayedDate = null;
+        Instant maxLastPlayedDate = null;
         boolean doesShowStarredSongs = false;
         boolean doesShowUnstarredSongs = false;
 
@@ -116,39 +118,39 @@ public class RandomPlayQueueController {
         }
 
         // Handle the last played date filter
-        Calendar lastPlayed = Calendar.getInstance();
-        lastPlayed.setTime(new Date());
+        Instant lastPlayed = null;
         switch (lastPlayedValue) {
-            case "any":
-                lastPlayed = null;
-                break;
             case "1day":
-                lastPlayed.add(Calendar.DAY_OF_YEAR, -1);
+                lastPlayed = Instant.now().minus(1, ChronoUnit.DAYS);
                 break;
             case "1week":
-                lastPlayed.add(Calendar.WEEK_OF_YEAR, -1);
+                lastPlayed = Instant.now().minus(1, ChronoUnit.WEEKS);
                 break;
             case "1month":
-                lastPlayed.add(Calendar.MONTH, -1);
+                lastPlayed = Instant.now().minus(1, ChronoUnit.MONTHS);
                 break;
             case "3months":
-                lastPlayed.add(Calendar.MONTH, -3);
+                lastPlayed = Instant.now().minus(3, ChronoUnit.MONTHS);
                 break;
             case "6months":
-                lastPlayed.add(Calendar.MONTH, -6);
+                lastPlayed = Instant.now().minus(6, ChronoUnit.MONTHS);
                 break;
             case "1year":
-                lastPlayed.add(Calendar.YEAR, -1);
+                lastPlayed = Instant.now().minus(1, ChronoUnit.YEARS);
+                break;
+            case "any":
+            default:
                 break;
         }
+        
         if (lastPlayed != null) {
             switch (lastPlayedComp) {
                 case "lt":
                     minLastPlayedDate = null;
-                    maxLastPlayedDate = lastPlayed.getTime();
+                    maxLastPlayedDate = lastPlayed;
                     break;
                 case "gt":
-                    minLastPlayedDate = lastPlayed.getTime();
+                    minLastPlayedDate = lastPlayed;
                     maxLastPlayedDate = null;
                     break;
             }

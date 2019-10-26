@@ -57,8 +57,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -73,8 +75,10 @@ import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 public class PodcastService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
-    private static final DateFormat[] RSS_DATE_FORMATS = {new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
-        new SimpleDateFormat("dd MMM yyyy HH:mm:ss Z", Locale.US)};
+    private static final DateTimeFormatter[] RSS_DATE_FORMATS = {
+            DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
+            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss Z", Locale.US)
+    };
 
     private static final Namespace[] ITUNES_NAMESPACES = {Namespace.getNamespace("http://www.itunes.com/DTDs/Podcast-1.0.dtd"),
         Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
@@ -145,7 +149,7 @@ public class PodcastService {
         long initialDelayMillis = 5L * 60L * 1000L;
 
         scheduledRefresh = scheduledExecutor.scheduleAtFixedRate(task, initialDelayMillis, periodMillis, TimeUnit.MILLISECONDS);
-        Date firstTime = new Date(System.currentTimeMillis() + initialDelayMillis);
+        Instant firstTime = Instant.now().plusMillis(initialDelayMillis);
         LOG.info("Automatic Podcast update scheduled to run every " + hoursBetween + " hour(s), starting at " + firstTime);
     }
 
@@ -442,7 +446,7 @@ public class PodcastService {
                     LOG.warn("Failed to parse enclosure length.", x);
                 }
 
-                Date date = parseDate(episodeElement.getChildTextTrim("pubDate"));
+                Instant date = parseDate(episodeElement.getChildTextTrim("pubDate"));
                 PodcastEpisode episode = new PodcastEpisode(null, channel.getId(), url, null, title, description, date,
                         duration, length, 0L, PodcastStatus.NEW, null);
                 episodes.add(episode);
@@ -452,8 +456,8 @@ public class PodcastService {
 
         // Sort episode in reverse chronological order (newest first)
         episodes.sort((a, b) -> {
-            long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
-            long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
+            long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().toEpochMilli();
+            long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().toEpochMilli();
 
             return Long.compare(timeB, timeA);
         });
@@ -473,10 +477,10 @@ public class PodcastService {
         }
     }
 
-    private Date parseDate(String s) {
-        for (DateFormat dateFormat : RSS_DATE_FORMATS) {
+    private Instant parseDate(String s) {
+        for (DateTimeFormatter dateFormat : RSS_DATE_FORMATS) {
             try {
-                return dateFormat.parse(s);
+                return LocalDateTime.parse(s, dateFormat).toInstant(ZoneOffset.UTC);
             } catch (Exception x) {
                 // Ignored.
             }

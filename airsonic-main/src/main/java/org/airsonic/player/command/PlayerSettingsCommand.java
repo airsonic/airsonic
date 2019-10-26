@@ -25,7 +25,7 @@ import org.airsonic.player.domain.PlayerTechnology;
 import org.airsonic.player.domain.TranscodeScheme;
 import org.airsonic.player.domain.Transcoding;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -38,7 +38,7 @@ public class PlayerSettingsCommand {
     private String name;
     private String description;
     private String type;
-    private Date lastSeen;
+    private Instant lastSeen;
     private boolean isDynamicIp;
     private boolean isAutoControlEnabled;
     private boolean isM3uBomEnabled;
@@ -87,11 +87,11 @@ public class PlayerSettingsCommand {
         this.type = type;
     }
 
-    public Date getLastSeen() {
+    public Instant getLastSeen() {
         return lastSeen;
     }
 
-    public void setLastSeen(Date lastSeen) {
+    public void setLastSeen(Instant lastSeen) {
         this.lastSeen = lastSeen;
     }
 
