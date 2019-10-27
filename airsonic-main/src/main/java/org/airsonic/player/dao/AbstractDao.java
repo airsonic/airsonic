@@ -20,6 +20,7 @@
 package org.airsonic.player.dao;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Abstract superclass for all DAO's.
@@ -69,11 +73,19 @@ public class AbstractDao {
         l.replaceAll(s -> prefix + "." + s);
         return String.join(", ", l);
     }
+    
+    protected static Object[] convertArgs(Object[] args) {
+        return args == null ? null : Stream.of(args).map(x -> (Object) ((x instanceof Instant) ? Timestamp.from((Instant) x) : x)).collect(Collectors.toList()).toArray();
+    }
+    
+    protected static Map<String, Object> convertArgs(Map<String, Object> args) {
+        return args == null ? null : args.entrySet().parallelStream().map(x -> (x.getValue() instanceof Instant) ? Pair.of(x.getKey(), Timestamp.from((Instant) x.getValue())) : x).collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+    }
 
     protected int update(String sql, Object... args) {
         long t = System.nanoTime();
         LOG.trace("Executing query: [{}]", sql);
-        int result = getJdbcTemplate().update(sql, args);
+        int result = getJdbcTemplate().update(sql, convertArgs(args));
         LOG.trace("Updated {} rows", result);
         log(sql, t);
         return result;
@@ -90,14 +102,14 @@ public class AbstractDao {
 
     protected <T> List<T> query(String sql, RowMapper rowMapper, Object... args) {
         long t = System.nanoTime();
-        List<T> result = getJdbcTemplate().query(sql, args, rowMapper);
+        List<T> result = getJdbcTemplate().query(sql, convertArgs(args), rowMapper);
         log(sql, t);
         return result;
     }
 
     protected <T> List<T> namedQuery(String sql, RowMapper rowMapper, Map<String, Object> args) {
         long t = System.nanoTime();
-        List<T> result = getNamedParameterJdbcTemplate().query(sql, args, rowMapper);
+        List<T> result = getNamedParameterJdbcTemplate().query(sql, convertArgs(args), rowMapper);
         log(sql, t);
         return result;
     }
@@ -107,35 +119,35 @@ public class AbstractDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(daoHelper.getDataSource());
         jdbcTemplate.setMaxRows(limit);
         NamedParameterJdbcTemplate namedTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        List<T> result = namedTemplate.query(sql, args, rowMapper);
+        List<T> result = namedTemplate.query(sql, convertArgs(args), rowMapper);
         log(sql, t);
         return result;
     }
 
     protected List<String> queryForStrings(String sql, Object... args) {
         long t = System.nanoTime();
-        List<String> result = getJdbcTemplate().queryForList(sql, args, String.class);
+        List<String> result = getJdbcTemplate().queryForList(sql, convertArgs(args), String.class);
         log(sql, t);
         return result;
     }
 
     protected List<Integer> queryForInts(String sql, Object... args) {
         long t = System.nanoTime();
-        List<Integer> result = getJdbcTemplate().queryForList(sql, args, Integer.class);
+        List<Integer> result = getJdbcTemplate().queryForList(sql, convertArgs(args), Integer.class);
         log(sql, t);
         return result;
     }
 
     protected List<String> namedQueryForStrings(String sql, Map<String, Object> args) {
         long t = System.nanoTime();
-        List<String> result = getNamedParameterJdbcTemplate().queryForList(sql, args, String.class);
+        List<String> result = getNamedParameterJdbcTemplate().queryForList(sql, convertArgs(args), String.class);
         log(sql, t);
         return result;
     }
 
     protected Integer queryForInt(String sql, Integer defaultValue, Object... args) {
         long t = System.nanoTime();
-        List<Integer> list = getJdbcTemplate().queryForList(sql, args, Integer.class);
+        List<Integer> list = getJdbcTemplate().queryForList(sql, convertArgs(args), Integer.class);
         Integer result = list.isEmpty() ? defaultValue : list.get(0) == null ? defaultValue : list.get(0);
         log(sql, t);
         return result;
@@ -143,7 +155,7 @@ public class AbstractDao {
 
     protected Integer namedQueryForInt(String sql, Integer defaultValue, Map<String, Object> args) {
         long t = System.nanoTime();
-        List<Integer> list = getNamedParameterJdbcTemplate().queryForList(sql, args, Integer.class);
+        List<Integer> list = getNamedParameterJdbcTemplate().queryForList(sql, convertArgs(args), Integer.class);
         Integer result = list.isEmpty() ? defaultValue : list.get(0) == null ? defaultValue : list.get(0);
         log(sql, t);
         return result;
@@ -151,15 +163,15 @@ public class AbstractDao {
 
     protected Instant queryForInstant(String sql, Instant defaultValue, Object... args) {
         long t = System.nanoTime();
-        List<Instant> list = getJdbcTemplate().queryForList(sql, args, Instant.class);
-        Instant result = list.stream().findFirst().orElse(defaultValue);
+        List<Timestamp> list = getJdbcTemplate().queryForList(sql, convertArgs(args), Timestamp.class);
+        Instant result = list.stream().findFirst().map(x -> x.toInstant()).orElse(defaultValue);
         log(sql, t);
         return result;
     }
 
     protected Long queryForLong(String sql, Long defaultValue, Object... args) {
         long t = System.nanoTime();
-        List<Long> list = getJdbcTemplate().queryForList(sql, args, Long.class);
+        List<Long> list = getJdbcTemplate().queryForList(sql, convertArgs(args), Long.class);
         Long result = list.isEmpty() ? defaultValue : list.get(0) == null ? defaultValue : list.get(0);
         log(sql, t);
         return result;
