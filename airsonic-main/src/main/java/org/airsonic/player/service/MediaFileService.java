@@ -485,7 +485,7 @@ public class MediaFileService {
         mediaFile.setPlayCount(existingFile == null ? 0 : existingFile.getPlayCount());
         mediaFile.setLastPlayed(existingFile == null ? null : existingFile.getLastPlayed());
         mediaFile.setComment(existingFile == null ? null : existingFile.getComment());
-        mediaFile.setChildrenLastUpdated(Instant.now());
+        mediaFile.setChildrenLastUpdated(Instant.ofEpochMilli(1)); //distant past, can't use Instant.MIN due to HSQL incompatibility
         mediaFile.setCreated(lastModified);
         mediaFile.setMediaType(MediaFile.MediaType.DIRECTORY);
         mediaFile.setPresent(true);
