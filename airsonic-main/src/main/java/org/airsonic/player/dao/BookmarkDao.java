@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides database services for media file bookmarks.
@@ -89,7 +90,7 @@ public class BookmarkDao extends AbstractDao {
     private static class BookmarkRowMapper implements RowMapper<Bookmark> {
         public Bookmark mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Bookmark(rs.getInt(1), rs.getInt(2), rs.getLong(3), rs.getString(4),
-                    rs.getString(5), rs.getTimestamp(6).toInstant(), rs.getTimestamp(7).toInstant());
+                    rs.getString(5), Optional.ofNullable(rs.getTimestamp(6)).map(x -> x.toInstant()).orElse(null), Optional.ofNullable(rs.getTimestamp(7)).map(x -> x.toInstant()).orElse(null));
         }
     }
 }

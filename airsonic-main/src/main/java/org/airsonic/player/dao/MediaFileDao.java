@@ -714,12 +714,12 @@ public class MediaFileDao extends AbstractDao {
                     rs.getString(20),
                     rs.getString(21),
                     rs.getInt(22),
-                    rs.getTimestamp(23).toInstant(),
+                    Optional.ofNullable(rs.getTimestamp(23)).map(x -> x.toInstant()).orElse(null),
                     rs.getString(24),
-                    rs.getTimestamp(25).toInstant(),
-                    rs.getTimestamp(26).toInstant(),
-                    rs.getTimestamp(27).toInstant(),
-                    rs.getTimestamp(28).toInstant(),
+                    Optional.ofNullable(rs.getTimestamp(25)).map(x -> x.toInstant()).orElse(null),
+                    Optional.ofNullable(rs.getTimestamp(26)).map(x -> x.toInstant()).orElse(null),
+                    Optional.ofNullable(rs.getTimestamp(27)).map(x -> x.toInstant()).orElse(null),
+                    Optional.ofNullable(rs.getTimestamp(28)).map(x -> x.toInstant()).orElse(null),
                     rs.getBoolean(29),
                     rs.getInt(30),
                     rs.getString(31));
@@ -730,7 +730,7 @@ public class MediaFileDao extends AbstractDao {
         public MediaFile mapRow(ResultSet rs, int rowNum) throws SQLException {
             MediaFile file = new MediaFile();
             file.setPlayCount(rs.getInt(1));
-            file.setLastPlayed(rs.getTimestamp(2).toInstant());
+            file.setLastPlayed(Optional.ofNullable(rs.getTimestamp(2)).map(x -> x.toInstant()).orElse(null));
             file.setComment(rs.getString(3));
             return file;
         }

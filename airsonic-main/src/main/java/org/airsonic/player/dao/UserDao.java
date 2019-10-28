@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides user-related database services.
@@ -377,7 +378,7 @@ public class UserDao extends AbstractDao {
             settings.setNowPlayingAllowed(rs.getBoolean(col++));
             settings.setAvatarScheme(AvatarScheme.valueOf(rs.getString(col++)));
             settings.setSystemAvatarId((Integer) rs.getObject(col++));
-            settings.setChanged(rs.getTimestamp(col++).toInstant());
+            settings.setChanged(Optional.ofNullable(rs.getTimestamp(col++)).map(x -> x.toInstant()).orElse(null));
             settings.setShowArtistInfoEnabled(rs.getBoolean(col++));
             settings.setAutoHidePlayQueue(rs.getBoolean(col++));
             settings.setViewAsList(rs.getBoolean(col++));

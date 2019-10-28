@@ -188,7 +188,7 @@ public class PlayerDao extends AbstractDao {
             player.setIpAddress(rs.getString(col++));
             player.setAutoControlEnabled(rs.getBoolean(col++));
             player.setM3uBomEnabled(rs.getBoolean(col++));
-            player.setLastSeen(rs.getTimestamp(col++).toInstant());
+            player.setLastSeen(Optional.ofNullable(rs.getTimestamp(col++)).map(x -> x.toInstant()).orElse(null));
             col++; // Ignore cover art scheme.
             player.setTranscodeScheme(TranscodeScheme.valueOf(rs.getString(col++)));
             player.setDynamicIp(rs.getBoolean(col++));

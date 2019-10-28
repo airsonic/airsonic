@@ -134,8 +134,8 @@ public class PlaylistDao extends AbstractDao {
                     rs.getString(5),
                     rs.getInt(6),
                     rs.getInt(7),
-                    rs.getTimestamp(8).toInstant(),
-                    rs.getTimestamp(9).toInstant(),
+                    Optional.ofNullable(rs.getTimestamp(8)).map(x -> x.toInstant()).orElse(null),
+                    Optional.ofNullable(rs.getTimestamp(9)).map(x -> x.toInstant()).orElse(null),
                     rs.getString(10));
         }
     }

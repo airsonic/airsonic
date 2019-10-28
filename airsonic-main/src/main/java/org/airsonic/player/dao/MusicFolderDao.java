@@ -30,6 +30,7 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Provides database services for music folders.
@@ -118,7 +119,7 @@ public class MusicFolderDao extends AbstractDao {
 
     private static class MusicFolderRowMapper implements RowMapper<MusicFolder> {
         public MusicFolder mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new MusicFolder(rs.getInt(1), new File(rs.getString(2)), rs.getString(3), rs.getBoolean(4), rs.getTimestamp(5).toInstant());
+            return new MusicFolder(rs.getInt(1), new File(rs.getString(2)), rs.getString(3), rs.getBoolean(4), Optional.ofNullable(rs.getTimestamp(5)).map(x -> x.toInstant()).orElse(null));
         }
     }
 

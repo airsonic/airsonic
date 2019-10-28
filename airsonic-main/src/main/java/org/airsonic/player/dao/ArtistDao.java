@@ -204,7 +204,7 @@ public class ArtistDao extends AbstractDao {
                     rs.getString(2),
                     rs.getString(3),
                     rs.getInt(4),
-                    rs.getTimestamp(5).toInstant(),
+                    Optional.ofNullable(rs.getTimestamp(5)).map(x -> x.toInstant()).orElse(null),
                     rs.getBoolean(6),
                     rs.getInt(7));
         }

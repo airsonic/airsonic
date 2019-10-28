@@ -384,10 +384,10 @@ public class AlbumDao extends AbstractDao {
                     rs.getInt(8) == 0 ? null : rs.getInt(8),
                     rs.getString(9),
                     rs.getInt(10),
-                    rs.getTimestamp(11).toInstant(),
+                    Optional.ofNullable(rs.getTimestamp(11)).map(x -> x.toInstant()).orElse(null),
                     rs.getString(12),
-                    rs.getTimestamp(13).toInstant(),
-                    rs.getTimestamp(14).toInstant(),
+                    Optional.ofNullable(rs.getTimestamp(13)).map(x -> x.toInstant()).orElse(null),
+                    Optional.ofNullable(rs.getTimestamp(14)).map(x -> x.toInstant()).orElse(null),
                     rs.getBoolean(15),
                     rs.getInt(16),
                     rs.getString(17));
