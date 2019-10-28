@@ -218,7 +218,7 @@ public class MediaScannerServiceTestCase {
         Assert.assertEquals("0820752d-1043-4572-ab36-2df3b5cc15fa", album.getMusicBrainzReleaseId());
         Assert.assertEquals(musicFolderFile.toPath().resolve("TestAlbum").toString(), album.getPath());
 
-        // Test that the music file is correctly imported, along with its MusicBrainz release ID
+        // Test that the music file is correctly imported, along with its MusicBrainz release ID and recording ID
         List<MediaFile> albumFiles = mediaFileDao.getChildrenOf(allAlbums.get(0).getPath());
         Assert.assertEquals(1, albumFiles.size());
         MediaFile file = albumFiles.get(0);
@@ -232,5 +232,6 @@ public class MediaScannerServiceTestCase {
         Assert.assertEquals(album.getPath(), file.getParentPath());
         Assert.assertEquals(new File(album.getPath()).toPath().resolve("01 - Aria.flac").toString(), file.getPath());
         Assert.assertEquals("0820752d-1043-4572-ab36-2df3b5cc15fa", file.getMusicBrainzReleaseId());
+        Assert.assertEquals("831586f4-56f9-4785-ac91-447ae20af633", file.getMusicBrainzRecordingId());
     }
 }
