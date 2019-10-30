@@ -81,7 +81,7 @@ explicitly approve the pull-request, and another to perform the actual merge.
 If you keep sending great code, you might be invited to become a *core
 contributor*.
 
-"Normal releases do not happen on any fixed schedule. They happen when the
+Normal releases do not happen on any fixed schedule. They happen when the
 maintainers collectively decide that enough changes and testing have taken
 place that a new release is warranted. Bugfix releases (when a problem has been
 discovered that is likely to impact users significantly), may happen more
