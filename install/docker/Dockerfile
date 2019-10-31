@@ -27,6 +27,10 @@ COPY target/dependency/airsonic-main.war airsonic.war
 
 EXPOSE $AIRSONIC_PORT
 
+# Default DLNA/UPnP ports
+EXPOSE 4041
+EXPOSE 1900/udp
+
 VOLUME $AIRSONIC_DIR/data $AIRSONIC_DIR/music $AIRSONIC_DIR/playlists $AIRSONIC_DIR/podcasts
 
 HEALTHCHECK --interval=15s --timeout=3s CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"rest/ping -O /dev/null || exit 1
