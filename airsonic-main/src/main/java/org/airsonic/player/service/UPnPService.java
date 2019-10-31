@@ -70,7 +70,7 @@ public class UPnPService {
     private CustomContentDirectory dispatchingContentDirectory;
     
     @Autowired
-    @Value("#{ systemProperties['UPNPPort'] ?: T(org.airsonic.player.service.SettingsService).DEFAULT_UPNP_PORT }")
+    @Value("#{ systemProperties['UPNP_PORT'] ?: T(org.airsonic.player.service.SettingsService).DEFAULT_UPNP_PORT }")
     private int port;
     
     private AtomicReference<Boolean> running = new AtomicReference<>(false);
