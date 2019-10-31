@@ -2,11 +2,26 @@ language: java
 cache:
   directories:
     - $HOME/.m2
+
+services:
+  - docker
+
+env:
+  global:
+    - secure: "encrypted DOCKER_USERNAME=user"
+    - secure: "encrypted DOCKER_PASSWORD=pass"
+      
+stages:
+  - name: deploy_edge
+    # deploy only on commits to master branch
+    if: branch = master && type = push
+
 script:
   - mvn verify -B -P integration-test
 
 matrix:
   include:
+  # tests
   - name: coverity
     script:
       - echo "coverity scan script"
@@ -30,3 +45,32 @@ matrix:
   - jdk: openjdk11
   - jdk: openjdk12
   - jdk: openjdk13
+  
+  # deploys
+  - stage: deploy_edge
+    name: "Deploy Edge Release"
+    jdk: openjdk8
+  before_script:
+    - export PROJECT_MAVEN_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+    - export TRAVIS_TAG=${TRAVIS_TAG:-$PROJECT_MAVEN_VERSION+$(date +'%Y%m%d%H%M%S')-$TRAVIS_COMMIT}
+    script:
+      - mvn package -DskipTests -Dcheckstyle.skip=true
+      - docker build -f install/docker/Dockerfile -t airsonic/airsonic:latest -t airsonic/airsonic:edge/$TRAVIS_TAG .
+    before_deploy:
+      # Set up git user name and tag this commit
+      - git config --local user.name "Airsonic Travis"
+      - git config --local user.email "airsonic@tutanota.com"
+      - git tag $TRAVIS_TAG -m "Edge Release $TRAVIS_TAG"
+    deploy:
+    - provider: releases
+      api_key:
+        secure: "encrypted GITHUB_OAUTH_TOKEN"
+      file: airsonic-main/target/airsonic.war
+      skip_cleanup: true
+      options:
+        - prerelease: true
+        - name: "Edge Release $TRAVIS_TAG"
+      on:
+        tags: true
+    - provider: script
+      script: bash install/docker/dockerhub_push.sh
