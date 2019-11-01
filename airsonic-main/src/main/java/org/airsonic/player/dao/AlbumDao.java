@@ -338,10 +338,7 @@ public class AlbumDao extends AbstractDao {
         int minId = queryForInt("select min(id) from album where last_scanned < ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from album where last_scanned < ? and present", 0, lastScanned);
 
-        final int batchSize = 1000;
-        for (int id = minId; id <= maxId; id += batchSize) {
-            update("update album set present=false where id between ? and ? and last_scanned < ? and present", id, id + batchSize, lastScanned);
-        }
+        update("update album set present=false where id between ? and ? and last_scanned < ? and present", minId, maxId, lastScanned);
     }
 
     public List<Integer> getExpungeCandidates() {
@@ -352,10 +349,7 @@ public class AlbumDao extends AbstractDao {
         int minId = queryForInt("select min(id) from album where not present", 0);
         int maxId = queryForInt("select max(id) from album where not present", 0);
 
-        final int batchSize = 1000;
-        for (int id = minId; id <= maxId; id += batchSize) {
-            update("delete from album where id between ? and ? and not present", id, id + batchSize);
-        }
+        update("delete from album where id between ? and ? and not present", minId, maxId);
     }
 
     public void starAlbum(int albumId, String username) {

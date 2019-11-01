@@ -654,13 +654,10 @@ public class MediaFileDao extends AbstractDao {
         int minId = queryForInt("select min(id) from media_file where last_scanned < ? and present", 0, lastScanned);
         int maxId = queryForInt("select max(id) from media_file where last_scanned < ? and present", 0, lastScanned);
 
-        final int batchSize = 1000;
         Instant childrenLastUpdated = Instant.ofEpochMilli(1);  // Used to force a children rescan if file is later resurrected.
-        for (int id = minId; id <= maxId; id += batchSize) {
-            update("update media_file set present=false, children_last_updated=? where id between ? and ? and " +
-                            "last_scanned < ? and present",
-                   childrenLastUpdated, id, id + batchSize, lastScanned);
-        }
+        
+        update("update media_file set present=false, children_last_updated=? where id between ? and ? and last_scanned < ? and present",
+                childrenLastUpdated, minId, maxId, lastScanned);
     }
 
     public List<Integer> getArtistExpungeCandidates() {
@@ -682,11 +679,8 @@ public class MediaFileDao extends AbstractDao {
     public void expunge() {
         int minId = queryForInt("select min(id) from media_file where not present", 0);
         int maxId = queryForInt("select max(id) from media_file where not present", 0);
-
-        final int batchSize = 1000;
-        for (int id = minId; id <= maxId; id += batchSize) {
-            update("delete from media_file where id between ? and ? and not present", id, id + batchSize);
-        }
+        
+        update("delete from media_file where id between ? and ? and not present", minId, maxId);
     }
 
     private static class MediaFileMapper implements RowMapper<MediaFile> {
