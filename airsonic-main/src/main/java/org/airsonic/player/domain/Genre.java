@@ -19,6 +19,8 @@
  */
 package org.airsonic.player.domain;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Represents a musical genre.
  *
@@ -28,8 +30,8 @@ package org.airsonic.player.domain;
 public class Genre {
 
     private final String name;
-    private int songCount;
-    private int albumCount;
+    private final AtomicInteger songCount = new AtomicInteger(0);
+    private final AtomicInteger albumCount = new AtomicInteger(0);
 
     public Genre(String name) {
         this.name = name;
@@ -37,8 +39,8 @@ public class Genre {
 
     public Genre(String name, int songCount, int albumCount) {
         this.name = name;
-        this.songCount = songCount;
-        this.albumCount = albumCount;
+        this.songCount.set(songCount);
+        this.albumCount.set(albumCount);
     }
 
     public String getName() {
@@ -46,18 +48,18 @@ public class Genre {
     }
 
     public int getSongCount() {
-        return songCount;
+        return songCount.get();
     }
 
     public int getAlbumCount() {
-        return albumCount;
+        return albumCount.get();
     }
 
     public void incrementAlbumCount() {
-        albumCount++;
+        albumCount.incrementAndGet();
     }
 
     public void incrementSongCount() {
-        songCount++;
+        songCount.incrementAndGet();
     }
 }

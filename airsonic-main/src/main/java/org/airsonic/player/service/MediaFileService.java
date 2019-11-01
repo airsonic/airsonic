@@ -206,12 +206,7 @@ public class MediaFileService {
         }
 
         if (sort) {
-            Comparator<MediaFile> comparator = new MediaFileComparator(settingsService.isSortAlbumsByYear());
-            // Note: Intentionally not using Collections.sort() since it can be problematic on Java 7.
-            // http://www.oracle.com/technetwork/java/javase/compatibility-417013.html#jdk7
-            Set<MediaFile> set = new TreeSet<MediaFile>(comparator);
-            set.addAll(result);
-            result = new ArrayList<MediaFile>(set);
+            Collections.sort(result, new MediaFileComparator(settingsService.isSortAlbumsByYear()));
         }
 
         return result;
@@ -703,7 +698,7 @@ public class MediaFileService {
         Album album = albumDao.getAlbum(file.getAlbumArtist(), file.getAlbumName());
         if (album != null) {
             album.setLastPlayed(now);
-            album.setPlayCount(album.getPlayCount() + 1);
+            album.incrementPlayCount();
             albumDao.createOrUpdateAlbum(album);
         }
     }

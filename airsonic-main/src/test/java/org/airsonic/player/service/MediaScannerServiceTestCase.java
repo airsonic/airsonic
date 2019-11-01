@@ -13,6 +13,7 @@ import org.airsonic.player.util.HomeRule;
 import org.airsonic.player.util.MusicFolderTestData;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -105,6 +106,15 @@ public class MediaScannerServiceTestCase {
     ResourceLoader resourceLoader;
 
 
+    @Before
+    public void setup() {
+        while (mediaScannerService.isScanning()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {}
+        }
+    }
+    
     /**
      * Tests the MediaScannerService by scanning the test media library into an empty database.
      */
