@@ -204,7 +204,7 @@ public class MediaFileDao extends AbstractDao {
     }
 
     public void deleteMediaFile(String path) {
-        update("update media_file set present=false, children_last_updated=? where path=?", Instant.MIN, path);
+        update("update media_file set present=false, children_last_updated=? where path=?", Instant.ofEpochMilli(1), path);
     }
 
     public List<Genre> getGenres(boolean sortByAlbum) {
@@ -655,7 +655,7 @@ public class MediaFileDao extends AbstractDao {
         int maxId = queryForInt("select max(id) from media_file where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
-        Instant childrenLastUpdated = Instant.MIN;  // Used to force a children rescan if file is later resurrected.
+        Instant childrenLastUpdated = Instant.ofEpochMilli(1);  // Used to force a children rescan if file is later resurrected.
         for (int id = minId; id <= maxId; id += batchSize) {
             update("update media_file set present=false, children_last_updated=? where id between ? and ? and " +
                             "last_scanned < ? and present",
