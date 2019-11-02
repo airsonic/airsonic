@@ -1,0 +1,49 @@
+description = 'Sonos API'
+
+configurations {
+  wsdl2java
+  wsdl2java.extendsFrom compile
+}
+
+dependencies {
+  compile 'org.slf4j:slf4j-nop:1.7.+' // Disable slf4j warning at compile time
+
+  compile 'javax.xml.bind:jaxb-api:2.3.+'
+  compile 'javax.xml.ws:jaxws-api:2.3.+'
+  compile 'javax.jws:javax.jws-api:1.1'
+
+  wsdl2java 'org.apache.cxf:cxf-tools-wsdlto-core:3.3.+'
+  wsdl2java 'org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws:3.3.+'
+  wsdl2java 'org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb:3.3.+'
+}
+
+def wsdl2java = task generateJavaFromWsdl(type: JavaExec) {
+  String wsdl = 'src/main/resources/sonos-1.1.wsdl'
+  String genSrcDir = "${projectDir}/build/generated-sources/cxf"
+
+  inputs.file wsdl
+  outputs.dir genSrcDir
+
+  classpath configurations.wsdl2java
+  main "org.apache.cxf.tools.wsdlto.WSDLToJava"
+
+  args '-encoding', 'UTF-8', '-d', genSrcDir, wsdl
+
+  OutputStream baos = new ByteArrayOutputStream()
+  errorOutput = new OutputStream() {
+    void write(int b) {System.err.write(b); baos.write(b) }
+    void flush() { System.err.flush(); baos.flush() }
+    void close() { System.err.close(); baos.close() }
+  }
+
+  doLast {
+    def str = baos.toString()
+    if (str.contains('Usage : wsdl2java') || str.contains('WSDLToJava Error')) {
+      throw new TaskExecutionException(tasks[name],
+      new IOException('Apache CXF WSDLToJava has failed. Please see System.err output.'))
+    }
+  }
+}
+
+compileJava.dependsOn += wsdl2java
+sourceSets.main.java.srcDirs = ['src/main/java', 'build/generated-sources/cxf']
