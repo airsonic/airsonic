@@ -1,0 +1,13 @@
+plugins {
+  id 'org.unbroken-dome.xjc' version '1.4.3'
+}
+
+description = 'Subsonic REST API'
+
+dependencies {
+  compile 'javax.xml.bind:jaxb-api:2.3.+'
+}
+
+xjcGenerate {
+  source = fileTree('src/main/resources') { include '*.xsd' }
+}
