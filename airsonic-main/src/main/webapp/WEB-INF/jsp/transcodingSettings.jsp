@@ -5,8 +5,8 @@
     <%@ include file="jquery.jsp" %>
 </head>
 <body class="mainframe bgcolor1">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
+<script type="text/javascript" src="<c:url value='/script/wz_tooltip.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/script/tip_balloon.js'/>"></script>
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="transcoding"/>
@@ -41,11 +41,11 @@
     </tr>
 
     <tr>
-        <td><input class="monospace" name="name" size="10" placeholder="<fmt:message key="transcodingsettings.name"/>" value="${fn:escapeXml(newTranscoding.name)}"/></td>
-        <td><input class="monospace" name="sourceFormats" size="36" placeholder="<fmt:message key="transcodingsettings.sourceformat"/>" value="${newTranscoding.sourceFormats}"/></td>
-        <td><input class="monospace" name="targetFormat" size="10" placeholder="<fmt:message key="transcodingsettings.targetformat"/>" value="${newTranscoding.targetFormat}"/></td>
-        <td><input class="monospace" name="step1" size="60" placeholder="<fmt:message key="transcodingsettings.step1"/>" value="${newTranscoding.step1}"/></td>
-        <td><input class="monospace" name="step2" size="22" placeholder="<fmt:message key="transcodingsettings.step2"/>" value="${newTranscoding.step2}"/></td>
+        <td><input class="monospace" name="name" size="10" placeholder="<fmt:message key='transcodingsettings.name'/>" value="${fn:escapeXml(newTranscoding.name)}"/></td>
+        <td><input class="monospace" name="sourceFormats" size="36" placeholder="<fmt:message key='transcodingsettings.sourceformat'/>" value="${newTranscoding.sourceFormats}"/></td>
+        <td><input class="monospace" name="targetFormat" size="10" placeholder="<fmt:message key='transcodingsettings.targetformat'/>" value="${newTranscoding.targetFormat}"/></td>
+        <td><input class="monospace" name="step1" size="60" placeholder="<fmt:message key='transcodingsettings.step1'/>" value="${newTranscoding.step1}"/></td>
+        <td><input class="monospace" name="step2" size="22" placeholder="<fmt:message key='transcodingsettings.step2'/>" value="${newTranscoding.step2}"/></td>
         <td/>
     </tr>
 
@@ -81,8 +81,8 @@
 
 
     <p style="padding-top:0.75em">
-        <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>" style="margin-right:1.3em"></a>
+        <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em">
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key='common.cancel'/>" style="margin-right:1.3em"></a>
         <a href="https://airsonic.github.io/docs/transcode/" target="_blank" rel="noopener noreferrer"><fmt:message key="transcodingsettings.recommended"/></a>
     </p>
 

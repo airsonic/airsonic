@@ -8,9 +8,9 @@
         #progressBarContent {width: 0; height: 10px; background: url("<c:url value="/icons/default_light/progress.png"/>") repeat;}
         #randomPlayQueue td { padding: 0 5px; }
     </style>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/transferService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/transferService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
 
     <script type="text/javascript">
         function refreshProgress() {
@@ -120,13 +120,13 @@
 <body class="mainframe bgcolor1">
 
 <h1>
-    <img src="<spring:theme code="moreImage"/>" alt=""/>
+    <img src="<spring:theme code='moreImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="more.title"/></span>
 </h1>
 
 <c:if test="${model.user.streamRole}">
     <h2>
-        <img src="<spring:theme code="shuffleImage"/>" alt=""/>
+        <img src="<spring:theme code='shuffleImage'/>" alt=""/>
         <span style="vertical-align: middle"><fmt:message key="more.random.title"/></span>
     </h2>
 
@@ -254,31 +254,31 @@
             </tr>
             <tr>
                 <td colspan="2">
-                  <input type="submit" name="addToPlaylist" value="<fmt:message key="more.random.add"/>">
-                  <input type="submit" name="autoRandom" value="<fmt:message key="more.random.radio"/>">
+                  <input type="submit" name="addToPlaylist" value="<fmt:message key='more.random.add'/>">
+                  <input type="submit" name="autoRandom" value="<fmt:message key='more.random.radio'/>">
                 </td>
             </tr>
         </table>
     </form>
 </c:if>
 
-<a href="https://airsonic.github.io/docs/apps/" target="_blank" rel="noopener noreferrer"><img alt="Apps" src="<c:url value="/icons/default_light/apps.png"/>" style="float: right;margin-left: 3em; margin-right: 3em"/></a>
+<a href="https://airsonic.github.io/docs/apps/" target="_blank" rel="noopener noreferrer"><img alt="Apps" src="<c:url value='/icons/default_light/apps.png'/>" style="float: right;margin-left: 3em; margin-right: 3em"/></a>
 
 <h2>
-    <img src="<spring:theme code="androidImage"/>" alt=""/>
+    <img src="<spring:theme code='androidImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="more.apps.title"/></span>
 </h2>
 <fmt:message key="more.apps.text"/>
 
 
 <h2>
-    <img src="<spring:theme code="statusSmallImage"/>" alt=""/>
+    <img src="<spring:theme code='statusSmallImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="more.status.title"/></span>
 </h2>
 <fmt:message key="more.status.text"/>
 
 <h2>
-    <img src="<spring:theme code="podcastImage"/>" alt=""/>
+    <img src="<spring:theme code='podcastImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="more.podcast.title"/></span>
 </h2>
 <fmt:message key="more.podcast.text"/>
@@ -286,7 +286,7 @@
 <c:if test="${model.user.uploadRole}">
 
     <h2>
-        <img src="<spring:theme code="uploadImage"/>" alt=""/>
+        <img src="<spring:theme code='uploadImage'/>" alt=""/>
         <span style="vertical-align: middle"><fmt:message key="more.upload.title"/></span>
     </h2>
 
@@ -299,7 +299,7 @@
             <tr>
                 <td><fmt:message key="more.upload.target"/></td>
                 <td><input type="text" id="dir" name="dir" size="37" value="${model.uploadDirectory}"/></td>
-                <td><input type="submit" value="<fmt:message key="more.upload.ok"/>"/></td>
+                <td><input type="submit" value="<fmt:message key='more.upload.ok'/>"/></td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -321,7 +321,7 @@
 
 <a name="shortcuts"></a>
 <h2>
-    <img src="<spring:theme code="keyboardImage"/>" alt=""/>
+    <img src="<spring:theme code='keyboardImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="more.keyboard.title"/></span>
 </h2>
 <fmt:message key="more.keyboard.text"/>

@@ -8,7 +8,7 @@
 <body class="mainframe bgcolor1">
 
 <h1>
-    <img src="<spring:theme code="errorImage"/>" alt=""/>
+    <img src="<spring:theme code='errorImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="notFound.title"/></span>
 </h1>
 

@@ -3,9 +3,9 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <title><fmt:message key="lyrics.title"/></title>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/lyricsService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/lyricsService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
 
     <script type="text/javascript" language="javascript">
 
@@ -53,13 +53,13 @@
         <tr>
             <td><fmt:message key="lyrics.artist"/></td>
             <td style="padding-left:0.50em"><input id="artist" type="text" size="40" value="${model.artist}" tabindex="1"/></td>
-            <td style="padding-left:0.75em"><input type="submit" value="<fmt:message key="lyrics.search"/>" style="width:6em"
+            <td style="padding-left:0.75em"><input type="submit" value="<fmt:message key='lyrics.search'/>" style="width:6em"
                                                    tabindex="3"/></td>
         </tr>
         <tr>
             <td><fmt:message key="lyrics.song"/></td>
             <td style="padding-left:0.50em"><input id="song" type="text" size="40" value="${model.song}" tabindex="2"/></td>
-            <td style="padding-left:0.75em"><input type="button" value="<fmt:message key="common.close"/>" style="width:6em"
+            <td style="padding-left:0.75em"><input type="button" value="<fmt:message key='common.close'/>" style="width:6em"
                                                    onclick="self.close()" tabindex="4"/></td>
         </tr>
     </table>
