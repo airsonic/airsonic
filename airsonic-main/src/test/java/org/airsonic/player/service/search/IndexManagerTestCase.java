@@ -172,7 +172,7 @@ public class IndexManagerTestCase extends AbstractAirsonicHomeTest {
         /* Does not scan, only expunges the index. */
         indexManager.startIndexing();
         indexManager.expunge();
-        indexManager.stopIndexing();
+        indexManager.stopIndexing(indexManager.getStatistics());
 
         /* 
          * Subsequent search results.

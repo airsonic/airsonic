@@ -51,8 +51,6 @@ public class MediaScannerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MediaScannerService.class);
 
-    private MediaLibraryStatistics statistics;
-
     private boolean scanning;
     
     private ScheduledExecutorService scheduler;
@@ -76,13 +74,11 @@ public class MediaScannerService {
     @PostConstruct
     public void init() {
         indexManager.initializeIndexDirectory();
-        statistics = settingsService.getMediaLibraryStatistics();
         schedule();
     }
 
     public void initNoSchedule() {
         indexManager.deleteOldIndexFiles();
-        statistics = settingsService.getMediaLibraryStatistics();
     }
 
     /**
@@ -115,10 +111,14 @@ public class MediaScannerService {
         LOG.info("Automatic media library scanning scheduled to run every {} day(s), starting at {}", daysBetween, nextRun);
 
         // In addition, create index immediately if it doesn't exist on disk.
-        if (settingsService.getLastScanned() == null) {
+        if (neverScanned()) {
             LOG.info("Media library never scanned. Doing it now.");
             scanLibrary();
         }
+    }
+
+    boolean neverScanned() {
+        return indexManager.getStatistics() == null;
     }
 
     /**
@@ -160,8 +160,9 @@ public class MediaScannerService {
 
     private void doScanLibrary() {
         LOG.info("Starting to scan media library.");
-        Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
-        LOG.debug("New last scan date is " + lastScanned);
+        MediaLibraryStatistics statistics = new MediaLibraryStatistics(
+                DateUtils.truncate(new Date(), Calendar.SECOND));
+        LOG.debug("New last scan date is " + statistics.getScanDate());
 
         try {
 
@@ -170,7 +171,6 @@ public class MediaScannerService {
             Genres genres = new Genres();
 
             scanCount = 0;
-            statistics.reset();
 
             mediaFileService.setMemoryCacheEnabled(false);
             indexManager.startIndexing();
@@ -180,24 +180,24 @@ public class MediaScannerService {
             // Recurse through all files on disk.
             for (MusicFolder musicFolder : settingsService.getAllMusicFolders()) {
                 MediaFile root = mediaFileService.getMediaFile(musicFolder.getPath(), false);
-                scanFile(root, musicFolder, lastScanned, albumCount, genres, false);
+                scanFile(root, musicFolder, statistics, albumCount, genres, false);
             }
 
             // Scan podcast folder.
             File podcastFolder = new File(settingsService.getPodcastFolder());
             if (podcastFolder.exists()) {
                 scanFile(mediaFileService.getMediaFile(podcastFolder), new MusicFolder(podcastFolder, null, true, null),
-                         lastScanned, albumCount, genres, true);
+                         statistics, albumCount, genres, true);
             }
 
             LOG.info("Scanned media library with " + scanCount + " entries.");
 
             LOG.info("Marking non-present files.");
-            mediaFileDao.markNonPresent(lastScanned);
+            mediaFileDao.markNonPresent(statistics.getScanDate());
             LOG.info("Marking non-present artists.");
-            artistDao.markNonPresent(lastScanned);
+            artistDao.markNonPresent(statistics.getScanDate());
             LOG.info("Marking non-present albums.");
-            albumDao.markNonPresent(lastScanned);
+            albumDao.markNonPresent(statistics.getScanDate());
 
             // Update statistics
             statistics.incrementArtists(albumCount.size());
@@ -208,21 +208,18 @@ public class MediaScannerService {
             // Update genres
             mediaFileDao.updateGenres(genres.getGenres());
 
-            settingsService.setMediaLibraryStatistics(statistics);
-            settingsService.setLastScanned(lastScanned);
-            settingsService.save(false);
             LOG.info("Completed media library scan.");
 
         } catch (Throwable x) {
             LOG.error("Failed to scan media library.", x);
         } finally {
             mediaFileService.setMemoryCacheEnabled(true);
-            indexManager.stopIndexing();
+            indexManager.stopIndexing(statistics);
             scanning = false;
         }
     }
 
-    private void scanFile(MediaFile file, MusicFolder musicFolder, Date lastScanned,
+    private void scanFile(MediaFile file, MusicFolder musicFolder, MediaLibraryStatistics statistics,
                           Map<String, Integer> albumCount, Genres genres, boolean isPodcast) {
         scanCount++;
         if (scanCount % 250 == 0) {
@@ -241,22 +238,22 @@ public class MediaScannerService {
 
         if (file.isDirectory()) {
             for (MediaFile child : mediaFileService.getChildrenOf(file, true, false, false, false)) {
-                scanFile(child, musicFolder, lastScanned, albumCount, genres, isPodcast);
+                scanFile(child, musicFolder, statistics, albumCount, genres, isPodcast);
             }
             for (MediaFile child : mediaFileService.getChildrenOf(file, false, true, false, false)) {
-                scanFile(child, musicFolder, lastScanned, albumCount, genres, isPodcast);
+                scanFile(child, musicFolder, statistics, albumCount, genres, isPodcast);
             }
         } else {
             if (!isPodcast) {
-                updateAlbum(file, musicFolder, lastScanned, albumCount);
-                updateArtist(file, musicFolder, lastScanned, albumCount);
+                updateAlbum(file, musicFolder, statistics.getScanDate(), albumCount);
+                updateArtist(file, musicFolder, statistics.getScanDate(), albumCount);
             }
             statistics.incrementSongs(1);
         }
 
         updateGenres(file, genres);
-        mediaFileDao.markPresent(file.getPath(), lastScanned);
-        artistDao.markPresent(file.getAlbumArtist(), lastScanned);
+        mediaFileDao.markPresent(file.getPath(), statistics.getScanDate());
+        artistDao.markPresent(file.getAlbumArtist(), statistics.getScanDate());
 
         if (file.getDurationSeconds() != null) {
             statistics.incrementTotalDurationInSeconds(file.getDurationSeconds());
@@ -366,15 +363,6 @@ public class MediaScannerService {
         if (firstEncounter) {
             indexManager.index(artist, musicFolder);
         }
-    }
-
-    /**
-     * Returns media library statistics, including the number of artists, albums and songs.
-     *
-     * @return Media library statistics.
-     */
-    public MediaLibraryStatistics getStatistics() {
-        return statistics;
     }
 
     public void setSettingsService(SettingsService settingsService) {
