@@ -23,8 +23,6 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,8 +37,6 @@ import java.nio.charset.StandardCharsets;
  * @author Sindre Mehus
  */
 public class ShoutCastOutputStream extends OutputStream {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ShoutCastOutputStream.class);
 
     /**
      * Number of bytes between each SHOUTcast metadata block.
