@@ -214,7 +214,7 @@ public class SettingsService {
     private static final Integer DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH = 512;
     private static final String DEFAULT_DATABASE_USERTABLE_QUOTE = null;
     
-    public static final int DEFAULT_UPNP_PORT = 4041;
+    private static final int DEFAULT_UPNP_PORT = 4041;
 
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
@@ -291,6 +291,10 @@ public class SettingsService {
 
     public static String getDefaultJDBCUrl() {
         return "jdbc:hsqldb:file:" + getAirsonicHome().getPath() + "/db/" + getFileSystemAppName();
+    }
+    
+    public static int getDefaultUPnpPort() {
+        return Optional.ofNullable(System.getProperty("UPNP_PORT")).map(x -> Integer.parseInt(x)).orElse(DEFAULT_UPNP_PORT);
     }
 
     public static File getLogFile() {

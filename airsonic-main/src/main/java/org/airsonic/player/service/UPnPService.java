@@ -40,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -68,10 +67,6 @@ public class UPnPService {
     @Autowired
     @Qualifier("dispatchingContentDirectory")
     private CustomContentDirectory dispatchingContentDirectory;
-    
-    @Autowired
-    @Value("#{ systemProperties['UPNP_PORT'] ?: T(org.airsonic.player.service.SettingsService).DEFAULT_UPNP_PORT }")
-    private int port;
     
     private AtomicReference<Boolean> running = new AtomicReference<>(false);
 
@@ -120,14 +115,14 @@ public class UPnPService {
         try {
             LOG.info("Starting UPnP service...");
             createService();
-            LOG.info("Successfully started UPnP service on port {}!", port);
+            LOG.info("Successfully started UPnP service on port {}!", SettingsService.getDefaultUPnpPort());
         } catch (Throwable x) {
             LOG.error("Failed to start UPnP service: " + x, x);
         }
     }
 
     private synchronized void createService() {
-        upnpService = new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(port));
+        upnpService = new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(SettingsService.getDefaultUPnpPort()));
 
         // Asynch search for other devices (most importantly UPnP-enabled routers for port-mapping)
         upnpService.getControlPoint().search();
