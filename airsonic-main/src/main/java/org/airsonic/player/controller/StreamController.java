@@ -258,9 +258,7 @@ public class StreamController {
             // This happens often and outside of the control of the server, so
             // we catch Tomcat/Jetty "connection aborted by client" exceptions
             // and display a short error message.
-            boolean shouldCatch = false;
-            shouldCatch |= Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
-            shouldCatch |= Util.isInstanceOfClassName(e, "org.eclipse.jetty.io.EofException");
+            boolean shouldCatch = Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
             if (shouldCatch) {
                 LOG.info("{}: Client unexpectedly closed connection while loading {} ({})",
                         request.getRemoteAddr(),

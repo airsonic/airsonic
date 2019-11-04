@@ -1,16 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/nowPlayingService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/playQueueService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/playlistService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/mediaelement/mediaelement-and-player.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/playQueueCast.js'/>"></script>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -836,14 +836,14 @@
                     <c:if test="${model.player.web}">
                         <td>
                             <div id="player" style="width:340px; height:40px">
-                                <audio id="audioPlayer" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
+                                <audio id="audioPlayer" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height="40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
-                                    <img alt="Play" id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
-                                    <img alt="Pause" id="castPause" src="<spring:theme code="castPauseImage"/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
-                                    <img alt="Mute on" id="castMuteOn" src="<spring:theme code="volumeImage"/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
-                                    <img alt="Mute off" id="castMuteOff" src="<spring:theme code="muteImage"/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
+                                    <img alt="Play" id="castPlay" src="<spring:theme code='castPlayImage'/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
+                                    <img alt="Pause" id="castPause" src="<spring:theme code='castPauseImage'/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
+                                    <img alt="Mute on" id="castMuteOn" src="<spring:theme code='volumeImage'/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
+                                    <img alt="Mute off" id="castMuteOff" src="<spring:theme code='muteImage'/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
                                 </div>
                                 <div style="float:left">
                                     <div id="castVolume" style="width:80px;height:4px;margin-left:10px;margin-right:10px;margin-top:8px"></div>
@@ -855,21 +855,21 @@
                             </div>
                         </td>
                         <td>
-                            <img alt="Cast on" id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
-                            <img alt="Cast off" id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast on" id="castOn" src="<spring:theme code='castIdleImage'/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast off" id="castOff" src="<spring:theme code='castActiveImage'/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
                     <c:if test="${model.user.streamRole and not model.player.web}">
                         <td>
-                            <img alt="Start" id="start" src="<spring:theme code="castPlayImage"/>" onclick="onStart()" style="cursor:pointer">
-                            <img alt="Stop" id="stop" src="<spring:theme code="castPauseImage"/>" onclick="onStop()" style="cursor:pointer; display:none">
+                            <img alt="Start" id="start" src="<spring:theme code='castPlayImage'/>" onclick="onStart()" style="cursor:pointer">
+                            <img alt="Stop" id="stop" src="<spring:theme code='castPauseImage'/>" onclick="onStop()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
                     <c:if test="${model.player.jukebox}">
                         <td style="white-space:nowrap;">
-                            <img src="<spring:theme code="volumeImage"/>" alt="">
+                            <img src="<spring:theme code='volumeImage'/>" alt="">
                         </td>
                         <td style="white-space:nowrap;">
                             <div id="jukeboxVolume" style="width:80px;height:4px"></div>
@@ -882,24 +882,24 @@
 
                     <c:if test="${model.player.web}">
                         <td><span class="header">
-                            <img src="<spring:theme code="backImage"/>" alt="Play next" title="Play next" onclick="onPrevious()" style="cursor:pointer"></span>
+                            <img src="<spring:theme code='backImage'/>" alt="Play next" title="Play next" onclick="onPrevious()" style="cursor:pointer"></span>
                         </td>
                         <td><span class="header">
-                            <img src="<spring:theme code="forwardImage"/>" alt="Play next" title="Play next" onclick="onNext(false)" style="cursor:pointer"></span> |
+                            <img src="<spring:theme code='forwardImage'/>" alt="Play next" title="Play next" onclick="onNext(false)" style="cursor:pointer"></span> |
                         </td>
                     </c:if>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
                         <a href="javascript:onClear()" class="player-control">
-                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
+                            <img src="<spring:theme code='clearImage'/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
                         <a href="javascript:onShuffle()" id="shuffleQueue" class="player-control">
-                            <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
+                            <img src="<spring:theme code='shuffleImage'/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
@@ -907,7 +907,7 @@
                         <td style="white-space:nowrap;">
                           <span class="header">
                             <a href="javascript:onToggleRepeat()" id="repeatQueue" class="player-control">
-                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
+                              <img id="toggleRepeat" src="<spring:theme code='repeatOn'/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
                     </c:if>
@@ -915,7 +915,7 @@
                     <td style="white-space:nowrap;">
                       <span class="header">
                         <a href="javascript:onUndo()" id="undoQueue" class="player-control">
-                          <img src="<spring:theme code="undoImage"/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
+                          <img src="<spring:theme code='undoImage'/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
                         </a>
                       </span>  |</td>
 
@@ -923,14 +923,14 @@
                         <td style="white-space:nowrap;">
                           <span class="header">
                             <a href="playerSettings.view?id=${model.player.id}" target="main" class="player-control">
-                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
+                              <img src="<spring:theme code='settingsImage'/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
                     </c:if>
 
                     <td style="white-space:nowrap;"><select id="moreActions" onchange="actionSelected(this.options[selectedIndex].id)">
                         <option id="top" selected="selected"><fmt:message key="playlist.more"/></option>
-                        <optgroup label="<fmt:message key="playlist.more.playlist"/>">
+                        <optgroup label="<fmt:message key='playlist.more.playlist'/>">
                             <option id="savePlayQueue"><fmt:message key="playlist.saveplayqueue"/></option>
                             <option id="loadPlayQueue"><fmt:message key="playlist.loadplayqueue"/></option>
                             <option id="savePlaylist"><fmt:message key="playlist.save"/></option>
@@ -944,7 +944,7 @@
                             <option id="sortByAlbum"><fmt:message key="playlist.more.sortbyalbum"/></option>
                             <option id="sortByArtist"><fmt:message key="playlist.more.sortbyartist"/></option>
                         </optgroup>
-                        <optgroup label="<fmt:message key="playlist.more.selection"/>">
+                        <optgroup label="<fmt:message key='playlist.more.selection'/>">
                             <option id="selectAll"><fmt:message key="playlist.more.selectall"/></option>
                             <option id="selectNone"><fmt:message key="playlist.more.selectnone"/></option>
                             <option id="removeSelected"><fmt:message key="playlist.remove"/></option>
@@ -971,11 +971,11 @@
     <tbody id="playlistBody">
         <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
             <td class="fit">
-                <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code="ratingOffImage"/>"
+                <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code='ratingOffImage'/>"
                      style="cursor:pointer;height:18px;" alt="" title=""></td>
             <td class="fit">
-                <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
-                     style="cursor:pointer; height:18px;" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
+                <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code='removeImage'/>"
+                     style="cursor:pointer; height:18px;" alt="<fmt:message key='playlist.remove'/>" title="<fmt:message key='playlist.remove'/>"></td>
             <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">
@@ -983,7 +983,7 @@
             </c:if>
 
             <td class="truncate">
-                <img id="currentImage" src="<spring:theme code="currentImage"/>" alt="" style="display:none;padding-right: 0.5em">
+                <img id="currentImage" src="<spring:theme code='currentImage'/>" alt="" style="display:none;padding-right: 0.5em">
                 <c:choose>
                     <c:when test="${model.player.externalWithPlaylist}">
                         <span id="title" class="songTitle">Title</span>
@@ -1024,7 +1024,7 @@
 
 <div style="height:3.2em"></div>
 
-<div id="dialog-select-playlist" title="<fmt:message key="main.addtoplaylist.title"/>" style="display: none;">
+<div id="dialog-select-playlist" title="<fmt:message key='main.addtoplaylist.title'/>" style="display: none;">
     <p><fmt:message key="main.addtoplaylist.text"/></p>
     <div id="dialog-select-playlist-list"></div>
 </div>

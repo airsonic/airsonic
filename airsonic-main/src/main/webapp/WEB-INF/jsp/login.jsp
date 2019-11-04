@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 
 <html><head>
     <%@ include file="head.jsp" %>
@@ -12,20 +12,20 @@
 </head>
 <body style="min-width:550px" class="mainframe bgcolor1">
 
-    <form action="<c:url value="/login"/>" method="POST">
+    <form action="<c:url value='/login'/>" method="POST">
         <sec:csrfInput />
 
         <div id="loginframe" class="bgcolor2 shadow">
 
-            <img src="<spring:theme code="logoImage"/>" alt="">
+            <img src="<spring:theme code='logoImage'/>" alt="">
 
             <div class="loginmessagetop">${model.loginMessage}</div>
 
-            <input required type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key="login.username"/>">
+            <input required type="text" autofocus id="j_username" name="j_username" tabindex="1" placeholder="<fmt:message key='login.username'/>">
 
-            <input required type="password" autocomplete="off"  name="j_password" tabindex="2" placeholder="<fmt:message key="login.password"/>">
+            <input required type="password" autocomplete="off"  name="j_password" tabindex="2" placeholder="<fmt:message key='login.password'/>">
 
-            <input name="submit" type="submit" value="<fmt:message key="login.login"/>" tabindex="4"></td>
+            <input name="submit" type="submit" value="<fmt:message key='login.login'/>" tabindex="4"></td>
 
             <div class="details">
                 <div id="loginremember">

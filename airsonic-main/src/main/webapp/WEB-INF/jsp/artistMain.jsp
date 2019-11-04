@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <%--
   ~ This file is part of Airsonic.
@@ -18,18 +19,17 @@
   ~  Copyright 2014 (C) Sindre Mehus
   --%>
 
-<!DOCTYPE html>
 <%--@elvariable id="model" type="java.util.Map"--%>
 
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
     <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/jquery.fancyzoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/starService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/multiService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/jquery.fancyzoom.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -164,7 +164,7 @@
 
 <div style="float:left">
     <h1>
-        <img id="starImage" style="height:18px" src="<spring:theme code="${not empty model.dir.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"
+        <img id="starImage" style="height:18px" src="<spring:theme code='${not empty model.dir.starredDate ? \'ratingOnImage\' : \'ratingOffImage\'}'/>"
              onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer;height:18px;" alt="">
 
         <span style="vertical-align: middle">
@@ -215,7 +215,7 @@
         <input type="hidden" name="action" value="comment">
         <input type="hidden" name="id" value="${model.dir.id}">
         <textarea name="comment" rows="6" cols="70">${model.dir.comment}</textarea>
-        <input type="submit" value="<fmt:message key="common.save"/>">
+        <input type="submit" value="<fmt:message key='common.save'/>">
     </form>
 </div>
 
@@ -243,7 +243,7 @@
             </c:forEach>
         </table>
         <c:if test="${model.thereIsMore}">
-            <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+            <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
         </c:if>
     </c:when>
 
@@ -285,7 +285,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${model.thereIsMore}">
-                <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+                <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
             </c:if>
         </div>
     </c:otherwise>
@@ -308,8 +308,8 @@
         <span id="similarArtists"></span>
     </td></tr>
     <tr><td style="text-align:center">
-        <input id="similarArtistsRadio" style="display:none;margin-top:1em;margin-right:0.3em;cursor:pointer" type="button" value="<fmt:message key="main.startradio"/>" onclick="playSimilar()">
-        <input id="playTopSongs" style="display:none;margin-top:1em;margin-left:0.3em;cursor:pointer" type="button" value="<fmt:message key="main.playtopsongs"/>" onclick="playAllTopSongs()">
+        <input id="similarArtistsRadio" style="display:none;margin-top:1em;margin-right:0.3em;cursor:pointer" type="button" value="<fmt:message key='main.startradio'/>" onclick="playSimilar()">
+        <input id="playTopSongs" style="display:none;margin-top:1em;margin-left:0.3em;cursor:pointer" type="button" value="<fmt:message key='main.playtopsongs'/>" onclick="playAllTopSongs()">
     </td></tr>
     <tr><td style="height: 100%"></td></tr>
 </table>
@@ -320,16 +320,16 @@
     <tbody id="topSongsBody">
     <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
         <td class="fit">
-            <img id="starSong" style="height:18px;" onclick="toggleStarTopSong(this.id.substring(8) - 1, '#starSong' + this.id.substring(8))" src="<spring:theme code="ratingOffImage"/>"
+            <img id="starSong" style="height:18px;" onclick="toggleStarTopSong(this.id.substring(8) - 1, '#starSong' + this.id.substring(8))" src="<spring:theme code='ratingOffImage'/>"
                  style="cursor:pointer" alt="" title=""></td>
         <td class="fit">
-            <img id="play" src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" title="<fmt:message key="common.play"/>"
+            <img id="play" src="<spring:theme code='playImage'/>" alt="<fmt:message key='common.play'/>" title="<fmt:message key='common.play'/>"
                  style="padding-right:0.1em;cursor:pointer" onclick="playTopSong(this.id.substring(4) - 1)"></td>
         <td class="fit">
-            <img id="add" src="<spring:theme code="addImage"/>" alt="<fmt:message key="common.add"/>" title="<fmt:message key="common.add"/>"
+            <img id="add" src="<spring:theme code='addImage'/>" alt="<fmt:message key='common.add'/>" title="<fmt:message key='common.add'/>"
                  style="padding-right:0.1em;cursor:pointer" onclick="addTopSong(this.id.substring(3) - 1)"></td>
         <td class="fit" style="padding-right:30px">
-            <img id="addNext" src="<spring:theme code="addNextImage"/>" alt="<fmt:message key="main.addnext"/>" title="<fmt:message key="main.addnext"/>"
+            <img id="addNext" src="<spring:theme code='addNextImage'/>" alt="<fmt:message key='main.addnext'/>" title="<fmt:message key='main.addnext'/>"
                  style="padding-right:0.1em;cursor:pointer" onclick="addNextTopSong(this.id.substring(7) - 1)"></td>
         <td class="fit rightalign"><span id="rank" class="detail">Rank</span></td>
         <td class="truncate"><span id="title" class="songTitle">Title</span></td>

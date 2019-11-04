@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <div id="javaJukeboxPlayerControlBar" class="bgcolor2" style="position:fixed; bottom:0; width:100%;padding-top:10px;padding-bottom: 5px">
     <table style="white-space:nowrap;">
         <tr style="white-space:nowrap;">
@@ -11,8 +12,8 @@
                 </td>
             </c:if>
             <td>
-                <img alt="Start" id="startIcon" src="<spring:theme code="castPlayImage"/>" onclick="onJavaJukeboxStart()" style="cursor:pointer">
-                <img alt="Pause" id="pauseIcon" src="<spring:theme code="castPauseImage"/>" onclick="onJavaJukeboxStop()" style="cursor:pointer; display:none">
+                <img alt="Start" id="startIcon" src="<spring:theme code='castPlayImage'/>" onclick="onJavaJukeboxStart()" style="cursor:pointer">
+                <img alt="Pause" id="pauseIcon" src="<spring:theme code='castPauseImage'/>" onclick="onJavaJukeboxStop()" style="cursor:pointer; display:none">
             </td>
             <td><span id="playingPositionDisplay" class="javaJukeBoxPlayerControlBarSongTime"/></td>
             <td style="white-space:nowrap;">
@@ -20,7 +21,7 @@
             </td>
             <td><span id="playingDurationDisplay" class="javaJukeBoxPlayerControlBarSongTime"/></td>
             <td style="white-space:nowrap;">
-                <img src="<spring:theme code="volumeImage"/>" alt="">
+                <img src="<spring:theme code='volumeImage'/>" alt="">
             </td>
             <td style="white-space:nowrap;">
                 <div id="javaJukeboxVolumeSlider" style="width:80px;height:4px"></div>

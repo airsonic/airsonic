@@ -141,8 +141,7 @@ public class QueryFactory {
         }
 
         return mainQuery.build();
-
-    };
+    }
 
     /*
      * XXX 3.x -> 8.x :
@@ -178,7 +177,6 @@ public class QueryFactory {
         mainQuery.add(folderQuery, Occur.MUST);
 
         return mainQuery.build();
-
     }
 
     /**
@@ -213,7 +211,6 @@ public class QueryFactory {
         query.add(toFolderQuery.apply(false, criteria.getMusicFolders()), Occur.MUST);
 
         return query.build();
-
     }
 
     /**
@@ -255,7 +252,6 @@ public class QueryFactory {
         }
 
         return mainQuery.build();
-
     }
 
     /**
@@ -283,5 +279,4 @@ public class QueryFactory {
                 .add(toFolderQuery.apply(true, musicFolders), Occur.SHOULD)
                 .build();
     }
-
 }

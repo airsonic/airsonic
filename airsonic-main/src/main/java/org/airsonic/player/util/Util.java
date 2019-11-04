@@ -20,6 +20,8 @@
 package org.airsonic.player.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
@@ -30,10 +32,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Miscellaneous general utility methods.
@@ -113,7 +117,11 @@ public final class Util {
         return result;
     }
 
-    static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
+    static {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
     public static String debugObject(Object object) {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
@@ -167,6 +175,31 @@ public final class Util {
             return Class.forName(className).isInstance(o);
         } catch (ClassNotFoundException e) {
             return false;
+        }
+    }
+
+    public static Map<String, String> objectToStringMap(Object object) {
+        TypeReference<HashMap<String, String>> typeReference = new TypeReference<HashMap<String, String>>() {};
+        return objectMapper.convertValue(object, typeReference);
+    }
+
+    public static <T> T stringMapToObject(Class<T> clazz, Map<String, String> data) {
+        return objectMapper.convertValue(data, clazz);
+    }
+
+    private static Validator validator;
+    static {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
+
+    public static <T> T stringMapToValidObject(Class<T> clazz, Map<String, String> data) {
+        T object = stringMapToObject(clazz, data);
+        Set<ConstraintViolation<T>> validate = validator.validate(object);
+        if (validate.isEmpty()) {
+            return object;
+        } else {
+            throw new IllegalArgumentException("Created object was not valid");
         }
     }
 }

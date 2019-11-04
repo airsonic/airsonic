@@ -5,9 +5,9 @@
 <head>
     <%@ include file="head.jsp" %>
     <meta name="og:type" content="album"/>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/playlist.min.js"/>"></script>
-    <link type="text/css" rel="stylesheet" href="<c:url value="/script/mediaelement/playlist.min.css"/>">
+    <script type="text/javascript" src="<c:url value='/script/mediaelement/mediaelement-and-player.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/mediaelement/playlist.min.js'/>"></script>
+    <link type="text/css" rel="stylesheet" href="<c:url value='/script/mediaelement/playlist.min.css'/>">
     <c:if test="${not empty model.songs}">
         <meta name="og:title"
               content="${fn:escapeXml(model.songs[0].artist)} &mdash; ${fn:escapeXml(model.songs[0].albumName)}"/>

@@ -1,3 +1,4 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
@@ -6,7 +7,7 @@
     <tr>
         <c:if test="${not empty model.musicFolder}">
             <td style="padding-right: 2em">
-                <div style="border:1px solid #<spring:theme code="detailColor"/>; padding-left: 0.5em;padding-right: 0.5em">
+                <div style="border:1px solid #<spring:theme code='detailColor'/>; padding-left: 0.5em;padding-right: 0.5em">
                         ${fn:escapeXml(model.musicFolder.name)}
                 </div>
             </td>
@@ -39,11 +40,11 @@
                 </c:if>
 
                 <c:if test="${model.listOffset gt 0}">
-                    <td><a href="${previousUrl}"><img src="<spring:theme code="backImage"/>" alt=""></a></td>
+                    <td><a href="${previousUrl}"><img src="<spring:theme code='backImage'/>" alt=""></a></td>
                 </c:if>
 
                 <c:if test="${fn:length(model.albums) eq model.listSize}">
-                    <td><a href="${nextUrl}"><img src="<spring:theme code="forwardImage"/>" alt=""></a></td>
+                    <td><a href="${nextUrl}"><img src="<spring:theme code='forwardImage'/>" alt=""></a></td>
                 </c:if>
 
                 <c:if test="${model.listType eq 'decade'}">
@@ -77,7 +78,7 @@
         <c:if test="${not empty model.albums}">
             <td style="padding-left: 2em">
                 <a href="javascript:playShuffle()">
-                  <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" style="height:16px;">
+                  <img src="<spring:theme code='shuffleImage'/>" alt="Shuffle" style="height:16px;">
                   <fmt:message key="home.shuffle"/>
                 </a>
             </td>
