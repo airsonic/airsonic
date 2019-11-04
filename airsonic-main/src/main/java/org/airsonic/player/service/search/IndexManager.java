@@ -289,7 +289,7 @@ public class IndexManager {
                     }
                 }
             } catch (IOException | IllegalArgumentException e) {
-                LOG.warn("Exception encountered while fetching index commit data", e);
+                LOG.debug("Exception encountered while fetching index commit data", e);
                 return null;
             }
         }
