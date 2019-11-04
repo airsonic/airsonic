@@ -3,7 +3,7 @@ package org.airsonic.player.util;
 import org.airsonic.player.domain.MediaLibraryStatistics;
 import org.junit.Test;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +20,7 @@ public class UtilTest {
 
     @Test
     public void objectToStringMap() {
-        Date date = new Date(1568350960725L);
+        Instant date = Instant.ofEpochMilli(1568350960725L);
         MediaLibraryStatistics statistics = new MediaLibraryStatistics(date);
         statistics.incrementAlbums(5);
         statistics.incrementSongs(4);
@@ -51,7 +51,7 @@ public class UtilTest {
         assertEquals(new Integer(910823), statistics.getArtistCount());
         assertEquals(new Long(30L), statistics.getTotalDurationInSeconds());
         assertEquals(new Long(2930491082L), statistics.getTotalLengthInBytes());
-        assertEquals(new Date(1568350960725L), statistics.getScanDate());
+        assertEquals(Instant.ofEpochMilli(1568350960725L), statistics.getScanDate());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class UtilTest {
         assertEquals(new Integer(910823), statistics.getArtistCount());
         assertEquals(new Long(30L), statistics.getTotalDurationInSeconds());
         assertEquals(new Long(2930491082L), statistics.getTotalLengthInBytes());
-        assertEquals(new Date(1568350960725L), statistics.getScanDate());
+        assertEquals(Instant.ofEpochMilli(1568350960725L), statistics.getScanDate());
     }
 
     public void stringMapToObjectWithNoData() {
@@ -82,7 +82,7 @@ public class UtilTest {
     @Test(expected = IllegalArgumentException.class)
     public void stringMapToValidObjectWithNoData() {
         Map<String, String> stringStringMap = new HashMap<>();
-        MediaLibraryStatistics statistics = Util.stringMapToValidObject(MediaLibraryStatistics.class, stringStringMap);
+        Util.stringMapToValidObject(MediaLibraryStatistics.class, stringStringMap);
     }
 
 }
