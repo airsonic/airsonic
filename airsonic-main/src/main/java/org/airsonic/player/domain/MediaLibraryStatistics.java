@@ -39,16 +39,31 @@ public class MediaLibraryStatistics {
     private AtomicLong totalLengthInBytes = new AtomicLong(0);
     private AtomicLong totalDurationInSeconds = new AtomicLong(0);
 
-    public MediaLibraryStatistics(Instant scanDate, int artistCount, int albumCount, int songCount, long totalLengthInBytes, long totalDurationInSeconds) {
+    public MediaLibraryStatistics() {}
+    
+    public void setScanDate(Instant scanDate) {
         this.scanDate = scanDate;
+    }
+
+    public void setArtistCount(int artistCount) {
         this.artistCount.set(artistCount);
+    }
+
+    public void setAlbumCount(int albumCount) {
         this.albumCount.set(albumCount);
+    }
+
+    public void setSongCount(int songCount) {
         this.songCount.set(songCount);
+    }
+
+    public void setTotalLengthInBytes(long totalLengthInBytes) {
         this.totalLengthInBytes.set(totalLengthInBytes);
+    }
+
+    public void setTotalDurationInSeconds(long totalDurationInSeconds) {
         this.totalDurationInSeconds.set(totalDurationInSeconds);
     }
-    
-    public MediaLibraryStatistics() {}
     
     public void reset() {
         artistCount.set(0);

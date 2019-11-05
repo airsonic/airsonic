@@ -37,7 +37,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import java.util.*;
 
@@ -182,19 +181,14 @@ public final class Util {
     }
 
     public static Map<String, String> objectToStringMap(Object object) {
-        TypeReference<HashMap<String, String>> typeReference = new TypeReference<HashMap<String, String>>() {};
-        return objectMapper.convertValue(object, typeReference);
+        return objectMapper.convertValue(object, new TypeReference<Map<String, String>>() {});
     }
 
     public static <T> T stringMapToObject(Class<T> clazz, Map<String, String> data) {
         return objectMapper.convertValue(data, clazz);
     }
 
-    private static Validator validator;
-    static {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
+    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     public static <T> T stringMapToValidObject(Class<T> clazz, Map<String, String> data) {
         T object = stringMapToObject(clazz, data);
