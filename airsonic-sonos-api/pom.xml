@@ -24,6 +24,12 @@
             <groupId>javax.jws</groupId>
             <artifactId>javax.jws-api</artifactId>
         </dependency>
+
+        <!-- Suppress slf4j compilation warning -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
