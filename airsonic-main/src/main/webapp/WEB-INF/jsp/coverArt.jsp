@@ -34,7 +34,7 @@ PARAMETERS
 <str:randomString count="5" type="alphabet" var="addId"/>
 
 <div class="coverart dropshadow">
-    <div style="width:${size};max-width:${size};height:${size};max-height:${size};cursor:pointer;<c:if test="${param.hideOverflow}">overflow:hidden</c:if>;" title="${param.caption1}" id="${divId}">
+    <div style="width:${size};max-width:${size};height:${size};max-height:${size};cursor:pointer;<c:if test='${param.hideOverflow}'>overflow:hidden</c:if>;" title="${param.caption1}" id="${divId}">
 
         <c:if test="${not empty param.albumId}">
             <c:url value="main.view" var="targetUrl">
@@ -72,13 +72,13 @@ PARAMETERS
         </c:url>
 
         <div style="position: relative; width: 0; height: 0">
-            <img alt="Play overlay" src="<spring:theme code="playOverlayImage"/>" id="${playId}"
+            <img alt="Play overlay" src="<spring:theme code='playOverlayImage'/>" id="${playId}"
                  style="position: relative; top: 8px; left: 8px; z-index: 2; display:none" >
         </div>
 
         <c:if test="${not empty param.albumId}">
           <div style="position: relative; width: 0; height: 0">
-              <img alt="Add overlay" src="<spring:theme code="addOverlayImage"/>" id="${addId}"
+              <img alt="Add overlay" src="<spring:theme code='addOverlayImage'/>" id="${addId}"
                    style="position: relative; top: 8px; left: 48px; z-index: 2; display:none" >
           </div>
         </c:if>

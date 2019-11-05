@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1" %>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1" %>
 
 <html>
 <head>
@@ -18,7 +18,7 @@
 
             <c:if test="${empty model.sentTo}">
                 <input type="text" id="usernameOrEmail" autofocus name="usernameOrEmail" style="width:18em;margin-right: 1em">
-                <input name="submit" type="submit" value="<fmt:message key="recover.send"/>">
+                <input name="submit" type="submit" value="<fmt:message key='recover.send'/>">
             </c:if>
 
             <c:if test="${not empty model.recaptchaSiteKey and empty model.sentTo}">

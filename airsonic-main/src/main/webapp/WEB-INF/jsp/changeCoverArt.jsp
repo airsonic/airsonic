@@ -3,9 +3,9 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/coverArtService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/coverArtService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
 
     <script type="text/javascript" language="javascript">
         dwr.engine.setErrorHandler(function() {
@@ -80,9 +80,9 @@
 <form action="javascript:search()">
     <sec:csrfInput />
     <table class="indent"><tr>
-        <td><input id="artist" name="artist" placeholder="<fmt:message key="changecoverart.artist"/>" size="35" type="text" value="${model.artist}" onclick="select()"/></td>
-        <td><input id="album" name="album" placeholder="<fmt:message key="changecoverart.album"/>" size="35" type="text" value="${model.album}" onclick="select()"/></td>
-        <td style="padding-left:0.5em"><input type="submit" value="<fmt:message key="changecoverart.search"/>"/></td>
+        <td><input id="artist" name="artist" placeholder="<fmt:message key='changecoverart.artist'/>" size="35" type="text" value="${model.artist}" onclick="select()"/></td>
+        <td><input id="album" name="album" placeholder="<fmt:message key='changecoverart.album'/>" size="35" type="text" value="${model.album}" onclick="select()"/></td>
+        <td style="padding-left:0.5em"><input type="submit" value="<fmt:message key='changecoverart.search'/>"/></td>
     </tr></table>
 </form>
 
@@ -91,7 +91,7 @@
     <table><tr>
         <td><label for="url"><fmt:message key="changecoverart.address"/></label></td>
         <td style="padding-left:0.5em"><input type="text" name="url" size="50" id="url" value="http://" onclick="select()"/></td>
-        <td style="padding-left:0.5em"><input type="submit" value="<fmt:message key="common.ok"/>"></td>
+        <td style="padding-left:0.5em"><input type="submit" value="<fmt:message key='common.ok'/>"></td>
     </tr></table>
 </form>
 <sub:url value="main.view" var="backUrl"><sub:param name="id" value="${model.id}"/></sub:url>
@@ -111,7 +111,7 @@
     <div id="images"></div>
     <div style="clear:both;"></div>
     <a href="https://last.fm/" target="_blank" rel="noopener noreferrer">
-        <img alt="Lastfm icon" src="<c:url value="/icons/lastfm.gif"/>">
+        <img alt="Lastfm icon" src="<c:url value='/icons/lastfm.gif'/>">
     </a>
     <span class="detail" style="padding-left:1em"><fmt:message key="changecoverart.courtesy"/></span>
 </div>

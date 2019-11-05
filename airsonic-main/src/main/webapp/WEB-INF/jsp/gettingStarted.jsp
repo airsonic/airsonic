@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 
 <html><head>
     <%@ include file="head.jsp" %>
@@ -13,7 +13,7 @@
 <body class="mainframe bgcolor1">
 
 <h1 style="padding-bottom:0.5em">
-    <img src="<spring:theme code="homeImage"/>" alt="">
+    <img src="<spring:theme code='homeImage'/>" alt="">
     <fmt:message key="gettingStarted.title"/>
 </h1>
 

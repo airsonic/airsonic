@@ -22,6 +22,7 @@ package org.airsonic.player.domain;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -279,31 +280,8 @@ public class MediaFile {
         if (durationSeconds == null) {
             return null;
         }
-
-        StringBuilder result = new StringBuilder(8);
-
-        int seconds = durationSeconds;
-
-        int hours = seconds / 3600;
-        seconds -= hours * 3600;
-
-        int minutes = seconds / 60;
-        seconds -= minutes * 60;
-
-        if (hours > 0) {
-            result.append(hours).append(':');
-            if (minutes < 10) {
-                result.append('0');
-            }
-        }
-
-        result.append(minutes).append(':');
-        if (seconds < 10) {
-            result.append('0');
-        }
-        result.append(seconds);
-
-        return result.toString();
+        // Return in M:SS or H:MM:SS
+        return StringUtil.formatDuration(durationSeconds);
     }
 
     public Long getFileSize() {

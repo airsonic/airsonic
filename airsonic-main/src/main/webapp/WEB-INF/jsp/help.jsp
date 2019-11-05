@@ -1,9 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 
 <html><head>
     <%@ include file="head.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 </head>
 <body class="mainframe bgcolor1">
 
@@ -26,7 +26,7 @@
 </c:choose>
 
 <h1>
-    <img src="<spring:theme code="helpImage"/>" alt="">
+    <img src="<spring:theme code='helpImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="help.title"><fmt:param value="${model.brand}"/></fmt:message></span>
 </h1>
 
@@ -39,7 +39,7 @@
     <tr><td class="ruleTableHeader"><fmt:message key="help.version.title"/></td><td class="ruleTableCell">${versionString} &ndash; ${buildDateString}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="help.server.title"/></td><td class="ruleTableCell">${model.serverInfo} (<sub:formatBytes bytes="${model.usedMemory}"/> / <sub:formatBytes bytes="${model.totalMemory}"/>)</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="help.license.title"/></td><td class="ruleTableCell">
-        <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank"><img style="float:right;margin-left: 10px" alt="GPL 3.0" src="<c:url value="/icons/default_light/gpl.png"/>"></a>
+        <a href="http://www.gnu.org/copyleft/gpl.html" target="_blank"><img style="float:right;margin-left: 10px" alt="GPL 3.0" src="<c:url value='/icons/default_light/gpl.png'/>"></a>
         <fmt:message key="help.license.text"><fmt:param value="${model.brand}"/></fmt:message></td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="help.homepage.title"/></td><td class="ruleTableCell"><a target="_blank" href="https://airsonic.github.io/" rel="noopener nofererrer">Airsonic website</a></td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="help.forum.title"/></td><td class="ruleTableCell"><a target="_blank" href="https://www.reddit.com/r/airsonic" rel="noopener noreferrer">Airsonic on Reddit</a></td></tr>
@@ -49,7 +49,7 @@
 <p></p>
 
 <h2>
-    <img src="<spring:theme code="logImage"/>" alt="">
+    <img src="<spring:theme code='logImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="help.log"/></span>
 </h2>
 

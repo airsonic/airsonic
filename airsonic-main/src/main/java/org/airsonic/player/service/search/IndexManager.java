@@ -23,17 +23,13 @@ package org.airsonic.player.service.search;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
-import org.airsonic.player.domain.Album;
-import org.airsonic.player.domain.Artist;
-import org.airsonic.player.domain.MediaFile;
-import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.domain.*;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.store.FSDirectory;
@@ -47,6 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -83,6 +80,8 @@ public class IndexManager {
      * Literal name of index top directory.
      */
     private static final String INDEX_ROOT_DIR_NAME = "index";
+
+    private static final String MEDIA_STATISTICS_KEY = "stats";
 
     /**
      * File supplier for index directory.
@@ -222,26 +221,29 @@ public class IndexManager {
      * Close Writer of all indexes and update SearcherManager.
      * Called at the end of the Scan flow.
      */
-    public void stopIndexing() {
-        Arrays.asList(IndexType.values()).forEach(this::stopIndexing);
+    public void stopIndexing(MediaLibraryStatistics statistics) {
+        Arrays.asList(IndexType.values()).forEach(indexType -> stopIndexing(indexType, statistics));
     }
 
     /**
      * Close Writer of specified index and refresh SearcherManager.
      */
-    private void stopIndexing(IndexType type) {
+    private void stopIndexing(IndexType type, MediaLibraryStatistics statistics) {
 
         boolean isUpdate = false;
         // close
+        IndexWriter indexWriter = writers.get(type);
         try {
-            isUpdate = -1 != writers.get(type).commit();
-            writers.get(type).close();
+            Map<String,String> userData = Util.objectToStringMap(statistics);
+            indexWriter.setLiveCommitData(userData.entrySet());
+            isUpdate = -1 != indexWriter.commit();
+            indexWriter.close();
             writers.remove(type);
             LOG.trace("Success to create or update search index : [" + type + "]");
         } catch (IOException e) {
             LOG.error("Failed to create search index.", e);
         } finally {
-            FileUtil.closeQuietly(writers.get(type));
+            FileUtil.closeQuietly(indexWriter);
         }
 
         // refresh reader as index may have been written
@@ -255,6 +257,43 @@ public class IndexManager {
             }
         }
 
+    }
+
+    /**
+     * Return the MediaLibraryStatistics saved on commit in the index. Ensures that each index reports the same data.
+     * On invalid indices, returns null.
+     */
+    public @Nullable MediaLibraryStatistics getStatistics() {
+        MediaLibraryStatistics stats = null;
+        for (IndexType indexType : IndexType.values()) {
+            IndexSearcher searcher = getSearcher(indexType);
+            if (searcher == null) {
+                LOG.trace("No index for type " + indexType);
+                return null;
+            }
+            IndexReader indexReader = searcher.getIndexReader();
+            if (!(indexReader instanceof DirectoryReader)) {
+                LOG.warn("Unexpected index type " + indexReader.getClass());
+                return null;
+            }
+            try {
+                Map<String, String> userData = ((DirectoryReader) indexReader).getIndexCommit().getUserData();
+                MediaLibraryStatistics currentStats = Util.stringMapToValidObject(MediaLibraryStatistics.class,
+                        userData);
+                if (stats == null) {
+                    stats = currentStats;
+                } else {
+                    if (!Objects.equals(stats, currentStats)) {
+                        LOG.warn("Index type " + indexType + " had differing stats data");
+                        return null;
+                    }
+                }
+            } catch (IOException | IllegalArgumentException e) {
+                LOG.debug("Exception encountered while fetching index commit data", e);
+                return null;
+            }
+        }
+        return stats;
     }
 
     /**
