@@ -380,8 +380,8 @@ public class MediaFileService {
 
     private void updateChildren(MediaFile parent) {
 
-        // Check timestamps.
-        if (parent.getChildrenLastUpdated().isAfter(parent.getChanged())) {
+        // Check timestamps
+        if (parent.getChildrenLastUpdated().compareTo(parent.getChanged()) >= 0) {
             return;
         }
 
