@@ -123,16 +123,16 @@ public class MediaLibraryStatistics {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MediaLibraryStatistics that = (MediaLibraryStatistics) o;
-        return Objects.equals(artistCount, that.artistCount) &&
-                Objects.equals(albumCount, that.albumCount) &&
-                Objects.equals(songCount, that.songCount) &&
-                Objects.equals(totalLengthInBytes, that.totalLengthInBytes) &&
-                Objects.equals(totalDurationInSeconds, that.totalDurationInSeconds) &&
+        return Objects.equals(artistCount.get(), that.artistCount.get()) &&
+                Objects.equals(albumCount.get(), that.albumCount.get()) &&
+                Objects.equals(songCount.get(), that.songCount.get()) &&
+                Objects.equals(totalLengthInBytes.get(), that.totalLengthInBytes.get()) &&
+                Objects.equals(totalDurationInSeconds.get(), that.totalDurationInSeconds.get()) &&
                 Objects.equals(scanDate, that.scanDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(artistCount, albumCount, songCount, totalLengthInBytes, totalDurationInSeconds, scanDate);
+        return Objects.hash(artistCount.get(), albumCount.get(), songCount.get(), totalLengthInBytes.get(), totalDurationInSeconds.get(), scanDate);
     }
 }

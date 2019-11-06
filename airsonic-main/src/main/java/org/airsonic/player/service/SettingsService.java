@@ -28,7 +28,7 @@ import org.airsonic.player.spring.DataSourceConfigType;
 import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +44,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -242,9 +244,9 @@ public class SettingsService {
     @Autowired
     private ApacheCommonsConfigurationService configurationService;
 
-    private String[] cachedCoverArtFileTypesArray;
-    private String[] cachedMusicFileTypesArray;
-    private String[] cachedVideoFileTypesArray;
+    private Set<String> cachedCoverArtFileTypes;
+    private Set<String> cachedMusicFileTypes;
+    private Set<String> cachedVideoFileTypes;
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
 
@@ -261,7 +263,7 @@ public class SettingsService {
 
     }
 
-    public static synchronized File getAirsonicHome() {
+    public static File getAirsonicHome() {
 
         File home;
 
@@ -415,52 +417,49 @@ public class SettingsService {
         setProperty(KEY_PLAYLIST_FOLDER, playlistFolder);
     }
 
-    public synchronized String getMusicFileTypes() {
+    public String getMusicFileTypes() {
         return getProperty(KEY_MUSIC_FILE_TYPES, DEFAULT_MUSIC_FILE_TYPES);
     }
 
-    public synchronized void setMusicFileTypes(String fileTypes) {
+    public void setMusicFileTypes(String fileTypes) {
         setProperty(KEY_MUSIC_FILE_TYPES, fileTypes);
-        cachedMusicFileTypesArray = null;
     }
 
-    synchronized String[] getMusicFileTypesAsArray() {
-        if (cachedMusicFileTypesArray == null) {
-            cachedMusicFileTypesArray = toStringArray(getMusicFileTypes());
+    public Set<String> getMusicFileTypesSet() {
+        if (cachedMusicFileTypes == null) {
+            cachedMusicFileTypes = splitLowerString(getMusicFileTypes(), " ");
         }
-        return cachedMusicFileTypesArray;
+        return cachedMusicFileTypes;
     }
 
-    public synchronized String getVideoFileTypes() {
+    public String getVideoFileTypes() {
         return getProperty(KEY_VIDEO_FILE_TYPES, DEFAULT_VIDEO_FILE_TYPES);
     }
 
-    public synchronized void setVideoFileTypes(String fileTypes) {
+    public void setVideoFileTypes(String fileTypes) {
         setProperty(KEY_VIDEO_FILE_TYPES, fileTypes);
-        cachedVideoFileTypesArray = null;
     }
 
-    public synchronized String[] getVideoFileTypesAsArray() {
-        if (cachedVideoFileTypesArray == null) {
-            cachedVideoFileTypesArray = toStringArray(getVideoFileTypes());
+    public Set<String> getVideoFileTypesSet() {
+        if (cachedVideoFileTypes == null) {
+            cachedVideoFileTypes = splitLowerString(getVideoFileTypes(), " ");
         }
-        return cachedVideoFileTypesArray;
+        return cachedVideoFileTypes;
     }
 
-    public synchronized String getCoverArtFileTypes() {
+    public String getCoverArtFileTypes() {
         return getProperty(KEY_COVER_ART_FILE_TYPES, DEFAULT_COVER_ART_FILE_TYPES);
     }
 
-    public synchronized void setCoverArtFileTypes(String fileTypes) {
+    public void setCoverArtFileTypes(String fileTypes) {
         setProperty(KEY_COVER_ART_FILE_TYPES, fileTypes);
-        cachedCoverArtFileTypesArray = null;
     }
 
-    synchronized String[] getCoverArtFileTypesAsArray() {
-        if (cachedCoverArtFileTypesArray == null) {
-            cachedCoverArtFileTypesArray = toStringArray(getCoverArtFileTypes());
+    Set<String> getCoverArtFileTypesSet() {
+        if (cachedCoverArtFileTypes == null) {
+            cachedCoverArtFileTypes = splitLowerString(getCoverArtFileTypes(), " ");
         }
-        return cachedCoverArtFileTypesArray;
+        return cachedCoverArtFileTypes;
     }
 
     public int getCoverArtConcurrency() {
@@ -934,13 +933,9 @@ public class SettingsService {
             cachedMusicFolders = musicFolderDao.getAllMusicFolders();
         }
 
-        List<MusicFolder> result = new ArrayList<>(cachedMusicFolders.size());
-        for (MusicFolder folder : cachedMusicFolders) {
-            if ((includeDisabled || folder.isEnabled()) && (includeNonExisting || FileUtil.exists(folder.getPath()))) {
-                result.add(folder);
-            }
-        }
-        return result;
+        return cachedMusicFolders.parallelStream()
+                .filter(folder -> (includeDisabled || folder.isEnabled()) && (includeNonExisting || FileUtil.exists(folder.getPath())))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -1245,14 +1240,9 @@ public class SettingsService {
         }
     }
 
-    private String[] toStringArray(String s) {
-        List<String> result = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(s, " ");
-        while (tokenizer.hasMoreTokens()) {
-            result.add(tokenizer.nextToken());
-        }
-
-        return result.toArray(new String[result.size()]);
+    private static Set<String> splitLowerString(String s, String splitter) {
+        //serial stream and linkedhashset because order matters
+        return Stream.of(s.split(splitter)).filter(x -> StringUtils.isNotBlank(x)).map(x -> x.toLowerCase()).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public void setInternetRadioDao(InternetRadioDao internetRadioDao) {

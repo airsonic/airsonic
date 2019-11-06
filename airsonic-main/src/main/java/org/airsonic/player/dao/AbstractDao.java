@@ -90,6 +90,15 @@ public class AbstractDao {
         log(sql, t);
         return result;
     }
+    
+    protected int namedUpdate(String sql, Map<String, Object> args) {
+        long t = System.nanoTime();
+        LOG.trace("Executing query: [{}]", sql);
+        int result = getNamedParameterJdbcTemplate().update(sql, convertArgs(args));
+        LOG.trace("Updated {} rows", result);
+        log(sql, t);
+        return result;
+    }
 
     private void log(String sql, long startTimeNano) {
         long millis = (System.nanoTime() - startTimeNano) / 1000000L;

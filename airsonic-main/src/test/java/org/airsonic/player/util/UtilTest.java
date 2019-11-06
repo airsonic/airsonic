@@ -72,6 +72,7 @@ public class UtilTest {
         assertEquals(Instant.ofEpochMilli(1568350960725L), statistics.getScanDate());
     }
 
+    @Test
     public void stringMapToObjectWithNoData() {
         Map<String, String> stringStringMap = new HashMap<>();
         MediaLibraryStatistics statistics = Util.stringMapToObject(MediaLibraryStatistics.class, stringStringMap);

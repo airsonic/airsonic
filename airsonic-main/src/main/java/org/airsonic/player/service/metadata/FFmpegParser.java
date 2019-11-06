@@ -138,13 +138,7 @@ public class FFmpegParser extends MetaDataParser {
     @Override
     public boolean isApplicable(File file) {
         String format = FilenameUtils.getExtension(file.getName()).toLowerCase();
-
-        for (String s : settingsService.getVideoFileTypesAsArray()) {
-            if (format.equals(s)) {
-                return true;
-            }
-        }
-        return false;
+        return settingsService.getVideoFileTypesSet().contains(format.toLowerCase());
     }
 
     public void setTranscodingService(TranscodingService transcodingService) {

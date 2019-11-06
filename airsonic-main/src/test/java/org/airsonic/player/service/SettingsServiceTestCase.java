@@ -26,6 +26,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * Unit test of {@link SettingsService}.
  *
@@ -111,9 +113,9 @@ public class SettingsServiceTestCase extends TestCase {
         assertTrue("Wrong shortcut array.", Arrays.equals(new String[] {"new", "incoming", "rock 'n' roll"}, ss.getShortcutsAsArray()));
         assertEquals("Wrong playlist folder.", "playlistFolder", ss.getPlaylistFolder());
         assertEquals("Wrong music mask.", "mp3 ogg  aac", ss.getMusicFileTypes());
-        assertTrue("Wrong music mask array.", Arrays.equals(new String[] {"mp3", "ogg", "aac"}, ss.getMusicFileTypesAsArray()));
+        assertThat(ss.getMusicFileTypesSet()).containsOnly("mp3", "ogg", "aac");
         assertEquals("Wrong cover art mask.", "jpeg gif  png", ss.getCoverArtFileTypes());
-        assertTrue("Wrong cover art mask array.", Arrays.equals(new String[] {"jpeg", "gif", "png"}, ss.getCoverArtFileTypesAsArray()));
+        assertThat(ss.getCoverArtFileTypesSet()).containsOnly("jpeg", "gif", "png");
         assertEquals("Wrong welcome message.", "welcomeMessage", ss.getWelcomeMessage());
         assertEquals("Wrong login message.", "loginMessage", ss.getLoginMessage());
         assertEquals("Wrong locale.", Locale.CANADA_FRENCH, ss.getLocale());

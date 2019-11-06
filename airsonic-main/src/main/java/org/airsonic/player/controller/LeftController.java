@@ -86,11 +86,11 @@ public class LeftController  {
         MusicFolder selectedMusicFolder = settingsService.getSelectedMusicFolder(username);
         if (selectedMusicFolder != null) {
             File file = selectedMusicFolder.getPath();
-            lastModified = Math.max(lastModified, FileUtil.lastModified(file));
+            lastModified = Math.max(lastModified, FileUtil.lastModified(file.toPath()).toEpochMilli());
         } else {
             for (MusicFolder musicFolder : allMusicFolders) {
                 File file = musicFolder.getPath();
-                lastModified = Math.max(lastModified, FileUtil.lastModified(file));
+                lastModified = Math.max(lastModified, FileUtil.lastModified(file.toPath()).toEpochMilli());
             }
         }
 

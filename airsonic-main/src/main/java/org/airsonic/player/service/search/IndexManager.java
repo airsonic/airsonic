@@ -117,7 +117,7 @@ public class IndexManager {
         try {
             writers.get(IndexType.ALBUM_ID3).updateDocument(primarykey, document);
         } catch (Exception x) {
-            LOG.error("Failed to create search index for " + album, x);
+            LOG.error("Failed to create search index for {}", album, x);
         }
     }
 
@@ -127,7 +127,7 @@ public class IndexManager {
         try {
             writers.get(IndexType.ARTIST_ID3).updateDocument(primarykey, document);
         } catch (Exception x) {
-            LOG.error("Failed to create search index for " + artist, x);
+            LOG.error("Failed to create search index for {}", artist, x);
         }
     }
 
@@ -145,7 +145,7 @@ public class IndexManager {
                 writers.get(IndexType.ARTIST).updateDocument(primarykey, document);
             }
         } catch (Exception x) {
-            LOG.error("Failed to create search index for " + mediaFile, x);
+            LOG.error("Failed to create search index for {}", mediaFile, x);
         }
     }
 
@@ -154,7 +154,7 @@ public class IndexManager {
             try {
                 writers.put(x, createIndexWriter(x));
             } catch (IOException e) {
-                LOG.error("Failed to create search index for {}.", x, e);
+                LOG.error("Failed to create search index for {}", x, e);
             }
         });
     }
@@ -279,7 +279,7 @@ public class IndexManager {
         }).distinct().collect(Collectors.toSet());
         
         if (stats.size() > 1) {
-            LOG.warn("Differing stats data for different indices");
+            LOG.warn("Differing stats data for different indices: {}", stats.stream().map(x -> Util.objectToStringMap(x)).collect(Collectors.toSet()));
             return null;
         }
         

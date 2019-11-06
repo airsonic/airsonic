@@ -19,6 +19,8 @@
  */
 package org.airsonic.player.dao;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.airsonic.player.domain.Genre;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
@@ -205,6 +207,12 @@ public class MediaFileDao extends AbstractDao {
 
     public void deleteMediaFile(String path) {
         update("update media_file set present=false, children_last_updated=? where path=?", Instant.ofEpochMilli(1), path);
+    }
+    
+    public void deleteMediaFiles(Collection<String> paths) {
+        if (!paths.isEmpty()) {
+            namedUpdate("update media_file set present=false, children_last_updated=:updatedate where path in (:paths)", ImmutableMap.of("updatedate", Instant.ofEpochMilli(1), "paths", paths));
+        }
     }
 
     public List<Genre> getGenres(boolean sortByAlbum) {
@@ -648,6 +656,12 @@ public class MediaFileDao extends AbstractDao {
 
     public void markPresent(String path, Instant lastScanned) {
         update("update media_file set present=?, last_scanned = ? where path=?", true, lastScanned, path);
+    }
+    
+    public void markPresent(Collection<String> paths, Instant lastScanned) {
+        if (!paths.isEmpty()) {
+            namedUpdate("update media_file set present=true, last_scanned = :lastScanned where path in (:paths)", ImmutableMap.of("lastScanned", lastScanned, "paths", paths));
+        }
     }
 
     public void markNonPresent(Instant lastScanned) {
