@@ -19,14 +19,17 @@
  */
 package org.airsonic.player.domain;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A media file (audio, video or directory) with an assortment of its meta data.
@@ -133,6 +136,10 @@ public class MediaFile {
     public void setFolder(String folder) {
         this.folder = folder;
     }
+    
+    public Path getFilePath() {
+        return FileSystems.getDefault().getPath(path);
+    }
 
     public File getFile() {
         // TODO: Optimize
@@ -140,7 +147,7 @@ public class MediaFile {
     }
 
     public boolean exists() {
-        return FileUtil.exists(getFile());
+        return Files.exists(getFilePath());
     }
 
     public MediaType getMediaType() {
@@ -279,31 +286,8 @@ public class MediaFile {
         if (durationSeconds == null) {
             return null;
         }
-
-        StringBuilder result = new StringBuilder(8);
-
-        int seconds = durationSeconds;
-
-        int hours = seconds / 3600;
-        seconds -= hours * 3600;
-
-        int minutes = seconds / 60;
-        seconds -= minutes * 60;
-
-        if (hours > 0) {
-            result.append(hours).append(':');
-            if (minutes < 10) {
-                result.append('0');
-            }
-        }
-
-        result.append(minutes).append(':');
-        if (seconds < 10) {
-            result.append('0');
-        }
-        result.append(seconds);
-
-        return result.toString();
+        // Return in M:SS or H:MM:SS
+        return StringUtil.formatDuration(durationSeconds);
     }
 
     public Long getFileSize() {
@@ -459,7 +443,7 @@ public class MediaFile {
     }
 
     public static List<Integer> toIdList(List<MediaFile> from) {
-        return Lists.transform(from, toId());
+        return from.stream().map(toId()).collect(Collectors.toList());
     }
 
     public static Function<MediaFile, Integer> toId() {

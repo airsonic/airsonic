@@ -23,17 +23,13 @@ package org.airsonic.player.service.search;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
-import org.airsonic.player.domain.Album;
-import org.airsonic.player.domain.Artist;
-import org.airsonic.player.domain.MediaFile;
-import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.domain.*;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.util.Util;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SearcherManager;
 import org.apache.lucene.store.FSDirectory;
@@ -46,13 +42,14 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
-
-import static org.springframework.util.ObjectUtils.isEmpty;
+import java.util.stream.Collectors;
 
 /**
  * Function class that is strongly linked to the lucene index implementation.
@@ -85,16 +82,15 @@ public class IndexManager {
     private static final String INDEX_ROOT_DIR_NAME = "index";
 
     /**
-     * File supplier for index directory.
+     * File for index directory.
      */
-    private Supplier<File> rootIndexDirectory = () ->
-        new File(SettingsService.getAirsonicHome(), INDEX_ROOT_DIR_NAME.concat(Integer.toString(INDEX_VERSION)));
+    private File rootIndexDirectory = new File(SettingsService.getAirsonicHome(), INDEX_ROOT_DIR_NAME.concat(Integer.toString(INDEX_VERSION)));
 
     /**
      * Returns the directory of the specified index
      */
     private Function<IndexType, File> getIndexDirectory = (indexType) ->
-        new File(rootIndexDirectory.get(), indexType.toString().toLowerCase());
+        new File(rootIndexDirectory, indexType.toString().toLowerCase());
 
     @Autowired
     private AnalyzerFactory analyzerFactory;
@@ -121,7 +117,7 @@ public class IndexManager {
         try {
             writers.get(IndexType.ALBUM_ID3).updateDocument(primarykey, document);
         } catch (Exception x) {
-            LOG.error("Failed to create search index for " + album, x);
+            LOG.error("Failed to create search index for {}", album, x);
         }
     }
 
@@ -131,7 +127,7 @@ public class IndexManager {
         try {
             writers.get(IndexType.ARTIST_ID3).updateDocument(primarykey, document);
         } catch (Exception x) {
-            LOG.error("Failed to create search index for " + artist, x);
+            LOG.error("Failed to create search index for {}", artist, x);
         }
     }
 
@@ -149,18 +145,18 @@ public class IndexManager {
                 writers.get(IndexType.ARTIST).updateDocument(primarykey, document);
             }
         } catch (Exception x) {
-            LOG.error("Failed to create search index for " + mediaFile, x);
+            LOG.error("Failed to create search index for {}", mediaFile, x);
         }
     }
 
     public final void startIndexing() {
-        try {
-            for (IndexType IndexType : IndexType.values()) {
-                writers.put(IndexType, createIndexWriter(IndexType));
+        EnumSet.allOf(IndexType.class).parallelStream().forEach(x -> {
+            try {
+                writers.put(x, createIndexWriter(x));
+            } catch (IOException e) {
+                LOG.error("Failed to create search index for {}", x, e);
             }
-        } catch (IOException e) {
-            LOG.error("Failed to create search index.", e);
-        }
+        });
     }
 
     private IndexWriter createIndexWriter(IndexType indexType) throws IOException {
@@ -170,7 +166,6 @@ public class IndexManager {
     }
 
     public void expunge() {
-
         Term[] primarykeys = mediaFileDao.getArtistExpungeCandidates().stream()
                 .map(m -> documentFactory.createPrimarykey(m))
                 .toArray(i -> new Term[i]);
@@ -222,39 +217,73 @@ public class IndexManager {
      * Close Writer of all indexes and update SearcherManager.
      * Called at the end of the Scan flow.
      */
-    public void stopIndexing() {
-        Arrays.asList(IndexType.values()).forEach(this::stopIndexing);
+    public void stopIndexing(MediaLibraryStatistics statistics) {
+        EnumSet.allOf(IndexType.class).parallelStream().forEach(indexType -> stopIndexing(indexType, statistics));
     }
 
     /**
      * Close Writer of specified index and refresh SearcherManager.
      */
-    private void stopIndexing(IndexType type) {
-
-        boolean isUpdate = false;
-        // close
-        try {
-            isUpdate = -1 != writers.get(type).commit();
-            writers.get(type).close();
-            writers.remove(type);
-            LOG.trace("Success to create or update search index : [" + type + "]");
-        } catch (IOException e) {
-            LOG.error("Failed to create search index.", e);
-        } finally {
-            FileUtil.closeQuietly(writers.get(type));
-        }
-
-        // refresh reader as index may have been written
-        if (isUpdate && searchers.containsKey(type)) {
-            try {
-                searchers.get(type).maybeRefresh();
-                LOG.trace("SearcherManager has been refreshed : [" + type + "]");
+    private void stopIndexing(IndexType type, MediaLibraryStatistics statistics) {
+        writers.computeIfPresent(type, (tw, w) -> {
+            try (IndexWriter writer = w) {
+                Map<String,String> userData = Util.objectToStringMap(statistics);
+                writer.setLiveCommitData(userData.entrySet());
+                boolean updated = (-1 != writer.commit());
+                LOG.trace("Success to create or update search index : [{}]", tw);
+                
+                if (updated) {
+                    searchers.computeIfPresent(tw, (ts, s) -> {
+                        try {
+                            s.maybeRefresh();
+                            LOG.trace("SearcherManager has been refreshed : [{}]", ts);
+                            return s;
+                        } catch (IOException e) {
+                            LOG.error("Failed to refresh SearcherManager : [{}]", ts, e);
+                            return null; //remove from map
+                        }
+                    });
+                }
             } catch (IOException e) {
-                LOG.error("Failed to refresh SearcherManager : [" + type + "]", e);
-                searchers.remove(type);
+                LOG.error("Failed to create search index for {}.", tw, e);
             }
-        }
+            
+            //remove from map
+            return null;
+        });
+    }
 
+    /**
+     * Return the MediaLibraryStatistics saved on commit in the index. Ensures that each index reports the same data.
+     * On invalid indices, returns null.
+     */
+    public @Nullable MediaLibraryStatistics getStatistics() {
+        Set<MediaLibraryStatistics> stats = EnumSet.allOf(IndexType.class).parallelStream().map(t -> {
+            IndexSearcher searcher = getSearcher(t);
+            if (searcher == null) {
+                LOG.trace("No index for type {}", t);
+                return null;
+            }
+            IndexReader indexReader = searcher.getIndexReader();
+            if (!(indexReader instanceof DirectoryReader)) {
+                LOG.warn("Unexpected index type {} for {}", indexReader.getClass(), t);
+                return null;
+            }
+            try {
+                Map<String, String> userData = ((DirectoryReader) indexReader).getIndexCommit().getUserData();
+                return Util.stringMapToValidObject(MediaLibraryStatistics.class, userData);
+            } catch (IOException | IllegalArgumentException e) {
+                LOG.debug("Exception encountered while fetching index commit data for {}", t, e);
+                return null;
+            }
+        }).distinct().collect(Collectors.toSet());
+        
+        if (stats.size() > 1) {
+            LOG.warn("Differing stats data for different indices: {}", stats.stream().map(x -> Util.objectToStringMap(x)).collect(Collectors.toSet()));
+            return null;
+        }
+        
+        return stats.stream().map(x -> Optional.ofNullable(x)).findAny().flatMap(x -> x).orElse(null);
     }
 
     /**
@@ -263,46 +292,50 @@ public class IndexManager {
      * if the user performs any search before performing a scan.
      */
     public @Nullable IndexSearcher getSearcher(IndexType indexType) {
-        if (!searchers.containsKey(indexType)) {
-            File indexDirectory = getIndexDirectory.apply(indexType);
+        return Optional.ofNullable(searchers.computeIfAbsent(indexType, k -> {
+            File indexDirectory = getIndexDirectory.apply(k);
             try {
                 if (indexDirectory.exists()) {
-                    SearcherManager manager = new SearcherManager(FSDirectory.open(indexDirectory.toPath()), null);
-                    searchers.put(indexType, manager);
+                    return new SearcherManager(FSDirectory.open(indexDirectory.toPath()), null);
                 } else {
                     LOG.warn("{} does not exist. Please run a scan.", indexDirectory.getAbsolutePath());
                 }
             } catch (IOException e) {
-                LOG.error("Failed to initialize SearcherManager.", e);
+                LOG.error("Failed to initialize SearcherManager for {}", k, e);
             }
-        }
-        try {
-            SearcherManager manager = searchers.get(indexType);
-            if (!isEmpty(manager)) {
-                return searchers.get(indexType).acquire();
+            
+            return null;
+        })).map(s -> {
+            try {
+                return s.acquire();
+            } catch (IOException e) {
+                LOG.warn("Failed to acquire IndexSearcher for {}.", indexType, e);
+                return null;
             }
-        } catch (Exception e) {
-            LOG.warn("Failed to acquire IndexSearcher.", e);
-        }
-        return null;
+        }).orElse(null);
     }
 
     public void release(IndexType indexType, IndexSearcher indexSearcher) {
-        if (searchers.containsKey(indexType)) {
+        searchers.compute(indexType, (k, v) -> {
+            if (v == null) {
+                // irregular case
+                try {
+                    indexSearcher.getIndexReader().close();
+                } catch (Exception e) {
+                    LOG.warn("Failed to release {} because it wasn't found. IndexSearcher has been closed.", k, e);
+                }
+                
+                return null;
+            }
+            
             try {
-                searchers.get(indexType).release(indexSearcher);
+                v.release(indexSearcher);
+                return v;
             } catch (IOException e) {
-                LOG.error("Failed to release IndexSearcher.", e);
-                searchers.remove(indexType);
+                LOG.error("Failed to release IndexSearcher for {}.", k, e);
+                return null;
             }
-        } else {
-            // irregular case
-            try {
-                indexSearcher.getIndexReader().close();
-            } catch (Exception e) {
-                LOG.warn("Failed to release. IndexSearcher has been closed.", e);
-            }
-        }
+        });
     }
 
     /**
@@ -327,7 +360,7 @@ public class IndexManager {
                             }
                         } catch (IOException e) {
                             // Log only if failed
-                            LOG.warn("Failed to delete the legacy Index : ".concat(old.getAbsolutePath()), e);
+                            LOG.warn("Failed to delete the legacy Index : {}", old.getAbsolutePath(), e);
                         }
                     }
                 });
@@ -335,7 +368,7 @@ public class IndexManager {
         // Delete if not old index version
         Arrays.stream(SettingsService.getAirsonicHome()
                 .listFiles((file, name) -> Pattern.compile("^index\\d+$").matcher(name).matches()))
-                .filter(dir -> !dir.getName().equals(rootIndexDirectory.get().getName()))
+                .filter(dir -> !dir.getName().equals(rootIndexDirectory.getName()))
                 .forEach(old -> {
                     if (FileUtil.exists(old)) {
                         LOG.info("Found old index file. Try to delete : {}", old.getAbsolutePath());
@@ -347,7 +380,7 @@ public class IndexManager {
                             }
                         } catch (IOException e) {
                             // Log only if failed
-                            LOG.warn("Failed to delete the old Index : ".concat(old.getAbsolutePath()), e);
+                            LOG.warn("Failed to delete the old Index : {}", old.getAbsolutePath(), e);
                         }
                     }
                 });
@@ -359,11 +392,11 @@ public class IndexManager {
      */
     public void initializeIndexDirectory() {
         // Check if Index is current version
-        if (rootIndexDirectory.get().exists()) {
+        if (rootIndexDirectory.exists()) {
             // Index of current version already exists
             LOG.info("Index was found (index version {}). ", INDEX_VERSION);
         } else {
-            if (rootIndexDirectory.get().mkdir()) {
+            if (rootIndexDirectory.mkdir()) {
                 LOG.info("Index directory was created (index version {}). ", INDEX_VERSION);
             } else {
                 LOG.warn("Failed to create index directory :  (index version {}). ", INDEX_VERSION);

@@ -1,11 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/playlistService.js'/>"></script>
     <script type="text/javascript" language="javascript">
 
         var playlists;
@@ -65,7 +65,7 @@
 
 <div style="padding-bottom:1.5em">
     <a href="home.view" target="main">
-      <img src="<spring:theme code="logoImage"/>" style="width:196px" title="<fmt:message key="top.help"/>" alt="">
+      <img src="<spring:theme code='logoImage'/>" style="width:196px" title="<fmt:message key='top.help'/>" alt="">
     </a>
 </div>
 
@@ -127,7 +127,7 @@
     <c:forEach items="${model.radios}" var="radio">
         <p class="dense" style="padding-left: 2px">
         <a target="hidden" href="${radio.streamUrl}" class="radio-play" data-id="${radio.id}">
-            <img src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" title="<fmt:message key="common.play"/>"></a>
+            <img src="<spring:theme code='playImage'/>" alt="<fmt:message key='common.play'/>" title="<fmt:message key='common.play'/>"></a>
             <span style="vertical-align: middle">
                 <c:choose>
                     <c:when test="${empty radio.homepageUrl}">
@@ -149,7 +149,7 @@
                 <h2 style="padding:0;margin:0;border:0">${fn:escapeXml(entry.key.index)}</h2>
             </th>
             <th style="text-align:right;">
-                <a href="#top"><img src="<spring:theme code="upImage"/>" alt="" style="height:18px;"></a>
+                <a href="#top"><img src="<spring:theme code='upImage'/>" alt="" style="height:18px;"></a>
             </th>
         </tr>
     </table>

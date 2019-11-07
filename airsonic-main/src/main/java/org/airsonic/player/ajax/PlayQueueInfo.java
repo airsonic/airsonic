@@ -61,7 +61,7 @@ public class PlayQueueInfo {
                 durationSeconds += entry.getDuration();
             }
         }
-        return StringUtil.formatDuration(durationSeconds);
+        return StringUtil.formatDurationMSS(durationSeconds);
     }
 
     public boolean isStopEnabled() {

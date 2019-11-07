@@ -22,6 +22,7 @@ package org.airsonic.player.service.upnp;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.PlaylistService;
+import org.airsonic.player.service.search.IndexManager;
 import org.airsonic.player.util.Util;
 import org.fourthline.cling.support.contentdirectory.ContentDirectoryErrorCode;
 import org.fourthline.cling.support.contentdirectory.ContentDirectoryException;
@@ -57,6 +58,8 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
     private MediaFileService mediaFileService;
     @Autowired
     private PlaylistService playlistService;
+    @Autowired
+    private IndexManager indexManager;
 
     @Override
     public BrowseResult browse(String objectId, BrowseFlag browseFlag, String filter, long firstResult,
@@ -98,7 +101,7 @@ public class FolderBasedContentDirectory extends CustomContentDirectory {
         root.setId(CONTAINER_ID_ROOT);
         root.setParentID("-1");
 
-        MediaLibraryStatistics statistics = settingsService.getMediaLibraryStatistics();
+        MediaLibraryStatistics statistics = indexManager.getStatistics();
         root.setStorageUsed(statistics == null ? 0 : statistics.getTotalLengthInBytes());
         root.setTitle("Airsonic Media");
         root.setRestricted(true);

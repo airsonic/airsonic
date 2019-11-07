@@ -25,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Instant;
 
 /**
  * Miscellaneous file utility methods.
@@ -71,14 +74,14 @@ public final class FileUtil {
     public static boolean exists(String path) {
         return exists(new File(path));
     }
-
-    public static long lastModified(final File file) {
-        return timed(new FileTask<Long>("lastModified", file) {
-            @Override
-            public Long execute() {
-                return file.lastModified();
-            }
-        });
+    
+    public static Instant lastModified(final Path file) {
+        try {
+            return Files.getLastModifiedTime(file).toInstant();
+        } catch (IOException e) {
+            LOG.warn("Could not get file modify date for {}", file.toString(), e);
+            return Instant.now();
+        }
     }
 
     public static long length(final File file) {
@@ -88,6 +91,15 @@ public final class FileUtil {
                 return file.length();
             }
         });
+    }
+    
+    public static long size(final Path file) {
+        try {
+            return Files.size(file);
+        } catch (IOException e) {
+            LOG.warn("Could not get file size for {}", file.toString(), e);
+            return 0;
+        }
     }
 
     /**

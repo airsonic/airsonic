@@ -1,10 +1,7 @@
 package org.airsonic.player.domain;
 
-import com.google.common.base.Function;
-
 import java.io.File;
 import java.time.Instant;
-import java.util.List;
 
 public class MediaFileWithUrlInfo {
 
@@ -312,13 +309,5 @@ public class MediaFileWithUrlInfo {
 
     public File getCoverArtFile() {
         return file.getCoverArtFile();
-    }
-
-    public static List<Integer> toIdList(List<MediaFile> from) {
-        return MediaFile.toIdList(from);
-    }
-
-    public static Function<MediaFile, Integer> toId() {
-        return MediaFile.toId();
     }
 }

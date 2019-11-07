@@ -19,8 +19,6 @@
  */
 package org.airsonic.player.service;
 
-import com.google.common.collect.Streams;
-
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
@@ -52,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Provides services for scanning the music library.
@@ -63,8 +60,6 @@ import java.util.stream.Stream;
 public class MediaScannerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MediaScannerService.class);
-
-    private MediaLibraryStatistics statistics;
 
     private volatile boolean scanning;
     
@@ -94,13 +89,11 @@ public class MediaScannerService {
     @PostConstruct
     public void init() {
         indexManager.initializeIndexDirectory();
-        statistics = settingsService.getMediaLibraryStatistics();
         schedule();
     }
 
     public void initNoSchedule() {
         indexManager.deleteOldIndexFiles();
-        statistics = settingsService.getMediaLibraryStatistics();
     }
 
     /**
@@ -133,10 +126,14 @@ public class MediaScannerService {
         LOG.info("Automatic media library scanning scheduled to run every {} day(s), starting at {}", daysBetween, nextRun);
 
         // In addition, create index immediately if it doesn't exist on disk.
-        if (settingsService.getLastScanned() == null) {
+        if (neverScanned()) {
             LOG.info("Media library never scanned. Doing it now.");
             scanLibrary();
         }
+    }
+
+    boolean neverScanned() {
+        return indexManager.getStatistics() == null;
     }
 
     /**
@@ -175,27 +172,27 @@ public class MediaScannerService {
 
         ForkJoinPool pool = new ForkJoinPool(scannerParallelism, mediaScannerThreadFactory, null, true);
         
-        CompletableFuture.runAsync(() -> doScanLibrary(), pool)
+        CompletableFuture.runAsync(() -> doScanLibrary(pool), pool)
                 .thenRunAsync(() -> playlistService.importPlaylists(), pool)
                 .thenRunAsync(() -> mediaFileDao.checkpoint(), pool)
                 .thenRun(() -> pool.shutdown())
                 .thenRun(() -> scanning = false);
     }
 
-    private void doScanLibrary() {
+    private void doScanLibrary(ForkJoinPool pool) {
         LOG.info("Starting to scan media library.");
-        Instant lastScanned = Instant.now();
-        LOG.debug("New last scan date is {}", lastScanned);
+        MediaLibraryStatistics statistics = new MediaLibraryStatistics();
+        LOG.debug("New last scan date is {}", statistics.getScanDate());
 
         try {
             // Maps from artist name to album count.
             Map<String, AtomicInteger> albumCount = new ConcurrentHashMap<>();
             Map<String, Artist> artists = new ConcurrentHashMap<>();
-            Map<MediaFile, Album> albums = new ConcurrentHashMap<>();
+            Map<String, Album> albums = new ConcurrentHashMap<>();
+            Map<String, Boolean> encountered = new ConcurrentHashMap<>();
             Genres genres = new Genres();
 
             scanCount.set(0);
-            statistics.reset();
 
             mediaFileService.setMemoryCacheEnabled(false);
             indexManager.startIndexing();
@@ -204,63 +201,78 @@ public class MediaScannerService {
             ForkJoinTask.invokeAll(
                     settingsService.getAllMusicFolders()
                         .parallelStream()
-                        .map(musicFolder -> ForkJoinTask.adapt(() -> scanFile(mediaFileService.getMediaFile(musicFolder.getPath(), false), musicFolder, lastScanned, albumCount, artists, albums, genres, false)))
+                        .map(musicFolder -> ForkJoinTask.adapt(() -> scanFile(mediaFileService.getMediaFile(musicFolder.getPath(), false), musicFolder, statistics, albumCount, artists, albums, genres, encountered, false)))
                         .collect(Collectors.toList()));
             
             // Scan podcast folder.
             File podcastFolder = new File(settingsService.getPodcastFolder());
             if (podcastFolder.exists()) {
                 ForkJoinTask.invokeAll(ForkJoinTask.adapt(() -> scanFile(mediaFileService.getMediaFile(podcastFolder), new MusicFolder(podcastFolder, null, true, null),
-                         lastScanned, albumCount, artists, albums, genres, true)));
+                         statistics, albumCount, artists, albums, genres, encountered, true)));
             }
 
-            LOG.info("Scanned media library with " + scanCount + " entries.");
+            LOG.info("Scanned media library with {} entries.", scanCount.get());
 
             // Update statistics
             statistics.incrementArtists(albumCount.size());
             statistics.incrementAlbums(albumCount.values().parallelStream().mapToInt(x -> x.get()).sum());
             
-            ForkJoinTask.invokeAll(
-                    Streams.concat(
-                            albums.values().parallelStream().map(a -> ForkJoinTask.adapt(() -> albumDao.createOrUpdateAlbum(a))),
-                            artists.values().parallelStream().map(a -> ForkJoinTask.adapt(() -> artistDao.createOrUpdateArtist(a))),
-                            Stream.of(ForkJoinTask.adapt(() -> {
-                                LOG.info("Marking non-present files.");
-                                mediaFileDao.markNonPresent(lastScanned);
-                            })),
-                            Stream.of(ForkJoinTask.adapt(() -> {
-                                LOG.info("Marking non-present artists.");
-                                artistDao.markNonPresent(lastScanned);
-                            })),
-                            Stream.of(ForkJoinTask.adapt(() -> {
-                                LOG.info("Marking non-present albums.");
-                                albumDao.markNonPresent(lastScanned);
-                            })),
-                            Stream.of(ForkJoinTask.adapt(() -> {
-                                LOG.info("Updating genres");
-                                mediaFileDao.updateGenres(genres.getGenres());
-                            }))
-                    )
-                    .collect(Collectors.toList())
-            );
+            LOG.info("Persisting albums");
+            CompletableFuture<Void> albumPersistence = CompletableFuture
+                    .allOf(albums.values().parallelStream()
+                            .map(a -> CompletableFuture.runAsync(() -> albumDao.createOrUpdateAlbum(a), pool))
+                            .toArray(CompletableFuture[]::new))
+                    .thenRunAsync(() -> {
+                        LOG.info("Marking non-present albums.");
+                        albumDao.markNonPresent(statistics.getScanDate());
+                    }, pool)
+                    .thenRunAsync(() -> LOG.info("Album persistence complete"), pool);
+            
+            LOG.info("Persisting artists");
+            CompletableFuture<Void> artistPersistence = CompletableFuture
+                    .allOf(artists.values().parallelStream()
+                            .map(a -> CompletableFuture.runAsync(() -> artistDao.createOrUpdateArtist(a), pool))
+                            .toArray(CompletableFuture[]::new))
+                    .thenRunAsync(() -> {
+                        LOG.info("Marking non-present artists.");
+                        artistDao.markNonPresent(statistics.getScanDate());
+                    }, pool)
+                    .thenRunAsync(() -> LOG.info("Artist persistence complete"), pool);
+            
+            LOG.info("Marking present files");
+            CompletableFuture<Void> mediaFilePersistence = CompletableFuture
+                    .runAsync(() -> mediaFileDao.markPresent(encountered.keySet(), statistics.getScanDate()), pool)
+                    .thenRunAsync(() -> {
+                        LOG.info("Marking non-present files.");
+                        mediaFileDao.markNonPresent(statistics.getScanDate());
+                    }, pool)
+                    .thenRunAsync(() -> LOG.info("File marking complete"), pool);
+            
+            LOG.info("Persisting genres");
+            CompletableFuture<Void> genrePersistence = CompletableFuture
+                    .runAsync(() -> {
+                        LOG.info("Updating genres");
+                        mediaFileDao.updateGenres(genres.getGenres());
+                    }, pool)
+                    .thenRunAsync(() -> LOG.info("Genre persistence complete"), pool);
+            
+            CompletableFuture.allOf(albumPersistence, artistPersistence, mediaFilePersistence, genrePersistence).join();
 
-            settingsService.setMediaLibraryStatistics(statistics);
-            settingsService.setLastScanned(lastScanned);
-            settingsService.save(false);
             LOG.info("Completed media library scan.");
 
         } catch (Throwable x) {
             LOG.error("Failed to scan media library.", x);
         } finally {
             mediaFileService.setMemoryCacheEnabled(true);
-            indexManager.stopIndexing();
+            indexManager.stopIndexing(statistics);
+            LOG.info("Media library scan took {}s", ChronoUnit.SECONDS.between(statistics.getScanDate(), Instant.now()));
         }
     }
 
-    private void scanFile(MediaFile file, MusicFolder musicFolder, Instant lastScanned,
-                          Map<String, AtomicInteger> albumCount, Map<String, Artist> artists, Map<MediaFile, Album> albums, Genres genres, boolean isPodcast) {
+    private void scanFile(MediaFile file, MusicFolder musicFolder, MediaLibraryStatistics statistics,
+                          Map<String, AtomicInteger> albumCount, Map<String, Artist> artists, Map<String, Album> albums, Genres genres, Map<String, Boolean> encountered, boolean isPodcast) {
         if (scanCount.incrementAndGet() % 250 == 0) {
-            LOG.info("Scanned media library with " + scanCount + " entries.");
+            LOG.info("Scanned media library with {} entries.", scanCount.get());
         }
 
         LOG.trace("Scanning file {}", file.getPath());
@@ -277,18 +289,18 @@ public class MediaScannerService {
             ForkJoinTask.invokeAll(
                     mediaFileService.getChildrenOf(file, true, true, false, false)
                         .parallelStream()
-                        .map(child -> ForkJoinTask.adapt(() -> scanFile(child, musicFolder, lastScanned, albumCount, artists, albums, genres, isPodcast)))
+                        .map(child -> ForkJoinTask.adapt(() -> scanFile(child, musicFolder, statistics, albumCount, artists, albums, genres, encountered, isPodcast)))
                         .collect(Collectors.toList()));
         } else {
             if (!isPodcast) {
-                updateAlbum(file, musicFolder, lastScanned, albumCount, albums);
-                updateArtist(file, musicFolder, lastScanned, albumCount, artists);
+                updateAlbum(file, musicFolder, statistics.getScanDate(), albumCount, albums);
+                updateArtist(file, musicFolder, statistics.getScanDate(), albumCount, artists);
             }
             statistics.incrementSongs(1);
         }
 
         updateGenres(file, genres);
-        mediaFileDao.markPresent(file.getPath(), lastScanned);
+        encountered.putIfAbsent(file.getPath(), Boolean.TRUE);
 
         if (file.getDurationSeconds() != null) {
             statistics.incrementTotalDurationInSeconds(file.getDurationSeconds());
@@ -311,26 +323,26 @@ public class MediaScannerService {
         }
     }
 
-    private void updateAlbum(MediaFile file, MusicFolder musicFolder, Instant lastScanned, Map<String, AtomicInteger> albumCount, Map<MediaFile, Album> albums) {
+    private void updateAlbum(MediaFile file, MusicFolder musicFolder, Instant lastScanned, Map<String, AtomicInteger> albumCount, Map<String, Album> albums) {
         String artist = file.getAlbumArtist() != null ? file.getAlbumArtist() : file.getArtist();
         if (file.getAlbumName() == null || artist == null || file.getParentPath() == null || !file.isAudio()) {
             return;
         }
         
         final AtomicBoolean firstEncounter = new AtomicBoolean(false);
-        Album album = albums.compute(file, (k,v) -> {
+        Album album = albums.compute(file.getAlbumName() + "|" + artist, (k,v) -> {
             Album a = v;
             
             if (a == null) {
-                a = albumDao.getAlbumForFile(k);
+                a = albumDao.getAlbumForFile(file);
             }
             
             if (a == null) {
                 a = new Album();
-                a.setPath(k.getParentPath());
-                a.setName(k.getAlbumName());
+                a.setPath(file.getParentPath());
+                a.setName(file.getAlbumName());
                 a.setArtist(artist);
-                a.setCreated(k.getChanged());
+                a.setCreated(file.getChanged());
             }
             
             firstEncounter.set(!lastScanned.equals(a.getLastScanned()));
@@ -416,15 +428,6 @@ public class MediaScannerService {
             artist.setFolderId(musicFolder.getId());
             indexManager.index(artist, musicFolder);
         }
-    }
-
-    /**
-     * Returns media library statistics, including the number of artists, albums and songs.
-     *
-     * @return Media library statistics.
-     */
-    public MediaLibraryStatistics getStatistics() {
-        return statistics;
     }
 
     public void setSettingsService(SettingsService settingsService) {

@@ -20,10 +20,12 @@
 package org.airsonic.player.service.upnp;
 
 import org.airsonic.player.domain.MediaLibraryStatistics;
+import org.airsonic.player.service.search.IndexManager;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.WriteStatus;
 import org.fourthline.cling.support.model.container.Container;
 import org.fourthline.cling.support.model.container.StorageFolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -35,12 +37,16 @@ import java.util.List;
  */
 @Component
 public class RootUpnpProcessor extends UpnpContentProcessor <Container, Container> {
+
+    @Autowired
+    IndexManager indexManager;
+
     public Container createRootContainer() {
         StorageFolder root = new StorageFolder();
         root.setId(DispatchingContentDirectory.CONTAINER_ID_ROOT);
         root.setParentID("-1");
 
-        MediaLibraryStatistics statistics = getDispatchingContentDirectory().getSettingsService().getMediaLibraryStatistics();
+        MediaLibraryStatistics statistics = indexManager.getStatistics();
         // returning large storageUsed values doesn't play nicely with
         // some upnp clients
         //root.setStorageUsed(statistics == null ? 0 : statistics.getTotalLengthInBytes());

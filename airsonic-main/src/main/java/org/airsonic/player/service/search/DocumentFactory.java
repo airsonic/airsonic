@@ -85,8 +85,6 @@ public class DocumentFactory {
 
     }
 
-    ;
-
     private BiConsumer<@NonNull Document, @NonNull Integer> fieldId = (doc, value) -> {
         doc.add(new StoredField(FieldNames.ID, Integer.toString(value), TYPE_ID));
     };
@@ -129,19 +127,19 @@ public class DocumentFactory {
 
     public final Term createPrimarykey(Integer id) {
         return new Term(FieldNames.ID, Integer.toString(id));
-    };
+    }
 
     public final Term createPrimarykey(Album album) {
         return createPrimarykey(album.getId());
-    };
+    }
 
     public final Term createPrimarykey(Artist artist) {
         return createPrimarykey(artist.getId());
-    };
+    }
 
     public final Term createPrimarykey(MediaFile mediaFile) {
         return createPrimarykey(mediaFile.getId());
-    };
+    }
 
     /**
      * Create a document.

@@ -21,6 +21,7 @@ package org.airsonic.player.controller;
 
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
+import org.airsonic.player.service.search.IndexManager;
 import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,8 @@ public class LeftController  {
     @Autowired
     private MediaScannerService mediaScannerService;
     @Autowired
+    private IndexManager indexManager;
+    @Autowired
     private SettingsService settingsService;
     @Autowired
     private SecurityService securityService;
@@ -83,11 +86,11 @@ public class LeftController  {
         MusicFolder selectedMusicFolder = settingsService.getSelectedMusicFolder(username);
         if (selectedMusicFolder != null) {
             File file = selectedMusicFolder.getPath();
-            lastModified = Math.max(lastModified, FileUtil.lastModified(file));
+            lastModified = Math.max(lastModified, FileUtil.lastModified(file.toPath()).toEpochMilli());
         } else {
             for (MusicFolder musicFolder : allMusicFolders) {
                 File file = musicFolder.getPath();
-                lastModified = Math.max(lastModified, FileUtil.lastModified(file));
+                lastModified = Math.max(lastModified, FileUtil.lastModified(file.toPath()).toEpochMilli());
             }
         }
 
@@ -113,7 +116,7 @@ public class LeftController  {
         boolean musicFolderChanged = saveSelectedMusicFolder(request);
         Map<String, Object> map = new HashMap<>();
 
-        MediaLibraryStatistics statistics = mediaScannerService.getStatistics();
+        MediaLibraryStatistics statistics = indexManager.getStatistics();
         Locale locale = RequestContextUtils.getLocale(request);
 
         boolean refresh = ServletRequestUtils.getBooleanParameter(request, "refresh", false);

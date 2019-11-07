@@ -89,27 +89,7 @@ public abstract class CustomContentDirectory extends AbstractContentDirectorySer
         if (seconds == null) {
             return null;
         }
-
-        StringBuilder result = new StringBuilder(8);
-
-        int hours = seconds / 3600;
-        seconds -= hours * 3600;
-
-        int minutes = seconds / 60;
-        seconds -= minutes * 60;
-
-        result.append(hours).append(':');
-        if (minutes < 10) {
-            result.append('0');
-        }
-        result.append(minutes).append(':');
-        if (seconds < 10) {
-            result.append('0');
-        }
-        result.append(seconds);
-        result.append(".0");
-
-        return result.toString();
+        return StringUtil.formatDurationHMMSS((int)seconds) + ".0";
     }
 
     protected String getBaseUrl() {

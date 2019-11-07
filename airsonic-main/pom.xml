@@ -512,24 +512,6 @@
             <artifactId>tomcat-embed-jasper</artifactId>
             <scope>${tomcat.server.scope}</scope>
         </dependency>
-        <!-- Embedded Jetty -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jsp</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Provided by the servlet container, but found by dependency:analyze even if used via reflection -->
-        <dependency>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-io</artifactId>
-          <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -538,6 +520,14 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
@@ -596,14 +586,30 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <language>jsp</language>
+                    <rulesets>
+                        <ruleset>/category/jsp/codestyle.xml</ruleset>
+                        <ruleset>/category/jsp/errorprone.xml</ruleset>
+                    </rulesets>
+                    <includes>
+                        <include>**/*.jsp</include>
+                        <include>**/*.jspf</include>
+                    </includes>
+                    <compileSourceRoots>
+                        <compileSourceRoot>${basedir}/src/main/webapp/WEB-INF/jsp</compileSourceRoot>
+                    </compileSourceRoots>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>1.5.20.RELEASE</version>
                 <configuration>
                     <mainClass>org.airsonic.player.Application</mainClass>
                     <layout>WAR</layout>
-                    <excludeGroupIds>${boot.group.excludes}</excludeGroupIds>
-                    <excludeArtifactIds>${boot.artifact.excludes}</excludeArtifactIds>
                 </configuration>
                 <executions>
                     <execution>
@@ -697,17 +703,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <boot.group.excludes>org.eclipse.jetty,org.eclipse.jetty.websocket,org.mortbay.jasper,org.eclipse.jetty.toolchain,org.ow2.asm</boot.group.excludes>
-                <boot.artifact.excludes>spring-boot-starter-jetty</boot.artifact.excludes>
-            </properties>
-        </profile>
-        <profile>
-            <id>jetty-embed</id>
-            <properties>
-                <boot.group.excludes>org.apache.tomcat.embed</boot.group.excludes>
-                <boot.artifact.excludes>spring-boot-starter-tomcat</boot.artifact.excludes>
-            </properties>
         </profile>
         <profile>
             <id>ide-tomcat-embed</id>
