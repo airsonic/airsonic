@@ -3,6 +3,12 @@
 # airsonic/airsonic
 # -->
 
+## v10.4.2 - 22 Oct 2019
+
+### Fixes
+
+- Fix a migration issue on MariaDB (#1333)
+
 ## v10.4.1 - 14 Oct 2019
 
 ### Fixes
