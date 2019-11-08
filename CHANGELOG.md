@@ -3,6 +3,54 @@
 # airsonic/airsonic
 # -->
 
+## v10.5.0 - 7 Nov 2019
+
+**New index version. Scan will be triggered on startup**
+
+Changes:
+- Precompile jsp
+- Add option to disable timestamps during scan
+- Making textareas vertical-align middle allows them to align with adjacent imgs.
+- Improved handling of missing/failed transcoder
+- Removed inability to change roles for admin user
+- Display file id and path in debug scanning logs
+- Update dark icons for the 'groove' theme
+- added discogs search link to main album page
+- Use titles in some \<img\> tags
+- Make the systemd unit compatible with tomcat9
+- Make the logout icon/image cliquable
+- Bump Spring version
+- Improve Windows system detection
+- Update Lucene from 3.0.3 to the current version 8.2.0
+- Add expunge to IndexManager
+
+Fixes:
+- Fix podcast download issues
+- Fix null exception when creating a new podcast channel
+- Handle Lyrics fetch HttpResponseException
+- Added handling for LyricsService ConnectTimeoutException
+- Improve error handling for jaudiotaggerParser artwork fetch
+- Improve transcoder info text and formatting
+- Handle nulls when processing cover art better
+- Media file scan will now heed configured music/video file types
+- Fix incorrect absolute paths in css
+- Fixed broken brace and quote splitting in help text
+- Fixed inconsistencies in SVG icon colors
+- Remove white underline from player controls
+- fixed 'Settings Saved' notification when saving transcoding settings #1114 (#1269)
+- Fix broken update link
+- normalize license expire date to prevent outstanding value on Java 12
+- escaped artist and album values in links; fixed allmusic link
+- Fix a NULL-deref in CoverArtController.java
+- Gracefully handle failed version check attempts
+- Fix the CSS for groove simple
+- Path to search in a specific case is incorrect #1139 
+
+Security:
+- upgrade jackson-databind and commons-beanutils for CVEs
+
+And lots of code cleanup/improvements!
+
 ## v10.4.2 - 22 Oct 2019
 
 ### Fixes
