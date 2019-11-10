@@ -81,7 +81,7 @@
                 </td>
 
                 <td class="fit">
-                    <span class="detail"><fmt:formatDate value="${episode.publishDate}" dateStyle="medium"/></span>
+                    <span class="detail"><javatime:format value="${episode.publishDate}" style="M-"/></span>
                 </td>
 
             </tr>

@@ -276,7 +276,7 @@
             <fmt:message key="main.playcount"><fmt:param value="${model.dir.playCount}"/></fmt:message>
             <c:if test="${not empty model.dir.lastPlayed}">
                 <fmt:message key="main.lastplayed">
-                    <fmt:param><fmt:formatDate type="date" dateStyle="long" value="${model.dir.lastPlayed}"/></fmt:param>
+                    <fmt:param><javatime:format style="L-" value="${model.dir.lastPlayed}"/></fmt:param>
                 </fmt:message>
             </c:if>
         </span>

@@ -211,7 +211,7 @@
 <div class="detail" style="padding-top:0.2em">
     <fmt:message key="playlist2.created" var="created">
         <fmt:param>${model.playlist.username}</fmt:param>
-        <fmt:param><fmt:formatDate type="date" dateStyle="long" value="${model.playlist.created}"/></fmt:param>
+        <fmt:param><javatime:format style="L-" value="${model.playlist.created}"/></fmt:param>
     </fmt:message>
     ${fn:escapeXml(created)}.
 </div>

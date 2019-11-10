@@ -12,7 +12,7 @@
         <fmt:message key="common.unknown" var="buildDateString"/>
     </c:when>
     <c:otherwise>
-        <fmt:formatDate value="${model.buildDate}" dateStyle="long" var="buildDateString"/>
+        <javatime:format value="${model.buildDate}" style="L-" var="buildDateString"/>
     </c:otherwise>
 </c:choose>
 

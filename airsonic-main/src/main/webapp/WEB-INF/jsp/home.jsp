@@ -89,12 +89,12 @@
         <c:set var="captionCount" value="3"/>
     </c:if>
     <c:if test="${not empty album.lastPlayed}">
-        <fmt:formatDate value="${album.lastPlayed}" dateStyle="short" var="lastPlayedDate"/>
+        <javatime:format value="${album.lastPlayed}" style="S-" var="lastPlayedDate"/>
         <c:set var="caption3"><fmt:message key="home.lastplayed"><fmt:param value="${lastPlayedDate}"/></fmt:message></c:set>
         <c:set var="captionCount" value="3"/>
     </c:if>
     <c:if test="${not empty album.created}">
-        <fmt:formatDate value="${album.created}" dateStyle="short" var="creationDate"/>
+        <javatime:format value="${album.created}" style="S-" var="creationDate"/>
         <c:set var="caption3"><fmt:message key="home.created"><fmt:param value="${creationDate}"/></fmt:message></c:set>
         <c:set var="captionCount" value="3"/>
     </c:if>

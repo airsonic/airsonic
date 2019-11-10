@@ -110,7 +110,7 @@ $(document).ready(function() {
                 </tr>
                 <tr>
                     <td style="padding-right: 1.5em"><fmt:message key="playersettings.lastseen"/></td>
-                    <td><fmt:formatDate value="${command.lastSeen}" type="both" dateStyle="long" timeStyle="medium"/></td>
+                    <td><javatime:format value="${command.lastSeen}" style="LM"/></td>
                 </tr>
             </table>
 
