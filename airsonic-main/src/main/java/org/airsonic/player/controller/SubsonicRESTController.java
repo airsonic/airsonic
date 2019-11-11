@@ -169,7 +169,7 @@ public class SubsonicRESTController {
 
         license.setEmail("airsonic@github.com");
         license.setValid(true);
-        XMLGregorianCalendar farFuture = jaxbWriter.convertDate(Instant.now().plus(100, ChronoUnit.YEARS));
+        XMLGregorianCalendar farFuture = jaxbWriter.convertDate(Instant.now().plus(ChronoUnit.YEARS.getDuration().multipliedBy(100)));
         license.setLicenseExpires(farFuture);
         license.setTrialExpires(farFuture);
 

@@ -121,22 +121,22 @@ public class RandomPlayQueueController {
         Instant lastPlayed = null;
         switch (lastPlayedValue) {
             case "1day":
-                lastPlayed = Instant.now().minus(1, ChronoUnit.DAYS);
+                lastPlayed = Instant.now().minus(ChronoUnit.DAYS.getDuration());
                 break;
             case "1week":
-                lastPlayed = Instant.now().minus(1, ChronoUnit.WEEKS);
+                lastPlayed = Instant.now().minus(ChronoUnit.WEEKS.getDuration());
                 break;
             case "1month":
-                lastPlayed = Instant.now().minus(1, ChronoUnit.MONTHS);
+                lastPlayed = Instant.now().minus(ChronoUnit.MONTHS.getDuration());
                 break;
             case "3months":
-                lastPlayed = Instant.now().minus(3, ChronoUnit.MONTHS);
+                lastPlayed = Instant.now().minus(ChronoUnit.MONTHS.getDuration().multipliedBy(3));
                 break;
             case "6months":
-                lastPlayed = Instant.now().minus(6, ChronoUnit.MONTHS);
+                lastPlayed = Instant.now().minus(ChronoUnit.MONTHS.getDuration().multipliedBy(6));
                 break;
             case "1year":
-                lastPlayed = Instant.now().minus(1, ChronoUnit.YEARS);
+                lastPlayed = Instant.now().minus(ChronoUnit.YEARS.getDuration());
                 break;
             case "any":
             default:

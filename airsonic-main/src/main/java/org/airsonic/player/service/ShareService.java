@@ -103,7 +103,7 @@ public class ShareService {
         share.setCreated(Instant.now());
         share.setUsername(securityService.getCurrentUsername(request));
 
-        share.setExpires(Instant.now().plus(1, ChronoUnit.YEARS));
+        share.setExpires(Instant.now().plus(ChronoUnit.YEARS.getDuration()));
 
         shareDao.createShare(share);
         for (MediaFile file : files) {
