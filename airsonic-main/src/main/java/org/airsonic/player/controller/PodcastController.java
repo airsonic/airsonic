@@ -34,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -46,7 +47,6 @@ import java.util.*;
 @RequestMapping("/podcast")
 public class PodcastController  {
 
-    private static final DateTimeFormatter RSS_DATE_FORMAT = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
     @Autowired
     private PlaylistService playlistService;
     @Autowired
@@ -72,7 +72,9 @@ public class PodcastController  {
             for (MediaFile song : songs) {
                 length += song.getFileSize();
             }
-            String publishDate = RSS_DATE_FORMAT.format(playlist.getCreated());
+            
+            //use .atZone(ZoneId.systemDefault) to use relative to current location (like -0800 instead of GMT)
+            String publishDate = DateTimeFormatter.RFC_1123_DATE_TIME.format(playlist.getCreated().atOffset(ZoneOffset.UTC));
 
             // Resolve content type.
             String suffix = songs.get(0).getFormat();

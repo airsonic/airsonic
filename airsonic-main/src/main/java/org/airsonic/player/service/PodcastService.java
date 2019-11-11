@@ -58,8 +58,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.*;
@@ -75,10 +74,6 @@ import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 public class PodcastService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PodcastService.class);
-    private static final DateTimeFormatter[] RSS_DATE_FORMATS = {
-            DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US),
-            DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm:ss Z", Locale.US)
-    };
 
     private static final Namespace[] ITUNES_NAMESPACES = {Namespace.getNamespace("http://www.itunes.com/DTDs/Podcast-1.0.dtd"),
         Namespace.getNamespace("http://www.itunes.com/dtds/podcast-1.0.dtd")};
@@ -478,15 +473,12 @@ public class PodcastService {
     }
 
     private Instant parseDate(String s) {
-        for (DateTimeFormatter dateFormat : RSS_DATE_FORMATS) {
-            try {
-                return LocalDateTime.parse(s, dateFormat).toInstant(ZoneOffset.UTC);
-            } catch (Exception x) {
-                // Ignored.
-            }
+        try {
+            return OffsetDateTime.parse(s, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant();
+        } catch (Exception x) {
+            LOG.warn("Failed to parse publish date: '" + s + "'.");
+            return null;
         }
-        LOG.warn("Failed to parse publish date: '" + s + "'.");
-        return null;
     }
 
     private String formatDuration(String duration) {

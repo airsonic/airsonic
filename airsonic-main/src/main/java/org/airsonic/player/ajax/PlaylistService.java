@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
@@ -108,7 +109,7 @@ public class PlaylistService {
         playlist.setCreated(now);
         playlist.setChanged(now);
         playlist.setShared(false);
-        playlist.setName(dateFormat.format(now));
+        playlist.setName(dateFormat.format(now.atZone(ZoneId.systemDefault())));
 
         playlistService.createPlaylist(playlist);
         return getReadablePlaylists();
@@ -127,7 +128,7 @@ public class PlaylistService {
         playlist.setCreated(now);
         playlist.setChanged(now);
         playlist.setShared(false);
-        playlist.setName(dateFormat.format(now));
+        playlist.setName(dateFormat.format(now.atZone(ZoneId.systemDefault())));
 
         playlistService.createPlaylist(playlist);
         playlistService.setFilesInPlaylist(playlist.getId(), player.getPlayQueue().getFiles());
@@ -149,7 +150,7 @@ public class PlaylistService {
         playlist.setShared(false);
 
         ResourceBundle bundle = ResourceBundle.getBundle("org.airsonic.player.i18n.ResourceBundle", locale);
-        playlist.setName(bundle.getString("top.starred") + " " + dateFormat.format(now));
+        playlist.setName(bundle.getString("top.starred") + " " + dateFormat.format(now.atZone(ZoneId.systemDefault())));
 
         playlistService.createPlaylist(playlist);
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
