@@ -31,6 +31,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -83,9 +84,10 @@ public class AbstractDao {
     
     protected static Map<String, Object> convertToDBTypes(Map<String, Object> args) {
         return args == null ? null : args.entrySet()
-                .parallelStream()
+                .stream()
                 .map(x -> (x.getValue() instanceof Instant) ? Pair.of(x.getKey(), Timestamp.from((Instant) x.getValue())) : x)
-                .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+                //can't use Collectors.toMap due to possible null value mappings
+                .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
     }
 
     protected int update(String sql, Object... args) {
