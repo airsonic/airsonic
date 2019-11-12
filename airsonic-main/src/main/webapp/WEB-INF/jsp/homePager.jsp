@@ -14,7 +14,12 @@
         </c:if>
         <c:choose>
             <c:when test="${model.listType eq 'random'}">
-                <td><div class="forward"><a href="home.view?listType=random"><fmt:message key="common.more"/></a></div></td>
+                <td style="padding-left: 2em;">
+                    <a href="home.view?listType=random">
+                        <img src="<spring:theme code="refreshImage"/>" alt="Refresh" style="height:16px;">
+                        <fmt:message key="common.refresh"/>
+                    </a>
+                </td>
             </c:when>
             <c:otherwise>
                 <sub:url value="home.view" var="previousUrl">
