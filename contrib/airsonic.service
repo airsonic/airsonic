@@ -24,8 +24,9 @@ Group=airsonic
 # See https://www.freedesktop.org/software/systemd/man/systemd.exec.html
 # for details
 DevicePolicy=closed
+DeviceAllow=char-alsa rw
 NoNewPrivileges=yes
-PrivateDevices=yes
+#PrivateDevices=yes
 PrivateTmp=yes
 PrivateUsers=yes
 ProtectControlGroups=yes
