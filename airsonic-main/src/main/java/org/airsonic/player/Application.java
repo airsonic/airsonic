@@ -36,7 +36,7 @@ import java.lang.reflect.Method;
         MultipartAutoConfiguration.class, // TODO: update to use spring boot builtin multipart support
         LiquibaseAutoConfiguration.class})
 @Configuration
-@ImportResource(value = {"classpath:/applicationContext-service.xml",
+@ImportResource({"classpath:/applicationContext-service.xml",
         "classpath:/applicationContext-cache.xml",
         "classpath:/applicationContext-sonos.xml",
         "classpath:/servlet.xml"})
@@ -189,6 +189,7 @@ public class Application extends SpringBootServletInitializer implements Embedde
 
     @Override
     public void customize(ConfigurableEmbeddedServletContainer container) {
+        LOG.trace("Servlet container is {}", container.getClass().getCanonicalName());
         // Yes, there is a good reason we do this.
         // We cannot count on the tomcat classes being on the classpath which will
         // happen if the war is deployed to another app server like Jetty. So, we
@@ -196,7 +197,8 @@ public class Application extends SpringBootServletInitializer implements Embedde
         // specific classes.
         try {
             Class<?> tomcatESCF = Class.forName("org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory");
-            if(tomcatESCF.isInstance(container)) {
+            if (tomcatESCF.isInstance(container)) {
+                LOG.info("Detected Tomcat web server");
                 LOG.debug("Attempting to optimize tomcat");
                 Object tomcatESCFInstance = tomcatESCF.cast(container);
                 Class<?> tomcatApplicationClass = Class.forName("org.airsonic.player.TomcatApplication");
@@ -207,10 +209,11 @@ public class Application extends SpringBootServletInitializer implements Embedde
                 LOG.debug("Skipping tomcat optimization as we are not running on tomcat");
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            LOG.debug("Skipping tomcat optimization as the tomcat classes are not available");
+            LOG.debug("No tomcat classes found");
         } catch (Exception e) {
             LOG.warn("An error happened while trying to optimize tomcat", e);
         }
+
     }
 
     public static void main(String[] args) {

@@ -27,9 +27,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +53,7 @@ public class PersonalSettingsController  {
     private SecurityService securityService;
 
     @ModelAttribute
-    protected void formBackingObject(HttpServletRequest request,Model model) throws Exception {
+    protected void formBackingObject(HttpServletRequest request,Model model) {
         PersonalSettingsCommand command = new PersonalSettingsCommand();
 
         User user = securityService.getCurrentUser(request);
@@ -108,13 +109,13 @@ public class PersonalSettingsController  {
         model.addAttribute("command",command);
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected String displayForm() throws Exception {
+    @GetMapping
+    protected String displayForm() {
         return "personalSettings";
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    @PostMapping
+    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         int localeIndex = Integer.parseInt(command.getLocaleIndex());
         Locale locale = null;

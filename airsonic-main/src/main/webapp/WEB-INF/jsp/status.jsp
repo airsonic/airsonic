@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html><head>
     <%@ include file="head.jsp" %>
@@ -9,7 +9,7 @@
 <body class="mainframe bgcolor1">
 
 <h1>
-    <img src="<spring:theme code="statusImage"/>" alt="">
+    <img src="<spring:theme code='statusImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="status.title"/></span>
 </h1>
 
@@ -94,16 +94,16 @@
         <th><fmt:message key="home.chart.stream"/></th>
     </tr>
     <tr>
-        <td><img src="<c:url value="/userChart.view"><c:param name="type" value="total"/></c:url>" alt=""></td>
-        <td><img src="<c:url value="/userChart.view"><c:param name="type" value="stream"/></c:url>" alt=""></td>
+        <td><img src="<c:url value='/userChart.view'><c:param name='type' value='total'/></c:url>" alt=""></td>
+        <td><img src="<c:url value='/userChart.view'><c:param name='type' value='stream'/></c:url>" alt=""></td>
     </tr>
     <tr>
         <th><fmt:message key="home.chart.download"/></th>
         <th><fmt:message key="home.chart.upload"/></th>
     </tr>
     <tr>
-        <td><img src="<c:url value="/userChart.view"><c:param name="type" value="download"/></c:url>" alt=""></td>
-        <td><img src="<c:url value="/userChart.view"><c:param name="type" value="upload"/></c:url>" alt=""></td>
+        <td><img src="<c:url value='/userChart.view'><c:param name='type' value='download'/></c:url>" alt=""></td>
+        <td><img src="<c:url value='/userChart.view'><c:param name='type' value='upload'/></c:url>" alt=""></td>
     </tr>
 </table>
 

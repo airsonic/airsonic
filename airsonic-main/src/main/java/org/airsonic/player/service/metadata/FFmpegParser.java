@@ -19,11 +19,11 @@
  */
 package org.airsonic.player.service.metadata;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.airsonic.player.domain.MediaFile;
-import org.airsonic.player.io.InputStreamReaderThread;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.TranscodingService;
-import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +31,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Parses meta data from video files using FFmpeg (http://ffmpeg.org/).
@@ -46,10 +46,10 @@ import java.util.regex.Pattern;
 public class FFmpegParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(FFmpegParser.class);
-    private static final Pattern DURATION_PATTERN = Pattern.compile("Duration: (\\d+):(\\d+):(\\d+).(\\d+)");
-    private static final Pattern BITRATE_PATTERN = Pattern.compile("bitrate: (\\d+) kb/s");
-    private static final Pattern DIMENSION_PATTERN = Pattern.compile("Video.*?, (\\d+)x(\\d+)");
-    private static final Pattern PAR_PATTERN = Pattern.compile("PAR (\\d+):(\\d+)");
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final String[] FFPROBE_OPTIONS = {
+        "-v", "quiet", "-print_format", "json", "-show_format", "-show_streams"
+    };
 
     @Autowired
     private TranscodingService transcodingService;
@@ -69,66 +69,36 @@ public class FFmpegParser extends MetaDataParser {
         MetaData metaData = new MetaData();
 
         try {
-
-            File ffmpeg = new File(transcodingService.getTranscodeDirectory(), "ffmpeg");
-
-            String[] command = new String[]{ffmpeg.getAbsolutePath(), "-i", file.getAbsolutePath()};
-            Process process = Runtime.getRuntime().exec(command);
-            InputStream stdout = process.getInputStream();
-            InputStream stderr = process.getErrorStream();
-
-            // Consume stdout, we're not interested in that.
-            new InputStreamReaderThread(stdout, "ffmpeg", true).start();
-
-            // Read everything from stderr.  It will contain text similar to:
-            // Input #0, avi, from 'foo.avi':
-            //   Duration: 00:00:33.90, start: 0.000000, bitrate: 2225 kb/s
-            //     Stream #0.0: Video: mpeg4, yuv420p, 352x240 [PAR 1:1 DAR 22:15], 29.97 fps, 29.97 tbr, 29.97 tbn, 30k tbc
-            //     Stream #0.1: Audio: pcm_s16le, 44100 Hz, 2 channels, s16, 1411 kb/s
-            String[] lines = StringUtil.readLines(stderr);
-
-            Integer width = null;
-            Integer height = null;
-            Double par = 1.0;
-            for (String line : lines) {
-
-                Matcher matcher = DURATION_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    int hours = Integer.parseInt(matcher.group(1));
-                    int minutes = Integer.parseInt(matcher.group(2));
-                    int seconds = Integer.parseInt(matcher.group(3));
-                    metaData.setDurationSeconds(hours * 3600 + minutes * 60 + seconds);
-                }
-
-                matcher = BITRATE_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    metaData.setBitRate(Integer.valueOf(matcher.group(1)));
-                }
-
-                matcher = DIMENSION_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    width = Integer.valueOf(matcher.group(1));
-                    height = Integer.valueOf(matcher.group(2));
-                }
-
-                // PAR = Pixel Aspect Rate
-                matcher = PAR_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    int a = Integer.parseInt(matcher.group(1));
-                    int b = Integer.parseInt(matcher.group(2));
-                    if (a > 0 && b > 0) {
-                        par = (double) a / (double) b;
-                    }
-                }
+            // Use `ffprobe` in the transcode directory if it exists, otherwise let the system sort it out.
+            String ffprobe;
+            File inTranscodeDirectory = new File(transcodingService.getTranscodeDirectory(), "ffprobe");
+            if (inTranscodeDirectory.exists()) {
+                ffprobe = inTranscodeDirectory.getAbsolutePath();
+            } else {
+                ffprobe = "ffprobe";
             }
 
-            if (width != null && height != null) {
-                width = (int) Math.round(width.doubleValue() * par);
-                metaData.setWidth(width);
-                metaData.setHeight(height);
+            List<String> command = new ArrayList<>();
+            command.add(ffprobe);
+            command.addAll(Arrays.asList(FFPROBE_OPTIONS));
+            command.add(file.getAbsolutePath());
+
+            Process process = Runtime.getRuntime().exec(command.toArray(new String[0]));
+            final JsonNode result = objectMapper.readTree(process.getInputStream());
+
+            metaData.setDurationSeconds(result.at("/format/duration").asInt());
+            // Bitrate is in Kb/s
+            metaData.setBitRate(result.at("/format/bit_rate").asInt() / 1000);
+
+            // Find the first (if any) stream that has dimensions and use those.
+            // 'width' and 'height' are display dimensions; compare to 'coded_width', 'coded_height'.
+            for (JsonNode stream : result.at("/streams")) {
+                if (stream.has("width") && stream.has("height")) {
+                    metaData.setWidth(stream.get("width").asInt());
+                    metaData.setHeight(stream.get("height").asInt());
+                    break;
+                }
             }
-
-
         } catch (Throwable x) {
             LOG.warn("Error when parsing metadata in " + file, x);
         }

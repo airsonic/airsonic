@@ -1,18 +1,16 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%--@elvariable id="model" type="java.util.Map"--%>
 
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/starService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/playlistService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/multiService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/jquery.fancyzoom.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -27,7 +25,9 @@
 
 <script type="text/javascript" language="javascript">
     function init() {
-        setupZoom('<c:url value="/"/>');
+        $("a.fancy").fancyZoom({
+            minBorder: 30
+        });
 
         $("#dialog-select-playlist").dialog({resizable: true, height: 350, autoOpen: false,
             buttons: {
@@ -105,12 +105,12 @@
     }
 
     function toggleStar(mediaFileId, imageId) {
-        if ($(imageId).attr("src").indexOf("<spring:theme code="ratingOnImage"/>") != -1) {
-            $(imageId).attr("src", "<spring:theme code="ratingOffImage"/>");
+        if ($(imageId).attr("src").indexOf("<spring:theme code='ratingOnImage'/>") != -1) {
+            $(imageId).attr("src", "<spring:theme code='ratingOffImage'/>");
             starService.unstar(mediaFileId);
         }
-        else if ($(imageId).attr("src").indexOf("<spring:theme code="ratingOffImage"/>") != -1) {
-            $(imageId).attr("src", "<spring:theme code="ratingOnImage"/>");
+        else if ($(imageId).attr("src").indexOf("<spring:theme code='ratingOffImage'/>") != -1) {
+            $(imageId).attr("src", "<spring:theme code='ratingOnImage'/>");
             starService.star(mediaFileId);
         }
     }
@@ -155,7 +155,7 @@
         }
         playlistService.appendToPlaylist(playlistId, mediaFileIds, function (){
             top.left.updatePlaylists();
-            $().toastmessage("showSuccessToast", "<fmt:message key="playlist.toast.appendtoplaylist"/>");
+            $().toastmessage("showSuccessToast", "<fmt:message key='playlist.toast.appendtoplaylist'/>");
         });
     }
     function showAllAlbums() {
@@ -165,8 +165,8 @@
 
 <div style="float:left">
     <h1>
-        <img id="starImage" src="<spring:theme code="${not empty model.dir.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"
-             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer" alt="">
+        <img id="starImage" src="<spring:theme code='${not empty model.dir.starredDate ? \'ratingOnImage\' : \'ratingOffImage\'}'/>"
+             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer;height:18px;" alt="">
 
         <span style="vertical-align: middle">
             <c:forEach items="${model.ancestors}" var="ancestor">
@@ -250,29 +250,39 @@
     </c:if>
 
     <c:if test="${model.user.shareRole}">
-        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code="shareSmallImage"/>" alt=""></a>
+        <span class="header"><a href="${shareUrl}"><img src="<spring:theme code='shareSmallImage'/>" style="height:18px;" alt=""></a>
             <a href="${shareUrl}"><fmt:message key="main.sharealbum"/></a> </span> |
     </c:if>
 
     <c:if test="${not empty model.artist and not empty model.album}">
-        <sub:url value="http://www.google.com/search" var="googleUrl" encoding="UTF-8">
-            <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
+        <sub:url value="https://www.google.com/search" var="googleUrl" encoding="UTF-8">
+            <sub:param name="q" value='"${fn:escapeXml(model.artist)}" "${fn:escapeXml(model.album)}"'/>
         </sub:url>
-        <sub:url value="http://en.wikipedia.org/wiki/Special:Search" var="wikipediaUrl" encoding="UTF-8">
-            <sub:param name="search" value="\"${model.album}\""/>
+        <sub:url value="https://en.wikipedia.org/wiki/Special:Search" var="wikipediaUrl" encoding="UTF-8">
+            <sub:param name="search" value='"${fn:escapeXml(model.album)}"'/>
             <sub:param name="go" value="Go"/>
         </sub:url>
-        <sub:url value="allmusic.view" var="allmusicUrl">
-            <sub:param name="album" value="${model.album}"/>
+        <sub:url value="https://www.allmusic.com/search/albums/%22${fn:escapeXml(model.artist)}%22+%22${fn:escapeXml(model.album)}%22" var="allmusicUrl">
         </sub:url>
-        <sub:url value="http://www.last.fm/search" var="lastFmUrl" encoding="UTF-8">
-            <sub:param name="q" value="\"${model.artist}\" \"${model.album}\""/>
+        
+        <sub:url value="https://www.last.fm/search" var="lastFmUrl" encoding="UTF-8">
+            <sub:param name="q" value='"${fn:escapeXml(model.artist)}" "${fn:escapeXml(model.album)}"'/>
             <sub:param name="type" value="album"/>
         </sub:url>
+        <sub:url value="https://www.discogs.com/search/" var="discogsUrl" encoding="UTF-8">
+            <sub:param name="q" value='"${fn:escapeXml(model.artist)}" "${fn:escapeXml(model.album)}"'/>
+            <sub:param name="type" value="release"/>
+        </sub:url>
         <span class="header"><fmt:message key="top.search"/> <a target="_blank" href="${googleUrl}">Google</a></span> |
-        <span class="header"><a target="_blank" href="${wikipediaUrl}">Wikipedia</a></span> |
-        <span class="header"><a target="_blank" href="${allmusicUrl}">allmusic</a></span> |
-        <span class="header"><a target="_blank" href="${lastFmUrl}">Last.fm</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${wikipediaUrl}">Wikipedia</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${allmusicUrl}">allmusic</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${lastFmUrl}">Last.fm</a></span> |
+        <span class="header"><a target="_blank" rel="noopener noreferrer" href="${discogsUrl}">Discogs</a></span> |
+        <c:if test="${not empty model.musicBrainzReleaseId}">
+          <sub:url value="https://musicbrainz.org/release/${model.musicBrainzReleaseId}" var="musicBrainzUrl" encoding="UTF-8">
+          </sub:url>
+          <span class="header"><a target="_blank" rel="noopener noreferrer" href="${musicBrainzUrl}">MusicBrainz</a></span> |
+        </c:if>
         <span class="header">
             <fmt:message key="main.playcount"><fmt:param value="${model.dir.playCount}"/></fmt:message>
             <c:if test="${not empty model.dir.lastPlayed}">
@@ -285,7 +295,7 @@
     </c:if>
 </div>
 
-<div id="comment" class="albumComment"><sub:wiki text="${model.dir.comment}"/></div>
+<div id="comment" class="albumComment">${model.dir.comment}</div>
 
 <div id="commentForm" style="display:none">
     <form method="post" action="setMusicFileInfo.view">
@@ -293,9 +303,8 @@
         <input type="hidden" name="action" value="comment">
         <input type="hidden" name="id" value="${model.dir.id}">
         <textarea name="comment" rows="6" cols="70">${model.dir.comment}</textarea>
-        <input type="submit" value="<fmt:message key="common.save"/>">
+        <input type="submit" value="<fmt:message key='common.save'/>">
     </form>
-    <fmt:message key="main.wiki"/>
 </div>
 
 <script type='text/javascript'>
@@ -326,7 +335,7 @@
                   <c:param name="asTable" value="true"/>
                 </c:import>
 
-                        <td class="fit"><input type="checkbox" class="checkbox" id="songIndex${loopStatus.count - 1}">
+                        <td class="fit"><input type="checkbox" id="songIndex${loopStatus.count - 1}">
                             <span id="songId${loopStatus.count - 1}" style="display: none">${song.id}</span></td>
 
                         <c:if test="${model.visibility.trackNumberVisible}">
@@ -467,7 +476,7 @@
 </table>
 
 <c:if test="${model.thereIsMore}">
-    <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+    <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
 </c:if>
 
 <c:if test="${not model.viewAsList}">
@@ -487,7 +496,7 @@
             </div>
         </c:forEach>
         <c:if test="${model.thereIsMore}">
-            <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+            <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
         </c:if>
     </div>
 </c:if>
@@ -505,7 +514,7 @@
     <tr><td style="height: 100%"></td></tr>
 </table>
 
-<div id="dialog-select-playlist" title="<fmt:message key="main.addtoplaylist.title"/>" style="display: none;">
+<div id="dialog-select-playlist" title="<fmt:message key='main.addtoplaylist.title'/>" style="display: none;">
     <p><fmt:message key="main.addtoplaylist.text"/></p>
     <div id="dialog-select-playlist-list"></div>
 </div>

@@ -20,7 +20,7 @@
 package org.airsonic.player.controller;
 
 import junit.framework.TestCase;
-import org.airsonic.player.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
 
@@ -34,13 +34,13 @@ public class HLSControllerTestCase extends TestCase {
         HLSController controller = new HLSController();
 
         Pair<Integer,Dimension> pair = controller.parseBitRate("1000");
-        assertEquals(1000, pair.getFirst().intValue());
-        assertNull(pair.getSecond());
+        assertEquals(1000, pair.getLeft().intValue());
+        assertNull(pair.getRight());
 
         pair = controller.parseBitRate("1000@400x300");
-        assertEquals(1000, pair.getFirst().intValue());
-        assertEquals(400, pair.getSecond().width);
-        assertEquals(300, pair.getSecond().height);
+        assertEquals(1000, pair.getLeft().intValue());
+        assertEquals(400, pair.getRight().width);
+        assertEquals(300, pair.getRight().height);
 
         try {
             controller.parseBitRate("asdfl");

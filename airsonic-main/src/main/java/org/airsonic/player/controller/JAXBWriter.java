@@ -19,13 +19,12 @@
  */
 package org.airsonic.player.controller;
 
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.persistence.jaxb.JAXBContext;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.jdom.Attribute;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Attribute;
+import org.jdom2.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.subsonic.restapi.Error;
@@ -43,9 +42,11 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 import static org.springframework.web.bind.ServletRequestUtils.getStringParameter;
 
 /**
@@ -100,11 +101,11 @@ public class JAXBWriter {
         InputStream in = null;
         try {
             in = StringUtil.class.getResourceAsStream("/subsonic-rest-api.xsd");
-            Document document = new SAXBuilder().build(in);
+            Document document = createSAXBuilder().build(in);
             Attribute version = document.getRootElement().getAttribute("version");
             return version.getValue();
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -157,7 +158,7 @@ public class JAXBWriter {
     }
 
     public void writeErrorResponse(HttpServletRequest request, HttpServletResponse response,
-                                   SubsonicRESTController.ErrorCode code, String message) throws Exception {
+                                   SubsonicRESTController.ErrorCode code, String message) {
         Response res = createResponse(false);
         Error error = new Error();
         res.setError(error);
@@ -174,5 +175,13 @@ public class JAXBWriter {
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(date);
         return datatypeFactory.newXMLGregorianCalendar(c).normalize();
+    }
+
+    public XMLGregorianCalendar convertCalendar(Calendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+
+        return datatypeFactory.newXMLGregorianCalendar((GregorianCalendar)calendar).normalize();
     }
 }

@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html><head>
     <%@ include file="head.jsp" %>
@@ -13,7 +13,7 @@
 <body class="mainframe bgcolor1">
 
 <h1 style="padding-bottom:0.5em">
-    <img src="<spring:theme code="homeImage"/>" alt="">
+    <img src="<spring:theme code='homeImage'/>" alt="">
     <fmt:message key="gettingStarted.title"/>
 </h1>
 

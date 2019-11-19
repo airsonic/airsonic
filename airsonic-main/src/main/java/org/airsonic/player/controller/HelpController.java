@@ -27,14 +27,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ import java.util.Map;
 @RequestMapping("/help")
 public class HelpController {
 
-    private static final Logger logger = LoggerFactory.getLogger(HelpController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(HelpController.class);
 
     private static final int LOG_LINES_TO_SHOW = 50;
 
@@ -61,8 +62,8 @@ public class HelpController {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @GetMapping
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
 
         if (versionService.isNewFinalVersionAvailable()) {
@@ -97,16 +98,18 @@ public class HelpController {
     }
 
     private static List<String> getLatestLogEntries(File logFile) {
-        try {
-            List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
-            ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset());
+        List<String> lines = new ArrayList<>(LOG_LINES_TO_SHOW);
+        try (ReversedLinesFileReader reader = new ReversedLinesFileReader(logFile, Charset.defaultCharset())) {
             String current;
-            while((current = reader.readLine()) != null && lines.size() < LOG_LINES_TO_SHOW) {
+            while ((current = reader.readLine()) != null) {
+                if (lines.size() >= LOG_LINES_TO_SHOW) {
+                    break;
+                }
                 lines.add(0, current);
             }
             return lines;
-        } catch (Exception e) {
-            logger.warn("Could not open log file " + logFile, e);
+        } catch (IOException e) {
+            LOG.warn("Could not open log file " + logFile, e);
             return null;
         }
     }

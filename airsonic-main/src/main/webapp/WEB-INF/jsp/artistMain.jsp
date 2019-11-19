@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <%--
   ~ This file is part of Airsonic.
@@ -18,20 +19,17 @@
   ~  Copyright 2014 (C) Sindre Mehus
   --%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%--@elvariable id="model" type="java.util.Map"--%>
 
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
     <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/starService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/multiService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoom.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/fancyzoom/FancyZoomHTML.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/util.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/starService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/multiService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/jquery.fancyzoom.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
 </head><body class="mainframe bgcolor1" onload="init();">
 
@@ -40,7 +38,9 @@
     var topSongs;
 
     function init() {
-        setupZoom('<c:url value="/"/>');
+        $("a.fancy").fancyZoom({
+            minBorder: 30
+        });
 
         <c:if test="${model.showArtistInfo}">
         loadArtistInfo();
@@ -69,7 +69,10 @@
             if (artistInfo.artistBio && artistInfo.artistBio.biography) {
                 $("#artistBio").append(artistInfo.artistBio.biography);
                 if (artistInfo.artistBio.largeImageUrl) {
-                    $("#artistImage").attr("src", artistInfo.artistBio.largeImageUrl);
+                    $("#artistImage").attr({
+                          "src": artistInfo.artistBio.largeImageUrl,
+                          "class": "fancy"
+                    });
                     $("#artistImageZoom").attr("href", artistInfo.artistBio.largeImageUrl);
                     $("#artistImage").show();
                     $("#artistInfoTable").show();
@@ -97,15 +100,15 @@
                     } else {
                         $("#starSong" + id).attr("src", "<spring:theme code='ratingOffImage'/>");
                     }
-                    $("#rank" + id).html(i + 1);
-                    $("#title" + id).html(song.title);
+                    $("#rank" + id).text(i + 1);
+                    $("#title" + id).text(song.title);
                     $("#title" + id).attr("title", song.title);
-                    $("#album" + id).html(song.album);
+                    $("#album" + id).text(song.album);
                     $("#album" + id).attr("title", song.album);
                     $("#albumUrl" + id).attr("href", "main.view?id=" + song.id);
-                    $("#artist" + id).html(song.artist);
+                    $("#artist" + id).text(song.artist);
                     $("#artist" + id).attr("title", song.artist);
-                    $("#songDuration" + id).html(song.durationAsString);
+                    $("#songDuration" + id).text(song.durationAsString);
 
                     // Note: show() method causes page to scroll to top.
                     $("#pattern" + id).css("display", "table-row");
@@ -161,8 +164,8 @@
 
 <div style="float:left">
     <h1>
-        <img id="starImage" src="<spring:theme code="${not empty model.dir.starredDate ? 'ratingOnImage' : 'ratingOffImage'}"/>"
-             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer" alt="">
+        <img id="starImage" style="height:18px" src="<spring:theme code='${not empty model.dir.starredDate ? \'ratingOnImage\' : \'ratingOffImage\'}'/>"
+             onclick="toggleStar(${model.dir.id}, '#starImage'); return false;" style="cursor:pointer;height:18px;" alt="">
 
         <span style="vertical-align: middle">
             <c:forEach items="${model.ancestors}" var="ancestor">
@@ -204,7 +207,7 @@
 <%@ include file="viewSelector.jsp" %>
 <div style="clear:both"></div>
 
-<div id="comment" class="albumComment"><sub:wiki text="${model.dir.comment}"/></div>
+<div id="comment" class="albumComment">${model.dir.comment}</div>
 
 <div id="commentForm" style="display:none">
     <form method="post" action="setMusicFileInfo.view">
@@ -212,9 +215,8 @@
         <input type="hidden" name="action" value="comment">
         <input type="hidden" name="id" value="${model.dir.id}">
         <textarea name="comment" rows="6" cols="70">${model.dir.comment}</textarea>
-        <input type="submit" value="<fmt:message key="common.save"/>">
+        <input type="submit" value="<fmt:message key='common.save'/>">
     </form>
-    <fmt:message key="main.wiki"/>
 </div>
 
 <script type='text/javascript'>
@@ -241,6 +243,9 @@
                 </tr>
             </c:forEach>
         </table>
+        <c:if test="${model.thereIsMore}">
+            <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
+        </c:if>
     </c:when>
 
     <c:otherwise>
@@ -282,7 +287,7 @@
                 </c:if>
             </c:forEach>
             <c:if test="${model.thereIsMore}">
-                <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key="main.showall"/>" onclick="showAllAlbums()">
+                <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
             </c:if>
         </div>
     </c:otherwise>
@@ -305,8 +310,8 @@
         <span id="similarArtists"></span>
     </td></tr>
     <tr><td style="text-align:center">
-        <input id="similarArtistsRadio" style="display:none;margin-top:1em;margin-right:0.3em;cursor:pointer" type="button" value="<fmt:message key="main.startradio"/>" onclick="playSimilar()">
-        <input id="playTopSongs" style="display:none;margin-top:1em;margin-left:0.3em;cursor:pointer" type="button" value="<fmt:message key="main.playtopsongs"/>" onclick="playAllTopSongs()">
+        <input id="similarArtistsRadio" style="display:none;margin-top:1em;margin-right:0.3em;cursor:pointer" type="button" value="<fmt:message key='main.startradio'/>" onclick="playSimilar()">
+        <input id="playTopSongs" style="display:none;margin-top:1em;margin-left:0.3em;cursor:pointer" type="button" value="<fmt:message key='main.playtopsongs'/>" onclick="playAllTopSongs()">
     </td></tr>
     <tr><td style="height: 100%"></td></tr>
 </table>
@@ -317,16 +322,16 @@
     <tbody id="topSongsBody">
     <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
         <td class="fit">
-            <img id="starSong" onclick="toggleStarTopSong(this.id.substring(8) - 1, '#starSong' + this.id.substring(8))" src="<spring:theme code="ratingOffImage"/>"
+            <img id="starSong" style="height:18px;" onclick="toggleStarTopSong(this.id.substring(8) - 1, '#starSong' + this.id.substring(8))" src="<spring:theme code='ratingOffImage'/>"
                  style="cursor:pointer" alt="" title=""></td>
         <td class="fit">
-            <img id="play" src="<spring:theme code="playImage"/>" alt="<fmt:message key="common.play"/>" title="<fmt:message key="common.play"/>"
+            <img id="play" src="<spring:theme code='playImage'/>" alt="<fmt:message key='common.play'/>" title="<fmt:message key='common.play'/>"
                  style="padding-right:0.1em;cursor:pointer" onclick="playTopSong(this.id.substring(4) - 1)"></td>
         <td class="fit">
-            <img id="add" src="<spring:theme code="addImage"/>" alt="<fmt:message key="common.add"/>" title="<fmt:message key="common.add"/>"
+            <img id="add" src="<spring:theme code='addImage'/>" alt="<fmt:message key='common.add'/>" title="<fmt:message key='common.add'/>"
                  style="padding-right:0.1em;cursor:pointer" onclick="addTopSong(this.id.substring(3) - 1)"></td>
         <td class="fit" style="padding-right:30px">
-            <img id="addNext" src="<spring:theme code="addNextImage"/>" alt="<fmt:message key="main.addnext"/>" title="<fmt:message key="main.addnext"/>"
+            <img id="addNext" src="<spring:theme code='addNextImage'/>" alt="<fmt:message key='main.addnext'/>" title="<fmt:message key='main.addnext'/>"
                  style="padding-right:0.1em;cursor:pointer" onclick="addNextTopSong(this.id.substring(7) - 1)"></td>
         <td class="fit rightalign"><span id="rank" class="detail">Rank</span></td>
         <td class="truncate"><span id="title" class="songTitle">Title</span></td>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:jaxws="http://cxf.apache.org/jaxws"
@@ -20,7 +20,7 @@
         <property name="playerService" ref="playerService"/>
         <property name="transcodingService" ref="transcodingService"/>
         <property name="musicIndexService" ref="musicIndexService"/>
-        <property name="searchService" ref="searchService"/>
+        <property name="searchService" ref="searchServiceImpl"/>
         <property name="ratingService" ref="ratingService"/>
         <property name="lastFmService" ref="lastFmService"/>
         <property name="podcastService" ref="podcastService"/>

@@ -29,8 +29,8 @@ import org.airsonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +59,7 @@ public class VideoPlayerController {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         User user = securityService.getCurrentUser(request);
@@ -69,10 +69,10 @@ public class VideoPlayerController {
         mediaFileService.populateStarredDate(file, user.getUsername());
 
         Integer duration = file.getDurationSeconds();
-        String playerId = playerService.getPlayer(request, response).getId();
+        Integer playerId = playerService.getPlayer(request, response).getId();
         String url = NetworkService.getBaseUrl(request);
-        String streamUrl = url + "/stream?id=" + file.getId() + "&player=" + playerId + "&format=mp4";
-        String coverArtUrl = url + "/coverArt.view?id=" + file.getId();
+        String streamUrl = url + "stream?id=" + file.getId() + "&player=" + playerId + "&format=mp4";
+        String coverArtUrl = url + "coverArt.view?id=" + file.getId();
 
         map.put("video", file);
         map.put("streamUrl", streamUrl);
@@ -89,7 +89,7 @@ public class VideoPlayerController {
     public static Map<String, Integer> createSkipOffsets(int durationSeconds) {
         LinkedHashMap<String, Integer> result = new LinkedHashMap<String, Integer>();
         for (int i = 0; i < durationSeconds; i += 60) {
-            result.put(StringUtil.formatDuration(i), i);
+            result.put(StringUtil.formatDurationMSS(i), i);
         }
         return result;
     }

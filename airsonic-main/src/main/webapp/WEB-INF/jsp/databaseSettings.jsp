@@ -27,15 +27,15 @@
     </script>
 </head>
 <body class="mainframe bgcolor1">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
+<script type="text/javascript" src="<c:url value='/script/wz_tooltip.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/script/tip_balloon.js'/>"></script>
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="database"/>
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form commandName="command" action="databaseSettings.view" method="post">
+<form:form modelAttribute="command" action="databaseSettings.view" method="post">
     <p><fmt:message key="databasesettings.moreinfo"/></p>
 
     <table style="white-space:nowrap" class="indent">
@@ -118,8 +118,8 @@
     <p class="warning"><fmt:message key="databasettings.restartRequired"/></p>
 
     <p>
-        <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em">
+        <a href="nowPlaying.view"><input type="button" value="<fmt:message key='common.cancel'/>"></a>
     </p>
 
 </form:form>

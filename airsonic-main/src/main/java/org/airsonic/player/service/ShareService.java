@@ -96,7 +96,7 @@ public class ShareService {
         return result;
     }
 
-    public Share createShare(HttpServletRequest request, List<MediaFile> files) throws Exception {
+    public Share createShare(HttpServletRequest request, List<MediaFile> files) {
 
         Share share = new Share();
         share.setName(RandomStringUtils.random(5, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
@@ -125,7 +125,7 @@ public class ShareService {
     }
 
     public String getShareUrl(HttpServletRequest request, Share share) {
-        String shareUrl = NetworkService.getBaseUrl(request) + "/ext/share/" + share.getName();
+        String shareUrl = NetworkService.getBaseUrl(request) + "ext/share/" + share.getName();
         return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(shareUrl), share.getExpires()).build().toUriString();
     }
 

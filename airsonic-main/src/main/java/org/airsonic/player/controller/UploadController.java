@@ -31,14 +31,11 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
-import org.apache.tools.zip.ZipEntry;
-import org.apache.tools.zip.ZipFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +46,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Controller which receives uploaded files.
@@ -71,8 +70,8 @@ public class UploadController {
     private SettingsService settingsService;
     public static final String UPLOAD_STATUS = "uploadStatus";
 
-    @RequestMapping(method = { RequestMethod.POST })
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @PostMapping
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<>();
         List<File> uploadedFiles = new ArrayList<>();
@@ -122,7 +121,7 @@ public class UploadController {
 
                 if (!item.isFormField()) {
                     String fileName = item.getName();
-                    if (fileName.trim().length() > 0) {
+                    if (!fileName.trim().isEmpty()) {
 
                         File targetFile = new File(dir, new File(fileName).getName());
 
@@ -166,15 +165,16 @@ public class UploadController {
     private void unzip(File file, List<File> unzippedFiles) throws Exception {
         LOG.info("Unzipping " + file);
 
-        ZipFile zipFile = new ZipFile(file);
+        try (ZipFile zipFile = new ZipFile(file)) {
 
-        try {
-
-            Enumeration<?> entries = zipFile.getEntries();
+            Enumeration<?> entries = zipFile.entries();
 
             while (entries.hasMoreElements()) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 File entryFile = new File(file.getParentFile(), entry.getName());
+                if (!entryFile.toPath().normalize().startsWith(file.getParentFile().toPath())) {
+                    throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
+                }
 
                 if (!entry.isDirectory()) {
 
@@ -183,12 +183,10 @@ public class UploadController {
                     }
 
                     entryFile.getParentFile().mkdirs();
-                    InputStream inputStream = null;
-                    OutputStream outputStream = null;
-                    try {
-                        inputStream = zipFile.getInputStream(entry);
-                        outputStream = new FileOutputStream(entryFile);
-
+                    try (
+                            OutputStream outputStream = new FileOutputStream(entryFile);
+                            InputStream inputStream = zipFile.getInputStream(entry)
+                    ) {
                         byte[] buf = new byte[8192];
                         while (true) {
                             int n = inputStream.read(buf);
@@ -197,21 +195,14 @@ public class UploadController {
                             }
                             outputStream.write(buf, 0, n);
                         }
-
                         LOG.info("Unzipped " + entryFile);
                         unzippedFiles.add(entryFile);
-                    } finally {
-                        IOUtils.closeQuietly(inputStream);
-                        IOUtils.closeQuietly(outputStream);
                     }
                 }
             }
 
             zipFile.close();
             file.delete();
-
-        } finally {
-            zipFile.close();
         }
     }
 
@@ -231,10 +222,12 @@ public class UploadController {
             start = System.currentTimeMillis();
         }
 
+        @Override
         public void start(String fileName) {
             status.setFile(new File(fileName));
         }
 
+        @Override
         public void bytesRead(long bytesRead) {
 
             // Throttle bitrate.

@@ -45,6 +45,10 @@ public class AdvancedSettingsCommand {
     private String smtpPassword;
     private String smtpFrom;
 
+    private boolean captchaEnabled;
+    private String recaptchaSiteKey;
+    private String recaptchaSecretKey;
+
     public String getDownloadLimit() {
         return downloadLimit;
     }
@@ -166,5 +170,29 @@ public class AdvancedSettingsCommand {
 
     public void setSmtpFrom(String smtpFrom) {
         this.smtpFrom = smtpFrom;
+    }
+
+    public boolean isCaptchaEnabled() {
+        return captchaEnabled;
+    }
+
+    public void setCaptchaEnabled(boolean captchaEnabled) {
+        this.captchaEnabled = captchaEnabled;
+    }
+
+    public String getRecaptchaSiteKey() {
+        return recaptchaSiteKey;
+    }
+
+    public void setRecaptchaSiteKey(String recaptchaSiteKey) {
+        this.recaptchaSiteKey = recaptchaSiteKey;
+    }
+
+    public String getRecaptchaSecretKey() {
+        return recaptchaSecretKey;
+    }
+
+    public void setRecaptchaSecretKey(String recaptchaSecretKey) {
+        this.recaptchaSecretKey = recaptchaSecretKey;
     }
 }

@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/scripts-2.0.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
     <script type="text/javascript" language="javascript">
         function enableLastFmFields() {
@@ -14,8 +14,8 @@
 </head>
 
 <body class="mainframe bgcolor1" onload="enableLastFmFields()">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
+<script type="text/javascript" src="<c:url value='/script/wz_tooltip.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/script/tip_balloon.js'/>"></script>
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="personal"/>
@@ -27,7 +27,7 @@
 <h2>${fn:escapeXml(title)}</h2>
 
 <fmt:message key="common.default" var="defaultTitle"/>
-<form:form method="post" action="personalSettings.view" commandName="command">
+<form:form method="post" action="personalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 
@@ -207,8 +207,8 @@
     </table>
 
     <p style="padding-top:1em;padding-bottom:1em">
-        <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em"/>
-        <input type="button" value="<fmt:message key="common.cancel"/>" onclick="location.href='nowPlaying.view'">
+        <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em"/>
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key='common.cancel'/>"></a>
     </p>
 
     <h2><fmt:message key="personalsettings.avatar.title"/></h2>
@@ -220,7 +220,7 @@
             </c:url>
             <span style="white-space:nowrap;">
                 <form:radiobutton id="avatar-${avatar.id}" path="avatarId" value="${avatar.id}"/>
-                <label for="avatar-${avatar.id}"><img src="${avatarUrl}" alt="${avatar.name}" width="${avatar.width}" height="${avatar.height}" style="padding-right:2em;padding-bottom:1em"/></label>
+                <label for="avatar-${avatar.id}"><img src="${avatarUrl}" alt="${fn:escapeXml(avatar.name)}" width="${avatar.width}" height="${avatar.height}" style="padding-right:2em;padding-bottom:1em"/></label>
             </span>
         </c:forEach>
     </p>
@@ -236,7 +236,7 @@
                     <sub:param name="username" value="${command.user.username}"/>
                     <sub:param name="forceCustom" value="true"/>
                 </sub:url>
-                <img src="${avatarUrl}" alt="${command.customAvatar.name}" width="${command.customAvatar.width}" height="${command.customAvatar.height}" style="padding-right:2em"/>
+                <img src="${avatarUrl}" alt="${fn:escapeXml(command.customAvatar.name)}" width="${command.customAvatar.width}" height="${command.customAvatar.height}" style="padding-right:2em"/>
             </c:if>
         </label>
     </p>
@@ -247,7 +247,7 @@
         <tr>
             <td style="padding-right:1em"><fmt:message key="personalsettings.avatar.changecustom"/></td>
             <td style="padding-right:1em"><input type="file" id="file" name="file" size="40"/></td>
-            <td style="padding-right:1em"><input type="submit" value="<fmt:message key="personalsettings.avatar.upload"/>"/></td>
+            <td style="padding-right:1em"><input type="submit" value="<fmt:message key='personalsettings.avatar.upload'/>"/></td>
         </tr>
     </table>
 </form>

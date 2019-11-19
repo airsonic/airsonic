@@ -22,32 +22,33 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class JWTRequestParameterProcessingFilter implements Filter {
-    private static final Logger logger = LoggerFactory.getLogger(JWTRequestParameterProcessingFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JWTRequestParameterProcessingFilter.class);
     private final AuthenticationManager authenticationManager;
     private final AuthenticationFailureHandler failureHandler;
 
     protected JWTRequestParameterProcessingFilter(AuthenticationManager authenticationManager, String failureUrl) {
-        this.authenticationManager = authenticationManager; failureHandler = new SimpleUrlAuthenticationFailureHandler(failureUrl);
+        this.authenticationManager = authenticationManager;
+        failureHandler = new SimpleUrlAuthenticationFailureHandler(failureUrl);
     }
 
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-            Optional<JWTAuthenticationToken> token = findToken(request);
-            if(token.isPresent()) {
-                return authenticationManager.authenticate(token.get());
-            }
-            throw new AuthenticationServiceException("Invalid auth method");
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+        Optional<JWTAuthenticationToken> token = findToken(request);
+        if (token.isPresent()) {
+            return authenticationManager.authenticate(token.get());
+        }
+        throw new AuthenticationServiceException("Invalid auth method");
     }
 
     private static Optional<JWTAuthenticationToken> findToken(HttpServletRequest request) {
         String token = request.getParameter(JWTSecurityService.JWT_PARAM_NAME);
-        if(!StringUtils.isEmpty(token)) {
+        if (!StringUtils.isEmpty(token)) {
             return Optional.of(new JWTAuthenticationToken(AuthorityUtils.NO_AUTHORITIES, token, request.getRequestURI() + "?" + request.getQueryString()));
         }
         return Optional.empty();
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
 
     }
 
@@ -57,13 +58,13 @@ public class JWTRequestParameterProcessingFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        if(!findToken(request).isPresent()) {
+        if (!findToken(request).isPresent()) {
             chain.doFilter(req, resp);
             return;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request is to process authentication");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Request is to process authentication");
         }
 
         Authentication authResult;
@@ -77,7 +78,7 @@ public class JWTRequestParameterProcessingFilter implements Filter {
             }
         }
         catch (InternalAuthenticationServiceException failed) {
-            logger.error(
+            LOG.error(
                     "An internal error occurred while trying to authenticate the user.",
                     failed);
             unsuccessfulAuthentication(request, response, failed);
@@ -91,8 +92,8 @@ public class JWTRequestParameterProcessingFilter implements Filter {
             return;
         }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Authentication success. Updating SecurityContextHolder to contain: "
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Authentication success. Updating SecurityContextHolder to contain: "
                     + authResult);
         }
 
@@ -106,10 +107,10 @@ public class JWTRequestParameterProcessingFilter implements Filter {
             throws IOException, ServletException {
         SecurityContextHolder.clearContext();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Authentication request failed: " + failed.toString(), failed);
-            logger.debug("Updated SecurityContextHolder to contain null Authentication");
-            logger.debug("Delegating to authentication failure handler " + failureHandler);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Authentication request failed: " + failed.toString(), failed);
+            LOG.debug("Updated SecurityContextHolder to contain null Authentication");
+            LOG.debug("Delegating to authentication failure handler " + failureHandler);
         }
 
         failureHandler.onAuthenticationFailure(request, response, failed);

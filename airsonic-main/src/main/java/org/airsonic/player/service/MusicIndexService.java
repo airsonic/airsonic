@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.Collator;
 import java.util.*;
@@ -50,25 +49,24 @@ public class MusicIndexService {
      * @param folders The music folders.
      * @param refresh Whether to look for updates by checking the last-modified timestamp of the music folders.
      * @return A map from music indexes to sets of artists that are direct children of this music file.
-     * @throws IOException If an I/O error occurs.
      */
-    public SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithMediaFiles>> getIndexedArtists(List<MusicFolder> folders, boolean refresh) throws IOException {
+    public SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithMediaFiles>> getIndexedArtists(List<MusicFolder> folders, boolean refresh) {
         List<MusicIndex.SortableArtistWithMediaFiles> artists = createSortableArtists(folders, refresh);
         return sortArtists(artists);
     }
 
-    public SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithArtist>> getIndexedArtists(List<Artist> artists) throws IOException {
+    public SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithArtist>> getIndexedArtists(List<Artist> artists) {
         List<MusicIndex.SortableArtistWithArtist> sortableArtists = createSortableArtists(artists);
         return sortArtists(sortableArtists);
     }
 
-    public MusicFolderContent getMusicFolderContent(List<MusicFolder> musicFoldersToUse, boolean refresh) throws Exception {
+    public MusicFolderContent getMusicFolderContent(List<MusicFolder> musicFoldersToUse, boolean refresh) {
         SortedMap<MusicIndex, List<MusicIndex.SortableArtistWithMediaFiles>> indexedArtists = getIndexedArtists(musicFoldersToUse, refresh);
         List<MediaFile> singleSongs = getSingleSongs(musicFoldersToUse, refresh);
         return new MusicFolderContent(indexedArtists, singleSongs);
     }
 
-    private List<MediaFile> getSingleSongs(List<MusicFolder> folders, boolean refresh) throws IOException {
+    private List<MediaFile> getSingleSongs(List<MusicFolder> folders, boolean refresh) {
         List<MediaFile> result = new ArrayList<MediaFile>();
         for (MusicFolder folder : folders) {
             MediaFile parent = mediaFileService.getMediaFile(folder.getPath(), !refresh);
@@ -98,11 +96,7 @@ public class MusicIndexService {
 
         for (T artist : artists) {
             MusicIndex index = getIndex(artist, indexes);
-            List<T> artistSet = result.get(index);
-            if (artistSet == null) {
-                artistSet = new ArrayList<T>();
-                result.put(index, artistSet);
-            }
+            List<T> artistSet = result.computeIfAbsent(index, k -> new ArrayList<T>());
             artistSet.add(artist);
         }
 
@@ -161,7 +155,7 @@ public class MusicIndexService {
         return result;
     }
 
-    private List<MusicIndex.SortableArtistWithMediaFiles> createSortableArtists(List<MusicFolder> folders, boolean refresh) throws IOException {
+    private List<MusicIndex.SortableArtistWithMediaFiles> createSortableArtists(List<MusicFolder> folders, boolean refresh) {
         String[] ignoredArticles = settingsService.getIgnoredArticlesAsArray();
         String[] shortcuts = settingsService.getShortcutsAsArray();
         SortedMap<String, MusicIndex.SortableArtistWithMediaFiles> artistMap = new TreeMap<String, MusicIndex.SortableArtistWithMediaFiles>();
@@ -265,13 +259,7 @@ public class MusicIndexService {
                 indexB = Integer.MAX_VALUE;
             }
 
-            if (indexA < indexB) {
-                return -1;
-            }
-            if (indexA > indexB) {
-                return 1;
-            }
-            return 0;
+            return Integer.compare(indexA, indexB);
         }
     }
 }

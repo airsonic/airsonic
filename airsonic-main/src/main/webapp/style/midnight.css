@@ -4,7 +4,8 @@
  * Author: Sindre Mehus
  */
 
-@import "default-without-mediaelement-light.css";
+@import "default-without-mediaelement.css";
+@import "mediaelement-dark.css";
 
 /* The primary background color. */
 .bgcolor1, table.music tr:nth-of-type(even) {
@@ -42,6 +43,13 @@ a:hover, a:hover * {
     color: orange;
 }
 
+/* Disabled links color and behavior */
+a.disabled, a.disabled span, span.disabled {
+    cursor: default;
+    text-decoration: none;
+    color: #999;
+}
+
 /* Color for warning messages. */
 .warning {
     color: orange;
@@ -65,7 +73,4 @@ body {
 
 .back {
     background-image:url("../icons/default_dark/back.png");
-}
-.forward {
-    background-image:url("../icons/default_dark/forward.png");
 }

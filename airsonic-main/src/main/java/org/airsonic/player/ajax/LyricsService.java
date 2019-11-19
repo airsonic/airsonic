@@ -21,16 +21,18 @@ package org.airsonic.player.ajax;
 
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.Namespace;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.StringReader;
 import java.net.SocketException;
+
+import static org.airsonic.player.util.XMLUtil.createSAXBuilder;
 
 /**
  * Provides AJAX-enabled services for retrieving song lyrics from chartlyrics.com.
@@ -61,7 +65,7 @@ public class LyricsService {
      * @return The lyrics, never <code>null</code> .
      */
     public LyricsInfo getLyrics(String artist, String song) {
-    	LyricsInfo lyrics = new LyricsInfo();
+        LyricsInfo lyrics = new LyricsInfo();
         try {
 
             artist = StringUtil.urlEncode(artist);
@@ -71,7 +75,13 @@ public class LyricsService {
             String xml = executeGetRequest(url);
             lyrics = parseSearchResult(xml);
 
-        } catch (SocketException x) {
+        } catch (HttpResponseException x) {
+            LOG.warn("Failed to get lyrics for song '{}'. Request failed: {}", song, x.toString());
+            if (x.getStatusCode() == 503) {
+                lyrics.setTryLater(true);
+            }
+        } catch (SocketException | ConnectTimeoutException x) {
+            LOG.warn("Failed to get lyrics for song '{}': {}", song, x.toString());
             lyrics.setTryLater(true);
         } catch (Exception x) {
             LOG.warn("Failed to get lyrics for song '" + song + "'.", x);
@@ -80,7 +90,7 @@ public class LyricsService {
     }
 
     private LyricsInfo parseSearchResult(String xml) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
+        SAXBuilder builder = createSAXBuilder();
         Document document = builder.build(new StringReader(xml));
 
         Element root = document.getRootElement();

@@ -29,9 +29,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -56,8 +58,8 @@ public class PlayerSettingsController  {
     @Autowired
     private TranscodingService transcodingService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    protected String displayForm() throws Exception {
+    @GetMapping
+    protected String displayForm() {
         return "playerSettings";
     }
 
@@ -70,7 +72,7 @@ public class PlayerSettingsController  {
         User user = securityService.getCurrentUser(request);
         PlayerSettingsCommand command = new PlayerSettingsCommand();
         Player player = null;
-        String playerId = request.getParameter("id");
+        Integer playerId = ServletRequestUtils.getIntParameter(request, "id");
         if (playerId != null) {
             player = playerService.getPlayerById(playerId);
         } else if (!players.isEmpty()) {
@@ -105,29 +107,33 @@ public class PlayerSettingsController  {
         command.setAdmin(user.isAdminRole());
 
         command.setJavaJukeboxMixers(Arrays.stream(AudioSystemUtils.listAllMixers()).map(info -> info.getName()).toArray(String[]::new));
-        command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
-
+        if (player != null) {
+            command.setJavaJukeboxMixer(player.getJavaJukeboxMixer());
+        }
         model.addAttribute("command",command);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    @PostMapping
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) {
         Player player = playerService.getPlayerById(command.getPlayerId());
+        if (player != null) {
+            player.setAutoControlEnabled(command.isAutoControlEnabled());
+            player.setM3uBomEnabled(command.isM3uBomEnabled());
+            player.setDynamicIp(command.isDynamicIp());
+            player.setName(StringUtils.trimToNull(command.getName()));
+            player.setTranscodeScheme(TranscodeScheme.valueOf(command.getTranscodeSchemeName()));
+            player.setTechnology(PlayerTechnology.valueOf(command.getTechnologyName()));
+            player.setJavaJukeboxMixer(command.getJavaJukeboxMixer());
 
-        player.setAutoControlEnabled(command.isAutoControlEnabled());
-        player.setM3uBomEnabled(command.isM3uBomEnabled());
-        player.setDynamicIp(command.isDynamicIp());
-        player.setName(StringUtils.trimToNull(command.getName()));
-        player.setTranscodeScheme(TranscodeScheme.valueOf(command.getTranscodeSchemeName()));
-        player.setTechnology(PlayerTechnology.valueOf(command.getTechnologyName()));
-        player.setJavaJukeboxMixer(command.getJavaJukeboxMixer());
+            playerService.updatePlayer(player);
+            transcodingService.setTranscodingsForPlayer(player, command.getActiveTranscodingIds());
 
-        playerService.updatePlayer(player);
-        transcodingService.setTranscodingsForPlayer(player, command.getActiveTranscodingIds());
-
-        redirectAttributes.addFlashAttribute("settings_reload", true);
-        redirectAttributes.addFlashAttribute("settings_toast", true);
-        return "redirect:playerSettings.view";
+            redirectAttributes.addFlashAttribute("settings_reload", true);
+            redirectAttributes.addFlashAttribute("settings_toast", true);
+            return "redirect:playerSettings.view";
+        } else {
+            return "redirect:notFound";
+        }
     }
 
     private List<Player> getPlayers(HttpServletRequest request) {
@@ -145,11 +151,11 @@ public class PlayerSettingsController  {
         return authorizedPlayers;
     }
 
-    private void handleRequestParameters(HttpServletRequest request) {
+    private void handleRequestParameters(HttpServletRequest request) throws Exception {
         if (request.getParameter("delete") != null) {
-            playerService.removePlayerById(request.getParameter("delete"));
+            playerService.removePlayerById(ServletRequestUtils.getIntParameter(request, "delete"));
         } else if (request.getParameter("clone") != null) {
-            playerService.clonePlayer(request.getParameter("clone"));
+            playerService.clonePlayer(ServletRequestUtils.getIntParameter(request, "clone"));
         }
     }
 

@@ -21,8 +21,6 @@ package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MusicFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +36,6 @@ import java.util.*;
  */
 @Repository
 public class ArtistDao extends AbstractDao {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ArtistDao.class);
     private static final String INSERT_COLUMNS = "name, cover_art_path, album_count, last_scanned, present, folder_id";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
@@ -66,10 +62,9 @@ public class ArtistDao extends AbstractDao {
         if (musicFolders.isEmpty()) {
             return null;
         }
-        Map<String, Object> args = new HashMap<String, Object>() {{
-            put("name", artistName);
-            put("folders", MusicFolder.toIdList(musicFolders));
-        }};
+        Map<String, Object> args = new HashMap<>();
+        args.put("name", artistName);
+        args.put("folders", MusicFolder.toIdList(musicFolders));
 
         return namedQueryOne("select " + QUERY_COLUMNS + " from artist where name = :name and folder_id in (:folders)",
                              rowMapper, args);
@@ -123,11 +118,10 @@ public class ArtistDao extends AbstractDao {
         if (musicFolders.isEmpty()) {
             return Collections.emptyList();
         }
-        Map<String, Object> args = new HashMap<String, Object>() {{
-            put("folders", MusicFolder.toIdList(musicFolders));
-            put("count", count);
-            put("offset", offset);
-        }};
+        Map<String, Object> args = new HashMap<>();
+        args.put("folders", MusicFolder.toIdList(musicFolders));
+        args.put("count", count);
+        args.put("offset", offset);
 
         return namedQuery("select " + QUERY_COLUMNS + " from artist where present and folder_id in (:folders) " +
                           "order by name limit :count offset :offset", rowMapper, args);
@@ -147,12 +141,11 @@ public class ArtistDao extends AbstractDao {
         if (musicFolders.isEmpty()) {
             return Collections.emptyList();
         }
-        Map<String, Object> args = new HashMap<String, Object>() {{
-            put("folders", MusicFolder.toIdList(musicFolders));
-            put("username", username);
-            put("count", count);
-            put("offset", offset);
-        }};
+        Map<String, Object> args = new HashMap<>();
+        args.put("folders", MusicFolder.toIdList(musicFolders));
+        args.put("username", username);
+        args.put("count", count);
+        args.put("offset", offset);
 
         return namedQuery("select " + prefix(QUERY_COLUMNS, "artist") + " from starred_artist, artist " +
                           "where artist.id = starred_artist.artist_id and " +
@@ -163,17 +156,21 @@ public class ArtistDao extends AbstractDao {
     }
 
     public void markPresent(String artistName, Date lastScanned) {
-        update("update artist set present=?, last_scanned=? where name=?", true, lastScanned, artistName);
+        update("update artist set present=?, last_scanned = ? where name=?", true, lastScanned, artistName);
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from artist where last_scanned != ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from artist where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from artist where last_scanned < ? and present", 0, lastScanned);
+        int maxId = queryForInt("select max(id) from artist where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("update artist set present=false where id between ? and ? and last_scanned != ? and present", id, id + batchSize, lastScanned);
+            update("update artist set present=false where id between ? and ? and last_scanned < ? and present", id, id + batchSize, lastScanned);
         }
+    }
+
+    public List<Integer> getExpungeCandidates() {
+        return queryForInts("select id from artist where not present");
     }
 
     public void expunge() {

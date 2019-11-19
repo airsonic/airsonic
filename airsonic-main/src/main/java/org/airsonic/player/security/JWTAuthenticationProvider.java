@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class JWTAuthenticationProvider implements AuthenticationProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationProvider.class);
 
     private final String jwtKey;
 
@@ -34,8 +34,8 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
         JWTAuthenticationToken authentication = (JWTAuthenticationToken) auth;
-        if(authentication.getCredentials() == null || !(authentication.getCredentials() instanceof String)) {
-            logger.error("Credentials not present");
+        if (authentication.getCredentials() == null || !(authentication.getCredentials() instanceof String)) {
+            LOG.error("Credentials not present");
             return null;
         }
         String rawToken = (String) auth.getCredentials();
@@ -44,11 +44,9 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
         authentication.setAuthenticated(true);
 
         // TODO:AD This is super unfortunate, but not sure there is a better way when using JSP
-        if(StringUtils.contains(authentication.getRequestedPath(), "/WEB-INF/jsp/")) {
-            logger.warn("BYPASSING AUTH FOR WEB-INF page");
-        } else
-
-        if(!roughlyEqual(path.asString(), authentication.getRequestedPath())) {
+        if (StringUtils.contains(authentication.getRequestedPath(), "/WEB-INF/jsp/")) {
+            LOG.warn("BYPASSING AUTH FOR WEB-INF page");
+        } else if (!roughlyEqual(path.asString(), authentication.getRequestedPath())) {
             throw new InsufficientAuthenticationException("Credentials not valid for path " + authentication
                     .getRequestedPath() + ". They are valid for " + path.asString());
         }
@@ -60,17 +58,17 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
     }
 
     private static boolean roughlyEqual(String expectedRaw, String requestedPathRaw) {
-        logger.debug("Comparing expected [{}] vs requested [{}]", expectedRaw, requestedPathRaw);
-        if(StringUtils.isEmpty(expectedRaw)) {
-            logger.debug("False: empty expected");
+        LOG.debug("Comparing expected [{}] vs requested [{}]", expectedRaw, requestedPathRaw);
+        if (StringUtils.isEmpty(expectedRaw)) {
+            LOG.debug("False: empty expected");
             return false;
         }
         try {
             UriComponents expected = UriComponentsBuilder.fromUriString(expectedRaw).build();
             UriComponents requested = UriComponentsBuilder.fromUriString(requestedPathRaw).build();
 
-            if(!Objects.equals(expected.getPath(), requested.getPath())) {
-                logger.debug("False: expected path [{}] does not match requested path [{}]",
+            if (!Objects.equals(expected.getPath(), requested.getPath())) {
+                LOG.debug("False: expected path [{}] does not match requested path [{}]",
                         expected.getPath(), requested.getPath());
                 return false;
             }
@@ -78,16 +76,16 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
             MapDifference<String, List<String>> difference = Maps.difference(expected.getQueryParams(),
                     requested.getQueryParams());
 
-            if(difference.entriesDiffering().size() != 0 ||
-                    difference.entriesOnlyOnLeft().size() != 0 ||
+            if (!difference.entriesDiffering().isEmpty() ||
+                    !difference.entriesOnlyOnLeft().isEmpty() ||
                     difference.entriesOnlyOnRight().size() != 1 ||
                     difference.entriesOnlyOnRight().get(JWTSecurityService.JWT_PARAM_NAME) == null) {
-                logger.debug("False: expected query params [{}] do not match requested query params [{}]", expected.getQueryParams(), requested.getQueryParams());
+                LOG.debug("False: expected query params [{}] do not match requested query params [{}]", expected.getQueryParams(), requested.getQueryParams());
                 return false;
             }
 
-        } catch(Exception e) {
-            logger.warn("Exception encountered while comparing paths", e);
+        } catch (Exception e) {
+            LOG.warn("Exception encountered while comparing paths", e);
             return false;
         }
         return true;

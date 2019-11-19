@@ -24,17 +24,20 @@ import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
 import org.airsonic.player.service.metadata.JaudiotaggerParser;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.jaudiotagger.tag.images.Artwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.annotation.PostConstruct;
@@ -57,7 +60,7 @@ import java.util.concurrent.Semaphore;
  * @author Sindre Mehus
  */
 @Controller
-@RequestMapping(value = {"/coverArt", "/ext/coverArt"})
+@RequestMapping({"/coverArt", "/ext/coverArt"})
 public class CoverArtController implements LastModified {
 
     public static final String ALBUM_COVERART_PREFIX = "al-";
@@ -96,11 +99,11 @@ public class CoverArtController implements LastModified {
         return coverArtRequest.lastModified();
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         CoverArtRequest coverArtRequest = createCoverArtRequest(request);
-//        LOG.info("handleRequest - " + coverArtRequest);
+        LOG.trace("handleRequest - " + coverArtRequest);
         Integer size = ServletRequestUtils.getIntParameter(request, "size");
 
         // Send fallback image if no ID is given. (No need to cache it, since it will be cached in browser.)
@@ -109,21 +112,22 @@ public class CoverArtController implements LastModified {
             return;
         }
 
-        // Optimize if no scaling is required.
-        if (size == null && coverArtRequest.getCoverArt() != null) {
-//            LOG.info("sendUnscaled - " + coverArtRequest);
-            sendUnscaled(coverArtRequest, response);
-            return;
-        }
-
-        // Send cached image, creating it if necessary.
-        if (size == null) {
-            size = CoverArtScheme.LARGE.getSize() * 2;
-        }
         try {
+            // Optimize if no scaling is required.
+            if (size == null && coverArtRequest.getCoverArt() != null) {
+                LOG.trace("sendUnscaled - " + coverArtRequest);
+                sendUnscaled(coverArtRequest, response);
+                return;
+            }
+
+            // Send cached image, creating it if necessary.
+            if (size == null) {
+                size = CoverArtScheme.LARGE.getSize() * 2;
+            }
             File cachedImage = getCachedImage(coverArtRequest, size);
             sendImage(cachedImage, response);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LOG.debug("Sending fallback as an exception was encountered during normal cover art processing", e);
             sendFallback(size, response);
         }
 
@@ -194,7 +198,7 @@ public class CoverArtController implements LastModified {
         try {
             IOUtils.copy(in, response.getOutputStream());
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -211,21 +215,20 @@ public class CoverArtController implements LastModified {
             }
             ImageIO.write(image, "jpeg", response.getOutputStream());
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
     private void sendUnscaled(CoverArtRequest coverArtRequest, HttpServletResponse response) throws IOException {
         File file = coverArtRequest.getCoverArt();
-        if (!jaudiotaggerParser.isApplicable(file)) {
-            response.setContentType(StringUtil.getMimeType(FilenameUtils.getExtension(file.getName())));
-        }
         InputStream in = null;
         try {
-            in = getImageInputStream(file);
+            Pair<InputStream, String> imageInputStreamWithType = getImageInputStreamWithType(file);
+            in = imageInputStreamWithType.getLeft();
+            response.setContentType(imageInputStreamWithType.getRight());
             IOUtils.copy(in, response.getOutputStream());
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -253,13 +256,13 @@ public class CoverArtController implements LastModified {
                 } catch (Throwable x) {
                     // Delete corrupt (probably empty) thumbnail cache.
                     LOG.warn("Failed to create thumbnail for " + request, x);
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                     cachedImage.delete();
                     throw new IOException("Failed to create thumbnail for " + request + ". " + x.getMessage());
 
                 } finally {
                     semaphore.release();
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                 }
             } else {
 //                LOG.info("Cache HIT - " + request + " (" + size + ")");
@@ -273,12 +276,34 @@ public class CoverArtController implements LastModified {
      * the embedded album art is returned.
      */
     private InputStream getImageInputStream(File file) throws IOException {
+        return getImageInputStreamWithType(file).getLeft();
+    }
+
+    /**
+     * Returns an input stream to the image in the given file.  If the file is an audio file,
+     * the embedded album art is returned. In addition returns the mime type
+     */
+    private Pair<InputStream, String> getImageInputStreamWithType(File file) throws IOException {
+        InputStream is;
+        String mimeType;
         if (jaudiotaggerParser.isApplicable(file)) {
+            LOG.trace("Using Jaudio Tagger for reading artwork from {}", file);
             MediaFile mediaFile = mediaFileService.getMediaFile(file);
-            return new ByteArrayInputStream(jaudiotaggerParser.getImageData(mediaFile));
+            Artwork artwork;
+            try {
+                LOG.trace("Reading artwork from file {}", mediaFile);
+                artwork = jaudiotaggerParser.getArtwork(mediaFile);
+                is = new ByteArrayInputStream(artwork.getBinaryData());
+                mimeType = artwork.getMimeType();
+            } catch (Exception e) {
+                LOG.debug("Could not read artwork from file {}", mediaFile);
+                throw new RuntimeException(e);
+            }
         } else {
-            return new FileInputStream(file);
+            is =  new FileInputStream(file);
+            mimeType = StringUtil.getMimeType(FilenameUtils.getExtension(file.getName()));
         }
+        return Pair.of(is, mimeType);
     }
 
     private InputStream getImageInputStreamForVideo(MediaFile mediaFile, int width, int height, int offset) throws Exception {
@@ -355,13 +380,26 @@ public class CoverArtController implements LastModified {
         public BufferedImage createImage(int size) {
             if (coverArt != null) {
                 InputStream in = null;
+                String reason = null;
                 try {
                     in = getImageInputStream(coverArt);
-                    return scale(ImageIO.read(in), size, size);
+                    if (in == null) {
+                        reason = "getImageInputStream";
+                    }
+                    else {
+                        BufferedImage bimg = ImageIO.read(in);
+                        if (bimg == null) {
+                            reason = "ImageIO.read";
+                        }
+                        else {
+                            return scale(bimg, size, size);
+                        }
+                    }
+                    LOG.warn("Failed to process cover art " + coverArt + ": " + reason + " failed");
                 } catch (Throwable x) {
                     LOG.warn("Failed to process cover art " + coverArt + ": " + x, x);
                 } finally {
-                    IOUtils.closeQuietly(in);
+                    FileUtil.closeQuietly(in);
                 }
             }
             return createAutoCover(size, size);
@@ -604,14 +642,14 @@ public class CoverArtController implements LastModified {
             try {
                 in = getImageInputStreamForVideo(mediaFile, width, height, offset);
                 BufferedImage result = ImageIO.read(in);
-                if (result == null) {
-                    throw new NullPointerException();
+                if (result != null) {
+                    return result;
                 }
-                return result;
+                LOG.warn("Failed to process cover art for " + mediaFile + ": {}", result);
             } catch (Throwable x) {
                 LOG.warn("Failed to process cover art for " + mediaFile + ": " + x, x);
             } finally {
-                IOUtils.closeQuietly(in);
+                FileUtil.closeQuietly(in);
             }
             return createAutoCover(width, height);
         }

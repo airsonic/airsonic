@@ -22,8 +22,8 @@ package org.airsonic.player.domain;
 import junit.framework.TestCase;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Unit test of {@link PlayQueue}.
@@ -40,7 +40,7 @@ public class PlayQueueTestCase extends TestCase {
         assertNull(playQueue.getCurrentFile());
     }
 
-    public void testStatus() throws Exception {
+    public void testStatus() {
         PlayQueue playQueue = new PlayQueue();
         assertEquals(PlayQueue.Status.PLAYING, playQueue.getStatus());
 
@@ -54,7 +54,7 @@ public class PlayQueueTestCase extends TestCase {
         assertEquals(PlayQueue.Status.PLAYING, playQueue.getStatus());
     }
 
-    public void testMoveUp() throws Exception {
+    public void testMoveUp() {
         PlayQueue playQueue = createPlaylist(0, "A", "B", "C", "D");
         playQueue.moveUp(0);
         assertPlaylistEquals(playQueue, 0, "A", "B", "C", "D");
@@ -72,7 +72,7 @@ public class PlayQueueTestCase extends TestCase {
         assertPlaylistEquals(playQueue, 2, "A", "B", "D", "C");
     }
 
-    public void testMoveDown() throws Exception {
+    public void testMoveDown() {
         PlayQueue playQueue = createPlaylist(0, "A", "B", "C", "D");
         playQueue.moveDown(0);
         assertPlaylistEquals(playQueue, 1, "B", "A", "C", "D");
@@ -90,7 +90,7 @@ public class PlayQueueTestCase extends TestCase {
         assertPlaylistEquals(playQueue, 3, "A", "B", "C", "D");
     }
 
-    public void testRemove() throws Exception {
+    public void testRemove() {
         PlayQueue playQueue = createPlaylist(0, "A", "B", "C", "D");
         playQueue.removeFileAt(0);
         assertPlaylistEquals(playQueue, 0, "B", "C", "D");
@@ -116,7 +116,7 @@ public class PlayQueueTestCase extends TestCase {
         assertPlaylistEquals(playQueue, -1);
     }
 
-    public void testNext() throws Exception {
+    public void testNext() {
         PlayQueue playQueue = createPlaylist(0, "A", "B", "C");
         assertFalse(playQueue.isRepeatEnabled());
         playQueue.next();
@@ -137,7 +137,7 @@ public class PlayQueueTestCase extends TestCase {
         assertPlaylistEquals(playQueue, 0, "A", "B", "C");
     }
 
-    public void testPlayAfterEndReached() throws Exception {
+    public void testPlayAfterEndReached() {
         PlayQueue playQueue = createPlaylist(2, "A", "B", "C");
         playQueue.setStatus(PlayQueue.Status.PLAYING);
         playQueue.next();
@@ -150,7 +150,7 @@ public class PlayQueueTestCase extends TestCase {
         assertEquals("A", playQueue.getCurrentFile().getName());
     }
 
-    public void testPlayLast() throws Exception {
+    public void testPlayLast() {
         PlayQueue playQueue = createPlaylist(1, "A", "B", "C");
 
         playQueue.addFiles(true, new TestMediaFile("D"));
@@ -160,7 +160,7 @@ public class PlayQueueTestCase extends TestCase {
         assertPlaylistEquals(playQueue, 0, "E");
     }
 
-    public void testAddFilesAt() throws Exception {
+    public void testAddFilesAt() {
         PlayQueue playQueue = createPlaylist(0);
 
         playQueue.addFilesAt(Arrays.<MediaFile>asList(new TestMediaFile("A"), new TestMediaFile("B"), new TestMediaFile("C")), 0);
@@ -174,7 +174,7 @@ public class PlayQueueTestCase extends TestCase {
 
     }
 
-    public void testUndo() throws Exception {
+    public void testUndo() {
         PlayQueue playQueue = createPlaylist(0, "A", "B", "C");
         playQueue.setIndex(2);
         playQueue.undo();
@@ -201,7 +201,7 @@ public class PlayQueueTestCase extends TestCase {
         assertPlaylistEquals(playQueue, 0, "A", "B", "C");
     }
 
-    public void testOrder() throws IOException {
+    public void testOrder() {
         PlayQueue playQueue = new PlayQueue();
         playQueue.addFiles(true, new TestMediaFile(2, "Artist A", "Album B"));
         playQueue.addFiles(true, new TestMediaFile(1, "Artist C", "Album C"));
@@ -248,7 +248,7 @@ public class PlayQueueTestCase extends TestCase {
         }
     }
 
-    private PlayQueue createPlaylist(int index, String... songs) throws Exception {
+    private PlayQueue createPlaylist(int index, String... songs) {
         PlayQueue playQueue = new PlayQueue();
         for (String song : songs) {
             playQueue.addFiles(true, new TestMediaFile(song));
@@ -320,6 +320,11 @@ public class PlayQueueTestCase extends TestCase {
         @Override
         public boolean equals(Object o) {
             return this == o;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, track, album, artist);
         }
     }
 }

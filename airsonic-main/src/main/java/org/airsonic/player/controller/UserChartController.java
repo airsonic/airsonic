@@ -22,7 +22,7 @@ package org.airsonic.player.controller;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.service.SecurityService;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.AxisLocation;
 import org.jfree.chart.axis.CategoryAxis;
@@ -35,8 +35,8 @@ import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +61,7 @@ public class UserChartController extends AbstractChartController {
     public static final int IMAGE_MIN_HEIGHT = 200;
     private static final long BYTES_PER_MB = 1024L * 1024L;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String type = request.getParameter("type");
         CategoryDataset dataset = createDataset(type);
@@ -69,7 +69,7 @@ public class UserChartController extends AbstractChartController {
 
         int imageHeight = Math.max(IMAGE_MIN_HEIGHT, 15 * dataset.getColumnCount());
 
-        ChartUtilities.writeChartAsPNG(response.getOutputStream(), chart, IMAGE_WIDTH, imageHeight);
+        ChartUtils.writeChartAsPNG(response.getOutputStream(), chart, IMAGE_WIDTH, imageHeight);
         return null;
     }
 

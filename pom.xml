@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.airsonic.player</groupId>
     <artifactId>airsonic</artifactId>
-    <version>10.1.0-SNAPSHOT</version>
+    <version>10.6.0-SNAPSHOT</version>
     <name>Airsonic</name>
     <packaging>pom</packaging>
     <organization>
@@ -15,8 +15,8 @@
 
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
-        <project.build.sourceEncoding>iso-8859-1</project.build.sourceEncoding>
-        <cxf.version>3.1.12</cxf.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <cxf.version>3.3.3</cxf.version>
     </properties>
 
     <repositories>
@@ -26,19 +26,16 @@
             <url>file://${project.basedir}/../repo</url>
         </repository>
         <repository>
-            <id>java_net</id>
-            <name>download.java.net</name>
-            <url>http://download.java.net/maven/2/</url>
-        </repository>
-        <repository>
-            <id>teleal</id>
-            <name>teleal</name>
-            <url>http://teleal.org/m2</url>
-        </repository>
-        <repository>
             <id>jaudiotagger-repository</id>
             <url>https://dl.bintray.com/ijabz/maven</url>
         </repository>
+        <repository>
+          <id>4thline-repo</id>
+          <url>http://4thline.org/m2</url>
+          <snapshots>
+              <enabled>false</enabled>
+          </snapshots>
+      </repository>
     </repositories>
 
     <pluginRepositories>
@@ -86,15 +83,14 @@
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>1.5.6.RELEASE</version>
+                <version>1.5.22.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <!-- Cannot use 3.5.3/2 due to https://liquibase.jira.com/browse/CORE-2944 -->
-                <version>3.5.1</version>
+                <version>3.6.3</version>
             </dependency>
 
             <!-- Fix convergence issues -->
@@ -106,7 +102,80 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.3.2</version>
+                <version>3.8.1</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.10.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>27.1-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.10.5</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.staxex</groupId>
+                <artifactId>stax-ex</artifactId>
+                <version>1.8.1</version>
+            </dependency>
+
+
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-core</artifactId>
+                <version>2.3.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.ws</groupId>
+                <artifactId>jaxws-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.soap</groupId>
+                <artifactId>javax.xml.soap-api</artifactId>
+                <version>1.4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.jws</groupId>
+                <artifactId>javax.jws-api</artifactId>
+                <version>1.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -117,12 +186,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.8.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.6</version>
+                    <version>3.1.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -132,7 +201,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>3.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -147,10 +216,11 @@
                 <plugin>
                     <groupId>org.jvnet.jaxb2.maven2</groupId>
                     <artifactId>maven-jaxb2-plugin</artifactId>
-                    <version>0.13.1</version>
+                    <version>0.14.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
+                    <version>3.2.2</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                         <archive>
@@ -163,14 +233,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.17</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>7.4</version>
-                        </dependency>
-                    </dependencies>
+                    <version>3.1.0</version>
                     <executions>
                         <execution>
                             <id>validate</id>
@@ -180,6 +243,31 @@
                                 <encoding>UTF-8</encoding>
                                 <consoleOutput>true</consoleOutput>
                                 <failOnViolation>true</failOnViolation>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            </configuration>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.airsonic</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>1.0-RELEASE</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>3.12.0</version>
+                    <executions>
+                        <execution>
+                            <id>validate</id>
+                            <phase>validate</phase>
+                            <configuration>
+                                <sourceEncoding>utf-8</sourceEncoding>
                             </configuration>
                             <goals>
                                 <goal>check</goal>
@@ -187,18 +275,71 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>5.2.2</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
+                        <suppressionFiles>
+                            <suppressionFile>${project.basedir}/cve-suppressed.xml</suppressionFile>
+                        </suppressionFiles>
+                        <!-- disabled due to the poor quality of the data from this analyzer -->
+                        <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>run-dependency-checker</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.0</version>
+                        <configuration>
+                            <!-- #1186 Temporarily skip a test. -->
+                            <excludes>
+                                <exclude>org.airsonic.player.service.search.*TestCase.java</exclude>
+                            </excludes>
+                        </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>net.nicoulaj.maven.plugins</groupId>
+                    <artifactId>checksum-maven-plugin</artifactId>
+                    <version>1.8</version>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>artifacts</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <algorithms>
+                            <algorithm>SHA-256</algorithm>
+                        </algorithms>
+                        <individualFiles>false</individualFiles>
+                        <shasumSummary>true</shasumSummary>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <encoding>ISO-8859-1</encoding>
+                    <encoding>UTF-8</encoding>
                     <verbose>false</verbose>
                     <compilerVersion>1.8</compilerVersion>
                     <showWarnings>true</showWarnings>
@@ -208,7 +349,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.10</version>
                 <executions>
                     <execution>
                         <id>analyze</id>
@@ -223,6 +363,8 @@
                                 <ignoredUsedUndeclaredDependency>org.springframework.security:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.springframework.boot:*</ignoredUsedUndeclaredDependency>
                                 <ignoredUsedUndeclaredDependency>org.apache.tomcat.embed:tomcat-embed-core*</ignoredUsedUndeclaredDependency>
+                                <ignoredUsedUndeclaredDependency>org.apache.tomcat:tomcat-annotations-api:*</ignoredUsedUndeclaredDependency>
+                                <ignoredUsedUndeclaredDependency>org.apache.tomcat.embed:tomcat-embed-el*</ignoredUsedUndeclaredDependency>
                             </ignoredUsedUndeclaredDependencies>
                             <ignoredUnusedDeclaredDependencies>
                                 <ignoredUnusedDeclaredDependency>com.sun.mail:javax.mail*</ignoredUnusedDeclaredDependency>
@@ -240,7 +382,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.0.0-M2</version>
                 <inherited>true</inherited>
                 <executions>
                     <execution>
@@ -267,6 +409,16 @@
                 <module>airsonic-sonos-api</module>
                 <module>airsonic-main</module>
                 <module>install/docker</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <modules>
+                <module>subsonic-rest-api</module>
+                <module>airsonic-sonos-api</module>
+                <module>airsonic-main</module>
+                <module>install/docker</module>
+                <module>integration-test</module>
             </modules>
         </profile>
     </profiles>

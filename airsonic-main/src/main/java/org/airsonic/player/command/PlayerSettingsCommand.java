@@ -34,7 +34,7 @@ import java.util.List;
  * @author Sindre Mehus
  */
 public class PlayerSettingsCommand {
-    private String playerId;
+    private Integer playerId;
     private String name;
     private String description;
     private String type;
@@ -55,11 +55,11 @@ public class PlayerSettingsCommand {
     private String javaJukeboxMixer;
     private String[] javaJukeboxMixers;
 
-    public String getPlayerId() {
+    public Integer getPlayerId() {
         return playerId;
     }
 
-    public void setPlayerId(String playerId) {
+    public void setPlayerId(Integer playerId) {
         this.playerId = playerId;
     }
 

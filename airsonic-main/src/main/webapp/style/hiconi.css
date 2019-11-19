@@ -4,7 +4,8 @@
  * Author: Jeebs (Fisher Evans)
  */
 
-@import "default-without-mediaelement-light.css";
+@import "default-without-mediaelement.css";
+@import "mediaelement-dark.css";
 
 table {
 	color: #a3a3a3;
@@ -48,6 +49,13 @@ a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
 a:hover, a:hover * {
     text-decoration: underline;
     color: #a3a3a3;
+}
+
+/* Disabled links color and behavior */
+a.disabled, a.disabled span, span.disabled {
+    cursor: default;
+    text-decoration: none;
+    color: #999;
 }
 
 /* Color for warning messages. */

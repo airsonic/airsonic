@@ -9,12 +9,12 @@
     <parent>
         <groupId>org.airsonic.player</groupId>
         <artifactId>airsonic</artifactId>
-        <version>10.1.0-SNAPSHOT</version>
+        <version>10.6.0-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <metrics.version>3.1.0</metrics.version>
-        <chameleon.version>1.2.0-RELEASE</chameleon.version>
+        <chameleon.version>1.2.1-RELEASE</chameleon.version>
+        <tomcat.server.scope>provided</tomcat.server.scope>
     </properties>
 
     <dependencies>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.github.biconou</groupId>
             <artifactId>AudioPlayer</artifactId>
-            <version>0.2.3</version>
+            <version>0.2.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -57,7 +57,6 @@
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>${metrics.version}</version>
         </dependency>
         <!-- END Metrics -->
 
@@ -75,7 +74,7 @@
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
-            <version>2.3.1</version>
+            <version>2.3.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -87,13 +86,23 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-ldap</artifactId>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>3.1.0</version>
+            <version>3.8.3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.ldap</groupId>
@@ -122,51 +131,83 @@
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>3.0.3</version>
+            <version>8.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-analyzers-common</artifactId>
+            <version>8.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- connection pool manager, fixes #860 (external database performance) -->  
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.5.0</version>
+            <scope>runtime</scope>
+            <!-- this wants to pull in commons-logging v1.2 which conflicts with other dependencies -->
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>2.1_3</version>
-            <scope>runtime</scope>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
 
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.2</version>
+            <version>1.3.3</version>
         </dependency>
 
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
         </dependency>
 
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.5</version>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.1</version>
+            <version>2.6</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
         </dependency>
+		<dependency>
+			<groupId>org.checkerframework</groupId>
+			<artifactId>checker-qual</artifactId>
+			<scope>compile</scope>
+			<version>2.5.2</version>
+		</dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -186,13 +227,6 @@
         </dependency>
 
         <dependency>
-            <groupId>radeox</groupId>
-            <artifactId>radeox</artifactId>
-            <version>1.0-b2</version>
-        </dependency>
-
-
-        <dependency>
             <groupId>org.directwebremoting</groupId>
             <artifactId>dwr</artifactId>
             <version>3.0.rc1</version>
@@ -202,26 +236,29 @@
         <dependency>
             <groupId>com.yahoo.platform.yui</groupId>
             <artifactId>yuicompressor</artifactId>
-            <version>2.3.6</version>
+            <version>2.4.8</version>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>ant-zip</groupId>
-            <artifactId>ant-zip</artifactId>
-            <version>1.6.2</version>
+            <!-- Necessary to avoid StringIndexOutOfBoundsException when running as a JAR -->
+            <!-- See: https://github.com/yui/yuicompressor/issues/161 -->
+            <!-- See also: https://stackoverflow.com/questions/8429095 -->
+            <exclusions>
+              <exclusion>
+                <artifactId>js</artifactId>
+                <groupId>rhino</groupId>
+              </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.5</version>
         </dependency>
 
         <dependency>
-            <groupId>jfree</groupId>
+            <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.11</version>
+            <version>1.5.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -235,41 +272,44 @@
         </dependency>
 
         <dependency>
-            <groupId>jdom</groupId>
+            <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
-            <version>1.0</version>
+            <version>2.0.2</version>
         </dependency>
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-            <version>2.5.0</version>
+            <version>2.6.11</version>
         </dependency>
 
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>2.5.1</version>
+            <version>2.7.3</version>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>stax</groupId>
+            <artifactId>stax-api</artifactId>
+            <version>1.0.1</version>
         </dependency>
 
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
-            <version>1.5.5</version>
         </dependency>
 
         <dependency>
@@ -281,7 +321,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
             <scope>test</scope>
         </dependency>
 
@@ -294,7 +333,11 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -318,15 +361,15 @@
         </dependency>
 
         <dependency>
-            <groupId>net.tanesha.recaptcha4j</groupId>
-            <artifactId>recaptcha4j</artifactId>
-            <version>0.0.8</version>
-        </dependency>
-
-        <dependency>
             <groupId>de.u-mass</groupId>
             <artifactId>lastfm-java</artifactId>
             <version>0.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.triology.recaptchav2-java</groupId>
+            <artifactId>recaptchav2-java</artifactId>
+            <version>1.0.2</version>
         </dependency>
 
         <!-- SONOS API / WSDL SUPPORT -->
@@ -370,7 +413,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
-            <version>2.1.1</version>
+            <version>2.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -382,15 +425,21 @@
         <dependency>
             <groupId>com.mattbertolini</groupId>
             <artifactId>liquibase-slf4j</artifactId>
-            <version>1.2.1</version>
+            <version>2.0.0</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
+            <version>1.9.4</version>
             <!-- commons-configuration2 requires during runtime -->
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -401,13 +450,19 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.3.9</version>
+            <version>3.6.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.github.muff1nman.chameleon</groupId>
             <artifactId>core</artifactId>
             <version>${chameleon.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -415,6 +470,12 @@
             <artifactId>playlist-xspf</artifactId>
             <version>${chameleon.version}</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -422,12 +483,17 @@
             <artifactId>playlist-all</artifactId>
             <version>${chameleon.version}</version>
             <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>1.1.0.Final</version>
         </dependency>
 
         <dependency>
@@ -439,23 +505,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <scope>${tomcat.server.scope}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Embedded Jetty -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jetty</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>apache-jsp</artifactId>
-            <scope>provided</scope>
+            <scope>${tomcat.server.scope}</scope>
         </dependency>
 
         <dependency>
@@ -473,13 +528,32 @@
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
-            <version>1.5.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.2</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.1.4</version>
+            <version>42.2.5</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -491,7 +565,7 @@
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
-            <version>2.1.0</version>
+            <version>2.1.2</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
@@ -504,14 +578,30 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <language>jsp</language>
+                    <rulesets>
+                        <ruleset>/category/jsp/codestyle.xml</ruleset>
+                        <ruleset>/category/jsp/errorprone.xml</ruleset>
+                    </rulesets>
+                    <includes>
+                        <include>**/*.jsp</include>
+                        <include>**/*.jspf</include>
+                    </includes>
+                    <compileSourceRoots>
+                        <compileSourceRoot>${basedir}/src/main/webapp/WEB-INF/jsp</compileSourceRoot>
+                    </compileSourceRoots>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.5.2.RELEASE</version>
+                <version>1.5.20.RELEASE</version>
                 <configuration>
                     <mainClass>org.airsonic.player.Application</mainClass>
                     <layout>WAR</layout>
-                    <excludeGroupIds>${boot.group.excludes}</excludeGroupIds>
-                    <excludeArtifactIds>${boot.artifact.excludes}</excludeArtifactIds>
                 </configuration>
                 <executions>
                     <execution>
@@ -524,7 +614,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
                 <configuration>
                     <reuseForks>false</reuseForks>
                 </configuration>
@@ -543,6 +632,7 @@
                 <configuration>
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
+                    <revisionOnScmFailure>Unversioned</revisionOnScmFailure>
                 </configuration>
             </plugin>
             <plugin>
@@ -557,6 +647,7 @@
                                 <copy file="${basedir}/src/main/resources/org/airsonic/player/i18n/ResourceBundle_en.properties"
                                       tofile="${project.build.directory}/classes/org/airsonic/player/i18n/ResourceBundle.properties"/>
                                 <echo file="${project.build.directory}/classes/build_number.txt">${buildNumber}</echo>
+                                <!--suppress MavenModelInspection -->
                                 <echo file="${project.build.directory}/classes/build_date.txt">${DSTAMP}</echo>
                                 <echo file="${project.build.directory}/classes/version.txt">${project.version}</echo>
                             </target>
@@ -567,25 +658,57 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jspc-maven-plugin</artifactId>
+                <version>9.4.19.v20190610</version>
+                <executions>
+                    <execution>
+                        <id>jspc</id>
+                        <goals>
+                            <goal>jspc</goal>
+                        </goals>
+                        <phase>compile</phase>
+                        <configuration>
+                            <!-- Since we are using spring boot - we do not have a web.xml so there is no sense
+                            enabling merging. Furthermore, we output the webXmlFragment to the target/classes
+                            directory such that it will be on the classpath for use during runtime -->
+                            <mergeFragment>false</mergeFragment>
+                            <webXmlFragment>${project.build.outputDirectory}/precompiled-jsp-web.xml</webXmlFragment>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
     <profiles>
         <profile>
             <id>tomcat-embed</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <boot.group.excludes>org.eclipse.jetty,org.eclipse.jetty.websocket,org.mortbay.jasper,org.eclipse.jetty.toolchain,org.ow2.asm</boot.group.excludes>
-                <boot.artifact.excludes>spring-boot-starter-jetty</boot.artifact.excludes>
-            </properties>
         </profile>
         <profile>
-            <id>jetty-embed</id>
+            <id>ide-tomcat-embed</id>
             <properties>
-                <boot.group.excludes>org.apache.tomcat.embed</boot.group.excludes>
-                <boot.artifact.excludes>spring-boot-starter-tomcat</boot.artifact.excludes>
+                <tomcat.server.scope>compile</tomcat.server.scope>
             </properties>
         </profile>
     </profiles>

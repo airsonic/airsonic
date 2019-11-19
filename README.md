@@ -4,11 +4,15 @@
 -->
 Airsonic
 ========
+[![Build Status](https://travis-ci.org/airsonic/airsonic.svg?branch=master)](https://travis-ci.org/airsonic/airsonic)
+[![Coverity scan](https://scan.coverity.com/projects/17971/badge.svg)](https://scan.coverity.com/projects/airsonic)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/airsonic/airsonic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/airsonic/airsonic/context:javascript)
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/airsonic/airsonic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/airsonic/airsonic/context:java)
 
 What is Airsonic?
 -----------------
 
-Airsonic is a free, web-based media streamer, providing ubiquitious access to your music. Use it to share your music with friends, or to listen to your own music while at work. You can stream to multiple players simultaneously, for instance to one player in your kitchen and another in your living room.
+Airsonic is a free, web-based media streamer, providing ubiquitous access to your music. Use it to share your music with friends, or to listen to your own music while at work. You can stream to multiple players simultaneously, for instance to one player in your kitchen and another in your living room.
 
 Airsonic is designed to handle very large music collections (hundreds of gigabytes). Although optimized for MP3 streaming, it works for any audio or video format that can stream over HTTP, for instance AAC and OGG. By using transcoder plug-ins, Airsonic supports on-the-fly conversion and streaming of virtually any audio format, including WMA, FLAC, APE, Musepack, WavPack and Shorten.
 
@@ -47,6 +51,11 @@ Airsonic is free software and licensed under the [GNU General Public License ver
 
 The [Subsonic source code](https://github.com/airsonic/subsonic-svn) was released under the GPLv3 through version 6.0-beta1. Beginning with 6.0-beta2, source is no longer provided. Binaries of Subsonic are only available under a commercial license. There is a [Subsonic Premium](http://www.subsonic.org/pages/premium.jsp) service which adds functionality not available in Airsonic. Subsonic also offers RPM, Deb, Exe, and other pre-built packages that Airsonic [currently does not](https://github.com/airsonic/airsonic/issues/65).
 
+The cover zooming feature is provided by [jquery.fancyzoom](https://github.com/keegnotrub/jquery.fancyzoom),
+released under [MIT License](http://www.opensource.org/licenses/mit-license.php).
+
+The icons are from the amazing [feather](https://feathericons.com/) project,
+and are licensed under [MIT license](https://github.com/feathericons/feather/blob/master/LICENSE).
 
 Usage
 -----

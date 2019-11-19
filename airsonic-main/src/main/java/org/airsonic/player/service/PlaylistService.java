@@ -30,10 +30,10 @@ import org.airsonic.player.domain.Playlist;
 import org.airsonic.player.domain.User;
 import org.airsonic.player.service.playlist.PlaylistExportHandler;
 import org.airsonic.player.service.playlist.PlaylistImportHandler;
-import org.airsonic.player.util.Pair;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,12 +77,12 @@ public class PlaylistService {
             List<PlaylistExportHandler> exportHandlers,
             List<PlaylistImportHandler> importHandlers
     ) {
-        Assert.notNull(mediaFileDao);
-        Assert.notNull(playlistDao);
-        Assert.notNull(securityService);
-        Assert.notNull(settingsService);
-        Assert.notNull(exportHandlers);
-        Assert.notNull(importHandlers);
+        Assert.notNull(mediaFileDao, "mediaFileDao must not be null");
+        Assert.notNull(playlistDao, "playlistDao must not be null");
+        Assert.notNull(securityService, "securityservice must not be null");
+        Assert.notNull(settingsService, "settingsService must not be null");
+        Assert.notNull(exportHandlers, "exportHandlers must not be null");
+        Assert.notNull(importHandlers, "importHandlers must not be null");
         this.mediaFileDao = mediaFileDao;
         this.playlistDao = playlistDao;
         this.securityService = securityService;
@@ -188,15 +188,15 @@ public class PlaylistService {
             throw new Exception("Unsupported playlist " + fileName);
         }
         PlaylistImportHandler importHandler = getImportHandler(inputSpecificPlaylist);
-        LOG.debug("Using "+importHandler.getClass().getSimpleName()+" playlist import handler");
+        LOG.debug("Using " + importHandler.getClass().getSimpleName() + " playlist import handler");
 
         Pair<List<MediaFile>, List<String>> result = importHandler.handle(inputSpecificPlaylist);
 
-        if (result.getFirst().isEmpty() && !result.getSecond().isEmpty()) {
+        if (result.getLeft().isEmpty() && !result.getRight().isEmpty()) {
             throw new Exception("No songs in the playlist were found.");
         }
 
-        for (String error : result.getSecond()) {
+        for (String error : result.getRight()) {
             LOG.warn("File in playlist '" + fileName + "' not found: " + error);
         }
         Date now = new Date();
@@ -215,7 +215,7 @@ public class PlaylistService {
             playlist = existingPlaylist;
         }
 
-        setFilesInPlaylist(playlist.getId(), result.getFirst());
+        setFilesInPlaylist(playlist.getId(), result.getLeft());
 
         return playlist;
     }
@@ -261,7 +261,7 @@ public class PlaylistService {
         }
     }
 
-    private void doImportPlaylists() throws Exception {
+    private void doImportPlaylists() {
         String playlistFolderPath = settingsService.getPlaylistFolder();
         if (playlistFolderPath == null) {
             return;
@@ -299,7 +299,7 @@ public class PlaylistService {
             importPlaylist(User.USERNAME_ADMIN, FilenameUtils.getBaseName(fileName), fileName, in, existingPlaylist);
             LOG.info("Auto-imported playlist " + file);
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 

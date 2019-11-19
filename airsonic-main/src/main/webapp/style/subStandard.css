@@ -54,11 +54,6 @@ table {
     background-image:url( "../icons/subStandard/back.png" );
 }
 
-/* Forward image. */
-.forward {
-    background-image:url( "../icons/subStandard/forward.png" );
-}
-
 /* Links. */
 a:link, a:active, a:visited, a:link *, a:active *, a:visited * {
     color: #FFFFFF;
@@ -79,7 +74,7 @@ a:hover, a:hover * {
 /* Selected Headers. */
 .headerSelected {
     color: #FFDA23;
-    text-shadow: 0.1em 0.1em 0.2em grey;    
+    text-shadow: 0.1em 0.1em 0.2em grey;
     background-color: transparent;
     border: 0px
 }
@@ -117,7 +112,7 @@ a:hover, a:hover * {
     height: 8px;
     width: 8px;
     background: #AEAEAE;
-    }
+}
 ::-webkit-scrollbar-thumb:vertical {
     background: #FFFFFF;
     -webkit-border-radius: 1ex;
@@ -133,61 +128,48 @@ a:hover, a:hover * {
 }
 ::-webkit-scrollbar-button {
     display:none;
-}ackground: #AEAEAE;
+    background:
+        -webkit-gradient(
+        linear,
+        0 0,
+        100% 0,
+        from(#464646),
+        to(#383838)
+        );
+    -webkit-border-radius: 6px;
+    border: 3px solid #cccccc;
+    -webkit-background-clip: padding-box;
 }
-::-webkit-scrollbar-button {
-    display:none;
-}t-scrollbar-button {
-    display:none;
-}ackground: #AEAEAE;
+::-webkit-scrollbar-track-piece:horizontal{
+    background: none;
+    -webkit-box-shadow:none;
 }
-::-webkit-scrollbar-button {
-    display:none;
-}ebkit-scrollbar-button {
-    display:none;
-}(
-			linear, 
-			0 0, 
-			100% 0, 
-			from(#464646),
-			to(#383838)
-			);
-			-webkit-border-radius: 6px;
-			border: 3px solid #cccccc;
-			-webkit-background-clip: padding-box;
-		}
-		::-webkit-scrollbar-track-piece:horizontal{
-			background: none;
-			-webkit-box-shadow:none;
-		}
-		::-webkit-scrollbar:horizontal{
-			height: 16px;
-		}
-		::-webkit-scrollbar-thumb:horizontal{
-			height: 12px;
-			-webkit-border-radius:12px;
-			background: 
-			-webkit-gradient(
-				linear, 
-				0 0, 
-				0 100%, 
-				from(rgba(0,0,0,0.1)), 
-				to(rgba(0,0,0,0.25))
-			);
-			border: 6px solid transparent;
-			-webkit-background-clip: padding-box;
- 
-		}6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
-	-webkit-border-radius: 0 0 6px 0;
+::-webkit-scrollbar:horizontal{
+    height: 16px;
+}
+::-webkit-scrollbar-thumb:horizontal{
+    height: 12px;
+    -webkit-border-radius:12px;
+    background:
+        -webkit-gradient(
+        linear,
+        0 0,
+        0 100%,
+        from(rgba(0,0,0,0.1)),
+        to(rgba(0,0,0,0.25))
+        );
+    border: 6px solid transparent;
+    -webkit-background-clip: padding-box;
+
 }
 ::-webkit-scrollbar-button:vertical:decrement {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,.2)), color-stop(100%, rgba(255,255,255,.1))) 0 0 repeat, url(images/webkit-arrows-vert.png) 1px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
-	background: -webkit-linear-gradient(top, rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) 1px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
-	background: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) 1px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,.2)), color-stop(100%, rgba(255,255,255,.1))) 0 0 repeat, url(images/webkit-arrows-vert.png) 1px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
+    background: -webkit-linear-gradient(top, rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) 1px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
+    background: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) 1px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
 }
 ::-webkit-scrollbar-button:vertical:increment {
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,.2)), color-stop(100%, rgba(255,255,255,.1))) 0 0 repeat, url(images/webkit-arrows-vert.png) -19px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
-	background: -webkit-linear-gradient(top, rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) -19px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
-	background: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) -19px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
-	-webkit-border-radius: 0 0 6px 0;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255,255,255,.2)), color-stop(100%, rgba(255,255,255,.1))) 0 0 repeat, url(images/webkit-arrows-vert.png) -19px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
+    background: -webkit-linear-gradient(top, rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) -19px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
+    background: linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.1)) 0 0 repeat, url(images/webkit-arrows-vert.png) -19px 50% no-repeat, #bfb6a3 url(images/bg-blog-repeat.png) 0 0 no-repeat;
+    -webkit-border-radius: 0 0 6px 0;
 }

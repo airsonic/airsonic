@@ -21,13 +21,14 @@ package org.airsonic.player.controller;
 
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.*;
+import org.airsonic.player.service.search.IndexManager;
 import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -56,6 +57,8 @@ public class LeftController  {
     @Autowired
     private MediaScannerService mediaScannerService;
     @Autowired
+    private IndexManager indexManager;
+    @Autowired
     private SettingsService settingsService;
     @Autowired
     private SecurityService securityService;
@@ -68,7 +71,7 @@ public class LeftController  {
      * Note: This class intentionally does not implement org.springframework.web.servlet.mvc.LastModified
      * as we don't need browser-side caching of left.jsp.  This method is only used by RESTController.
      */
-    long getLastModified(HttpServletRequest request) {
+    long getLastModified(HttpServletRequest request) throws Exception {
         saveSelectedMusicFolder(request);
 
         if (mediaScannerService.isScanning()) {
@@ -111,12 +114,12 @@ public class LeftController  {
         return lastModified;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         boolean musicFolderChanged = saveSelectedMusicFolder(request);
         Map<String, Object> map = new HashMap<>();
 
-        MediaLibraryStatistics statistics = mediaScannerService.getStatistics();
+        MediaLibraryStatistics statistics = indexManager.getStatistics();
         Locale locale = RequestContextUtils.getLocale(request);
 
         boolean refresh = ServletRequestUtils.getBooleanParameter(request, "refresh", false);
@@ -157,12 +160,11 @@ public class LeftController  {
         return new ModelAndView("left","model",map);
     }
 
-    private boolean saveSelectedMusicFolder(HttpServletRequest request) {
-        if (request.getParameter("musicFolderId") == null) {
+    private boolean saveSelectedMusicFolder(HttpServletRequest request) throws Exception {
+        Integer musicFolderId = ServletRequestUtils.getIntParameter(request, "musicFolderId");
+        if (musicFolderId == null) {
             return false;
         }
-        int musicFolderId = Integer.parseInt(request.getParameter("musicFolderId"));
-
         // Note: UserSettings.setChanged() is intentionally not called. This would break browser caching
         // of the left frame.
         UserSettings settings = settingsService.getUserSettings(securityService.getCurrentUsername(request));

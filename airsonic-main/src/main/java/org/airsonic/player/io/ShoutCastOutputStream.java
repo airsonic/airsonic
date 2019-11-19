@@ -23,12 +23,10 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.service.SettingsService;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Implements SHOUTcast support by decorating an existing output stream.
@@ -39,8 +37,6 @@ import java.io.UnsupportedEncodingException;
  * @author Sindre Mehus
  */
 public class ShoutCastOutputStream extends OutputStream {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ShoutCastOutputStream.class);
 
     /**
      * Number of bytes between each SHOUTcast metadata block.
@@ -55,7 +51,7 @@ public class ShoutCastOutputStream extends OutputStream {
     /**
      * What to write in the SHOUTcast metadata is fetched from the playlist.
      */
-    private PlayQueue playQueue;
+    final private PlayQueue playQueue;
 
     /**
      * Keeps track of the number of bytes written (excluding meta-data).  Between 0 and {@link #META_DATA_INTERVAL}.
@@ -150,13 +146,8 @@ public class ShoutCastOutputStream extends OutputStream {
         if (streamTitle.equals(previousStreamTitle)) {
             bytes = new byte[0];
         } else {
-            try {
-                previousStreamTitle = streamTitle;
-                bytes = createStreamTitle(streamTitle);
-            } catch (UnsupportedEncodingException x) {
-                LOG.warn("Failed to create SHOUTcast meta-data.  Ignoring.", x);
-                bytes = new byte[0];
-            }
+            previousStreamTitle = streamTitle;
+            bytes = createStreamTitle(streamTitle);
         }
 
         // Length in groups of 16 bytes.
@@ -178,7 +169,7 @@ public class ShoutCastOutputStream extends OutputStream {
         }
     }
 
-    private byte[] createStreamTitle(String title) throws UnsupportedEncodingException {
+    private byte[] createStreamTitle(String title) {
         // Remove any quotes from the title.
         title = title.replaceAll("'", "");
 
@@ -188,7 +179,7 @@ public class ShoutCastOutputStream extends OutputStream {
         }
 
         title = "StreamTitle='" + title + "';";
-        return title.getBytes("US-ASCII");
+        return title.getBytes(StandardCharsets.US_ASCII);
     }
 
     /**

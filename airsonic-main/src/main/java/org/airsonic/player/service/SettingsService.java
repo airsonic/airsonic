@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Pattern;
 
 
 /**
@@ -76,6 +77,7 @@ public class SettingsService {
     private static final String KEY_INDEX_CREATION_INTERVAL = "IndexCreationInterval";
     private static final String KEY_INDEX_CREATION_HOUR = "IndexCreationHour";
     private static final String KEY_FAST_CACHE_ENABLED = "FastCacheEnabled";
+    private static final String KEY_IGNORE_FILE_TIMESTAMPS = "IgnoreFileTimestamps";
     private static final String KEY_PODCAST_UPDATE_INTERVAL = "PodcastUpdateInterval";
     private static final String KEY_PODCAST_FOLDER = "PodcastFolder";
     private static final String KEY_PODCAST_EPISODE_RETENTION_COUNT = "PodcastEpisodeRetentionCount";
@@ -94,10 +96,8 @@ public class SettingsService {
     private static final String KEY_LDAP_AUTO_SHADOWING = "LdapAutoShadowing";
     private static final String KEY_GETTING_STARTED_ENABLED = "GettingStartedEnabled";
     private static final String KEY_SETTINGS_CHANGED = "SettingsChanged";
-    private static final String KEY_LAST_SCANNED = "LastScanned";
     private static final String KEY_ORGANIZE_BY_FOLDER_STRUCTURE = "OrganizeByFolderStructure";
     private static final String KEY_SORT_ALBUMS_BY_YEAR = "SortAlbumsByYear";
-    private static final String KEY_MEDIA_LIBRARY_STATISTICS = "MediaLibraryStatistics";
     private static final String KEY_DLNA_ENABLED = "DlnaEnabled";
     private static final String KEY_DLNA_SERVER_NAME = "DlnaServerName";
     private static final String KEY_DLNA_BASE_LAN_URL = "DlnaBaseLANURL";
@@ -105,6 +105,7 @@ public class SettingsService {
     private static final String KEY_SONOS_SERVICE_NAME = "SonosServiceName";
     private static final String KEY_SONOS_SERVICE_ID = "SonosServiceId";
     private static final String KEY_JWT_KEY = "JWTKey";
+    private static final String KEY_REMEMBER_ME_KEY = "RememberMeKey";
 
     private static final String KEY_SMTP_SERVER = "SmtpServer";
     private static final String KEY_SMTP_ENCRYPTION = "SmtpEncryption";
@@ -113,6 +114,12 @@ public class SettingsService {
     private static final String KEY_SMTP_PASSWORD = "SmtpPassword";
     private static final String KEY_SMTP_FROM = "SmtpFrom";
     private static final String KEY_EXPORT_PLAYLIST_FORMAT = "PlaylistExportFormat";
+    private static final String KEY_IGNORE_SYMLINKS = "IgnoreSymLinks";
+    private static final String KEY_EXCLUDE_PATTERN_STRING = "ExcludePattern";
+
+    private static final String KEY_CAPTCHA_ENABLED = "CaptchaEnabled";
+    private static final String KEY_RECAPTCHA_SITE_KEY = "ReCaptchaSiteKey";
+    private static final String KEY_RECAPTCHA_SECRET_KEY = "ReCaptchaSecretKey";
 
     // Database Settings
     private static final String KEY_DATABASE_CONFIG_TYPE = "DatabaseConfigType";
@@ -130,8 +137,8 @@ public class SettingsService {
     private static final String DEFAULT_IGNORED_ARTICLES = "The El La Los Las Le Les";
     private static final String DEFAULT_SHORTCUTS = "New Incoming Podcast";
     private static final String DEFAULT_PLAYLIST_FOLDER = Util.getDefaultPlaylistFolder();
-    private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a flac wav wma aif aiff ape mpc shn";
-    private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts";
+    private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a m4b flac wav wma aif aiff ape mpc shn mka opus";
+    private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts webm";
     private static final String DEFAULT_COVER_ART_FILE_TYPES = "cover.jpg cover.png cover.gif folder.jpg jpg jpeg gif png";
     private static final int DEFAULT_COVER_ART_CONCURRENCY = 4;
     private static final String DEFAULT_WELCOME_TITLE = "Welcome to Airsonic!";
@@ -152,6 +159,7 @@ public class SettingsService {
     private static final int DEFAULT_INDEX_CREATION_INTERVAL = 1;
     private static final int DEFAULT_INDEX_CREATION_HOUR = 3;
     private static final boolean DEFAULT_FAST_CACHE_ENABLED = false;
+    private static final boolean DEFAULT_IGNORE_FILE_TIMESTAMPS = false;
     private static final int DEFAULT_PODCAST_UPDATE_INTERVAL = 24;
     private static final String DEFAULT_PODCAST_FOLDER = Util.getDefaultPodcastFolder();
     private static final int DEFAULT_PODCAST_EPISODE_RETENTION_COUNT = 10;
@@ -172,7 +180,6 @@ public class SettingsService {
     private static final long DEFAULT_SETTINGS_CHANGED = 0L;
     private static final boolean DEFAULT_ORGANIZE_BY_FOLDER_STRUCTURE = true;
     private static final boolean DEFAULT_SORT_ALBUMS_BY_YEAR = true;
-    private static final String DEFAULT_MEDIA_LIBRARY_STATISTICS = "0 0 0 0 0";
     private static final boolean DEFAULT_DLNA_ENABLED = false;
     private static final String DEFAULT_DLNA_SERVER_NAME = "Airsonic";
     private static final String DEFAULT_DLNA_BASE_LAN_URL = null;
@@ -180,6 +187,8 @@ public class SettingsService {
     private static final String DEFAULT_SONOS_SERVICE_NAME = "Airsonic";
     private static final int DEFAULT_SONOS_SERVICE_ID = 242;
     private static final String DEFAULT_EXPORT_PLAYLIST_FORMAT = "m3u";
+    private static final boolean DEFAULT_IGNORE_SYMLINKS = false;
+    private static final String DEFAULT_EXCLUDE_PATTERN_STRING = null;
 
     private static final String DEFAULT_SMTP_SERVER = null;
     private static final String DEFAULT_SMTP_ENCRYPTION = "None";
@@ -187,6 +196,10 @@ public class SettingsService {
     private static final String DEFAULT_SMTP_USER = null;
     private static final String DEFAULT_SMTP_PASSWORD = null;
     private static final String DEFAULT_SMTP_FROM = "airsonic@airsonic.org";
+
+    private static final boolean DEFAULT_CAPTCHA_ENABLED = false;
+    private static final String DEFAULT_RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+    private static final String DEFAULT_RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe";
 
     private static final DataSourceConfigType DEFAULT_DATABASE_CONFIG_TYPE = DataSourceConfigType.LEGACY;
     private static final String DEFAULT_DATABASE_CONFIG_EMBED_DRIVER = null;
@@ -200,10 +213,11 @@ public class SettingsService {
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
-            "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand", 
+            "VideoMask", "CoverArtMask, HlsCommand", "HlsCommand2", "JukeboxCommand",
             "CoverArtFileTypes", "UrlRedirectCustomHost", "CoverArtLimit", "StreamPort",
             "PortForwardingEnabled", "RewriteUrl", "UrlRedirectCustomUrl", "UrlRedirectContextPath",
             "UrlRedirectFrom", "UrlRedirectionEnabled", "UrlRedirectType", "Port", "HttpsPort",
+            "MediaLibraryStatistics", "LastScanned",
             // Database settings renamed
             "database.varchar.maxlength", "database.config.type", "database.config.embed.driver",
             "database.config.embed.url", "database.config.embed.username", "database.config.embed.password",
@@ -233,10 +247,12 @@ public class SettingsService {
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
 
+    private Pattern excludePattern;
+
     private void removeObsoleteProperties() {
 
-        OBSOLETE_KEYS.forEach( oKey -> {
-            if(configurationService.containsKey(oKey)) {
+        OBSOLETE_KEYS.forEach(oKey -> {
+            if (configurationService.containsKey(oKey)) {
                 LOG.info("Removing obsolete property [" + oKey + ']');
                 configurationService.clearProperty(oKey);
             }
@@ -252,7 +268,7 @@ public class SettingsService {
         String oldHome = System.getProperty("libresonic.home");
         if (overrideHome != null) {
             home = new File(overrideHome);
-        } else if(oldHome != null) {
+        } else if (oldHome != null) {
             home = new File(oldHome);
         } else {
             boolean isWindows = System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
@@ -297,7 +313,7 @@ public class SettingsService {
     }
 
     public void save(boolean updateSettingsChanged) {
-        if(updateSettingsChanged) {
+        if (updateSettingsChanged) {
             removeObsoleteProperties();
             this.setLong(KEY_SETTINGS_CHANGED, System.currentTimeMillis());
         }
@@ -398,7 +414,7 @@ public class SettingsService {
         setProperty(KEY_PLAYLIST_FOLDER, playlistFolder);
     }
 
-    public String getMusicFileTypes() {
+    public synchronized String getMusicFileTypes() {
         return getProperty(KEY_MUSIC_FILE_TYPES, DEFAULT_MUSIC_FILE_TYPES);
     }
 
@@ -414,7 +430,7 @@ public class SettingsService {
         return cachedMusicFileTypesArray;
     }
 
-    public String getVideoFileTypes() {
+    public synchronized String getVideoFileTypes() {
         return getProperty(KEY_VIDEO_FILE_TYPES, DEFAULT_VIDEO_FILE_TYPES);
     }
 
@@ -430,7 +446,7 @@ public class SettingsService {
         return cachedVideoFileTypesArray;
     }
 
-    public String getCoverArtFileTypes() {
+    public synchronized String getCoverArtFileTypes() {
         return getProperty(KEY_COVER_ART_FILE_TYPES, DEFAULT_COVER_ART_FILE_TYPES);
     }
 
@@ -520,6 +536,14 @@ public class SettingsService {
         setBoolean(KEY_FAST_CACHE_ENABLED, enabled);
     }
 
+    public boolean isIgnoreFileTimestamps() {
+        return getBoolean(KEY_IGNORE_FILE_TIMESTAMPS, DEFAULT_IGNORE_FILE_TIMESTAMPS);
+    }
+
+    public void setIgnoreFileTimestamps(boolean ignore) {
+        setBoolean(KEY_IGNORE_FILE_TIMESTAMPS, ignore);
+    }
+
     /**
      * Returns the number of hours between Podcast updates, of -1 if automatic updates
      * are disabled.
@@ -589,7 +613,7 @@ public class SettingsService {
      * @param limit The download bitrate limit in Kbit/s. Zero if unlimited.
      */
     public void setDownloadBitrateLimit(long limit) {
-        setProperty(KEY_DOWNLOAD_BITRATE_LIMIT, "" + limit);
+        setProperty(KEY_DOWNLOAD_BITRATE_LIMIT, String.valueOf(limit));
     }
 
     /**
@@ -700,19 +724,6 @@ public class SettingsService {
         return getLong(KEY_SETTINGS_CHANGED, DEFAULT_SETTINGS_CHANGED);
     }
 
-    public Date getLastScanned() {
-        String lastScanned = getProperty(KEY_LAST_SCANNED, null);
-        return lastScanned == null ? null : new Date(Long.parseLong(lastScanned));
-    }
-
-    void setLastScanned(Date date) {
-        if (date == null) {
-            setProperty(KEY_LAST_SCANNED, null);
-        } else {
-            setLong(KEY_LAST_SCANNED, date.getTime());
-        }
-    }
-
     public boolean isOrganizeByFolderStructure() {
         return getBoolean(KEY_ORGANIZE_BY_FOLDER_STRUCTURE, DEFAULT_ORGANIZE_BY_FOLDER_STRUCTURE);
     }
@@ -729,12 +740,57 @@ public class SettingsService {
         setBoolean(KEY_SORT_ALBUMS_BY_YEAR, b);
     }
 
-    public MediaLibraryStatistics getMediaLibraryStatistics() {
-        return MediaLibraryStatistics.parse(getString(KEY_MEDIA_LIBRARY_STATISTICS, DEFAULT_MEDIA_LIBRARY_STATISTICS));
+    public boolean getIgnoreSymLinks() {
+        return getBoolean(KEY_IGNORE_SYMLINKS, DEFAULT_IGNORE_SYMLINKS);
     }
 
-    void setMediaLibraryStatistics(MediaLibraryStatistics statistics) {
-        setString(KEY_MEDIA_LIBRARY_STATISTICS, statistics.format());
+    public void setIgnoreSymLinks(boolean b) {
+        setBoolean(KEY_IGNORE_SYMLINKS, b);
+    }
+
+    public String getExcludePatternString() {
+        return getString(KEY_EXCLUDE_PATTERN_STRING, DEFAULT_EXCLUDE_PATTERN_STRING);
+    }
+
+    public void setExcludePatternString(String s) {
+        setString(KEY_EXCLUDE_PATTERN_STRING, s);
+        compileExcludePattern();
+    }
+
+    private void compileExcludePattern() {
+        if (getExcludePatternString() != null && !getExcludePatternString().trim().isEmpty()) {
+            excludePattern = Pattern.compile(getExcludePatternString());
+        } else {
+            excludePattern = null;
+        }
+    }
+
+    public Pattern getExcludePattern() {
+        if (excludePattern == null && getExcludePatternString() != null) {
+            compileExcludePattern();
+        }
+        return excludePattern;
+    }
+
+    /**
+     * Returns whether we are running in Development mode.
+     *
+     * @return true if we are in Development mode.
+     */
+    public static boolean isDevelopmentMode() {
+        return System.getProperty("airsonic.development") != null;
+    }
+
+    /**
+     * Returns the custom 'remember me' key used for generating authentication tokens.
+     *
+     * @return The 'remember me' key.
+     */
+    public String getRememberMeKey() {
+        String key = null;
+        if (StringUtils.isBlank(key)) key = getString(KEY_REMEMBER_ME_KEY, null);
+        if (StringUtils.isBlank(key)) key = System.getProperty("airsonic.rememberMeKey");
+        return key;
     }
 
     /**
@@ -1270,6 +1326,30 @@ public class SettingsService {
 
     public void setSmtpFrom(String smtpFrom) {
         setString(KEY_SMTP_FROM, smtpFrom);
+    }
+
+    public boolean isCaptchaEnabled() {
+        return getBoolean(KEY_CAPTCHA_ENABLED, DEFAULT_CAPTCHA_ENABLED);
+    }
+
+    public void setCaptchaEnabled(boolean captchaEnabled) {
+        setBoolean(KEY_CAPTCHA_ENABLED, captchaEnabled);
+    }
+
+    public String getRecaptchaSiteKey() {
+        return getProperty(KEY_RECAPTCHA_SITE_KEY, DEFAULT_RECAPTCHA_SITE_KEY);
+    }
+
+    public void setRecaptchaSiteKey(String recaptchaSiteKey) {
+        setString(KEY_RECAPTCHA_SITE_KEY, recaptchaSiteKey);
+    }
+
+    public String getRecaptchaSecretKey() {
+        return getProperty(KEY_RECAPTCHA_SECRET_KEY, DEFAULT_RECAPTCHA_SECRET_KEY);
+    }
+
+    public void setRecaptchaSecretKey(String recaptchaSecretKey) {
+        setString(KEY_RECAPTCHA_SECRET_KEY, recaptchaSecretKey);
     }
 
     public DataSourceConfigType getDatabaseConfigType() {

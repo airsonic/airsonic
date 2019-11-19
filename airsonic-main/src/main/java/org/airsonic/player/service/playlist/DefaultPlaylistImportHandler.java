@@ -3,7 +3,7 @@ package org.airsonic.player.service.playlist;
 import chameleon.playlist.*;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.MediaFileService;
-import org.airsonic.player.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
@@ -33,42 +33,42 @@ public class DefaultPlaylistImportHandler implements PlaylistImportHandler {
         try {
             inputSpecificPlaylist.toPlaylist().acceptDown(new PlaylistVisitor() {
                 @Override
-                public void beginVisitPlaylist(Playlist playlist) throws Exception {
+                public void beginVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void endVisitPlaylist(Playlist playlist) throws Exception {
+                public void endVisitPlaylist(Playlist playlist) {
 
                 }
 
                 @Override
-                public void beginVisitParallel(Parallel parallel) throws Exception {
+                public void beginVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void endVisitParallel(Parallel parallel) throws Exception {
+                public void endVisitParallel(Parallel parallel) {
 
                 }
 
                 @Override
-                public void beginVisitSequence(Sequence sequence) throws Exception {
+                public void beginVisitSequence(Sequence sequence) {
 
                 }
 
                 @Override
-                public void endVisitSequence(Sequence sequence) throws Exception {
+                public void endVisitSequence(Sequence sequence) {
 
                 }
 
                 @Override
-                public void beginVisitMedia(Media media) throws Exception {
+                public void beginVisitMedia(Media media) {
                     try {
                         URI uri = media.getSource().getURI();
                         File file = new File(uri);
                         MediaFile mediaFile = mediaFileService.getMediaFile(file);
-                        if(mediaFile != null) {
+                        if (mediaFile != null) {
                             mediaFiles.add(mediaFile);
                         } else {
                             errors.add("Cannot find media file " + file);
@@ -79,7 +79,7 @@ public class DefaultPlaylistImportHandler implements PlaylistImportHandler {
                 }
 
                 @Override
-                public void endVisitMedia(Media media) throws Exception {
+                public void endVisitMedia(Media media) {
 
                 }
             });
@@ -87,7 +87,7 @@ public class DefaultPlaylistImportHandler implements PlaylistImportHandler {
             errors.add(e.getMessage());
         }
 
-        return Pair.create(mediaFiles, errors);
+        return Pair.of(mediaFiles, errors);
     }
 
     @Override

@@ -108,7 +108,7 @@
 
         <tr>
 
-            <td class="fit"><input type="checkbox" class="checkbox" id="episode${i.index}" value="${episode.id}"/></td>
+            <td class="fit"><input type="checkbox" id="episode${i.index}" value="${episode.id}"/></td>
 
             <c:choose>
                 <c:when test="${empty episode.mediaFileId or episode.status ne 'COMPLETED'}">
@@ -178,7 +178,7 @@
 </tr></table>
 
 
-<div id="dialog-delete" title="<fmt:message key="common.confirm"/>" style="display: none;">
+<div id="dialog-delete" title="<fmt:message key='common.confirm'/>" style="display: none;">
     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
         <fmt:message key="podcastreceiver.confirmdelete"/></p>
 </div>

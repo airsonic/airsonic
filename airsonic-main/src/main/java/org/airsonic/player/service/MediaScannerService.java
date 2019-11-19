@@ -23,7 +23,7 @@ import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.domain.*;
-import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.service.search.IndexManager;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -34,7 +34,12 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Provides services for scanning the music library.
@@ -44,17 +49,16 @@ import java.util.*;
 @Service
 public class MediaScannerService {
 
-    private static final int INDEX_VERSION = 15;
     private static final Logger LOG = LoggerFactory.getLogger(MediaScannerService.class);
 
-    private MediaLibraryStatistics statistics;
-
     private boolean scanning;
-    private Timer timer;
+    
+    private ScheduledExecutorService scheduler;
+    
     @Autowired
     private SettingsService settingsService;
     @Autowired
-    private SearchService searchService;
+    private IndexManager indexManager;
     @Autowired
     private PlaylistService playlistService;
     @Autowired
@@ -69,32 +73,22 @@ public class MediaScannerService {
 
     @PostConstruct
     public void init() {
-        deleteOldIndexFiles();
-        statistics = settingsService.getMediaLibraryStatistics();
+        indexManager.initializeIndexDirectory();
         schedule();
     }
 
     public void initNoSchedule() {
-        deleteOldIndexFiles();
-        statistics = settingsService.getMediaLibraryStatistics();
+        indexManager.deleteOldIndexFiles();
     }
 
     /**
      * Schedule background execution of media library scanning.
      */
     public synchronized void schedule() {
-        if (timer != null) {
-            timer.cancel();
+        if (scheduler != null) {
+            scheduler.shutdown();
         }
-        timer = new Timer(true);
-
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                scanLibrary();
-            }
-        };
-
+        
         long daysBetween = settingsService.getIndexCreationInterval();
         int hour = settingsService.getIndexCreationHour();
 
@@ -102,29 +96,29 @@ public class MediaScannerService {
             LOG.info("Automatic media scanning disabled.");
             return;
         }
+        
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+        
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime nextRun = now.withHour(hour).withMinute(0).withSecond(0);
+        if (now.compareTo(nextRun) > 0)
+            nextRun = nextRun.plusDays(1);
 
-        Date now = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
-        cal.set(Calendar.HOUR_OF_DAY, hour);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
+        long initialDelay = ChronoUnit.MILLIS.between(now, nextRun);
+          
+        scheduler.scheduleAtFixedRate(() -> scanLibrary(), initialDelay, TimeUnit.DAYS.toMillis(daysBetween), TimeUnit.MILLISECONDS);
 
-        if (cal.getTime().before(now)) {
-            cal.add(Calendar.DATE, 1);
-        }
-
-        Date firstTime = cal.getTime();
-        long period = daysBetween * 24L * 3600L * 1000L;
-        timer.schedule(task, firstTime, period);
-
-        LOG.info("Automatic media library scanning scheduled to run every " + daysBetween + " day(s), starting at " + firstTime);
+        LOG.info("Automatic media library scanning scheduled to run every {} day(s), starting at {}", daysBetween, nextRun);
 
         // In addition, create index immediately if it doesn't exist on disk.
-        if (settingsService.getLastScanned() == null) {
+        if (neverScanned()) {
             LOG.info("Media library never scanned. Doing it now.");
             scanLibrary();
         }
+    }
+
+    boolean neverScanned() {
+        return indexManager.getStatistics() == null;
     }
 
     /**
@@ -156,6 +150,7 @@ public class MediaScannerService {
             public void run() {
                 doScanLibrary();
                 playlistService.importPlaylists();
+                mediaFileDao.checkpoint();
             }
         };
 
@@ -165,8 +160,9 @@ public class MediaScannerService {
 
     private void doScanLibrary() {
         LOG.info("Starting to scan media library.");
-        Date lastScanned = DateUtils.truncate(new Date(), Calendar.SECOND);
-        LOG.debug("New last scan date is " + lastScanned);
+        MediaLibraryStatistics statistics = new MediaLibraryStatistics(
+                DateUtils.truncate(new Date(), Calendar.SECOND));
+        LOG.debug("New last scan date is " + statistics.getScanDate());
 
         try {
 
@@ -175,34 +171,33 @@ public class MediaScannerService {
             Genres genres = new Genres();
 
             scanCount = 0;
-            statistics.reset();
 
             mediaFileService.setMemoryCacheEnabled(false);
-            searchService.startIndexing();
+            indexManager.startIndexing();
 
             mediaFileService.clearMemoryCache();
 
             // Recurse through all files on disk.
             for (MusicFolder musicFolder : settingsService.getAllMusicFolders()) {
                 MediaFile root = mediaFileService.getMediaFile(musicFolder.getPath(), false);
-                scanFile(root, musicFolder, lastScanned, albumCount, genres, false);
+                scanFile(root, musicFolder, statistics, albumCount, genres, false);
             }
 
             // Scan podcast folder.
             File podcastFolder = new File(settingsService.getPodcastFolder());
             if (podcastFolder.exists()) {
                 scanFile(mediaFileService.getMediaFile(podcastFolder), new MusicFolder(podcastFolder, null, true, null),
-                         lastScanned, albumCount, genres, true);
+                         statistics, albumCount, genres, true);
             }
 
             LOG.info("Scanned media library with " + scanCount + " entries.");
 
             LOG.info("Marking non-present files.");
-            mediaFileDao.markNonPresent(lastScanned);
+            mediaFileDao.markNonPresent(statistics.getScanDate());
             LOG.info("Marking non-present artists.");
-            artistDao.markNonPresent(lastScanned);
+            artistDao.markNonPresent(statistics.getScanDate());
             LOG.info("Marking non-present albums.");
-            albumDao.markNonPresent(lastScanned);
+            albumDao.markNonPresent(statistics.getScanDate());
 
             // Update statistics
             statistics.incrementArtists(albumCount.size());
@@ -213,21 +208,18 @@ public class MediaScannerService {
             // Update genres
             mediaFileDao.updateGenres(genres.getGenres());
 
-            settingsService.setMediaLibraryStatistics(statistics);
-            settingsService.setLastScanned(lastScanned);
-            settingsService.save(false);
             LOG.info("Completed media library scan.");
 
         } catch (Throwable x) {
             LOG.error("Failed to scan media library.", x);
         } finally {
             mediaFileService.setMemoryCacheEnabled(true);
-            searchService.stopIndexing();
+            indexManager.stopIndexing(statistics);
             scanning = false;
         }
     }
 
-    private void scanFile(MediaFile file, MusicFolder musicFolder, Date lastScanned,
+    private void scanFile(MediaFile file, MusicFolder musicFolder, MediaLibraryStatistics statistics,
                           Map<String, Integer> albumCount, Genres genres, boolean isPodcast) {
         scanCount++;
         if (scanCount % 250 == 0) {
@@ -236,32 +228,32 @@ public class MediaScannerService {
 
         LOG.trace("Scanning file {}", file.getPath());
 
-        searchService.index(file);
-
         // Update the root folder if it has changed.
         if (!musicFolder.getPath().getPath().equals(file.getFolder())) {
             file.setFolder(musicFolder.getPath().getPath());
             mediaFileDao.createOrUpdateMediaFile(file);
         }
 
+        indexManager.index(file);
+
         if (file.isDirectory()) {
             for (MediaFile child : mediaFileService.getChildrenOf(file, true, false, false, false)) {
-                scanFile(child, musicFolder, lastScanned, albumCount, genres, isPodcast);
+                scanFile(child, musicFolder, statistics, albumCount, genres, isPodcast);
             }
             for (MediaFile child : mediaFileService.getChildrenOf(file, false, true, false, false)) {
-                scanFile(child, musicFolder, lastScanned, albumCount, genres, isPodcast);
+                scanFile(child, musicFolder, statistics, albumCount, genres, isPodcast);
             }
         } else {
             if (!isPodcast) {
-                updateAlbum(file, musicFolder, lastScanned, albumCount);
-                updateArtist(file, musicFolder, lastScanned, albumCount);
+                updateAlbum(file, musicFolder, statistics.getScanDate(), albumCount);
+                updateArtist(file, musicFolder, statistics.getScanDate(), albumCount);
             }
             statistics.incrementSongs(1);
         }
 
         updateGenres(file, genres);
-        mediaFileDao.markPresent(file.getPath(), lastScanned);
-        artistDao.markPresent(file.getAlbumArtist(), lastScanned);
+        mediaFileDao.markPresent(file.getPath(), statistics.getScanDate());
+        artistDao.markPresent(file.getAlbumArtist(), statistics.getScanDate());
 
         if (file.getDurationSeconds() != null) {
             statistics.incrementTotalDurationInSeconds(file.getDurationSeconds());
@@ -298,6 +290,9 @@ public class MediaScannerService {
             album.setArtist(artist);
             album.setCreated(file.getChanged());
         }
+        if (file.getMusicBrainzReleaseId() != null) {
+            album.setMusicBrainzReleaseId(file.getMusicBrainzReleaseId());
+        }
         if (file.getYear() != null) {
             album.setYear(file.getYear());
         }
@@ -327,7 +322,7 @@ public class MediaScannerService {
         album.setPresent(true);
         albumDao.createOrUpdateAlbum(album);
         if (firstEncounter) {
-            searchService.index(album);
+            indexManager.index(album);
         }
 
         // Update the file's album artist, if necessary.
@@ -366,54 +361,12 @@ public class MediaScannerService {
         artistDao.createOrUpdateArtist(artist);
 
         if (firstEncounter) {
-            searchService.index(artist, musicFolder);
+            indexManager.index(artist, musicFolder);
         }
-    }
-
-    /**
-     * Returns media library statistics, including the number of artists, albums and songs.
-     *
-     * @return Media library statistics.
-     */
-    public MediaLibraryStatistics getStatistics() {
-        return statistics;
-    }
-
-    /**
-     * Deletes old versions of the index file.
-     */
-    private void deleteOldIndexFiles() {
-        for (int i = 2; i < INDEX_VERSION; i++) {
-            File file = getIndexFile(i);
-            try {
-                if (FileUtil.exists(file)) {
-                    if (file.delete()) {
-                        LOG.info("Deleted old index file: " + file.getPath());
-                    }
-                }
-            } catch (Exception x) {
-                LOG.warn("Failed to delete old index file: " + file.getPath(), x);
-            }
-        }
-    }
-
-    /**
-     * Returns the index file for the given index version.
-     *
-     * @param version The index version.
-     * @return The index file for the given index version.
-     */
-    private File getIndexFile(int version) {
-        File home = SettingsService.getAirsonicHome();
-        return new File(home, "airsonic" + version + ".index");
     }
 
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
-    }
-
-    public void setSearchService(SearchService searchService) {
-        this.searchService = searchService;
     }
 
     public void setMediaFileService(MediaFileService mediaFileService) {

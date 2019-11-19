@@ -21,8 +21,8 @@ package org.airsonic.player.service;
 
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.jukebox.AudioPlayer;
+import org.airsonic.player.service.jukebox.AudioPlayerFactory;
 import org.airsonic.player.util.FileUtil;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +52,8 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
     private SecurityService securityService;
     @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
+    private AudioPlayerFactory audioPlayerFactory;
 
     private AudioPlayer audioPlayer;
     private Player player;
@@ -66,7 +68,7 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
      * @param player The player in question.
      * @param offset Start playing after this many seconds into the track.
      */
-    public synchronized void updateJukebox(Player player, int offset) throws Exception {
+    public synchronized void updateJukebox(Player player, int offset) {
         User user = securityService.getUserByName(player.getUsername());
         if (!user.isJukeboxRole()) {
             LOG.warn(user.getUsername() + " is not authorized for jukebox playback.");
@@ -111,7 +113,7 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
                     String command = settingsService.getJukeboxCommand();
                     parameters.setTranscoding(new Transcoding(null, null, null, null, command, null, null, false));
                     in = transcodingService.getTranscodedInputStream(parameters);
-                    audioPlayer = new AudioPlayer(in, this);
+                    audioPlayer = audioPlayerFactory.createAudioPlayer(in, this);
                     audioPlayer.setGain(gain);
                     audioPlayer.play();
                     onSongStart(file);
@@ -122,7 +124,7 @@ public class JukeboxLegacySubsonicService implements AudioPlayer.Listener {
 
         } catch (Exception x) {
             LOG.error("Error in jukebox: " + x, x);
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 

@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.io;
 
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,7 @@ public class TranscodeInputStream extends InputStream {
     public TranscodeInputStream(ProcessBuilder processBuilder, final InputStream in, File tmpFile) throws IOException {
         this.tmpFile = tmpFile;
 
-        StringBuffer buf = new StringBuffer("Starting transcoder: ");
+        StringBuilder buf = new StringBuilder("Starting transcoder: ");
         for (String s : processBuilder.command()) {
             buf.append('[').append(s).append("] ");
         }
@@ -79,8 +80,8 @@ public class TranscodeInputStream extends InputStream {
                     } catch (IOException x) {
                         // Intentionally ignored. Will happen if the remote player closes the stream.
                     } finally {
-                        IOUtils.closeQuietly(in);
-                        IOUtils.closeQuietly(processOutputStream);
+                        FileUtil.closeQuietly(in);
+                        FileUtil.closeQuietly(processOutputStream);
                     }
                 }
             }.start();
@@ -111,9 +112,9 @@ public class TranscodeInputStream extends InputStream {
     /**
      * @see InputStream#close()
      */
-    public void close() throws IOException {
-        IOUtils.closeQuietly(processInputStream);
-        IOUtils.closeQuietly(processOutputStream);
+    public void close() {
+        FileUtil.closeQuietly(processInputStream);
+        FileUtil.closeQuietly(processOutputStream);
 
         if (process != null) {
             process.destroy();

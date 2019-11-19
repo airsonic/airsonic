@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.9
 
 LABEL description="Airsonic is a free, web-based media streamer, providing ubiquitious access to your music." \
       url="https://github.com/airsonic/airsonic"
@@ -12,8 +12,11 @@ RUN apk --no-cache add \
     lame \
     bash \
     libressl \
+    fontconfig \
+    ttf-dejavu \
     ca-certificates \
     tini \
+    curl \
     openjdk8-jre
 
 COPY run.sh /usr/local/bin/run.sh
@@ -25,5 +28,7 @@ COPY target/dependency/airsonic-main.war airsonic.war
 EXPOSE $AIRSONIC_PORT
 
 VOLUME $AIRSONIC_DIR/data $AIRSONIC_DIR/music $AIRSONIC_DIR/playlists $AIRSONIC_DIR/podcasts
+
+HEALTHCHECK --interval=15s --timeout=3s CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"rest/ping -O /dev/null || exit 1
 
 ENTRYPOINT ["tini", "--", "run.sh"]

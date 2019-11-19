@@ -1,11 +1,11 @@
 package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.PlayQueue;
+import org.airsonic.player.domain.Player;
 import org.airsonic.player.domain.PlayerTechnology;
+import org.airsonic.player.domain.TranscodeScheme;
 import org.junit.Before;
 import org.junit.Test;
-import org.airsonic.player.domain.Player;
-import org.airsonic.player.domain.TranscodeScheme;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -24,7 +24,7 @@ public class PlayerDaoTestCase extends DaoTestCaseBean2 {
     PlayerDao playerDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from player");
     }
 
@@ -65,25 +65,25 @@ public class PlayerDaoTestCase extends DaoTestCaseBean2 {
         Player player = new Player();
 
         playerDao.createPlayer(player);
-        assertEquals("Wrong ID", "1", player.getId());
+        assertEquals("Wrong ID", (Integer)1, player.getId());
         assertEquals("Wrong number of players.", 1, playerDao.getAllPlayers().size());
 
         playerDao.createPlayer(player);
-        assertEquals("Wrong ID", "2", player.getId());
+        assertEquals("Wrong ID", (Integer)2, player.getId());
         assertEquals("Wrong number of players.", 2, playerDao.getAllPlayers().size());
 
         playerDao.createPlayer(player);
-        assertEquals("Wrong ID", "3", player.getId());
+        assertEquals("Wrong ID", (Integer)3, player.getId());
         assertEquals("Wrong number of players.", 3, playerDao.getAllPlayers().size());
 
-        playerDao.deletePlayer("3");
+        playerDao.deletePlayer(3);
         playerDao.createPlayer(player);
-        assertEquals("Wrong ID", "3", player.getId());
+        assertEquals("Wrong ID", (Integer)3, player.getId());
         assertEquals("Wrong number of players.", 3, playerDao.getAllPlayers().size());
 
-        playerDao.deletePlayer("2");
+        playerDao.deletePlayer(2);
         playerDao.createPlayer(player);
-        assertEquals("Wrong ID", "4", player.getId());
+        assertEquals("Wrong ID", (Integer)4, player.getId());
         assertEquals("Wrong number of players.", 3, playerDao.getAllPlayers().size());
     }
 
@@ -153,10 +153,10 @@ public class PlayerDaoTestCase extends DaoTestCaseBean2 {
         playerDao.createPlayer(new Player());
         assertEquals("Wrong number of players.", 2, playerDao.getAllPlayers().size());
 
-        playerDao.deletePlayer("1");
+        playerDao.deletePlayer(1);
         assertEquals("Wrong number of players.", 1, playerDao.getAllPlayers().size());
 
-        playerDao.deletePlayer("2");
+        playerDao.deletePlayer(2);
         assertEquals("Wrong number of players.", 0, playerDao.getAllPlayers().size());
     }
 

@@ -29,14 +29,13 @@ import org.airsonic.player.service.TranscodingService;
 import org.airsonic.player.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class M3UController  {
     @Autowired
     private JWTSecurityService jwtSecurityService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType("audio/x-mpegurl");
         response.setCharacterEncoding(StringUtil.ENCODING_UTF8);
@@ -74,7 +73,7 @@ public class M3UController  {
         return null;
     }
 
-    private void createClientSidePlaylist(PrintWriter out, Player player, String url) throws Exception {
+    private void createClientSidePlaylist(PrintWriter out, Player player, String url) {
         if (player.isM3uBomEnabled()) {
             out.print("\ufeff");
         }
@@ -97,7 +96,7 @@ public class M3UController  {
         }
     }
 
-    private void createServerSidePlaylist(PrintWriter out, Player player, String url) throws IOException {
+    private void createServerSidePlaylist(PrintWriter out, Player player, String url) {
 
         url += "player=" + player.getId();
 

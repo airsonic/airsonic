@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.imageio.ImageIO;
@@ -66,7 +66,7 @@ public class AvatarUploadController  {
     @Autowired
     private SecurityService securityService;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
 
         String username = securityService.getCurrentUsername(request);
@@ -79,12 +79,10 @@ public class AvatarUploadController  {
         Map<String, Object> map = new HashMap<String, Object>();
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
-        List<?> items = upload.parseRequest(request);
+        List<FileItem> items = upload.parseRequest(request);
 
         // Look for file items.
-        for (Object o : items) {
-            FileItem item = (FileItem) o;
-
+        for (FileItem item : items) {
             if (!item.isFormField()) {
                 String fileName = item.getName();
                 byte[] data = item.get();
@@ -104,13 +102,13 @@ public class AvatarUploadController  {
         return new ModelAndView("avatarUploadResult","model",map);
     }
 
-    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) throws IOException {
+    private void createAvatar(String fileName, byte[] data, String username, Map<String, Object> map) {
 
         BufferedImage image;
         try {
             image = ImageIO.read(new ByteArrayInputStream(data));
             if (image == null) {
-                throw new Exception("Failed to decode incoming image: " + fileName + " (" + data.length + " bytes).");
+                throw new IOException("Failed to decode incoming image: " + fileName + " (" + data.length + " bytes).");
             }
             int width = image.getWidth();
             int height = image.getHeight();
@@ -118,7 +116,7 @@ public class AvatarUploadController  {
 
             // Scale down image if necessary.
             if (width > MAX_AVATAR_SIZE || height > MAX_AVATAR_SIZE) {
-                double scaleFactor = (double) MAX_AVATAR_SIZE / (double) Math.max(width, height);
+                double scaleFactor = MAX_AVATAR_SIZE / (double)Math.max(width, height);
                 height = (int) (height * scaleFactor);
                 width = (int) (width * scaleFactor);
                 image = CoverArtController.scale(image, width, height);
@@ -132,7 +130,7 @@ public class AvatarUploadController  {
             settingsService.setCustomAvatar(avatar, username);
             LOG.info("Created avatar '" + fileName + "' (" + data.length + " bytes) for user " + username);
 
-        } catch (Exception x) {
+        } catch (IOException x) {
             LOG.warn("Failed to upload personal image: " + x, x);
             map.put("error", x);
         }

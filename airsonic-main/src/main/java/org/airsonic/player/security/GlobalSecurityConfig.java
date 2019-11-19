@@ -22,14 +22,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import java.security.SecureRandom;
+
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter {
 
-    private static Logger logger = LoggerFactory.getLogger(GlobalSecurityConfig.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalSecurityConfig.class);
 
     static final String FAILURE_URL = "/login?error=1";
+
+    static final String DEVELOPMENT_REMEMBER_ME_KEY = "airsonic";
 
     @Autowired
     private SecurityService securityService;
@@ -60,8 +64,8 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         }
         auth.userDetailsService(securityService);
         String jwtKey = settingsService.getJWTKey();
-        if(StringUtils.isBlank(jwtKey)) {
-            logger.warn("Generating new jwt key");
+        if (StringUtils.isBlank(jwtKey)) {
+            LOG.warn("Generating new jwt key");
             jwtKey = JWTSecurityService.generateKey();
             settingsService.setJWTKey(jwtKey);
             settingsService.save();
@@ -69,6 +73,11 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
     }
 
+    private static String generateRememberMeKey() {
+        byte[] array = new byte[32];
+        new SecureRandom().nextBytes(array);
+        return new String(array);
+    }
 
     @Configuration
     @Order(1)
@@ -118,6 +127,32 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             restAuthenticationFilter.setEventPublisher(eventPublisher);
             http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+            // Try to load the 'remember me' key.
+            //
+            // Note that using a fixed key compromises security as perfect
+            // forward secrecy is not guaranteed anymore.
+            //
+            // An external entity can then re-use our authentication cookies before
+            // the expiration time, or even, given enough time, recover the password
+            // from the MD5 hash.
+            //
+            // See: https://docs.spring.io/spring-security/site/docs/3.0.x/reference/remember-me.html
+
+            String rememberMeKey = settingsService.getRememberMeKey();
+            boolean development = SettingsService.isDevelopmentMode();
+            if (StringUtils.isBlank(rememberMeKey) && !development) {
+                // ...if it is empty, generate a random key on startup (default).
+                LOG.debug("Generating a new ephemeral 'remember me' key in a secure way.");
+                rememberMeKey = generateRememberMeKey();
+            } else if (StringUtils.isBlank(rememberMeKey) && development) {
+                // ...if we are in development mode, we can use a fixed key.
+                LOG.warn("Using a fixed 'remember me' key because we're in development mode, this is INSECURE.");
+                rememberMeKey = DEVELOPMENT_REMEMBER_ME_KEY;
+            } else {
+                // ...otherwise, use the custom key directly.
+                LOG.info("Using a fixed 'remember me' key from system properties, this is insecure.");
+            }
+
             http
                     .csrf()
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
@@ -127,15 +162,15 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .and().authorizeRequests()
                     .antMatchers("/recover*", "/accessDenied*",
                             "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/crossdomain.xml", "/login", "/error")
+                            "/sonos/**", "/login", "/error")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")
                     .hasRole("SETTINGS")
                     .antMatchers("/generalSettings*", "/advancedSettings*", "/userSettings*",
-                            "/musicFolderSettings*", "/databaseSettings*", "/rest/startScan*")
+                            "/musicFolderSettings*", "/databaseSettings*", "/transcodeSettings*", "/rest/startScan*")
                     .hasRole("ADMIN")
-                    .antMatchers("/deletePlaylist*", "/savePlaylist*", "/db*")
+                    .antMatchers("/deletePlaylist*", "/savePlaylist*")
                     .hasRole("PLAYLIST")
                     .antMatchers("/download*")
                     .hasRole("DOWNLOAD")
@@ -162,7 +197,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     // see http://docs.spring.io/spring-security/site/docs/3.2.4.RELEASE/reference/htmlsingle/#csrf-logout
                     .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl(
                     "/login?logout")
-                    .and().rememberMe().key("airsonic");
+                    .and().rememberMe().key(rememberMeKey);
         }
 
     }

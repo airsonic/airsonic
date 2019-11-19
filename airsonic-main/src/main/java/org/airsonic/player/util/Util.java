@@ -20,16 +20,24 @@
 package org.airsonic.player.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Miscellaneous general utility methods.
@@ -39,6 +47,7 @@ import java.util.List;
 public final class Util {
 
     private static final Logger LOG = LoggerFactory.getLogger(Util.class);
+    private static final String URL_SENSITIVE_REPLACEMENT_STRING = "<hidden>";
 
     /**
      * Disallow external instantiation.
@@ -62,7 +71,7 @@ public final class Util {
     }
 
     public static boolean isWindows() {
-        return System.getProperty("os.name", "Windows").toLowerCase().startsWith("windows");
+        return SystemUtils.IS_OS_WINDOWS;
     }
 
     /**
@@ -108,13 +117,89 @@ public final class Util {
         return result;
     }
 
-    static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
+    static {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
+
     public static String debugObject(Object object) {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
         } catch (JsonProcessingException e) {
             LOG.warn("Cant output debug object", e);
             return "";
+        }
+    }
+
+    /**
+     * Return a complete URL for the given HTTP request,
+     * including the query string.
+     *
+     * @param request An HTTP request instance
+     * @return The associated URL
+     */
+    public static String getURLForRequest(HttpServletRequest request) {
+        String url = request.getRequestURL().toString();
+        String queryString = request.getQueryString();
+        if (queryString != null && !queryString.isEmpty()) url += "?" + queryString;
+        return url;
+    }
+
+    /**
+     * Return an URL for the given HTTP request, with anonymized sensitive parameters.
+     *
+     * @param request An HTTP request instance
+     * @return The associated anonymized URL
+     */
+    public static String getAnonymizedURLForRequest(HttpServletRequest request) {
+
+        String url = getURLForRequest(request);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(url);
+        MultiValueMap<String, String> components = builder.build().getQueryParams();
+
+        // Subsonic REST API authentication (see RESTRequestParameterProcessingFilter)
+        if (components.containsKey("p")) builder.replaceQueryParam("p", URL_SENSITIVE_REPLACEMENT_STRING);  // Cleartext password
+        if (components.containsKey("t")) builder.replaceQueryParam("t", URL_SENSITIVE_REPLACEMENT_STRING);  // Token
+        if (components.containsKey("s")) builder.replaceQueryParam("s", URL_SENSITIVE_REPLACEMENT_STRING);  // Salt
+        if (components.containsKey("u")) builder.replaceQueryParam("u", URL_SENSITIVE_REPLACEMENT_STRING);  // Username
+
+        return builder.build().toUriString();
+    }
+
+    /**
+     * Return true if the given object is an instance of the class name in argument.
+     * If the class doesn't exist, returns false.
+     */
+    public static boolean isInstanceOfClassName(Object o, String className) {
+        try {
+            return Class.forName(className).isInstance(o);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    public static Map<String, String> objectToStringMap(Object object) {
+        TypeReference<HashMap<String, String>> typeReference = new TypeReference<HashMap<String, String>>() {};
+        return objectMapper.convertValue(object, typeReference);
+    }
+
+    public static <T> T stringMapToObject(Class<T> clazz, Map<String, String> data) {
+        return objectMapper.convertValue(data, clazz);
+    }
+
+    private static Validator validator;
+    static {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
+
+    public static <T> T stringMapToValidObject(Class<T> clazz, Map<String, String> data) {
+        T object = stringMapToObject(clazz, data);
+        Set<ConstraintViolation<T>> validate = validator.validate(object);
+        if (validate.isEmpty()) {
+            return object;
+        } else {
+            throw new IllegalArgumentException("Created object was not valid");
         }
     }
 }

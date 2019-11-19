@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -61,6 +62,7 @@ public class TranscodingService {
     @Autowired
     private SettingsService settingsService;
     @Autowired
+    @Lazy // used to deal with circular dependencies between PlayerService and TranscodingService
     private PlayerService playerService;
 
     /**
@@ -118,9 +120,11 @@ public class TranscodingService {
         // Activate this transcoding for all players?
         if (transcoding.isDefaultActive()) {
             for (Player player : playerService.getAllPlayers()) {
-                List<Transcoding> transcodings = getTranscodingsForPlayer(player);
-                transcodings.add(transcoding);
-                setTranscodingsForPlayer(player, transcodings);
+                if (player != null) {
+                    List<Transcoding> transcodings = getTranscodingsForPlayer(player);
+                    transcodings.add(transcoding);
+                    setTranscodingsForPlayer(player, transcodings);
+                }
             }
         }
     }
@@ -241,8 +245,10 @@ public class TranscodingService {
                 return createDownsampledInputStream(parameters);
             }
 
+        } catch (IOException x) {
+            LOG.warn("Transcoder failed: {}. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x.toString());
         } catch (Exception x) {
-            LOG.warn("Failed to transcode " + parameters.getMediaFile() + ". Using original.", x);
+            LOG.warn("Transcoder failed. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x);
         }
 
         return new FileInputStream(parameters.getMediaFile().getFile());
@@ -324,10 +330,10 @@ public class TranscodingService {
             title = "Unknown Song";
         }
         if (album == null) {
-            title = "Unknown Album";
+            album = "Unknown Album";
         }
         if (artist == null) {
-            title = "Unknown Artist";
+            artist = "Unknown Artist";
         }
 
         List<String> result = new LinkedList<String>(Arrays.asList(StringUtil.split(command)));
@@ -409,7 +415,7 @@ public class TranscodingService {
         List<Transcoding> transcodingsForPlayer = getTranscodingsForPlayer(player);
         for (Transcoding transcoding : transcodingsForPlayer) {
             // special case for now as video must have a transcoding
-            if(mediaFile.isVideo() && StringUtils.equalsIgnoreCase(preferredTargetFormat, transcoding.getTargetFormat())) {
+            if (mediaFile.isVideo() && StringUtils.equalsIgnoreCase(preferredTargetFormat, transcoding.getTargetFormat())) {
                 LOG.debug("Detected source to target format match for video");
                 return transcoding;
             }

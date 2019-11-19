@@ -26,7 +26,7 @@ package org.airsonic.player.ajax;
  */
 public class NowPlayingInfo {
 
-    private final String playerId;
+    private final Integer playerId;
     private final String username;
     private final String artist;
     private final String title;
@@ -38,7 +38,7 @@ public class NowPlayingInfo {
     private final String avatarUrl;
     private final int minutesAgo;
 
-    public NowPlayingInfo(String playerId, String user, String artist, String title, String tooltip, String streamUrl, String albumUrl,
+    public NowPlayingInfo(Integer playerId, String user, String artist, String title, String tooltip, String streamUrl, String albumUrl,
                           String lyricsUrl, String coverArtUrl, String avatarUrl, int minutesAgo) {
         this.playerId = playerId;
         this.username = user;
@@ -53,7 +53,7 @@ public class NowPlayingInfo {
         this.minutesAgo = minutesAgo;
     }
 
-    public String getPlayerId() {
+    public Integer getPlayerId() {
         return playerId;
     }
 

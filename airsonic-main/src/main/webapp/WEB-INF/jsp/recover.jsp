@@ -1,11 +1,11 @@
+<!DOCTYPE html>
 <%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
 <head>
     <%@ include file="head.jsp" %>
 </head>
-<body class="mainframe bgcolor1" onload="document.getElementById('usernameOrEmail').focus()">
+<body class="mainframe bgcolor1">
 
 <form action="recover.view" method="POST">
     <sec:csrfInput />
@@ -17,13 +17,14 @@
             <p style="padding-top: 1em; padding-bottom: 0.5em"><fmt:message key="recover.text"/></p>
 
             <c:if test="${empty model.sentTo}">
-                <input type="text" id="usernameOrEmail" name="usernameOrEmail" style="width:18em;margin-right: 1em">
-                <input name="submit" type="submit" value="<fmt:message key="recover.send"/>">
+                <input type="text" id="usernameOrEmail" autofocus name="usernameOrEmail" style="width:18em;margin-right: 1em">
+                <input name="submit" type="submit" value="<fmt:message key='recover.send'/>">
             </c:if>
 
-            <c:if test="${not empty model.captcha}">
+            <c:if test="${not empty model.recaptchaSiteKey and empty model.sentTo}">
                 <p style="padding-top: 1em">
-                    <c:out value="${model.captcha}" escapeXml="false"/>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="${model.recaptchaSiteKey}"></div>
                 </p>
             </c:if>
 

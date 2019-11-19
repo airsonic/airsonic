@@ -17,6 +17,7 @@
   ~  Copyright 2015 (C) Sindre Mehus
   --%>
 
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <div style="float:right;padding-right:1em">
@@ -26,12 +27,12 @@
     </c:url>
     <c:choose>
         <c:when test="${model.viewAsList}">
-            <img src="<spring:theme code="viewAsListImage"/>" alt="" class="headerSelected" style="margin-right:8px"/>
-            <a href="${changeViewUrl}"><img src="<spring:theme code="viewAsGridImage"/>" alt=""/></a>
+            <img src="<spring:theme code='viewAsListImage'/>" alt="" class="headerSelected" style="margin-right:8px"/>
+            <a href="${changeViewUrl}"><img src="<spring:theme code='viewAsGridImage'/>" alt=""/></a>
         </c:when>
         <c:otherwise>
-            <a href="${changeViewUrl}"><img src="<spring:theme code="viewAsListImage"/>" alt="" style="margin-right:8px"/></a>
-            <img src="<spring:theme code="viewAsGridImage"/>" alt="" class="headerSelected"/>
+            <a href="${changeViewUrl}"><img src="<spring:theme code='viewAsListImage'/>" alt="" style="margin-right:8px"/></a>
+            <img src="<spring:theme code='viewAsGridImage'/>" alt="" class="headerSelected"/>
         </c:otherwise>
     </c:choose>
 </div>

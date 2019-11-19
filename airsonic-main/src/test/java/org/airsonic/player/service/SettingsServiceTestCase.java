@@ -36,7 +36,7 @@ public class SettingsServiceTestCase extends TestCase {
     private SettingsService settingsService;
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         String airsonicHome = TestCaseUtils.airsonicHomePathForTest();
         System.setProperty("airsonic.home", airsonicHome);
         new File(airsonicHome, "airsonic.properties").delete();

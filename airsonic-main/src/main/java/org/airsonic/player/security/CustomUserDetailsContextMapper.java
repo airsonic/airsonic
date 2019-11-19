@@ -40,7 +40,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
     // ~ Instance fields
     // ================================================================================================
 
-    private final Logger logger = LoggerFactory.getLogger(CustomUserDetailsContextMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CustomUserDetailsContextMapper.class);
     private String passwordAttributeName = "userPassword";
 
     @Autowired
@@ -56,7 +56,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
                                           Collection<? extends GrantedAuthority> authorities) {
         String dn = ctx.getNameInNamespace();
 
-        logger.debug("Mapping user details from context with DN: " + dn);
+        LOG.debug("Mapping user details from context with DN: " + dn);
 
         // User must be defined in Airsonic, unless auto-shadowing is enabled.
         User user = securityService.getUserByName(username, false);
@@ -69,7 +69,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
             newUser.setStreamRole(true);
             newUser.setSettingsRole(true);
             securityService.createUser(newUser);
-            logger.info("Created local user '" + username + "' for DN " + dn);
+            LOG.info("Created local user '" + username + "' for DN " + dn);
             user = securityService.getUserByName(username, false);
         }
 
@@ -110,7 +110,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
 
     public void mapUserToContext(UserDetails user, DirContextAdapter ctx) {
         throw new UnsupportedOperationException(
-                "LdapUserDetailsMapper only supports reading from a context. Please"
+                "LdapUserDetailsMapper only supports reading from a context. Please "
                         + "use a subclass if mapUserToContext() is required.");
     }
 

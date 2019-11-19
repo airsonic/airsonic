@@ -25,8 +25,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -34,7 +34,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,7 +57,7 @@ public class MainController  {
     @Autowired
     private MediaFileService mediaFileService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
                                                  HttpServletRequest request,
                                                  HttpServletResponse response) throws Exception {
@@ -107,7 +106,7 @@ public class MainController  {
 
         int userPaginationPreference = userSettings.getPaginationSize();
 
-        if(userPaginationPreference <= 0) {
+        if (userPaginationPreference <= 0) {
             showAll = true;
         }
 
@@ -157,6 +156,7 @@ public class MainController  {
             map.put("siblingAlbums", siblingAlbums);
             map.put("artist", guessArtist(children));
             map.put("album", guessAlbum(children));
+            map.put("musicBrainzReleaseId", guessMusicBrainzReleaseId(children));
         }
 
         try {
@@ -193,12 +193,12 @@ public class MainController  {
         }
 
         return new ModelAndView(view, "model", map);
-}
+    }
 
     private <T> boolean trimToSize(Boolean showAll, List<T> list, int userPaginationPreference) {
         boolean trimmed = false;
-        if(!BooleanUtils.isTrue(showAll)) {
-            if(list.size() > userPaginationPreference) {
+        if (!BooleanUtils.isTrue(showAll)) {
+            if (list.size() > userPaginationPreference) {
                 trimmed = true;
                 list.subList(userPaginationPreference, list.size()).clear();
             }
@@ -264,7 +264,16 @@ public class MainController  {
         return null;
     }
 
-    private List<MediaFile> getMultiFolderChildren(List<MediaFile> mediaFiles) throws IOException {
+    private String guessMusicBrainzReleaseId(List<MediaFile> children) {
+        for (MediaFile child : children) {
+            if (child.isFile() && child.getMusicBrainzReleaseId() != null) {
+                return child.getMusicBrainzReleaseId();
+            }
+        }
+        return null;
+    }
+
+    private List<MediaFile> getMultiFolderChildren(List<MediaFile> mediaFiles) {
         SortedSet<MediaFile> result = new TreeSet<>(new MediaFileComparator(settingsService.isSortAlbumsByYear()));
         for (MediaFile mediaFile : mediaFiles) {
             if (mediaFile.isFile()) {
@@ -275,7 +284,7 @@ public class MainController  {
         return new ArrayList<>(result);
     }
 
-    private List<MediaFile> getAncestors(MediaFile dir) throws IOException {
+    private List<MediaFile> getAncestors(MediaFile dir) {
         LinkedList<MediaFile> result = new LinkedList<>();
 
         try {

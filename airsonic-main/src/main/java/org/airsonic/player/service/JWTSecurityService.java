@@ -13,14 +13,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Date;
 
 @Service("jwtSecurityService")
 public class JWTSecurityService {
-    private static final Logger logger = LoggerFactory.getLogger(JWTSecurityService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JWTSecurityService.class);
 
     public static final String JWT_PARAM_NAME = "jwt";
     public static final String CLAIM_PATH = "path";
@@ -41,18 +40,14 @@ public class JWTSecurityService {
     }
 
     public static Algorithm getAlgorithm(String jwtKey) {
-        try {
-            return Algorithm.HMAC256(jwtKey);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        return Algorithm.HMAC256(jwtKey);
     }
 
     private static String createToken(String jwtKey, String path, Date expireDate) {
         UriComponents components = UriComponentsBuilder.fromUriString(path).build();
         String query = components.getQuery();
         String claim = components.getPath() + (!StringUtils.isBlank(query) ? "?" + components.getQuery() : "");
-        logger.debug("Creating token with claim " + claim);
+        LOG.debug("Creating token with claim " + claim);
         return JWT.create()
                 .withClaim(CLAIM_PATH, claim)
                 .withExpiresAt(expireDate)

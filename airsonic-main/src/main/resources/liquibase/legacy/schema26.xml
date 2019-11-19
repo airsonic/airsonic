@@ -46,6 +46,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema26_003" author="muff1nman">
+        <validCheckSum>8:0c6447f4d1ccad4b86d908f9533df044</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="music_file_info" />
@@ -71,6 +72,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema26_004" author="muff1nman">
+        <validCheckSum>8:d9c3069bd0ebe8f33546115abdf1eb98</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="internet_radio" />
@@ -96,6 +98,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema26_005" author="muff1nman">
+        <validCheckSum>8:c53234c8f3594f463f5a929bb769112b</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="player" />

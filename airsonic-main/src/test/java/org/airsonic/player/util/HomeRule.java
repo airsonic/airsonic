@@ -1,7 +1,7 @@
 package org.airsonic.player.util;
 
-import org.junit.rules.ExternalResource;
 import org.airsonic.player.TestCaseUtils;
+import org.junit.rules.ExternalResource;
 
 public class HomeRule extends ExternalResource {
     @Override
