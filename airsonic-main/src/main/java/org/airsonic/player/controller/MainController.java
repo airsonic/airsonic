@@ -132,7 +132,7 @@ public class MainController  {
         map.put("viewAsList", isViewAsList(request, userSettings));
         if (dir.isAlbum()) {
             List<MediaFile> siblingAlbums = getSiblingAlbums(dir);
-            List<MediaFile> allDiscs = getAllAlbumDiscs(dir);
+            List<MediaFile> allDiscs = getAllDiscsForAlbum(dir);
             siblingAlbums.removeAll(allDiscs);
             collapseMultiDiscAlbums(siblingAlbums);
             SortedMap<MediaFile, List<MediaFile>> discFileMap;
@@ -310,13 +310,9 @@ public class MainController  {
         return result;
     }
 
-    private List<MediaFile> getAllAlbumDiscs(MediaFile dir) {
+    private List<MediaFile> getAllDiscsForAlbum(MediaFile dir) {
         List<MediaFile> result = new ArrayList<>();
-        if (dir.getAlbumName() == null) {
-            result.add(dir);
-            return result;
-        }
-        if (dir.getDiscNumber() != null) {
+        if (dir.getAlbumName() != null && dir.getDiscNumber() != null) {
             MediaFile parent = mediaFileService.getParentOf(dir);
             List<MediaFile> siblings = mediaFileService.getChildrenOf(parent, false, true, true);
             result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && dir.getAlbumName().equals(sibling.getAlbumName()) && sibling.getDiscNumber() != null).collect(Collectors.toList()));
