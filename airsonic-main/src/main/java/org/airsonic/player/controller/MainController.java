@@ -316,7 +316,7 @@ public class MainController  {
             result.add(dir);
             return result;
         }
-        if (dir.isAlbum() && dir.getDiscNumber() != null) {
+        if (dir.getDiscNumber() != null) {
             MediaFile parent = mediaFileService.getParentOf(dir);
             List<MediaFile> siblings = mediaFileService.getChildrenOf(parent, false, true, true);
             result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && dir.getAlbumName().equals(sibling.getAlbumName()) && sibling.getDiscNumber() != null).collect(Collectors.toList()));
