@@ -311,17 +311,7 @@ public class PlayQueue {
      * @param index The playlist index.
      */
     public synchronized void moveUp(int index) {
-        makeBackup();
-        if (index <= 0 || index >= size()) {
-            return;
-        }
-        Collections.swap(files, index, index - 1);
-
-        if (this.index == index) {
-            this.index--;
-        } else if (this.index == index - 1) {
-            this.index++;
-        }
+        moveDown(index - 1);
     }
 
     /**

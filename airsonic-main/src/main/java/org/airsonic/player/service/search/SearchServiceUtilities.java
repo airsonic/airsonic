@@ -138,7 +138,7 @@ public class SearchServiceUtilities {
 
     public final boolean addIgnoreNull(Collection<?> collection, IndexType indexType,
             int subjectId) {
-        if (indexType == IndexType.ALBUM | indexType == IndexType.SONG) {
+        if (indexType == IndexType.ALBUM || indexType == IndexType.SONG) {
             return addIgnoreNull(collection, mediaFileService.getMediaFile(subjectId));
         } else if (indexType == IndexType.ALBUM_ID3) {
             return addIgnoreNull(collection, albumDao.getAlbum(subjectId));
@@ -163,8 +163,8 @@ public class SearchServiceUtilities {
     public final void addIfAnyMatch(SearchResult dist, IndexType subjectIndexType,
             Document subject) {
         int documentId = getId.apply(subject);
-        if (subjectIndexType == IndexType.ARTIST | subjectIndexType == IndexType.ALBUM
-                | subjectIndexType == IndexType.SONG) {
+        if (subjectIndexType == IndexType.ARTIST || subjectIndexType == IndexType.ALBUM
+                || subjectIndexType == IndexType.SONG) {
             addMediaFileIfAnyMatch.accept(dist.getMediaFiles(), documentId);
         } else if (subjectIndexType == IndexType.ARTIST_ID3) {
             addArtistId3IfAnyMatch.accept(dist.getArtists(), documentId);
