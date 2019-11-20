@@ -7,10 +7,6 @@
 
     <script type="text/javascript" language="javascript">
         function init() {
-            <c:if test="${model.listReloadDelay gt 0}">
-            setTimeout("refresh()", ${model.listReloadDelay * 1000});
-            </c:if>
-
             <c:if test="${not model.musicFoldersExist}">
             $().toastmessage("showNoticeToast", "<fmt:message key="top.missing"/>");
             </c:if>
@@ -18,10 +14,6 @@
             <c:if test="${model.isIndexBeingCreated}">
             $().toastmessage("showNoticeToast", "<fmt:message key="home.scan"/>");
             </c:if>
-        }
-
-        function refresh() {
-            top.main.location.href = top.main.location.href;
         }
 
         function playShuffle() {
