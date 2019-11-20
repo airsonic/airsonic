@@ -329,7 +329,7 @@ public class MainController  {
             // combine together discs of the same album
             Map<String, List<MediaFile>> albumMap = new HashMap<>();
             for (MediaFile child: children) {
-                if (child.isAlbum()&& child.getAlbumName() != null && child.getDiscNumber() != null && child.getDiscNumber() > 0) {
+                if (child.isAlbum() && child.getAlbumName() != null && child.getDiscNumber() != null && child.getDiscNumber() > 0) {
                     List<MediaFile> albumList = albumMap.get(child.getAlbumName());
                     if (albumList == null) {
                         albumList = new ArrayList<MediaFile>();
@@ -351,7 +351,7 @@ public class MainController  {
                             disc.setAlbumDiscIds(groupIdList);
                             keep = false;
                         } else {
-                                children.remove(disc);
+                            children.remove(disc);
                         }
                     }
                 }

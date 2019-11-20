@@ -182,7 +182,7 @@ public class MediaScannerServiceTestCase {
 
         System.out.println("--- List of all albums ---");
         System.out.println("name#artist#songCount");
-        List<Album> allAlbums = albumDao.getAlphabetialAlbums(0, 0, true, musicFolderDao.getAllMusicFolders());
+        List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, 0, true, true, musicFolderDao.getAllMusicFolders());
         allAlbums.forEach(album -> System.out.println(album.getName() + "#" + album.getArtist() + "#" + album.getSongCount()));
         Assert.assertEquals(1, allAlbums.size());
         Album album1 = allAlbums.get(0);

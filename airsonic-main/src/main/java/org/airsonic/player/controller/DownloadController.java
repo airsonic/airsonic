@@ -40,8 +40,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -109,7 +109,7 @@ public class DownloadController implements LastModified {
             int[] indexes = request.getParameter("i") == null ? null : ServletRequestUtils.getIntParameters(request, "i");
 
             if (mediaFiles.size() > 0) {
-                response.setHeader("ETag", mediaFiles.stream().map(mf -> Integer.toString(mf.getId())).collect (Collectors.joining ("+")));
+                response.setHeader("ETag", mediaFiles.stream().map(mf -> Integer.toString(mf.getId())).collect(Collectors.joining("+")));
                 response.setHeader("Accept-Ranges", "bytes");
             }
 
@@ -124,7 +124,7 @@ public class DownloadController implements LastModified {
                     if (!securityService.isFolderAccessAllowed(mediaFile, user.getUsername())) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN,
                                            "Access to file " + mediaFile.getId() + " is forbidden for user " + user.getUsername());
-                        return ;
+                        return;
                     }
                 }
 
