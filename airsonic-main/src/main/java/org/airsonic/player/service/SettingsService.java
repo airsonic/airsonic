@@ -131,6 +131,8 @@ public class SettingsService {
     private static final String KEY_DATABASE_MYSQL_VARCHAR_MAXLENGTH = "DatabaseMysqlMaxlength";
     private static final String KEY_DATABASE_USERTABLE_QUOTE = "DatabaseUsertableQuote";
 
+    private static final String KEY_UPNP_PORT = "UPNP_PORT";
+
     // Default values.
     private static final String DEFAULT_JWT_KEY = null;
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
@@ -289,9 +291,9 @@ public class SettingsService {
     public static String getDefaultJDBCUrl() {
         return "jdbc:hsqldb:file:" + getAirsonicHome().getPath() + "/db/" + getFileSystemAppName();
     }
-    
-    public static int getDefaultUPnpPort() {
-        return Optional.ofNullable(System.getProperty("UPNP_PORT")).map(x -> Integer.parseInt(x)).orElse(DEFAULT_UPNP_PORT);
+
+    public static int getDefaultUPnPPort() {
+        return Optional.ofNullable(System.getProperty(KEY_UPNP_PORT)).map(x -> Integer.parseInt(x)).orElse(DEFAULT_UPNP_PORT);
     }
 
     public static File getLogFile() {

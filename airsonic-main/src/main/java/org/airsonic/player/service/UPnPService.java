@@ -115,14 +115,14 @@ public class UPnPService {
         try {
             LOG.info("Starting UPnP service...");
             createService();
-            LOG.info("Successfully started UPnP service on port {}!", SettingsService.getDefaultUPnpPort());
+            LOG.info("Successfully started UPnP service on port {}!", SettingsService.getDefaultUPnPPort());
         } catch (Throwable x) {
             LOG.error("Failed to start UPnP service: " + x, x);
         }
     }
 
     private synchronized void createService() {
-        upnpService = new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(SettingsService.getDefaultUPnpPort()));
+        upnpService = new UpnpServiceImpl(new DefaultUpnpServiceConfiguration(SettingsService.getDefaultUPnPPort()));
 
         // Asynch search for other devices (most importantly UPnP-enabled routers for port-mapping)
         upnpService.getControlPoint().search();
