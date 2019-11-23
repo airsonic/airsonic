@@ -120,6 +120,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            securityService.setAuthenticationManager(authenticationManagerBean());
 
             RESTRequestParameterProcessingFilter restAuthenticationFilter = new RESTRequestParameterProcessingFilter();
             restAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
@@ -155,14 +156,14 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
             http
                     .csrf()
+                    .ignoringAntMatchers("/ws/Sonos/**")
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
                     .and().headers()
                     .frameOptions()
                     .sameOrigin()
                     .and().authorizeRequests()
-                    .antMatchers("/recover*", "/accessDenied*",
-                            "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/login", "/error")
+                    .antMatchers("/recover*", "/accessDenied*", "/style/**", "/icons/**", "/flash/**", "/script/**",
+                            "/login", "/error", "/sonos/**", "/sonoslink/**", "/ws/Sonos/**")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")
