@@ -169,7 +169,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
         try {
             userDao.updateUserSettings(new UserSettings("sindre"));
             fail("Expected DataIntegrityViolationException.");
-        } catch (DataIntegrityViolationException x) {
+        } catch (DataIntegrityViolationException ignored) {
         }
 
         userDao.createUser(new User("sindre", "secret", null));

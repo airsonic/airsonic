@@ -45,17 +45,17 @@ public class HLSControllerTestCase extends TestCase {
         try {
             controller.parseBitRate("asdfl");
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
         try {
             controller.parseBitRate("1000@300");
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
         try {
             controller.parseBitRate("1000@300x400ZZ");
             fail();
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException ignored) {
         }
     }
 
