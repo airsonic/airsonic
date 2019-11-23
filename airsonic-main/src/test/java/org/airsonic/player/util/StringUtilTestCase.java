@@ -20,6 +20,7 @@
 package org.airsonic.player.util;
 
 import junit.framework.TestCase;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -32,20 +33,11 @@ import java.util.Locale;
 public class StringUtilTestCase extends TestCase {
 
     public void testToHtml() {
-        assertEquals(null, StringUtil.toHtml(null));
-        assertEquals("", StringUtil.toHtml(""));
-        assertEquals(" ", StringUtil.toHtml(" "));
-        assertEquals("q &amp; a", StringUtil.toHtml("q & a"));
-        assertEquals("q &amp; a &lt;&gt; b", StringUtil.toHtml("q & a <> b"));
-    }
-
-    public void testRemoveSuffix() {
-        assertEquals("Error in removeSuffix().", "foo", StringUtil.removeSuffix("foo.mp3"));
-        assertEquals("Error in removeSuffix().", "", StringUtil.removeSuffix(".mp3"));
-        assertEquals("Error in removeSuffix().", "foo.bar", StringUtil.removeSuffix("foo.bar.mp3"));
-        assertEquals("Error in removeSuffix().", "foo.", StringUtil.removeSuffix("foo..mp3"));
-        assertEquals("Error in removeSuffix().", "foo", StringUtil.removeSuffix("foo"));
-        assertEquals("Error in removeSuffix().", "", StringUtil.removeSuffix(""));
+        assertEquals(null, StringEscapeUtils.escapeHtml(null));
+        assertEquals("", StringEscapeUtils.escapeHtml(""));
+        assertEquals(" ", StringEscapeUtils.escapeHtml(" "));
+        assertEquals("q &amp; a", StringEscapeUtils.escapeHtml("q & a"));
+        assertEquals("q &amp; a &lt;&gt; b", StringEscapeUtils.escapeHtml("q & a <> b"));
     }
 
     public void testGetMimeType() {
@@ -182,12 +174,6 @@ public class StringUtilTestCase extends TestCase {
 
     private void doTestUtf8Hex(String s) throws Exception {
         assertEquals("Error in utf8hex.", s, StringUtil.utf8HexDecode(StringUtil.utf8HexEncode(s)));
-    }
-
-    public void testMd5Hex() {
-        assertNull("Error in md5Hex().", StringUtil.md5Hex(null));
-        assertEquals("Error in md5Hex().", "d41d8cd98f00b204e9800998ecf8427e", StringUtil.md5Hex(""));
-        assertEquals("Error in md5Hex().", "308ed0af23d48f6d2fd4717e77a23e0c", StringUtil.md5Hex("sindre@activeobjects.no"));
     }
 
     public void testGetUrlFile() {
