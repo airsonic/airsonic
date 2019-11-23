@@ -82,6 +82,8 @@ public class PersonalSettingsController  {
         command.setLastFmEnabled(userSettings.isLastFmEnabled());
         command.setLastFmUsername(userSettings.getLastFmUsername());
         command.setLastFmPassword(userSettings.getLastFmPassword());
+        command.setListenBrainzEnabled(userSettings.isListenBrainzEnabled());
+        command.setListenBrainzToken(userSettings.getListenBrainzToken());
         command.setPaginationSize(userSettings.getPaginationSize());
 
         Locale currentLocale = userSettings.getLocale();
@@ -148,6 +150,8 @@ public class PersonalSettingsController  {
         settings.setKeyboardShortcutsEnabled(command.isKeyboardShortcutsEnabled());
         settings.setLastFmEnabled(command.isLastFmEnabled());
         settings.setLastFmUsername(command.getLastFmUsername());
+        settings.setListenBrainzEnabled(command.isListenBrainzEnabled());
+        settings.setListenBrainzToken(command.getListenBrainzToken());
         settings.setSystemAvatarId(getSystemAvatarId(command));
         settings.setAvatarScheme(getAvatarScheme(command));
         settings.setPaginationSize(command.getPaginationSize());

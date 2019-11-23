@@ -7,13 +7,14 @@
     <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
     <script type="text/javascript" language="javascript">
-        function enableLastFmFields() {
+        function enableFields() {
             $("#lastFm").is(":checked") ? $("#lastFmTable").show() : $("#lastFmTable").hide();
+            $("#listenBrainz").is(":checked") ? $("#listenBrainzTable").show() : $("#listenBrainzTable").hide();
         }
     </script>
 </head>
 
-<body class="mainframe bgcolor1" onload="enableLastFmFields()">
+<body class="mainframe bgcolor1" onload="enableFields()">
 <script type="text/javascript" src="<c:url value='/script/wz_tooltip.js'/>"></script>
 <script type="text/javascript" src="<c:url value='/script/tip_balloon.js'/>"></script>
 
@@ -172,8 +173,12 @@
 
     <table class="indent">
         <tr>
-            <td><form:checkbox path="lastFmEnabled" id="lastFm" cssClass="checkbox" onclick="enableLastFmFields()"/></td>
+            <td><form:checkbox path="lastFmEnabled" id="lastFm" cssClass="checkbox" onclick="enableFields()"/></td>
             <td><label for="lastFm"><fmt:message key="personalsettings.lastfmenabled"/></label></td>
+        </tr>
+        <tr>
+            <td><form:checkbox path="listenBrainzEnabled" id="listenBrainz" cssClass="checkbox" onclick="enableFields()"/></td>
+            <td><label for="listenBrainz"><fmt:message key="personalsettings.listenbrainzenabled"/></label></td>
         </tr>
     </table>
 
@@ -199,6 +204,13 @@
         <tr>
             <td><fmt:message key="personalsettings.lastfmpassword"/></td>
             <td><form:password path="lastFmPassword" size="24"/></td>
+        </tr>
+    </table>
+
+    <table id="listenBrainzTable" style="padding-left:2em">
+        <tr>
+            <td><fmt:message key="personalsettings.listenbrainztoken"/></td>
+            <td><form:input path="listenBrainzToken" size="36"/></td>
         </tr>
     </table>
 

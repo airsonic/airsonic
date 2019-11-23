@@ -21,6 +21,7 @@ package org.airsonic.player.service;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.UserSettings;
 import org.airsonic.player.service.scrobbler.LastFMScrobbler;
+import org.airsonic.player.service.scrobbler.ListenBrainzScrobbler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ import java.util.Date;
 public class AudioScrobblerService {
 
     private LastFMScrobbler lastFMScrobbler;
+    private ListenBrainzScrobbler listenBrainzScrobbler;
     @Autowired
     private SettingsService settingsService;
 
@@ -57,6 +59,13 @@ public class AudioScrobblerService {
                 lastFMScrobbler = new LastFMScrobbler();
             }
             lastFMScrobbler.register(mediaFile, userSettings.getLastFmUsername(), userSettings.getLastFmPassword(), submission, time);
+        }
+
+        if (userSettings.isListenBrainzEnabled() && userSettings.getListenBrainzToken() != null) {
+            if (listenBrainzScrobbler == null) {
+                listenBrainzScrobbler = new ListenBrainzScrobbler();
+            }
+            listenBrainzScrobbler.register(mediaFile, userSettings.getListenBrainzToken(), submission, time);
         }
     }
 
