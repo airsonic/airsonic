@@ -1,0 +1,2 @@
+2019-09-10 06:03:25,323 SUITE Summary Report Files: log_files/smapiConfig/SummaryReport.html and log_files/smapiConfig/smapiConfig.txt
+2019-09-10 06:03:25,323 SUITE Detailed Debug Log File: log_files/smapiConfig/smapiConfig-DEBUG.log

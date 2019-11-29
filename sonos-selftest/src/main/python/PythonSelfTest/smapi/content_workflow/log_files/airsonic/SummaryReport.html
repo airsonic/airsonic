@@ -1,0 +1,663 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"><html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><meta content="IE=Edge" http-equiv="X-UA-Compatible" /><title>Summary Report</title><style type="text/css">.collapse, .expand {
+	width: 20px;
+	height: 20px;
+	border-radius: 16px;
+	font-weight: bold;
+ font-size: 15px;
+	line-height: 22px;
+ color: #FFFFFF;
+	text-shadow: 0 1px 0 #666;
+	text-align: center;
+	text-decoration: none;
+	box-shadow: 1px 1px 2px #000;
+	background: #000000;
+	display: block;
+}
+.list {
+    display:none; 
+}
+.expand {display: none; }
+.collapse:target + .expand {display: block; }
+.collapse:target {display: none; }
+.collapse:target ~ .list {display:inline; }
+
+.collapse:hover, .expand:hover {
+	color: #eee;
+	text-shadow: 0 0 1px #666;
+	text-decoration: none;
+	box-shadow: 0 0 4px #222 inset;
+	opacity: 1;
+}
+
+.list p{
+    height:auto;
+    margin:0;
+}
+</style></head><body><h1>Sonos Self-Test Results</h1><h2>Summary: <span style="color:#FF0000">Fail</span></h2><table><tr><th style="text-align: left;">Build</th><td>1.2.0.768</td></tr><tr><th style="text-align: left;">Executed</th><td>Monday, October 21, 2019 07:28 PM </td></tr><tr><th style="text-align: left;">Duration</th><td>0:00:15.628871</td></tr><tr><th style="text-align: left;">Passed</th><td>98</td></tr><tr><th style="text-align: left;">Warnings</th><td>1</td></tr><tr><th style="text-align: left;">Failed</th><td>2</td></tr></table><h2>Tests:</h2><table style="padding: 3px;"><tr><th style="text-align: left;">Status</th><th style="text-align: left;">Test Case</th><th style="text-align: left;">Data</th></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#FF0000">Failed</span></td><td>HTTPBasedTests
+test_byte_range_seeking_no_end_specified</td><td /></tr><tr><td /><td /><td /></tr><tr><td /><td><span style="color:#FFA000">Instance Messages: </span></td><td /></tr><tr><td /><td>Warn: Attempting to open a URI (http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc) returned an HTTP error code of 500. 2 retries left. Sleeping 5 seconds before next attempt.</td><td /></tr><tr><td /><td>Warn: Attempting to open a URI (http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc) returned an HTTP error code of 500. 1 retries left. Sleeping 5 seconds before next attempt.</td><td /></tr><tr><td /><td>Fail: Attempting to open a partial content URI (http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc) returned an HTTP 500 code</td><td /></tr><tr><td colspan="3"><a class="collapse" href="#collapse0" id="collapse0">+</a><a class="expand" href="#expand0" id="expand0">-</a><br /><div class="list"><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,634 [INFO] SONOS.sonos.workflow.result - Start *test case* test_byte_range_seeking_no_end_specified at Monday, October 21, 2019 07:28 PM</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,634 [INFO] SONOS.sonos.workflow.fixture.HTTPBasedTests - -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,634 [INFO] SONOS.sonos.workflow.fixture.HTTPBasedTests - Start Test Case: 42383 HTTPBasedTests test_byte_range_seeking_no_end_specified</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,634 [PASS] SONOS.sonos.workflow.fixture.HTTPBasedTests - Service must provide a valid track ID ([Test Content]:track in the config file) for this test to run. (expression is True)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,634 [DEBUG] SONOS.sonos.smapi.smapiclient - getMediaURI('66', None)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,637 [DEBUG] SONOS.suds.client - sending to (http://localhost:4040/ws/Sonos) with timeout (30), message:</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;SOAP-ENV:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.sonos.com/Services/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://www.sonos.com/Services/1.1" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;SOAP-ENV:Header&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;tns:credentials&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;tns:deviceId&gt;00-00-00-00-00-00:Z&lt;/tns:deviceId&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;tns:deviceProvider&gt;Sonos&lt;/tns:deviceProvider&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;tns:loginToken&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;tns:token&gt;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJob3VzZWhvbGRpZCI6IlNvbm9zXzNWMnBETm4yN0RGUXVlaGhhRjh1dElPbGVDIiwibGlua2NvZGUiOiI5ODlkOGQwMzQ5N2Y0N2MzYTNiNGI4MzllMTIyN2I1YiIsInVzZXJuYW1lIjoidGVzdCJ9.o7mPEu9efcg_N7F8Zg5waoibV_cxboHh4zoyh61YC0k&lt;/tns:token&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;tns:key&gt;&lt;/tns:key&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;tns:householdId&gt;Sonos_3V2pDNn27DFQuehhaF8utIOleC&lt;/tns:householdId&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;/tns:loginToken&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;/tns:credentials&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;/SOAP-ENV:Header&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;ns0:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;ns1:getMediaURI&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;ns1:id&gt;66&lt;/ns1:id&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;/ns1:getMediaURI&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;/ns0:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;/SOAP-ENV:Envelope&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,638 [DEBUG] SONOS.suds.client - headers = {'SOAPAction': '"http://www.sonos.com/Services/1.1#getMediaURI"', 'Content-Type': 'text/xml; charset=utf-8', 'User-Agent': 'Linux UPnP/1.0 Sonos/33.12-29310 (Self-Test)'}</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,643 [DEBUG] SONOS.suds.client - waited 5 (ms) on server reply</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,644 [DEBUG] SONOS.suds.binding - Reply:</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;"> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;soap:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;getMediaURIResponse xmlns="http://www.sonos.com/Services/1.1"&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;getMediaURIResult&gt;http://localhost:4040/ext/stream?id=66&amp;amp;player=1&amp;amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc&lt;/getMediaURIResult&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;/getMediaURIResponse&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;/soap:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;/soap:Envelope&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,645 [PASS] SONOS.sonos.workflow.fixture.HTTPBasedTests - getMediaURI should return something other than None. ((reply){</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   getMediaURIResult = "http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   timer = 5 (ms)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;"> } is not None)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,645 [PASS] SONOS.sonos.workflow.fixture.HTTPBasedTests - getMediaURI should return a getMediaURIResult. ('getMediaURIResult' found in (reply){</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   getMediaURIResult = "http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   timer = 5 (ms)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;"> })</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:48,676 [WARN] SONOS.sonos.workflow.fixture.HTTPBasedTests - Attempting to open a URI (http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc) returned an HTTP error code of 500. 2 retries left. Sleeping 5 seconds before next attempt.</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:53,717 [WARN] SONOS.sonos.workflow.fixture.HTTPBasedTests - Attempting to open a URI (http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc) returned an HTTP error code of 500. 1 retries left. Sleeping 5 seconds before next attempt.</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,768 [FAIL] SONOS.sonos.workflow.fixture.HTTPBasedTests - Attempting to open a partial content URI (http://localhost:4040/ext/stream?id=66&amp;player=1&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9zdHJlYW0_aWQ9NjYmcGxheWVyPTEiLCJleHAiOjE1NzIyODczMjh9.-3uX7AYcDNkzw9n9d_2IP8eY8h5_KsdwsNiynrhXmZc) returned an HTTP 500 code</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,768 [FAIL] SONOS.sonos.workflow.fixture.HTTPBasedTests - 42383 HTTPBasedTests test_byte_range_seeking_no_end_specified</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,769 [INFO] SONOS.sonos.workflow.fixture.HTTPBasedTests - -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,769 [INFO] SONOS.sonos.workflow.result - End *test case* test_byte_range_seeking_no_end_specified at Monday, October 21, 2019 07:28 PM</pre></div></td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#800080">Warnings</span></td><td>Search
+test_combinatorial_item_types_129316834537479570751535345027097011000</td><td>itemType</td></tr><tr><td /><td /><td /></tr><tr><td /><td><span style="color:#FFA000">Instance Messages: </span></td><td /></tr><tr><td /><td>Warn: Search containers should have their 'itemType' value equal to 'search'. (expression is False)</td><td /></tr><tr><td colspan="3"><a class="collapse" href="#collapse1" id="collapse1">+</a><a class="expand" href="#expand1" id="expand1">-</a><br /><div class="list"><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,772 [INFO] SONOS.sonos.workflow.fixture.Search - Test Case: 84763 Search test_combinatorial_item_types_129316834537479570751535345027097011000 itemType)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,772 [PASS] SONOS.sonos.workflow.fixture.Search - Service must support search ([Capabilities]:search in the config file) for this test to run. (expression is True)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,773 [DEBUG] SONOS.sonos.smapi.smapiclient - getMetadata('search', 0, 100, None)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,775 [DEBUG] SONOS.suds.client - sending to (http://localhost:4040/ws/Sonos) with timeout (30), message:</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;SOAP-ENV:Envelope xmlns:ns0="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://www.sonos.com/Services/1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="http://www.sonos.com/Services/1.1" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;SOAP-ENV:Header&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;tns:credentials&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;tns:deviceId&gt;00-00-00-00-00-00:Z&lt;/tns:deviceId&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;tns:deviceProvider&gt;Sonos&lt;/tns:deviceProvider&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;tns:loginToken&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;tns:token&gt;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJob3VzZWhvbGRpZCI6IlNvbm9zXzNWMnBETm4yN0RGUXVlaGhhRjh1dElPbGVDIiwibGlua2NvZGUiOiI5ODlkOGQwMzQ5N2Y0N2MzYTNiNGI4MzllMTIyN2I1YiIsInVzZXJuYW1lIjoidGVzdCJ9.o7mPEu9efcg_N7F8Zg5waoibV_cxboHh4zoyh61YC0k&lt;/tns:token&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;tns:key&gt;&lt;/tns:key&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;tns:householdId&gt;Sonos_3V2pDNn27DFQuehhaF8utIOleC&lt;/tns:householdId&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;/tns:loginToken&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;/tns:credentials&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;/SOAP-ENV:Header&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;ns0:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;ns1:getMetadata&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;ns1:id&gt;search&lt;/ns1:id&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;ns1:index&gt;0&lt;/ns1:index&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;ns1:count&gt;100&lt;/ns1:count&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;/ns1:getMetadata&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;/ns0:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;/SOAP-ENV:Envelope&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,775 [DEBUG] SONOS.suds.client - headers = {'SOAPAction': '"http://www.sonos.com/Services/1.1#getMetadata"', 'Content-Type': 'text/xml; charset=utf-8', 'User-Agent': 'Linux UPnP/1.0 Sonos/33.12-29310 (Self-Test)'}</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,780 [DEBUG] SONOS.suds.client - waited 4 (ms) on server reply</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,780 [DEBUG] SONOS.suds.binding - Reply:</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;"> &lt;?xml version="1.0" encoding="UTF-8"?&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;soap:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;getMetadataResponse xmlns="http://www.sonos.com/Services/1.1"&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;getMetadataResult&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;index&gt;0&lt;/index&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;count&gt;3&lt;/count&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;total&gt;3&lt;/total&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;mediaCollection&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;id&gt;search-artists&lt;/id&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;itemType&gt;artist&lt;/itemType&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;title&gt;Artists&lt;/title&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;/mediaCollection&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;mediaCollection&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;id&gt;search-albums&lt;/id&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;itemType&gt;album&lt;/itemType&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;title&gt;Albums&lt;/title&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;/mediaCollection&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;mediaCollection&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;id&gt;search-songs&lt;/id&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;itemType&gt;track&lt;/itemType&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">               &lt;title&gt;Songs&lt;/title&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">            &lt;/mediaCollection&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         &lt;/getMetadataResult&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      &lt;/getMetadataResponse&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   &lt;/soap:Body&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">&lt;/soap:Envelope&gt;</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,784 [PASS] SONOS.sonos.workflow.fixture.Search - getMetadata should return something other than None. ((mediaList){</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   Items[] =</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      (mediaCollection){</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         id = "search-artists"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         itemType = "artist"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         title = "Artists"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      },</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      (mediaCollection){</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         id = "search-albums"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         itemType = "album"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         title = "Albums"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      },</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      (mediaCollection){</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         id = "search-songs"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         itemType = "track"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">         title = "Songs"</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">      },</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   index = 0</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   count = 3</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   total = 3</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">   timer = 4 (ms)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;"> } is not None)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,784 [WARN] SONOS.sonos.workflow.fixture.Search - Search containers should have their 'itemType' value equal to 'search'. (expression is False)</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,784 [WARN] SONOS.sonos.workflow.fixture.Search - 84763 Search test_combinatorial_item_types_129316834537479570751535345027097011000</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,784 [INFO] SONOS.sonos.workflow.fixture.Search - -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:28:58,784 [INFO] SONOS.sonos.workflow.result - End *test iteration* 0 of test case test_combinatorial_item_types at Monday, October 21, 2019 07:28 PM</pre></div></td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#FF0000">Failed</span></td><td>ssl_validation
+test_use_secure_endpoint</td><td /></tr><tr><td /><td /><td /></tr><tr><td /><td><span style="color:#FFA000">Instance Messages: </span></td><td /></tr><tr><td /><td>Fail: The partner's secure endpoint should use https.</td><td /></tr><tr><td colspan="3"><a class="collapse" href="#collapse2" id="collapse2">+</a><a class="expand" href="#expand2" id="expand2">-</a><br /><div class="list"><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,039 [INFO] SONOS.sonos.workflow.result - Start *test case* test_use_secure_endpoint at Monday, October 21, 2019 07:29 PM</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,039 [INFO] SONOS.sonos.workflow.fixture.ssl_validation - -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,039 [INFO] SONOS.sonos.workflow.fixture.ssl_validation - Start Test Case: 43420652 ssl_validation test_use_secure_endpoint</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,039 [FAIL] SONOS.sonos.workflow.fixture.ssl_validation - The partner's secure endpoint should use https.</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,039 [FAIL] SONOS.sonos.workflow.fixture.ssl_validation - 43420652 ssl_validation test_use_secure_endpoint</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,040 [INFO] SONOS.sonos.workflow.fixture.ssl_validation - -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -</pre><pre style="padding-left:3em; max-width:1280px;white-space: pre-wrap;">2019-10-21 19:29:00,040 [INFO] SONOS.sonos.workflow.result - End *test case* test_use_secure_endpoint at Monday, October 21, 2019 07:29 PM</pre></div></td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>SMAPIMethodValidation
+test_createitem</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>SMAPIMethodValidation
+test_deleteitem</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>SMAPIMethodValidation
+test_getlastupdate</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>SMAPIMethodValidation
+test_getmediametadata</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>SMAPIMethodValidation
+test_getmetadata</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>SMAPIMethodValidation
+test_search</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Albumart
+test_hi_res_album_art_configuration</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Albumart
+test_token_inside_substitution</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Favorites
+test_getlastupdate_with_change</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_browse_results_pagination_104684855542700779392699882893928277741</td><td>(mediaCollection){
+   id = "albumlists"
+   itemType = "collection"
+   title = "Album Lists"
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_browse_results_pagination_39813693391618648340478720151921451279</td><td>(mediaCollection){
+   id = "albumlist:random"
+   itemType = "albumList"
+   title = "Random"
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_browse_results_pagination_177297404003382066993515403325132118474</td><td>(mediaCollection){
+   id = "albumlist:newest"
+   itemType = "albumList"
+   title = "Recently Added"
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_browse_results_pagination_202206372864188345645785384505147838047</td><td>(mediaCollection){
+   id = "albumlist:starred"
+   itemType = "albumList"
+   title = "Starred"
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_184399969237268210406403261890485660372</td><td>(mediaMetadata){
+   id = "63"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "58"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=63&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYzJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.snl0zKCF890kki5M8XaOdx8VtUnt6EPTZH1gr5nVPZg"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_21528398309946285905860249765224800070</td><td>(mediaMetadata){
+   id = "64"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "58"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=64&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY0JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.a7ANBzmGPM554sfBU4qUDXh5Kb7KBSwc1XZbgxLYx-s"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_21528398309946285905860249765224800070</td><td>(mediaMetadata){
+   id = "64"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "58"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=64&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY0JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.a7ANBzmGPM554sfBU4qUDXh5Kb7KBSwc1XZbgxLYx-s"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_184399969237268210406403261890485660372</td><td>(mediaMetadata){
+   id = "63"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "58"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=63&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYzJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.snl0zKCF890kki5M8XaOdx8VtUnt6EPTZH1gr5nVPZg"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_205961196946850106667996681207073712380</td><td>(mediaMetadata){
+   id = "60"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=60&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYwJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.kNwmWj25EyStcj2TW9Qg9phf_A0DaiC94XlBX5XXd5c"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_148353696147972778090276883651986130681</td><td>(mediaMetadata){
+   id = "62"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=62&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYyJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.6c2OCt6T9d1ajKvcJfUCStCQ0MbdNsVPDCbEGu6-RDg"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_87552525004462432424024146446877835094</td><td>(mediaMetadata){
+   id = "59"
+   itemType = "track"
+   title = "Third title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=59&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTU5JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.1EgE_FJHjTYKlLT-PXJJZuXg3g_reCD2_nG7HcqCQbE"
+         trackNumber = 3
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_71225366497596467392358039276971981466</td><td>(mediaMetadata){
+   id = "61"
+   itemType = "track"
+   title = "Fourth title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=61&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYxJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.hyn8rVp5Lk_kjIHISQxW1NT8Zd9uvePRQF_StRrcIJE"
+         trackNumber = 4
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_71225366497596467392358039276971981466</td><td>(mediaMetadata){
+   id = "61"
+   itemType = "track"
+   title = "Fourth title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=61&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYxJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.hyn8rVp5Lk_kjIHISQxW1NT8Zd9uvePRQF_StRrcIJE"
+         trackNumber = 4
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_87552525004462432424024146446877835094</td><td>(mediaMetadata){
+   id = "59"
+   itemType = "track"
+   title = "Third title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=59&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTU5JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.1EgE_FJHjTYKlLT-PXJJZuXg3g_reCD2_nG7HcqCQbE"
+         trackNumber = 3
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_148353696147972778090276883651986130681</td><td>(mediaMetadata){
+   id = "62"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=62&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYyJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.6c2OCt6T9d1ajKvcJfUCStCQ0MbdNsVPDCbEGu6-RDg"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_205961196946850106667996681207073712380</td><td>(mediaMetadata){
+   id = "60"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=60&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYwJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.kNwmWj25EyStcj2TW9Qg9phf_A0DaiC94XlBX5XXd5c"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_47306970024389801389589472095807773051</td><td>(mediaMetadata){
+   id = "67"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "65"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=67&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY3JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.qnEfKgesyswq9q_SHHTVAzPKQFxRhZKbo6fPBrfAh_Q"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_49904360970823950714175180076625875355</td><td>(mediaMetadata){
+   id = "68"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "65"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=68&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY4JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.TEkUdyCtdTOHtnJuacBSETmmyAHgOKjOTxVWvN5x1NE"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_49904360970823950714175180076625875355</td><td>(mediaMetadata){
+   id = "68"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "65"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=68&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY4JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.TEkUdyCtdTOHtnJuacBSETmmyAHgOKjOTxVWvN5x1NE"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_47306970024389801389589472095807773051</td><td>(mediaMetadata){
+   id = "67"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "65"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=67&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY3JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.qnEfKgesyswq9q_SHHTVAzPKQFxRhZKbo6fPBrfAh_Q"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_311862551768441839437539431333476919198</td><td>(mediaMetadata){
+   id = "69"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "66"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=69&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY5JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.VvHQLzHTM-dkO8ovXgAsRVyO4j7-tz0AVYgXHTabcGA"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_244917394053877540771605440954729616949</td><td>(mediaMetadata){
+   id = "70"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "66"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=70&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTcwJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.S9bQdYfnryyi1dhahp5p8vAnjw4xsZ32sRmqh4ED_w4"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_244917394053877540771605440954729616949</td><td>(mediaMetadata){
+   id = "70"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "66"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=70&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTcwJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.S9bQdYfnryyi1dhahp5p8vAnjw4xsZ32sRmqh4ED_w4"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_311862551768441839437539431333476919198</td><td>(mediaMetadata){
+   id = "69"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "66"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=69&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY5JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.VvHQLzHTM-dkO8ovXgAsRVyO4j7-tz0AVYgXHTabcGA"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_71225366497596467392358039276971981466</td><td>(mediaMetadata){
+   id = "61"
+   itemType = "track"
+   title = "Fourth title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=61&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYxJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.hyn8rVp5Lk_kjIHISQxW1NT8Zd9uvePRQF_StRrcIJE"
+         trackNumber = 4
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_49904360970823950714175180076625875355</td><td>(mediaMetadata){
+   id = "68"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "65"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=68&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY4JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.TEkUdyCtdTOHtnJuacBSETmmyAHgOKjOTxVWvN5x1NE"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_311862551768441839437539431333476919198</td><td>(mediaMetadata){
+   id = "69"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "66"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=69&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY5JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.VvHQLzHTM-dkO8ovXgAsRVyO4j7-tz0AVYgXHTabcGA"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_47306970024389801389589472095807773051</td><td>(mediaMetadata){
+   id = "67"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "65"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=67&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY3JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.qnEfKgesyswq9q_SHHTVAzPKQFxRhZKbo6fPBrfAh_Q"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_205961196946850106667996681207073712380</td><td>(mediaMetadata){
+   id = "60"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=60&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYwJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.kNwmWj25EyStcj2TW9Qg9phf_A0DaiC94XlBX5XXd5c"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_148353696147972778090276883651986130681</td><td>(mediaMetadata){
+   id = "62"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=62&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYyJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.6c2OCt6T9d1ajKvcJfUCStCQ0MbdNsVPDCbEGu6-RDg"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_244917394053877540771605440954729616949</td><td>(mediaMetadata){
+   id = "70"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "First artist"
+         albumArtist = "Fist artist"
+         albumId = "66"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=70&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTcwJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.S9bQdYfnryyi1dhahp5p8vAnjw4xsZ32sRmqh4ED_w4"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_184399969237268210406403261890485660372</td><td>(mediaMetadata){
+   id = "63"
+   itemType = "track"
+   title = "First title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "58"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=63&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTYzJnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.snl0zKCF890kki5M8XaOdx8VtUnt6EPTZH1gr5nVPZg"
+         trackNumber = 1
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_21528398309946285905860249765224800070</td><td>(mediaMetadata){
+   id = "64"
+   itemType = "track"
+   title = "Second title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "58"
+         album = "Second album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=64&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTY0JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.a7ANBzmGPM554sfBU4qUDXh5Kb7KBSwc1XZbgxLYx-s"
+         trackNumber = 2
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Browse
+test_combinatorial_test_browse_to_leaf_87552525004462432424024146446877835094</td><td>(mediaMetadata){
+   id = "59"
+   itemType = "track"
+   title = "Third title"
+   isFavorite = False
+   genre = "Acid"
+   mimeType = "audio/flac"
+   trackMetadata = 
+      (trackMetadata){
+         artist = "Second artist"
+         albumArtist = "Second artist"
+         albumId = "57"
+         album = "First album"
+         duration = 40
+         albumArtURI = "http://localhost:4040/ext/coverArt.view?id=59&amp;size=300&amp;jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2V4dC9jb3ZlckFydC52aWV3P2lkPTU5JnNpemU9MzAwIiwiZXhwIjoxNTcyMjg3MzI4fQ.1EgE_FJHjTYKlLT-PXJJZuXg3g_reCD2_nG7HcqCQbE"
+         trackNumber = 3
+      }
+ }</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>HTTPBasedTests
+test_albumart_uri_valid</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>HTTPBasedTests
+test_byte_range_seeking_beginning_and_end_specified</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_item_types_244638787362077305305759689222081875087</td><td>id</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_56632538497308984270903005013744170573</td><td>(u'search-songs', u'First ')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_111587738836171701542205482332395893800</td><td>(u'search-songs', u'First t')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_277274030211313999590929382068431007327</td><td>(u'search-songs', u'First ti')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_188659531688772172071552951224374901435</td><td>(u'search-songs', u'First tit')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_337714241818628964422117727174854147280</td><td>(u'search-songs', u'First titl')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_181375899588097021291429114517476164741</td><td>(u'search-artists', u'Second')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_252548870423000984843948562298251278150</td><td>(u'search-artists', u'Second ')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_333325553241815550312055546412160524567</td><td>(u'search-artists', u'Second a')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_270978938484406022527659260631986169340</td><td>(u'search-artists', u'Second ar')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_99224664575025666127146007592249889678</td><td>(u'search-artists', u'Second art')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_63541904476066873126880404916673119791</td><td>(u'search-artists', u'Second arti')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_188919148877141415430053934522937651094</td><td>(u'search-artists', u'Second artis')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_326677067692214700993207637778966717390</td><td>(u'search-albums', u'First ')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_122590117566770765998090848533769246745</td><td>(u'search-albums', u'First a')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_194318266302983907863642657142452351210</td><td>(u'search-albums', u'First al')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_9382932219708075452737587046442920336</td><td>(u'search-albums', u'First alb')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_incremental_search_246180329830588679263337439726112765443</td><td>(u'search-albums', u'First albu')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_inputs_237829601409385550092399224542814219566</td><td>1234567890abcdefINVALID987654321</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_inputs_241141155301681835121854327093132997124</td><td>911</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_inputs_311060053710252238656424708343354944443</td><td>??</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_all_inputs_217492388849670131461884670065220263191</td><td>u'Los del R\xedo'</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_83455970626036859195990579030458724143</td><td>(u'self.smapiservice.get_search_container_track()', (0, -1))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_26786378141606074206642698726517444120</td><td>(u'self.smapiservice.get_search_container_track()', (999999, 5))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_18272348131860973811126983983515949965</td><td>(u'self.smapiservice.get_search_container_track()', (0, 999999))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_266065354240924518505077155648932421758</td><td>(u'self.smapiservice.get_search_container_artist()', (0, -1))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_319667186650017896502691563660555807863</td><td>(u'self.smapiservice.get_search_container_artist()', (999999, 5))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_42763360555755396303487925759304198215</td><td>(u'self.smapiservice.get_search_container_artist()', (0, 999999))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_158045885107802149641881153237242675952</td><td>(u'self.smapiservice.get_search_container_album()', (0, -1))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_308567961945112421038348417893487973595</td><td>(u'self.smapiservice.get_search_container_album()', (999999, 5))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_invalid_range_pagination_132753522923605847198530382715363134224</td><td>(u'self.smapiservice.get_search_container_album()', (0, 999999))</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_verify_results_311625000606473378461707165079849691420</td><td>(u'self.smapiservice.get_search_container_track()', u'self.smapiservice.get_search_term_track()')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_verify_results_82562769879428199658291423279774422817</td><td>(u'self.smapiservice.get_search_container_artist()', u'self.smapiservice.get_search_term_artist()')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_combinatorial_search_verify_results_308421698798149044702311439500512778005</td><td>(u'self.smapiservice.get_search_container_album()', u'self.smapiservice.get_search_term_album() ')</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Search
+test_train_ux_search_configuration</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_against_xsd</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_272332973971497266456332647529075436780</td><td>en-US</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_248343605611310727457301781344250627565</td><td>da-DK</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_23920949673594798714881610537253500994</td><td>de-DE</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_209558383677646239374853758766919986738</td><td>fr-FR</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_283763661698541572169492979238300563943</td><td>it-IT</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_262623965426578793023677270906490735673</td><td>es-ES</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_150311247032165249806672952164343491982</td><td>pt-BR</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_59569624563120496288969118986964151009</td><td>sv-SE</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_163849088889100427437282293375901048097</td><td>nl-NL</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_198827217835110272730223144502985916799</td><td>nb-NO</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_283743995608291858621092154611422837437</td><td>ja-JP</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_combinatorial_all_languages_297248705437716225237911204102095587973</td><td>zh-CN</td></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_equal_language_configuration</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_getmetadata_all_languages</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_minimum_config</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Stringtable
+test_unsupported_languages</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8;height : 1;" /></tr><tr><td><span style="color:#00CC33">Passed</span></td><td>Presentationmap
+test_presentation_map</td><td /></tr><tr><td colspan="3" style="background-color:#D8D8D8; height : 1px;" /></tr></table></body></html>
