@@ -14,6 +14,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Test case for Analyzer.
@@ -187,33 +188,46 @@ public class AnalyzerFactoryTestCase {
         String queryStop = "and are as at be but by for if in into is it no not of on " //
                 + "or such that their then there these they this to was will with";
 
+        /*
+         * Unique conjunctions often used in artist fields.
+         */
+        String stopwordsForArtist = "by cv feat vs with";
+
         Arrays.stream(IndexType.values()).flatMap(i -> Arrays.stream(i.getFields())).forEach(n -> {
             List<String> articleTerms = toTermString(n, queryArticle);
             List<String> indexArticleTerms = toTermString(n, queryArticle4Index);
             List<String> stopedTerms = toTermString(n, queryStop);
+            List<String> artistTerms = toTermString(n, stopwordsForArtist);
 
             switch (n) {
 
-                case FieldNames.FOLDER:
-                case FieldNames.MEDIA_TYPE:
-                case FieldNames.GENRE:
-                case FieldNames.ARTIST:
                 case FieldNames.ALBUM:
                 case FieldNames.TITLE:
 
-                    // It is removed because it is included in ENGLISH_STOP_WORDS_SET.
+                    // Deleted because it is a stopword.
                     assertEquals("article : " + n, 0, articleTerms.size());
-                    // Not removed because it is not included in ENGLISH_STOP_WORDS_SET.
-                    assertEquals("sonic server index article: " + n, 6, indexArticleTerms.size());
-                    // It is removed because it is included in ENGLISH_STOP_WORDS_SET.
-                    assertEquals("non-article stop words : " + n, 0, stopedTerms.size());
+                    // "la los" is not deleted(#1235).
+                    assertEquals("sonic server index article: " + n, 2, indexArticleTerms.size());
+                    // Not deleted because it is not a stopword.
+                    assertEquals("non-article stop words : " + n, 30, stopedTerms.size());
+                    // Not deleted because it is not a stopword.
+                    assertEquals("stop words for artsist : " + n, 5, artistTerms.size());
                     break;
 
-                // Legacy has common behavior for all fields.
-                default:
+                case FieldNames.ARTIST:
+
+                    // Deleted because it is a stopword.
                     assertEquals("article : " + n, 0, articleTerms.size());
-                    assertEquals("sonic server index article: " + n, 6, indexArticleTerms.size());
-                    assertEquals("non-article stop words : " + n, 0, stopedTerms.size());
+                    // "la los" is not deleted(#1235).
+                    assertEquals("sonic server index article: " + n, 2, indexArticleTerms.size());
+                    // Not deleted because it is not a stopword(Except by and with).
+                    assertEquals("non-article stop words : " + n, 28, stopedTerms.size());
+                    // Deleted because it is a stopword.
+                    assertEquals("stop words for artsist : " + n, 0, artistTerms.size());
+                    break;
+
+                default:
+                    fail(); // no analyze field is not applicable
                     break;
             }
         });
@@ -239,14 +253,16 @@ public class AnalyzerFactoryTestCase {
     public void testStopwardAndFullWidth() {
 
         /*
-         * Stop word is removed.
+         * This and is not deleted because they are different from the default stopword.
          */
         String queryHalfWidth = "THIS IS FULL-WIDTH SENTENCES.";
         List<String> terms = toTermString(queryHalfWidth);
-        assertEquals(3, terms.size());
-        assertEquals("full", terms.get(0));
-        assertEquals("width", terms.get(1));
-        assertEquals("sentences", terms.get(2));
+        assertEquals(5, terms.size());
+        assertEquals("this", terms.get(0));
+        assertEquals("is", terms.get(1));
+        assertEquals("full", terms.get(2));
+        assertEquals("width", terms.get(3));
+        assertEquals("sentences", terms.get(4));
 
         /*
          * Legacy can avoid Stopward if it is full width.
@@ -264,10 +280,12 @@ public class AnalyzerFactoryTestCase {
          * The filter order has been changed properly
          * as it is probably not a deliberate specification.
          */
-        assertEquals(3, terms.size());
-        assertEquals("full", terms.get(0));
-        assertEquals("width", terms.get(1));
-        assertEquals("sentences", terms.get(2));
+        assertEquals(5, terms.size());
+        assertEquals("this", terms.get(0));
+        assertEquals("is", terms.get(1));
+        assertEquals("full", terms.get(2));
+        assertEquals("width", terms.get(3));
+        assertEquals("sentences", terms.get(4));
 
     }
 
@@ -537,9 +555,11 @@ public class AnalyzerFactoryTestCase {
          */
         String query = "This is Airsonic's analysis.";
         List<String> terms = toTermString(query);
-        assertEquals(2, terms.size());
-        assertEquals("airsonic", terms.get(0));
-        assertEquals("analysis", terms.get(1));
+        assertEquals(4, terms.size());
+        assertEquals("this", terms.get(0));// Not deleted because it is not a stopword
+        assertEquals("is", terms.get(1));// Not deleted because it is not a stopword
+        assertEquals("airsonic", terms.get(2));
+        assertEquals("analysis", terms.get(3));
 
         /*
          * XXX 3.x -> 8.x :
@@ -587,13 +607,18 @@ public class AnalyzerFactoryTestCase {
          */
         String query = "This is formed with a form of the verb \"have\" and a past participl.";
         List<String> terms = toTermString(query);
-        assertEquals(6, terms.size());
-        assertEquals("formed", terms.get(0));// leave passive / not "form"
-        assertEquals("form", terms.get(1));
-        assertEquals("verb", terms.get(2));
-        assertEquals("have", terms.get(3));
-        assertEquals("past", terms.get(4));
-        assertEquals("participl", terms.get(5));
+        assertEquals(11, terms.size());
+        assertEquals("this", terms.get(0));// Not deleted because it is not a stopword
+        assertEquals("is", terms.get(1));// Not deleted because it is not a stopword
+        assertEquals("formed", terms.get(2));// leave passive / not "form"
+        assertEquals("with", terms.get(3));// Not deleted because it is not a stopword
+        assertEquals("form", terms.get(4));
+        assertEquals("of", terms.get(5));
+        assertEquals("verb", terms.get(6));
+        assertEquals("have", terms.get(7));
+        assertEquals("and", terms.get(8));// Not deleted because it is not a stopword
+        assertEquals("past", terms.get(9));
+        assertEquals("participl", terms.get(10));
 
     }
 
