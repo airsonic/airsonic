@@ -111,7 +111,7 @@ public class LegacyHsqlUtil {
 
         String timestamp = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now());
         Path source = Paths.get(SettingsService.getDefaultJDBCPath()).getParent();
-        Path destination = Paths.get(String.format("%s.backup.%s", SettingsService.getDefaultJDBCPath(), timestamp));
+        Path destination = source.resolveSibling(String.format("%s.backup.%s", source.getFileName().toString(), timestamp));
 
         LOG.debug("Performing HSQLDB database backup...");
         FileUtils.copyDirectory(source.toFile(), destination.toFile());
