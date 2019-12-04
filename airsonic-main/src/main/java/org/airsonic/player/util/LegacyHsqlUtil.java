@@ -4,11 +4,11 @@ import org.airsonic.player.service.SettingsService;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -24,15 +24,14 @@ public class LegacyHsqlUtil {
      * Return the current version of the HSQLDB database, as reported by the database properties file.
      */
     public static String getHsqldbDatabaseVersion() {
-        Properties prop = new Properties();
         File configFile = new File(SettingsService.getDefaultJDBCPath() + ".properties");
         if (!configFile.exists()) {
             LOG.debug("HSQLDB database doesn't exist, cannot determine version");
             return null;
         }
-        try (InputStream stream = new FileInputStream(configFile)) {
-            prop.load(stream);
-            return prop.getProperty("version");
+        try {
+            Properties properties = PropertiesLoaderUtils.loadProperties(new FileSystemResource(configFile));
+            return properties.getProperty("version");
         } catch (IOException e) {
             LOG.error("Failed to determine HSQLDB database version", e);
             return null;
