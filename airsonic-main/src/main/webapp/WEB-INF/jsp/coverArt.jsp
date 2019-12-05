@@ -76,7 +76,7 @@ PARAMETERS
                  style="position: relative; top: 8px; left: 8px; z-index: 2; display:none" >
         </div>
 
-        <c:if test="${not empty param.albumId}">
+        <c:if test="${not empty param.albumId or not empty param.playlistId}">
           <div style="position: relative; width: 0; height: 0">
               <img alt="Add overlay" src="<spring:theme code='addOverlayImage'/>" id="${addId}"
                    style="position: relative; top: 8px; left: 48px; z-index: 2; display:none" >
@@ -153,6 +153,9 @@ PARAMETERS
     $("#${addId}").click(function () {
         <c:if test="${not empty param.albumId}">
         top.playQueue.onAdd(${param.albumId});
+        </c:if>
+        <c:if test="${not empty param.playlistId}">
+        top.playQueue.onAddPlaylist(${param.playlistId});
         </c:if>
     });
 </script>

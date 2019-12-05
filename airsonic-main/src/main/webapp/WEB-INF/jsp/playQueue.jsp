@@ -380,6 +380,9 @@
     function onAddNext(id) {
         playQueueService.addAt(id, getCurrentSongIndex() + 1, playQueueCallback);
     }
+    function onAddPlaylist(id, index) {
+        playQueueService.addPlaylist(id, index, playQueueCallback);
+    }
     function onShuffle() {
         playQueueService.shuffle(playQueueCallback);
     }
