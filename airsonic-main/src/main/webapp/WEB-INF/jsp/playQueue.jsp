@@ -532,6 +532,16 @@
             $("#empty").hide();
         }
 
+        // On the web player, the play button is handled by MEJS and does
+        // nothing if a first song hasn't been loaded.
+        <c:if test="${model.player.web}">
+        var player = $('#audioPlayer').get(0);
+        if (songs.length > 0 && (!player.src || !currentStreamUrl)) {
+            player.src = songs[0].streamUrl;
+            currentStreamUrl = songs[0].streamUrl;
+        }
+        </c:if>
+
         // Delete all the rows except for the "pattern" row
         dwr.util.removeAllRows("playlistBody", { filter:function(tr) {
             return (tr.id != "pattern");
