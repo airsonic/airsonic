@@ -2244,8 +2244,7 @@ public class SubsonicRESTController {
 
     private AlbumInfo getAlbumInfoInternal(AlbumNotes albumNotes) {
         AlbumInfo result = new AlbumInfo();
-        if (albumNotes != null)
-        {
+        if (albumNotes != null) {
             result.setNotes(albumNotes.getNotes());
             result.setMusicBrainzId(albumNotes.getMusicBrainzId());
             result.setLastFmUrl(albumNotes.getLastFmUrl());

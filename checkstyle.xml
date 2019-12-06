@@ -44,6 +44,7 @@
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="LeftCurly"/>
         <module name="MethodParamPad"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="NoWhitespaceBefore">
@@ -55,6 +56,7 @@
         <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
         <module name="RequireThis"/>
+        <module name="RightCurly"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="SingleSpaceSeparator"/>

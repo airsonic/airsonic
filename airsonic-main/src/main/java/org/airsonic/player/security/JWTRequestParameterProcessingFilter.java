@@ -76,19 +76,15 @@ public class JWTRequestParameterProcessingFilter implements Filter {
                 // authentication
                 return;
             }
-        }
-        catch (InternalAuthenticationServiceException failed) {
+        } catch (InternalAuthenticationServiceException failed) {
             LOG.error(
                     "An internal error occurred while trying to authenticate the user.",
                     failed);
             unsuccessfulAuthentication(request, response, failed);
 
             return;
-        }
-        catch (AuthenticationException failed) {
-            // Authentication failed
-            unsuccessfulAuthentication(request, response, failed);
-
+        } catch (AuthenticationException e) {
+            unsuccessfulAuthentication(request, response, e);
             return;
         }
 

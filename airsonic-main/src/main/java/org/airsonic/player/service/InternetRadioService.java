@@ -43,14 +43,18 @@ public class InternetRadioService {
      * Generic exception class for playlists.
      */
     private class PlaylistException extends Exception {
-        public PlaylistException(String message) { super(message); }
+        public PlaylistException(String message) {
+            super(message);
+        }
     }
 
     /**
      * Exception thrown when the remote playlist is too large to be parsed completely.
      */
     private class PlaylistTooLarge extends PlaylistException {
-        public PlaylistTooLarge(String message) { super(message); }
+        public PlaylistTooLarge(String message) {
+            super(message);
+        }
     }
 
     /**
@@ -66,7 +70,9 @@ public class InternetRadioService {
      * Exception thrown when too many redirects occurred when retrieving a remote playlist.
      */
     private class PlaylistHasTooManyRedirects extends PlaylistException {
-        public PlaylistHasTooManyRedirects(String message) { super(message); }
+        public PlaylistHasTooManyRedirects(String message) {
+            super(message);
+        }
     }
 
     public InternetRadioService() {
@@ -233,8 +239,7 @@ public class InternetRadioService {
             } else {
                 playlist = SpecificPlaylistFactory.getInstance().readFrom(in, contentEncoding);
             }
-        }
-        finally {
+        } finally {
             urlConnection.disconnect();
         }
         if (playlist == null) {
