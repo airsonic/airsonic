@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AbstractDao {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDao.class);
-    
+
     @Autowired
     private DaoHelper daoHelper;
 

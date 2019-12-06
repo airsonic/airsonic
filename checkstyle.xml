@@ -10,6 +10,11 @@
 
     <property name="fileExtensions" value="java, properties, xml"/>
 
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Unnecessary trailing whitespace"/>
+    </module>
+
     <module name="FileTabCharacter"/>
 
     <!-- This is a temporary workaround until ^M line endings is added to upstream checkstyle -->

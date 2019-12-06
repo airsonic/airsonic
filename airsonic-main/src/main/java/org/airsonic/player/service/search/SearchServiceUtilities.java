@@ -43,11 +43,11 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 /**
  * Termination used by SearchService.
- * 
+ *
  * Since SearchService operates as a proxy for storage (DB) using lucene,
  * there are many redundant descriptions different from essential data processing.
  * This class is a transfer class for saving those redundant descriptions.
- * 
+ *
  * Exception handling is not termination,
  * so do not include exception handling in this class.
  */

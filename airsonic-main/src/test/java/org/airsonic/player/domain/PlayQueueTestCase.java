@@ -301,7 +301,7 @@ public class PlayQueueTestCase extends TestCase {
         public String getAlbumName() {
             return album;
         }
-        
+
         @Override
         public File getFile() {
             return new File(name);

@@ -20,7 +20,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 /*
  * Test cases related to #1142.
  * The filter is not properly applied when analyzing the query,
- * 
+ *
  * In the process of hardening the Analyzer implementation,
  * this problem is solved side by side.
  */

@@ -44,7 +44,7 @@ public enum IndexType {
     ALBUM(
         fieldNames(
             FieldNames.ALBUM,
-            FieldNames.ARTIST), 
+            FieldNames.ARTIST),
             // FieldNames.FOLDER), // XXX 3.x -> 8.x : Remove folder from multi-field search condition
         boosts(
             entry(FieldNames.ALBUM, 1.1F))),
@@ -72,7 +72,7 @@ public enum IndexType {
 
     /**
      * Define the field's applied boost value when searching IndexType.
-     * 
+     *
      * @param entry {@link #entry(String, float)}.
      *              When specifying multiple values, enumerate entries.
      * @return Map of boost values ​​to be applied to the field
@@ -86,7 +86,7 @@ public enum IndexType {
 
     /**
      * Create an entry representing the boost value for the field.
-     * 
+     *
      * @param k Field name defined by FieldNames
      * @param v Boost value
      */
@@ -114,7 +114,7 @@ public enum IndexType {
 
     /**
      * Returns a map of fields and boost values.
-     * 
+     *
      * @return Map of fields and boost values
      * @since legacy
      * @see org.apache.lucene.search.BoostQuery
@@ -125,7 +125,7 @@ public enum IndexType {
 
     /**
      * Return some of the fields defined in the index.
-     * 
+     *
      * @return Fields mainly used in multi-field search
      * @since legacy
      */

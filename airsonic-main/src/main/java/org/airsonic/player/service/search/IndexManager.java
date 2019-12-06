@@ -54,7 +54,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 /**
  * Function class that is strongly linked to the lucene index implementation.
  * Legacy has an implementation in SearchService.
- * 
+ *
  * If the index CRUD and search functionality are in the same class,
  * there is often a dependency conflict on the class used.
  * Although the interface of SearchService is left to maintain the legacy implementation,
@@ -68,7 +68,7 @@ public class IndexManager {
     /**
      * Schema version of Airsonic index.
      * It may be incremented in the following cases:
-     * 
+     *
      *  - Incompatible update case in Lucene index implementation
      *  - When schema definition is changed due to modification of AnalyzerFactory,
      *    DocumentFactory or the class that they use.

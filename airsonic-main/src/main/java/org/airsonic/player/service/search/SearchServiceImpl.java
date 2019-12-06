@@ -93,7 +93,7 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * Common processing of random method.
-     * 
+     *
      * @param count Number of albums to return.
      * @param id2ListCallBack Callback to get D from id and store it in List
      */

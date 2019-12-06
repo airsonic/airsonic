@@ -20,10 +20,10 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 /*
  * Test cases related to #1139.
  * Confirming whether shuffle search can be performed correctly in MusicFolder containing special strings.
- * 
+ *
  * (Since the query of getRandomAlbums consists of folder paths only,
  * this verification is easy to perform.)
- * 
+ *
  * This test case is a FalsePattern for search,
  * but there may be problems with the data flow prior to creating the search index.
  */
