@@ -300,7 +300,7 @@ public class CoverArtController implements LastModified {
                 throw new RuntimeException(e);
             }
         } else {
-            is =  new FileInputStream(file);
+            is = new FileInputStream(file);
             mimeType = StringUtil.getMimeType(FilenameUtils.getExtension(file.getName()));
         }
         return Pair.of(is, mimeType);

@@ -44,7 +44,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/createShare")
-public class ShareManagementController  {
+public class ShareManagementController {
 
     @Autowired
     private MediaFileService mediaFileService;

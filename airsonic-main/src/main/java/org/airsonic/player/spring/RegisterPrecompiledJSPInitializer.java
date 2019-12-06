@@ -38,7 +38,7 @@ public class RegisterPrecompiledJSPInitializer implements ServletContextInitiali
 
     private static void registerPrecompiledJSPs(ServletContext servletContext) {
         WebApp webApp = parseXmlFragment();
-        for (ServletDef def :  webApp.getServletDefs()) {
+        for (ServletDef def : webApp.getServletDefs()) {
             LOG.trace("Registering precompiled JSP: {} -> {}", def.getName(), def.getSclass());
             ServletRegistration.Dynamic reg = servletContext.addServlet(def.getName(), def.getSclass());
             // Need to set loadOnStartup somewhere between 0 and 128. 0 is highest priority. 99 should be fine

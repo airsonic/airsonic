@@ -45,7 +45,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/podcast")
-public class PodcastController  {
+public class PodcastController {
 
     private static final DateFormat RSS_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
     @Autowired

@@ -46,7 +46,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/play.m3u")
-public class M3UController  {
+public class M3UController {
 
     @Autowired
     private PlayerService playerService;
@@ -89,7 +89,7 @@ public class M3UController  {
             }
             out.println("#EXTINF:" + duration + "," + mediaFile.getArtist() + " - " + mediaFile.getTitle());
 
-            String urlNoAuth = url +  "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." +
+            String urlNoAuth = url + "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." +
                     transcodingService.getSuffix(player, mediaFile, null);
             String urlWithAuth = jwtSecurityService.addJWTToken(urlNoAuth);
             out.println(urlWithAuth);

@@ -97,7 +97,7 @@ public class DocumentFactory {
         doc.add(new StoredField(field, value, TYPE_KEY));
     };
 
-    private BiConsumer<@NonNull  Document, @NonNull String> fieldMediatype = (doc, value) ->
+    private BiConsumer<@NonNull Document, @NonNull String> fieldMediatype = (doc, value) ->
         fieldKey.accept(doc, FieldNames.MEDIA_TYPE, value);
 
     private BiConsumer<@NonNull Document, @NonNull String> fieldFolderPath = (doc, value) ->

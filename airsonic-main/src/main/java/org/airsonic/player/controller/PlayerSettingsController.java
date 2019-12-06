@@ -49,7 +49,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/playerSettings")
-public class PlayerSettingsController  {
+public class PlayerSettingsController {
 
     @Autowired
     private PlayerService playerService;

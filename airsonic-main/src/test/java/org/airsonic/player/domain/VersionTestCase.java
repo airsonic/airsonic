@@ -31,7 +31,7 @@ public class VersionTestCase extends TestCase {
     /**
      * Tests that equals(), hashCode(), toString() and compareTo() works.
      */
-    public void testVersion()  {
+    public void testVersion() {
         doTestVersion("0.0", "0.1");
         doTestVersion("1.5", "2.3");
         doTestVersion("2.3", "2.34");

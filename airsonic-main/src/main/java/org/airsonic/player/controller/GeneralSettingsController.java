@@ -40,7 +40,7 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping("/generalSettings")
-public class GeneralSettingsController  {
+public class GeneralSettingsController {
 
     @Autowired
     private SettingsService settingsService;

@@ -46,7 +46,7 @@ import static org.springframework.http.HttpStatus.OK;
  */
 @Controller
 @RequestMapping("/proxy")
-public class ProxyController  {
+public class ProxyController {
 
     @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -44,9 +44,9 @@ public class SearchServiceImpl implements SearchService {
     private static final Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     @Autowired
-    private QueryFactory           queryFactory;
+    private QueryFactory queryFactory;
     @Autowired
-    private IndexManager           indexManager;
+    private IndexManager indexManager;
     @Autowired
     private SearchServiceUtilities util;
 

@@ -73,7 +73,7 @@ public class ArtistUpnpProcessor extends UpnpContentProcessor <Artist, Album> {
         return getArtistDao().getArtist(Integer.parseInt(id));
     }
 
-    public  List<Album> getChildren(Artist artist) {
+    public List<Album> getChildren(Artist artist) {
         List<MusicFolder> allFolders = getDispatcher().getSettingsService().getAllMusicFolders();
         List<Album> allAlbums = getAlbumProcessor().getAlbumDao().getAlbumsForArtist(artist.getName(), allFolders);
         if (allAlbums.size() > 1) {

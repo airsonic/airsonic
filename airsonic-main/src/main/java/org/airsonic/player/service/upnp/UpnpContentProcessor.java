@@ -125,7 +125,7 @@ public abstract class UpnpContentProcessor<T extends Object, U extends Object> {
                                      SortCriterion[] orderBy) {
         DIDLContent didl = new DIDLContent();
 
-        Class clazz =  (Class) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        Class clazz = (Class) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
         try {
             List<MusicFolder> allFolders = getDispatchingContentDirectory().getSettingsService().getAllMusicFolders();

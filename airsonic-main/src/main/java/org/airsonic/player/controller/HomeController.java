@@ -42,7 +42,7 @@ import static org.springframework.web.bind.ServletRequestUtils.getStringParamete
  */
 @Controller
 @RequestMapping("/home")
-public class HomeController  {
+public class HomeController {
 
     private static final int LIST_SIZE = 40;
 
