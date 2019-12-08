@@ -45,7 +45,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/left")
-public class LeftController  {
+public class LeftController {
 
     // Update this time if you want to force a refresh in clients.
     private static final Calendar LAST_COMPATIBILITY_TIME = Calendar.getInstance();

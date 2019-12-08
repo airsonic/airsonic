@@ -52,9 +52,9 @@ public class MediaScannerService {
     private static final Logger LOG = LoggerFactory.getLogger(MediaScannerService.class);
 
     private boolean scanning;
-    
+
     private ScheduledExecutorService scheduler;
-    
+
     @Autowired
     private SettingsService settingsService;
     @Autowired
@@ -88,7 +88,7 @@ public class MediaScannerService {
         if (scheduler != null) {
             scheduler.shutdown();
         }
-        
+
         long daysBetween = settingsService.getIndexCreationInterval();
         int hour = settingsService.getIndexCreationHour();
 
@@ -96,16 +96,16 @@ public class MediaScannerService {
             LOG.info("Automatic media scanning disabled.");
             return;
         }
-        
+
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        
+
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime nextRun = now.withHour(hour).withMinute(0).withSecond(0);
         if (now.compareTo(nextRun) > 0)
             nextRun = nextRun.plusDays(1);
 
         long initialDelay = ChronoUnit.MILLIS.between(now, nextRun);
-          
+
         scheduler.scheduleAtFixedRate(() -> scanLibrary(), initialDelay, TimeUnit.DAYS.toMillis(daysBetween), TimeUnit.MILLISECONDS);
 
         LOG.info("Automatic media library scanning scheduled to run every {} day(s), starting at {}", daysBetween, nextRun);
@@ -270,8 +270,7 @@ public class MediaScannerService {
         }
         if (file.isAlbum()) {
             genres.incrementAlbumCount(genre);
-        }
-        else if (file.isAudio()) {
+        } else if (file.isAudio()) {
             genres.incrementSongCount(genre);
         }
     }

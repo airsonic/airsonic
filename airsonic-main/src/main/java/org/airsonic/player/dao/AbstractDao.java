@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AbstractDao {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDao.class);
-    
+
     @Autowired
     private DaoHelper daoHelper;
 
@@ -60,7 +60,7 @@ public class AbstractDao {
     }
 
     protected String questionMarks(String columns) {
-        int numberOfColumns =  StringUtils.countMatches(columns, ",") + 1;
+        int numberOfColumns = StringUtils.countMatches(columns, ",") + 1;
         return StringUtils.repeat("?", ", ", numberOfColumns);
     }
 
@@ -179,6 +179,8 @@ public class AbstractDao {
         this.daoHelper = daoHelper;
     }
 
-    public void checkpoint() { daoHelper.checkpoint(); }
+    public void checkpoint() {
+        daoHelper.checkpoint();
+    }
 
 }

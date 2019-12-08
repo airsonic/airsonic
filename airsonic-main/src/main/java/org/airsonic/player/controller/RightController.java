@@ -41,7 +41,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/right")
-public class RightController  {
+public class RightController {
 
     @Autowired
     private SettingsService settingsService;

@@ -7,5 +7,7 @@ public class InternetRadioSource {
         this.streamUrl = streamUrl;
     }
 
-    public String getStreamUrl() { return streamUrl; }
+    public String getStreamUrl() {
+        return streamUrl;
+    }
 }

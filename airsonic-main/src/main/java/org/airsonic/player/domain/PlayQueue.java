@@ -356,14 +356,18 @@ public class PlayQueue {
      *
      * @return Whether the play queue is a shuffle radio mode.
      */
-    public synchronized boolean isShuffleRadioEnabled() { return this.randomSearchCriteria != null; }
+    public synchronized boolean isShuffleRadioEnabled() {
+        return this.randomSearchCriteria != null;
+    }
 
     /**
      * Returns whether the play queue is a internet radio mode.
      *
      * @return Whether the play queue is a internet radio mode.
      */
-    public synchronized boolean isInternetRadioEnabled() { return this.internetRadio != null; }
+    public synchronized boolean isInternetRadioEnabled() {
+        return this.internetRadio != null;
+    }
 
     /**
      * Revert the last operation.
@@ -405,28 +409,36 @@ public class PlayQueue {
      *
      * @param internetRadio An internet radio, or <code>null</code> if this is not an internet radio playlist
      */
-    public void setInternetRadio(InternetRadio internetRadio) { this.internetRadio = internetRadio; }
+    public void setInternetRadio(InternetRadio internetRadio) {
+        this.internetRadio = internetRadio;
+    }
 
     /**
      * Gets the current internet radio
      *
      * @return The current internet radio, or <code>null</code> if this is not an internet radio playlist
      */
-    public InternetRadio getInternetRadio() { return internetRadio; }
+    public InternetRadio getInternetRadio() {
+        return internetRadio;
+    }
 
     /**
      * Returns the criteria used to generate this random playlist
      *
      * @return The search criteria, or <code>null</code> if this is not a random playlist.
      */
-    public synchronized RandomSearchCriteria getRandomSearchCriteria() { return randomSearchCriteria; }
+    public synchronized RandomSearchCriteria getRandomSearchCriteria() {
+        return randomSearchCriteria;
+    }
 
     /**
      * Sets the criteria used to generate this random playlist
      *
      * @param randomSearchCriteria The search criteria, or <code>null</code> if this is not a random playlist.
      */
-    public synchronized void setRandomSearchCriteria(RandomSearchCriteria randomSearchCriteria) { this.randomSearchCriteria = randomSearchCriteria; }
+    public synchronized void setRandomSearchCriteria(RandomSearchCriteria randomSearchCriteria) {
+        this.randomSearchCriteria = randomSearchCriteria;
+    }
 
     /**
      * Returns the total length in bytes.

@@ -65,18 +65,18 @@ public class QueryFactoryTestCase {
 
     private static final MusicFolder MUSIC_FOLDER1 =
             new MusicFolder(FID1, new File(PATH1), "music1", true, new java.util.Date());
-    private static final MusicFolder MUSIC_FOLDER2 = 
+    private static final MusicFolder MUSIC_FOLDER2 =
             new MusicFolder(FID2, new File(PATH2), "music2", true, new java.util.Date());
 
     private static final List<MusicFolder> SINGLE_FOLDERS = Arrays.asList(MUSIC_FOLDER1);
-    private static final List<MusicFolder> MULTI_FOLDERS  = Arrays.asList(MUSIC_FOLDER1, MUSIC_FOLDER2);
+    private static final List<MusicFolder> MULTI_FOLDERS = Arrays.asList(MUSIC_FOLDER1, MUSIC_FOLDER2);
 
 
     /*
      * XXX 3.x -> 8.x :
      * It does not change the basic functional requirements for the query.
      * However, some minor improvements are included.
-     * 
+     *
      *  - Use 'Or' instead of 'SpanOr'.
      *    This is suitable for 8.x document definition and query grammar.
      *    A more rigorous comparison.
@@ -89,7 +89,7 @@ public class QueryFactoryTestCase {
      *    Currently, these are "key" strings, both in the requirements and in the implementation.
      *    The legacy "normalize" is dirty code that compensates for the incomplete analytics implementation
      *    and is not necessary as long as proper key comparison can be done.
-     *    
+     *
      *    => Treating these strictly as keys enables DB reference.
      *       For example, can support multi-genre by creating a new genre field that implements another Tokenizer.
      *

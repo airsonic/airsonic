@@ -97,8 +97,8 @@ public class LyricsService {
         Namespace ns = root.getNamespace();
 
         String lyric = StringUtils.trimToNull(root.getChildText("Lyric", ns));
-        String song =  root.getChildText("LyricSong", ns);
-        String artist =  root.getChildText("LyricArtist", ns);
+        String song = root.getChildText("LyricSong", ns);
+        String artist = root.getChildText("LyricArtist", ns);
 
         return new LyricsInfo(lyric, artist, song);
     }

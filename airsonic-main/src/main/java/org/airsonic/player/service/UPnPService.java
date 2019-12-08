@@ -61,13 +61,13 @@ public class UPnPService {
 
     @Autowired
     private SettingsService settingsService;
-    
+
     private UpnpService upnpService;
-    
+
     @Autowired
     @Qualifier("dispatchingContentDirectory")
     private CustomContentDirectory dispatchingContentDirectory;
-    
+
     private AtomicReference<Boolean> running = new AtomicReference<>(false);
 
     @PostConstruct

@@ -44,9 +44,9 @@ public class SearchServiceImpl implements SearchService {
     private static final Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     @Autowired
-    private QueryFactory           queryFactory;
+    private QueryFactory queryFactory;
     @Autowired
-    private IndexManager           indexManager;
+    private IndexManager indexManager;
     @Autowired
     private SearchServiceUtilities util;
 
@@ -93,7 +93,7 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * Common processing of random method.
-     * 
+     *
      * @param count Number of albums to return.
      * @param id2ListCallBack Callback to get D from id and store it in List
      */

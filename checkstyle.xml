@@ -10,6 +10,11 @@
 
     <property name="fileExtensions" value="java, properties, xml"/>
 
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="message" value="Unnecessary trailing whitespace"/>
+    </module>
+
     <module name="FileTabCharacter"/>
 
     <!-- This is a temporary workaround until ^M line endings is added to upstream checkstyle -->
@@ -39,6 +44,7 @@
         <module name="EqualsHashCode"/>
         <module name="Indentation"/>
         <module name="InnerAssignment"/>
+        <module name="LeftCurly"/>
         <module name="MethodParamPad"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="NoWhitespaceBefore">
@@ -50,8 +56,10 @@
         <module name="ParenPadCheck"/>
         <module name="RedundantImport"/>
         <module name="RequireThis"/>
+        <module name="RightCurly"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
+        <module name="SingleSpaceSeparator"/>
         <module name="StringLiteralEquality"/>
         <module name="SuperClone"/>
         <module name="SuperFinalize"/>

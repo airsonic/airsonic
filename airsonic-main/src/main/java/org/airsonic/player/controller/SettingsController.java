@@ -37,7 +37,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/settings")
-public class SettingsController  {
+public class SettingsController {
 
     @Autowired
     private SecurityService securityService;

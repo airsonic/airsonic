@@ -55,7 +55,7 @@ public class SearchServiceTestCase extends AbstractAirsonicHomeTest {
 
         List<MusicFolder> allMusicFolders = musicFolderDao.getAllMusicFolders();
         Assert.assertEquals(3, allMusicFolders.size());
-    
+
         // *** testSearch() ***
 
         String query = "Sarah Walker";

@@ -211,7 +211,7 @@ public class SettingsService {
     private static final String DEFAULT_DATABASE_CONFIG_JNDI_NAME = null;
     private static final Integer DEFAULT_DATABASE_MYSQL_VARCHAR_MAXLENGTH = 512;
     private static final String DEFAULT_DATABASE_USERTABLE_QUOTE = null;
-    
+
     private static final int DEFAULT_UPNP_PORT = 4041;
 
     // Array of obsolete keys.  Used to clean property file.
