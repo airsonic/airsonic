@@ -26,7 +26,6 @@ Group=airsonic
 DevicePolicy=closed
 DeviceAllow=char-alsa rw
 NoNewPrivileges=yes
-#PrivateDevices=yes
 PrivateTmp=yes
 PrivateUsers=yes
 ProtectControlGroups=yes
@@ -37,6 +36,10 @@ RestrictNamespaces=yes
 RestrictRealtime=yes
 SystemCallFilter=~@clock @debug @module @mount @obsolete @privileged @reboot @setuid @swap
 ReadWritePaths=/var/airsonic
+
+# You can uncomment the following line if you're not using the jukebox
+# This will prevent airsonic from accessing any real (physical) devices
+#PrivateDevices=yes
 
 # You can change the following line to `strict` instead of `full`
 # if you don't want airsonic to be able to
