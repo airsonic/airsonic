@@ -520,11 +520,9 @@ public class TranscodingService {
         List<String> steps = Arrays.asList();
         if (transcoding != null) {
             steps = Arrays.asList(transcoding.getStep3(), transcoding.getStep2(), transcoding.getStep1());
-        }
-        else if (parameters.isDownsample()) {
+        } else if (parameters.isDownsample()) {
             steps = Arrays.asList(settingsService.getDownsamplingCommand());
-        }
-        else {
+        } else {
             return true;  // neither transcoding nor downsampling
         }
 
