@@ -298,6 +298,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <scope>runtime</scope>
+            <version>1.2</version>
         </dependency>
 
         <dependency>
