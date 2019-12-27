@@ -1,7 +1,7 @@
-Feature: Stream API for VBR M4A
+Feature: Stream API for FLAC
 
   Background:
-    Given Media file dance is added
+    Given Media file dead is added
     And a scan is done
     And The media file id is found
 
@@ -9,5 +9,5 @@ Feature: Stream API for VBR M4A
     When A stream is consumed
     Then Print debug output
     Then The response bytes are equal
-    Then The length headers are absent
+    Then The length headers are correct
 

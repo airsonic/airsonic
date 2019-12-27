@@ -128,6 +128,7 @@ public class StreamController {
             MediaFile file = getSingleFile(request);
             boolean isSingleFile = file != null;
             HttpRange range = null;
+            Long fileLengthExpected = null;
 
             if (isSingleFile) {
 
@@ -153,39 +154,36 @@ public class StreamController {
 
                 TranscodingService.Parameters parameters = transcodingService.getParameters(file, player, maxBitRate,
                         preferredTargetFormat, null);
-                boolean isConversion = parameters.isDownsample() || parameters.isTranscode();
-                boolean estimateContentLength = ServletRequestUtils.getBooleanParameter(request,
-                        "estimateContentLength", false);
                 boolean isHls = ServletRequestUtils.getBooleanParameter(request, "hls", false);
+                fileLengthExpected = parameters.getExpectedLength();
 
                 // Wrangle response length and ranges.
                 //
-                // Support ranges as long as we're not transcoding; video is always assumed to transcode
-                if (isConversion || file.isVideo()) {
+                // Support ranges as long as we're not transcoding blindly; video is always assumed to transcode
+                if (file.isVideo() || ! parameters.isRangeAllowed()) {
                     // Use chunked transfer; do not accept range requests
                     response.setStatus(HttpServletResponse.SC_OK);
                     response.setHeader("Accept-Ranges", "none");
                 } else {
-                    // Not transcoding, partial content permitted because we know the final size
+                    // Partial content permitted because either know or expect to be able to predict the final size
                     long contentLength;
-
                     // If range was requested, respond in kind
-                    range = getRange(request, file);
+                    range = getRange(request, file.getDurationSeconds(), fileLengthExpected);
                     if (range != null) {
                         response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                         response.setHeader("Accept-Ranges", "bytes");
 
                         // Both ends are inclusive
                         long startByte = range.getFirstBytePos();
-                        long endByte = range.isClosed() ? range.getLastBytePos() : file.getFileSize() - 1;
+                        long endByte = range.isClosed() ? range.getLastBytePos() : fileLengthExpected - 1;
 
                         response.setHeader("Content-Range",
-                                String.format("bytes %d-%d/%d", startByte, endByte, file.getFileSize()));
+                                String.format("bytes %d-%d/%d", startByte, endByte, fileLengthExpected));
                         contentLength = endByte + 1 - startByte;
                     } else {
                         // No range was requested, give back the whole file
                         response.setStatus(HttpServletResponse.SC_OK);
-                        contentLength = file.getFileSize();
+                        contentLength = fileLengthExpected;
                     }
 
                     response.setIntHeader("ETag", file.getId());
@@ -212,6 +210,10 @@ public class StreamController {
                 return;
             }
 
+            if (fileLengthExpected != null) {
+                LOG.info("Streaming request for [{}] with range [{}]", file.getPath(), response.getHeader("Content-Range"));
+            }
+
             // Terminate any other streams to this player.
             if (!isPodcast && !isSingleFile) {
                 for (TransferStatus streamStatus : statusService.getStreamStatusesForPlayer(player)) {
@@ -230,25 +232,37 @@ public class StreamController {
             ) {
                 final int BUFFER_SIZE = 2048;
                 byte[] buf = new byte[BUFFER_SIZE];
+                long bytesWritten = 0;
 
                 while (!status.terminated()) {
                     if (player.getPlayQueue().getStatus() == PlayQueue.Status.STOPPED) {
                         if (isPodcast || isSingleFile) {
                             break;
                         } else {
-                            sendDummy(buf, out);
+                            sendDummyDelayed(buf, out);
                         }
                     } else {
 
                         int n = in.read(buf);
                         if (n == -1) {
                             if (isPodcast || isSingleFile) {
+                                // Pad the output if needed to avoid content length errors on transcodes
+                                if (fileLengthExpected != null && bytesWritten < fileLengthExpected) {
+                                    sendDummy(buf, out, fileLengthExpected - bytesWritten);
+                                }
                                 break;
                             } else {
-                                sendDummy(buf, out);
+                                sendDummyDelayed(buf, out);
                             }
                         } else {
+                            if (fileLengthExpected != null && bytesWritten <= fileLengthExpected
+                                && bytesWritten + n > fileLengthExpected) {
+                                LOG.warn("Stream output exceeded expected length of {}. It is likely that "
+                                    + "the transcoder is not adhering to the bitrate limit or the media "
+                                    + "source is corrupted or has grown larger", fileLengthExpected);
+                            }
                             out.write(buf, 0, n);
+                            bytesWritten += n;
                         }
                     }
                 }
@@ -321,30 +335,8 @@ public class StreamController {
         return null;
     }
 
-    private long getFileLength(TranscodingService.Parameters parameters) {
-        MediaFile file = parameters.getMediaFile();
-
-        if (!parameters.isDownsample() && !parameters.isTranscode()) {
-            return file.getFileSize();
-        }
-        Integer duration = file.getDurationSeconds();
-        Integer maxBitRate = parameters.getMaxBitRate();
-
-        if (duration == null) {
-            LOG.warn("Unknown duration for " + file + ". Unable to estimate transcoded size.");
-            return file.getFileSize();
-        }
-
-        if (maxBitRate == null) {
-            LOG.error("Unknown bit rate for " + file + ". Unable to estimate transcoded size.");
-            return file.getFileSize();
-        }
-
-        return duration * (long)maxBitRate * 1000L / 8L;
-    }
-
     @Nullable
-    private HttpRange getRange(HttpServletRequest request, MediaFile file) {
+    private HttpRange getRange(HttpServletRequest request, Integer fileDuration, Long fileSize) {
 
         // First, look for "Range" HTTP header.
         HttpRange range = HttpRange.valueOf(request.getHeader("Range"));
@@ -354,27 +346,25 @@ public class StreamController {
 
         // Second, look for "offsetSeconds" request parameter.
         String offsetSeconds = request.getParameter("offsetSeconds");
-        range = parseAndConvertOffsetSeconds(offsetSeconds, file);
+        range = parseAndConvertOffsetSeconds(offsetSeconds, fileDuration, fileSize);
         return range;
 
     }
 
     @Nullable
-    private HttpRange parseAndConvertOffsetSeconds(String offsetSeconds, MediaFile file) {
+    private HttpRange parseAndConvertOffsetSeconds(String offsetSeconds, Integer fileDuration, Long fileSize) {
         if (offsetSeconds == null) {
             return null;
         }
 
         try {
-            Integer duration = file.getDurationSeconds();
-            Long fileSize = file.getFileSize();
-            if (duration == null || fileSize == null) {
+            if (fileDuration == null || fileSize == null) {
                 return null;
             }
             float offset = Float.parseFloat(offsetSeconds);
 
             // Convert from time offset to byte offset.
-            long byteOffset = (long) (fileSize * (offset / duration));
+            long byteOffset = (long) (fileSize * (offset / fileDuration));
             return new HttpRange(byteOffset, null);
 
         } catch (Exception x) {
@@ -455,17 +445,28 @@ public class StreamController {
         return size + (size % 2);
     }
 
+    private void sendDummy(byte[] buf, OutputStream out, long len) throws IOException {
+        long bytesWritten = 0;
+        int n;
+
+        Arrays.fill(buf, (byte) 0xFF);
+        while (bytesWritten < len) {
+            n = (int) Math.min(buf.length, len - bytesWritten);
+            out.write(buf, 0, n);
+            bytesWritten += n;
+        }
+    }
+
     /**
      * Feed the other end with some dummy data to keep it from reconnecting.
      */
-    private void sendDummy(byte[] buf, OutputStream out) throws IOException {
+    private void sendDummyDelayed(byte[] buf, OutputStream out) throws IOException {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException x) {
             LOG.warn("Interrupted in sleep.", x);
         }
-        Arrays.fill(buf, (byte) 0xFF);
-        out.write(buf);
+        sendDummy(buf, out, buf.length);
         out.flush();
     }
 }
