@@ -18,11 +18,16 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
@@ -71,6 +76,32 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             settingsService.save();
         }
         auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
+    }
+
+    @Bean
+    public PasswordEncoder delegatingPasswordEncoder() {
+
+        // Spring Security 5 require storing the encoder id alongside the encoded password
+        // (e.g. "{md5}hash" for an MD5-encoded password hash), which differs from previous
+        // versions.
+        //
+        // Airsonic unfortunately stores passwords in plain-text, which is why we are setting
+        // the "no-op" (plain-text) password encoder as a default here. This default will be
+        // used when no encoder id is present.
+        //
+        // This means that legacy Airsonic passwords (stored simply as "password" in the db)
+        // will be matched like "{noop}password" and will be recognized successfully. In the
+        // future password encoding updates will be done here.
+
+        PasswordEncoder defaultEncoder = NoOpPasswordEncoder.getInstance();
+        String defaultIdForEncode = "noop";
+
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put(defaultIdForEncode, defaultEncoder);
+        DelegatingPasswordEncoder passworEncoder = new DelegatingPasswordEncoder(defaultIdForEncode, encoders);
+        passworEncoder.setDefaultPasswordEncoderForMatches(defaultEncoder);
+
+        return passworEncoder;
     }
 
     private static String generateRememberMeKey() {
