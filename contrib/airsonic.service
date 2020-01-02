@@ -15,7 +15,7 @@ EnvironmentFile=-/etc/sysconfig/airsonic
 ExecStart=/usr/bin/java \
           $JAVA_OPTS \
           -Dairsonic.home=${AIRSONIC_HOME} \
-          -Dserver.context-path=${CONTEXT_PATH} \
+          -Dserver.servlet.contextPath=${CONTEXT_PATH} \
           -Dserver.port=${PORT} \
           -jar ${JAVA_JAR} $JAVA_ARGS
 User=airsonic
