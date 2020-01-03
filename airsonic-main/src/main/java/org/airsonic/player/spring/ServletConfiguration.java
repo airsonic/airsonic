@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
@@ -14,7 +14,7 @@ import org.springframework.web.servlet.view.JstlView;
 import java.util.Properties;
 
 @Configuration
-public class ServletConfiguration extends WebMvcConfigurerAdapter {
+public class ServletConfiguration implements WebMvcConfigurer {
 
     @Bean
     public SimpleUrlHandlerMapping podcastUrlMapping(PodcastController podcastController) {
