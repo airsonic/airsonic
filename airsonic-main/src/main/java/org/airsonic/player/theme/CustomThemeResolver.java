@@ -93,8 +93,8 @@ public class CustomThemeResolver implements ThemeResolver {
     private synchronized boolean themeExists(String themeId) {
         // Lazily create set of theme IDs.
         if (themeIds == null) {
-            themeIds = new HashSet<String>();
             Theme[] themes = settingsService.getAvailableThemes();
+            themeIds = new HashSet<>(themes.length);
             for (Theme theme : themes) {
                 themeIds.add(theme.getId());
             }
