@@ -184,6 +184,50 @@
 
 <h2>
     <img src="<spring:theme code='logImage'/>" alt="">
+    <span style="vertical-align: middle"><fmt:message key="internalhelp.transcoding"/></span>
+</h2>
+
+<table width="75%" class="ruleTable indent">
+    <tr>
+        <td colspan="2" class="ruleTableCell">
+            <c:choose>
+                <c:when test="${model.fsFfprobeInfo.readable and model.fsFfprobeInfo.executable}">
+                    <img src="<spring:theme code='checkImage'/>" alt="OK">
+                    Ffprobe appears configured correctly.
+                </c:when>
+                <c:otherwise>
+                    <img src="<spring:theme code='alertImage'/>" alt="Warning">
+                    Ffprobe is either missing or not executable. Transcoding may not work properly.
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+    <tr><td class="ruleTableHeader">Ffprobe path</td><td class="ruleTableCell">${model.fsFfprobeInfo.path}</td></tr>
+    <tr><td class="ruleTableHeader">Ffprobe is readable?</td><td class="ruleTableCell">${model.fsFfprobeInfo.readable}</td></tr>
+    <tr><td class="ruleTableHeader">Ffprobe is executable?</td><td class="ruleTableCell">${model.fsFfprobeInfo.executable}</td></tr>
+    <tr>
+        <td colspan="2" class="ruleTableCell">
+            <c:choose>
+                <c:when test="${model.fsFfmpegInfo.readable and model.fsFfmpegInfo.executable}">
+                    <img src="<spring:theme code='checkImage'/>" alt="OK">
+                    Ffmpeg appears configured correctly.
+                </c:when>
+                <c:otherwise>
+                    <img src="<spring:theme code='alertImage'/>" alt="Warning">
+                    Ffmpeg is either missing or not executable. Transcoding may not work properly.
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+    <tr><td class="ruleTableHeader">Ffmpeg path</td><td class="ruleTableCell">${model.fsFfmpegInfo.path}</td></tr>
+    <tr><td class="ruleTableHeader">Ffmpeg is readable?</td><td class="ruleTableCell">${model.fsFfmpegInfo.readable}</td></tr>
+    <tr><td class="ruleTableHeader">Ffmpeg is executable?</td><td class="ruleTableCell">${model.fsFfmpegInfo.executable}</td></tr>
+</table>
+
+<p></p>
+
+<h2>
+    <img src="<spring:theme code='logImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="internalhelp.locale"/></span>
 </h2>
 
