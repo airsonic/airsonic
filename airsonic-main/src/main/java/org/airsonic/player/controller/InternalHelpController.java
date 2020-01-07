@@ -21,9 +21,11 @@ package org.airsonic.player.controller;
 
 import org.airsonic.player.dao.DaoHelper;
 import org.airsonic.player.dao.MusicFolderDao;
+import org.airsonic.player.domain.MediaLibraryStatistics;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.service.TranscodingService;
 import org.airsonic.player.service.VersionService;
 import org.airsonic.player.service.search.AnalyzerFactory;
 import org.airsonic.player.service.search.IndexManager;
@@ -64,12 +66,19 @@ public class InternalHelpController {
 
     private static final int LOG_LINES_TO_SHOW = 50;
 
-    public class MusicFolderStatistics {
+    public class FileStatistics {
         private String name;
+        private String path;
         private String freeFilesystemSizeBytes;
         private String totalFilesystemSizeBytes;
         private boolean readable;
         private boolean writable;
+        private boolean executable;
+
+        public FileStatistics() {}
+
+        public FileStatistics(File path) {
+        }
 
         public String getName() {
             return name;
@@ -87,8 +96,16 @@ public class InternalHelpController {
             return writable;
         }
 
+        public boolean isExecutable() {
+            return executable;
+        }
+
         public String getTotalFilesystemSizeBytes() {
             return totalFilesystemSizeBytes;
+        }
+
+        public String getPath() {
+            return path;
         }
 
         public void setName(String name) {
@@ -107,8 +124,26 @@ public class InternalHelpController {
             this.writable = writable;
         }
 
+        public void setExecutable(boolean executable) {
+            this.executable = executable;
+        }
+
         public void setTotalFilesystemSizeBytes(String totalFilesystemSizeBytes) {
             this.totalFilesystemSizeBytes = totalFilesystemSizeBytes;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
+        public void setFromFile(File file) {
+            this.setName(file.getName());
+            this.setPath(file.getAbsolutePath());
+            this.setFreeFilesystemSizeBytes(FileUtils.byteCountToDisplaySize(file.getUsableSpace()));
+            this.setTotalFilesystemSizeBytes(FileUtils.byteCountToDisplaySize(file.getTotalSpace()));
+            this.setReadable(Files.isReadable(file.toPath()));
+            this.setWritable(Files.isWritable(file.toPath()));
+            this.setExecutable(Files.isExecutable(file.toPath()));
         }
     }
 
@@ -126,6 +161,8 @@ public class InternalHelpController {
     private AnalyzerFactory analyzerFactory;
     @Autowired
     private MusicFolderDao musicFolderDao;
+    @Autowired
+    private TranscodingService transcodingService;
 
     @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
@@ -146,15 +183,44 @@ public class InternalHelpController {
                             ", java " + System.getProperty("java.version") +
                             ", " + System.getProperty("os.name");
 
-        // Airsonic scan statistics
-        map.put("statAlbumCount", indexManager.getStatistics().getAlbumCount());
-        map.put("statArtistCount", indexManager.getStatistics().getArtistCount());
-        map.put("statSongCount", indexManager.getStatistics().getSongCount());
-        map.put("statLastScanDate", indexManager.getStatistics().getScanDate());
-        map.put("statTotalDurationSeconds", indexManager.getStatistics().getTotalDurationInSeconds());
-        map.put("statTotalLengthBytes", FileUtils.byteCountToDisplaySize(indexManager.getStatistics().getTotalLengthInBytes()));
+        map.put("user", securityService.getCurrentUser(request));
+        map.put("brand", settingsService.getBrand());
+        map.put("localVersion", versionService.getLocalVersion());
+        map.put("buildDate", versionService.getLocalBuildDate());
+        map.put("buildNumber", versionService.getLocalBuildNumber());
+        map.put("serverInfo", serverInfo);
+        map.put("usedMemory", totalMemory - freeMemory);
+        map.put("totalMemory", totalMemory);
+        File logFile = SettingsService.getLogFile();
+        List<String> latestLogEntries = getLatestLogEntries(logFile);
+        map.put("logEntries", latestLogEntries);
+        map.put("logFile", logFile);
 
-        // Lucene index statistics
+        // Gather internal information
+        gatherScanInfo(map);
+        gatherIndexInfo(map);
+        gatherDatabaseInfo(map);
+        gatherFilesystemInfo(map);
+        gatherTranscodingInfo(map);
+        gatherLocaleInfo(map);
+
+        return new ModelAndView("internalhelp","model",map);
+    }
+
+    private void gatherScanInfo(Map<String, Object> map) {
+        // Airsonic scan statistics
+        MediaLibraryStatistics stats = indexManager.getStatistics();
+        if (stats != null) {
+            map.put("statAlbumCount", stats.getAlbumCount());
+            map.put("statArtistCount", stats.getArtistCount());
+            map.put("statSongCount", stats.getSongCount());
+            map.put("statLastScanDate", stats.getScanDate());
+            map.put("statTotalDurationSeconds", stats.getTotalDurationInSeconds());
+            map.put("statTotalLengthBytes", FileUtils.byteCountToDisplaySize(stats.getTotalLengthInBytes()));
+        }
+    }
+
+    private void gatherIndexInfo(Map<String, Object> map) {
         try (IndexReader reader = indexManager.getSearcher(IndexType.SONG).getIndexReader()) {
             map.put("indexSongCount", reader.numDocs());
             map.put("indexSongDeletedCount", reader.numDeletedDocs());
@@ -190,8 +256,21 @@ public class InternalHelpController {
         } catch (IOException e) {
             LOG.debug("Unable to gather information", e);
         }
+    }
 
-        // Database statistics
+    private void gatherLocaleInfo(Map<String, Object> map) {
+        map.put("localeDefault", Locale.getDefault());
+        map.put("localeUserLanguage", System.getProperty("user.language"));
+        map.put("localeUserCountry", System.getProperty("user.country"));
+        map.put("localeFileEncoding", System.getProperty("file.encoding"));
+        map.put("localeSunJnuEncoding", System.getProperty("sun.jnu.encoding"));
+        map.put("localeSunIoUnicodeEncoding", System.getProperty("sun.io.unicode.encoding"));
+        map.put("localeLang", System.getenv("LANG"));
+        map.put("localeLcAll", System.getenv("LC_ALL"));
+        map.put("localeDefaultCharset", Charset.defaultCharset());
+    }
+
+    private void gatherDatabaseInfo(Map<String, Object> map) {
         try (Connection conn = daoHelper.getDataSource().getConnection()) {
             map.put("dbDriverName", conn.getMetaData().getDriverName());
             map.put("dbDriverVersion", conn.getMetaData().getDriverVersion());
@@ -233,51 +312,28 @@ public class InternalHelpController {
         map.put("dbMediaFileDistinctAlbumArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album_artist) FROM MEDIA_FILE WHERE present"), Long.class));
 
         map.put("dbTableCount", dbTableCount);
+    }
 
-        // Filesystem statistics
+    private void gatherFilesystemInfo(Map<String, Object> map) {
         map.put("fsHomeDirectorySizeBytes", FileUtils.sizeOfDirectory(settingsService.getAirsonicHome()));
         map.put("fsHomeDirectorySize", FileUtils.byteCountToDisplaySize((long)map.get("fsHomeDirectorySizeBytes")));
         map.put("fsHomeTotalSpaceBytes", settingsService.getAirsonicHome().getTotalSpace());
         map.put("fsHomeTotalSpace", FileUtils.byteCountToDisplaySize((long)map.get("fsHomeTotalSpaceBytes")));
         map.put("fsHomeUsableSpaceBytes", settingsService.getAirsonicHome().getUsableSpace());
         map.put("fsHomeUsableSpace", FileUtils.byteCountToDisplaySize((long)map.get("fsHomeUsableSpaceBytes")));
-        SortedMap<String, MusicFolderStatistics> fsMusicFolderStatistics = new TreeMap<>();
+        SortedMap<String, FileStatistics> fsMusicFolderStatistics = new TreeMap<>();
         for (MusicFolder folder: musicFolderDao.getAllMusicFolders()) {
-            MusicFolderStatistics stat = new MusicFolderStatistics();
+            FileStatistics stat = new FileStatistics();
+            stat.setFromFile(folder.getPath());
             stat.setName(folder.getName());
-            stat.setFreeFilesystemSizeBytes(FileUtils.byteCountToDisplaySize(folder.getPath().getUsableSpace()));
-            stat.setTotalFilesystemSizeBytes(FileUtils.byteCountToDisplaySize(folder.getPath().getTotalSpace()));
-            stat.setReadable(Files.isReadable(folder.getPath().toPath()));
-            stat.setWritable(Files.isWritable(folder.getPath().toPath()));
             fsMusicFolderStatistics.put(folder.getName(), stat);
         }
         map.put("fsMusicFolderStatistics", fsMusicFolderStatistics);
+    }
 
-        // OS information
-        map.put("localeDefault", Locale.getDefault());
-        map.put("localeUserLanguage", System.getProperty("user.language"));
-        map.put("localeUserCountry", System.getProperty("user.country"));
-        map.put("localeFileEncoding", System.getProperty("file.encoding"));
-        map.put("localeSunJnuEncoding", System.getProperty("sun.jnu.encoding"));
-        map.put("localeSunIoUnicodeEncoding", System.getProperty("sun.io.unicode.encoding"));
-        map.put("localeLang", System.getenv("LANG"));
-        map.put("localeLcAll", System.getenv("LC_ALL"));
-        map.put("localeDefaultCharset", Charset.defaultCharset());
-
-        map.put("user", securityService.getCurrentUser(request));
-        map.put("brand", settingsService.getBrand());
-        map.put("localVersion", versionService.getLocalVersion());
-        map.put("buildDate", versionService.getLocalBuildDate());
-        map.put("buildNumber", versionService.getLocalBuildNumber());
-        map.put("serverInfo", serverInfo);
-        map.put("usedMemory", totalMemory - freeMemory);
-        map.put("totalMemory", totalMemory);
-        File logFile = SettingsService.getLogFile();
-        List<String> latestLogEntries = getLatestLogEntries(logFile);
-        map.put("logEntries", latestLogEntries);
-        map.put("logFile", logFile);
-
-        return new ModelAndView("internalhelp","model",map);
+    private void gatherTranscodingInfo(Map<String, Object> map) {
+        map.put("fsFfprobeInfo", gatherStatisticsForTranscodingExecutable("ffprobe"));
+        map.put("fsFfmpegInfo", gatherStatisticsForTranscodingExecutable("ffmpeg"));
     }
 
     private static List<String> getLatestLogEntries(File logFile) {
@@ -297,5 +353,38 @@ public class InternalHelpController {
         }
     }
 
+    private File lookForExecutable(String executableName) {
+        for (String path : System.getenv("PATH").split(File.pathSeparator)) {
+            File file = new File(path, executableName);
+            if (file.exists()) {
+                LOG.debug("Found {} in {}", executableName, path);
+                return file;
+            } else {
+                LOG.debug("Looking for {} in {} (not found)", executableName, path);
+            }
+        }
+        return null;
+    }
+
+    private File lookForTranscodingExecutable(String executableName) {
+        File executableLocation = null;
+        for (String name: Arrays.asList(executableName, String.format("%s.exe", executableName))) {
+            executableLocation = new File(transcodingService.getTranscodeDirectory(), name);
+            if (executableLocation.exists()) return executableLocation;
+            executableLocation = lookForExecutable(executableName);
+            if (executableLocation.exists()) return executableLocation;
+        }
+        return null;
+    }
+
+    private FileStatistics gatherStatisticsForTranscodingExecutable(String executableName) {
+        FileStatistics executableStatistics = null;
+        File executableLocation = lookForTranscodingExecutable(executableName);
+        if (executableLocation != null) {
+            executableStatistics = new FileStatistics();
+            executableStatistics.setFromFile(executableLocation);
+        }
+        return executableStatistics;
+    }
 
 }
