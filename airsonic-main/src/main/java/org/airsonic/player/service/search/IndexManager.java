@@ -311,8 +311,10 @@ public class IndexManager {
                 } else {
                     LOG.warn("{} does not exist. Please run a scan.", indexDirectory.getAbsolutePath());
                 }
+            } catch (IndexNotFoundException e) {
+                LOG.debug("Index {} does not exist in {}, likely not yet created.", indexType.toString(), indexDirectory.getAbsolutePath());
             } catch (IOException e) {
-                LOG.error("Failed to initialize SearcherManager.", e);
+                LOG.warn("Failed to initialize SearcherManager.", e);
             }
         }
         try {
