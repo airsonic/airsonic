@@ -20,6 +20,7 @@
 package org.airsonic.player.controller;
 
 import org.airsonic.player.dao.DaoHelper;
+import org.airsonic.player.dao.MediaFileDao;
 import org.airsonic.player.dao.MusicFolderDao;
 import org.airsonic.player.domain.MediaLibraryStatistics;
 import org.airsonic.player.domain.MusicFolder;
@@ -161,6 +162,8 @@ public class InternalHelpController {
     private AnalyzerFactory analyzerFactory;
     @Autowired
     private MusicFolderDao musicFolderDao;
+    @Autowired
+    private MediaFileDao mediaFileDao;
     @Autowired
     private TranscodingService transcodingService;
 
@@ -310,6 +313,12 @@ public class InternalHelpController {
         map.put("dbMediaFileDistinctAlbumCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album) FROM MEDIA_FILE WHERE present"), Long.class));
         map.put("dbMediaFileDistinctArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT artist) FROM MEDIA_FILE WHERE present"), Long.class));
         map.put("dbMediaFileDistinctAlbumArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album_artist) FROM MEDIA_FILE WHERE present"), Long.class));
+
+        map.put("dbMediaFilesInNonPresentMusicFoldersCount", mediaFileDao.getFilesInNonPresentMusicFoldersCount(Arrays.asList(settingsService.getPodcastFolder())));
+        map.put("dbMediaFilesInNonPresentMusicFoldersSample", mediaFileDao.getFilesInNonPresentMusicFolders(10, Arrays.asList(settingsService.getPodcastFolder())));
+
+        map.put("dbMediaFilesWithMusicFolderMismatchCount", mediaFileDao.getFilesWithMusicFolderMismatchCount());
+        map.put("dbMediaFilesWithMusicFolderMismatchSample", mediaFileDao.getFilesWithMusicFolderMismatch(10));
 
         map.put("dbTableCount", dbTableCount);
     }

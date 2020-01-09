@@ -153,6 +153,65 @@
 
 <h2>
     <img src="<spring:theme code='logImage'/>" alt="">
+    <span style="vertical-align: middle"><fmt:message key="internalhalp.databaseconsistency"/></span>
+</h2>
+
+<table width="75%" class="ruleTable indent">
+    <tr>
+        <td colspan="3" class="ruleTableCell">
+            <c:choose>
+                <c:when test="${model.dbMediaFilesInNonPresentMusicFoldersCount == 0}">
+                    <img src="<spring:theme code='checkImage'/>" alt="OK">
+                    All media files in the database have a valid music folder.
+                </c:when>
+                <c:otherwise>
+                    <img src="<spring:theme code='alertImage'/>" alt="Warning">
+                    The media file database contains files whose music folder is no longer present. Examples are below.
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+
+    <tr><td class="ruleTableHeader">dbMediaFilesInNonPresentMusicFoldersCount</td><td class="ruleTableCell" colspan="2">${model.dbMediaFilesInNonPresentMusicFoldersCount}</td></tr>
+    <c:if test="${model.dbMediaFilesInNonPresentMusicFoldersCount > 0}">
+        <tr><td class="ruleTableHeader">ID</td><td class="ruleTableHeader">PATH</td><td class="ruleTableHeader">FOLDER</td></tr>
+        <c:forEach var="invalidFolderSample" items="${model.dbMediaFilesInNonPresentMusicFoldersSample}">
+            <tr><td class="ruleTableHeader">${invalidFolderSample.id}</td><td class="ruleTableCell">${invalidFolderSample.path}</td><td class="ruleTableCell">${invalidFolderSample.folder}</td></tr>
+        </c:forEach>
+    </c:if>
+</table>
+
+<p></p>
+
+<table width="75%" class="ruleTable indent">
+    <tr>
+        <td colspan="3" class="ruleTableCell">
+            <c:choose>
+                <c:when test="${model.dbMediaFilesWithMusicFolderMismatchCount == 0}">
+                    <img src="<spring:theme code='checkImage'/>" alt="OK">
+                    All media files in the database match their music folder.
+                </c:when>
+                <c:otherwise>
+                    <img src="<spring:theme code='alertImage'/>" alt="Warning">
+                    The media file database contains files whose path does not match their music folder path. Examples are below.
+                </c:otherwise>
+            </c:choose>
+        </td>
+    </tr>
+
+    <tr><td class="ruleTableHeader">dbMediaFilesWithMusicFolderMismatchCount</td><td class="ruleTableCell" colspan="2">${model.dbMediaFilesWithMusicFolderMismatchCount}</td></tr>
+    <c:if test="${model.dbMediaFilesWithMusicFolderMismatchCount > 0}">
+        <tr><td class="ruleTableHeader">ID</td><td class="ruleTableHeader">PATH</td><td class="ruleTableHeader">FOLDER</td></tr>
+        <c:forEach var="mismatchSample" items="${model.dbMediaFilesWithMusicFolderMismatchSample}">
+            <tr><td class="ruleTableHeader">${mismatchSample.id}</td><td class="ruleTableCell">${mismatchSample.path}</td><td class="ruleTableCell">${mismatchSample.folder}</td></tr>
+        </c:forEach>
+    </c:if>
+</table>
+
+<p></p>
+
+<h2>
+    <img src="<spring:theme code='logImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="internalhelp.filesystem"/></span>
 </h2>
 

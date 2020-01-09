@@ -597,6 +597,67 @@ public class MediaFileDao extends AbstractDao {
         return namedQuery(query, rowMapper, args);
     }
 
+    /**
+     * Return a list of media file objects that don't belong to an existing music folder
+     * @param count maximum number of media file objects to return
+     * @param excludeFolders music folder paths excluded from the results
+     * @return a list of media files, sorted by id
+     */
+    public List<MediaFile> getFilesInNonPresentMusicFolders(final int count, List<String> excludeFolders) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("excludeFolders", excludeFolders);
+        args.put("count", count);
+        return namedQuery(
+                "SELECT " + prefix(QUERY_COLUMNS, "media_file") + " FROM media_file " +
+                "LEFT OUTER JOIN music_folder ON music_folder.path = media_file.folder " +
+                "WHERE music_folder.id IS NULL " +
+                "AND media_file.folder NOT IN (:excludeFolders) " +
+                "ORDER BY media_file.id LIMIT :count",
+                rowMapper, args);
+    }
+
+    /**
+     * Count the number of media files that don't belong to an existing music folder
+     * @param excludeFolders music folder paths excluded from the results
+     * @return a number of media file rows in the database
+     */
+    public int getFilesInNonPresentMusicFoldersCount(List<String> excludeFolders) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("excludeFolders", excludeFolders);
+        return namedQueryForInt(
+                "SELECT count(media_file.id) FROM media_file " +
+                "LEFT OUTER JOIN music_folder ON music_folder.path = media_file.folder " +
+                "WHERE music_folder.id IS NULL " +
+                "AND media_file.folder NOT IN (:excludeFolders) ",
+                0, args);
+    }
+
+    /**
+     * Return a list of media file objects whose path don't math their music folder
+     * @param count maximum number of media file objects to return
+     * @return a list of media files, sorted by id
+     */
+    public List<MediaFile> getFilesWithMusicFolderMismatch(final int count) {
+        return query(
+                "SELECT " + prefix(QUERY_COLUMNS, "media_file") + " FROM media_file " +
+                "WHERE media_file.path != media_file.folder " +
+                "AND media_file.path NOT LIKE concat(media_file.folder, '/%') " +
+                "ORDER BY media_file.id LIMIT ?",
+                rowMapper, count);
+    }
+
+    /**
+     * Count the number of media files whose path don't math their music folder
+     * @return a number of media file rows in the database
+     */
+    public int getFilesWithMusicFolderMismatchCount() {
+        return queryForInt(
+                "SELECT count(media_file.id) FROM media_file " +
+                "WHERE media_file.path != media_file.folder " +
+                "AND media_file.path NOT LIKE concat(media_file.folder, '/%')",
+                0);
+    }
+
     public int getAlbumCount(final List<MusicFolder> musicFolders) {
         if (musicFolders.isEmpty()) {
             return 0;
