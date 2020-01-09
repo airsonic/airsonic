@@ -41,6 +41,9 @@
     // Stream URL of the media being played
     var currentStreamUrl = null;
 
+    // Current song being played
+    var currentSong = null;
+
     // Is autorepeat enabled?
     var repeatEnabled = false;
 
@@ -191,15 +194,36 @@
             getPlayQueue();
         <c:if test="${not model.player.web}">
             currentStreamUrl = nowPlayingInfo.streamUrl;
-            updateCurrentImage();
+            currentSong = null;
+            onPlaying();
         </c:if>
         }
     }
 
+    /**
+     * Callback function called when playback for the current song has ended.
+     */
     function onEnded() {
         onNext(repeatEnabled);
     }
 
+    /**
+     * Callback function called when playback for the current song has started.
+     */
+    function onPlaying() {
+        updateCurrentImage();
+
+        if (currentSong) {
+            updateWindowTitle(currentSong);
+            <c:if test="${model.notify}">
+            showNotification(currentSong);
+            </c:if>
+        }
+    }
+
+    /**
+     * Initialize the Media Element Player, including callbacks.
+     */
     function createMediaElementPlayer() {
         // Manually run MediaElement.js initialization.
         //
@@ -211,6 +235,9 @@
 
         // Once playback reaches the end, go to the next song, if any.
         $('#audioPlayer').on("ended", onEnded);
+
+        // Whenever playback starts, show a notification for the current playing song.
+        $('#audioPlayer').on("playing", onPlaying);
     }
 
     function getPlayQueue() {
@@ -238,7 +265,7 @@
                 $('#audioPlayer').get(0).play();  // Resume playing if the player was paused
             }
             else {
-                skip(0);  // Start the first track if the player was not yet loaded
+                loadPlayer(0);  // Start the first track if the player was not yet loaded
             }
         } else {
             playQueueService.start(playQueueCallback);
@@ -318,7 +345,7 @@
     function onSkip(index) {
     <c:choose>
     <c:when test="${model.player.web}">
-        skip(index);
+        loadPlayer(index);
     </c:when>
     <c:otherwise>
         currentStreamUrl = songs[index].streamUrl;
@@ -535,11 +562,7 @@
         // On the web player, the play button is handled by MEJS and does
         // nothing if a first song hasn't been loaded.
         <c:if test="${model.player.web}">
-        var player = $('#audioPlayer').get(0);
-        if (songs.length > 0 && (!player.src || !currentStreamUrl)) {
-            player.src = songs[0].streamUrl;
-            currentStreamUrl = songs[0].streamUrl;
-        }
+        if (songs.length > 0 && !currentStreamUrl) preparePlayer(0);
         </c:if>
 
         // Delete all the rows except for the "pattern" row
@@ -654,7 +677,7 @@
     function triggerPlayer(index, positionMillis) {
         if (index != -1) {
             if (songs.length > index) {
-                skip(index);
+                loadPlayer(index);
                 if (positionMillis != 0) {
                     $('#audioPlayer').get(0).currentTime = positionMillis / 1000;
                 }
@@ -666,57 +689,126 @@
         }
     }
 
+    /**
+     * Return the current Media Element Player instance
+     */
+    function getMediaElementPlayer() {
+        return $('#audioPlayer').get(0);
+    }
+
+    /**
+     * Prepare playback for a song on the Cast player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function prepareCastPlayer(song, position) {
+        // The Cast player does not support preloading a song, so we don't do
+        // anything here and return directly.
+    }
+
+    /**
+     * Prepare playback for a song on the Media Element player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function prepareMediaElementPlayer(song, position) {
+        // The Media Element player supports setting the current song URL,
+        // which allows the user to start playback by interacting with the
+        // controls, without going through the Airsonic code.
+        getMediaElementPlayer().src = song.streamUrl;
+    }
+
+    /**
+     * Start playing a song on the Cast player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function loadCastPlayer(song, position, prepareOnly) {
+        // Start playback immediately
+        CastPlayer.loadCastMedia(song, position);
+        // The Cast player does not handle events, so we call the 'onPlaying' function manually.
+        onPlaying();
+    }
+
+    /**
+     * Start playing a song on the Media Element player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
     function loadMediaElementPlayer(song, position) {
-        var player = $('#audioPlayer').get(0);
-
-        // Is this a new song?
-        if (player.src != song.streamUrl) {
-            // Stop the current playing song and change the media source.
-            player.src = song.streamUrl;
-            // Inform MEJS that we need to load a new media source. The
-            // 'canplay' event will be fired once playback is possible.
-            player.load();
-            // The 'skip' function takes a 'position' argument. We don't
-            // usually send it, and in this case it's better to do nothing.
-            // Otherwise, the 'canplay' event will also be fired after
-            // setting 'currentTime'.
-            if (position && position > 0) {
-                player.currentTime = position;
-            }
-
-        // Are we seeking on an already-playing song?
-        } else {
-            // Seeking also starts playing. The 'canplay' event will be
-            // fired after setting 'currentTime'.
-            player.currentTime = position || 0;
+        // Retrieve the media element player
+        var player = getMediaElementPlayer();
+        // The player should have been prepared by `preparePlayer`, but if
+        // it hasn't we set it here so that the function behaves correctly.
+        if (player.src != song.streamUrl) player.src = song.streamUrl;
+        // Inform MEJS that we need to load the media source. The
+        // 'canplay' event will be fired once playback is possible.
+        player.load();
+        // The 'skip' function takes a 'position' argument. We don't
+        // usually send it, and in this case it's better to do nothing.
+        // Otherwise, the 'canplay' event will also be fired after
+        // setting 'currentTime'.
+        if (position && position > 0) {
+            player.currentTime = position;
         }
-
-        // Start playback immediately.
+        // Start playback immediately. The 'onPlaying' function will be called
+        // when the player notifies us that playback has started.
         player.play();
     }
 
-    function skip(index, position) {
+    /**
+     * Prepare for playing a song by its index on the active player.
+     *
+     * The song is not played immediately, but set as the current song.
+     *
+     * The active player is then prepared for playback: in Media Element
+     * Player's case, for example, this lets the player start playback using
+     * its own controls without relying on Airsonic code.
+     *
+     * @param index        song index in the play queue
+     * @param position     position in the song, in seconds
+     */
+    function preparePlayer(index, position) {
+
+        // Check that the song index is valid for the current play queue
         if (index < 0 || index >= songs.length) {
             return;
         }
 
-        var song = songs[index];
-        currentStreamUrl = song.streamUrl;
-        updateCurrentImage();
+        // Set the current song, index and URL as global variables
+        currentSong = songs[index];
+        currentStreamUrl = currentSong.streamUrl;
 
-        // Handle ChromeCast player.
+        // Run player-specific preparation code
         if (CastPlayer.castSession) {
-            CastPlayer.loadCastMedia(song, position);
-        // Handle MediaElement (HTML5) player.
+            prepareCastPlayer(currentSong, position);
+        } else {
+            prepareMediaElementPlayer(currentSong, position);
+        }
+
+        return currentSong;
+    }
+
+    /**
+     * Start playing a song by its index on the active player.
+     *
+     * @param index        song index in the play queue
+     * @param position     position in the song, in seconds
+     */
+    function loadPlayer(index, position) {
+        // Prepare playback on the active player
+        var song = preparePlayer(index, position);
+        if (!song) return;
+        // Run player-specific code to start playback
+        if (CastPlayer.castSession) {
+            loadCastPlayer(song, position);
         } else {
             loadMediaElementPlayer(song, position);
         }
-
-        updateWindowTitle(song);
-
-        <c:if test="${model.notify}">
-        showNotification(song);
-        </c:if>
     }
 
     function updateWindowTitle(song) {
