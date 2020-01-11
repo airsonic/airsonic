@@ -159,6 +159,9 @@
         <c:forEach var="invalidFolderSample" items="${model.dbMediaFilesInNonPresentMusicFoldersSample}">
             <tr><td class="ruleTableHeader">${invalidFolderSample.id}</td><td class="ruleTableCell">${invalidFolderSample.path}</td><td class="ruleTableCell">${invalidFolderSample.folder}</td></tr>
         </c:forEach>
+        <c:if test="${model.dbMediaFilesInNonPresentMusicFoldersCount > fn:length(model.dbMediaFilesInNonPresentMusicFoldersSample)}">
+            <tr><td class="ruleTableCell" colspan="3"><fmt:message key="internalhelp.morerows"><fmt:param value="${model.dbMediaFilesInNonPresentMusicFoldersCount - fn:length(model.dbMediaFilesInNonPresentMusicFoldersSample)}"/></fmt:message></td></tr>
+        </c:if>
     </c:if>
 </table>
 
@@ -186,6 +189,9 @@
         <c:forEach var="mismatchSample" items="${model.dbMediaFilesWithMusicFolderMismatchSample}">
             <tr><td class="ruleTableHeader">${mismatchSample.id}</td><td class="ruleTableCell">${mismatchSample.path}</td><td class="ruleTableCell">${mismatchSample.folder}</td></tr>
         </c:forEach>
+        <c:if test="${model.dbMediaFilesWithMusicFolderMismatchCount > fn:length(model.dbMediaFilesWithMusicFolderMismatchSample)}">
+            <tr><td class="ruleTableCell" colspan="3"><fmt:message key="internalhelp.morerows"><fmt:param value="${model.dbMediaFilesWithMusicFolderMismatchCount - fn:length(model.dbMediaFilesWithMusicFolderMismatchSample)}"/></fmt:message></td></tr>
+        </c:if>
     </c:if>
 </table>
 
