@@ -22,6 +22,7 @@ package org.airsonic.player.taglib;
 import org.airsonic.player.filter.ParameterDecodingFilter;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.lang.CharUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.taglibs.standard.tag.common.core.UrlSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class UrlTag extends BodyTagSupport {
     private String var;
     private String value;
     private String encoding = DEFAULT_ENCODING;
-    private List<Parameter> parameters = new ArrayList<Parameter>();
+    private List<Pair<String, String>> parameters = new ArrayList<>();
 
     public int doStartTag() {
         parameters.clear();
@@ -94,16 +95,16 @@ public class UrlTag extends BodyTagSupport {
             result.append('?');
 
             for (int i = 0; i < parameters.size(); i++) {
-                Parameter parameter = parameters.get(i);
+                Pair<String, String> parameter = parameters.get(i);
                 try {
-                    result.append(parameter.getName());
-                    if (isUtf8Hex() && !isAsciiAlphaNumeric(parameter.getValue())) {
+                    result.append(parameter.getLeft());
+                    if (isUtf8Hex() && !isAsciiAlphaNumeric(parameter.getRight())) {
                         result.append(ParameterDecodingFilter.PARAM_SUFFIX);
                     }
 
                     result.append('=');
-                    if (parameter.getValue() != null) {
-                        result.append(encode(parameter.getValue()));
+                    if (parameter.getRight() != null) {
+                        result.append(encode(parameter.getRight()));
                     }
                     if (i < parameters.size() - 1) {
                         result.append("&");
@@ -138,7 +139,7 @@ public class UrlTag extends BodyTagSupport {
         return DEFAULT_ENCODING.equals(encoding);
     }
 
-    private boolean isAsciiAlphaNumeric(String s) {
+    static private boolean isAsciiAlphaNumeric(String s) {
         if (s == null) {
             return true;
         }
@@ -160,7 +161,7 @@ public class UrlTag extends BodyTagSupport {
     }
 
     public void addParameter(String name, String value) {
-        parameters.add(new Parameter(name, value));
+        parameters.add(Pair.of(name, value));
     }
 
     public String getVar() {
@@ -185,26 +186,5 @@ public class UrlTag extends BodyTagSupport {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    /**
-     * A URL query parameter.
-     */
-    private static class Parameter {
-        private String name;
-        private String value;
-
-        private Parameter(String name, String value) {
-            this.name = name;
-            this.value = value;
-        }
-
-        private String getName() {
-            return name;
-        }
-
-        private String getValue() {
-            return value;
-        }
     }
 }
