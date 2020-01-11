@@ -18,7 +18,6 @@
  */
 package org.airsonic.player.dao;
 
-import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.domain.SavedPlayQueue;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
