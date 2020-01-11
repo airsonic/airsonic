@@ -88,14 +88,14 @@ public class AbstractDao {
         }
     }
 
-    protected <T> List<T> query(String sql, RowMapper rowMapper, Object... args) {
+    protected <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
         long t = System.nanoTime();
         List<T> result = getJdbcTemplate().query(sql, args, rowMapper);
         log(sql, t);
         return result;
     }
 
-    protected <T> List<T> namedQuery(String sql, RowMapper rowMapper, Map<String, Object> args) {
+    protected <T> List<T> namedQuery(String sql, RowMapper<T> rowMapper, Map<String, Object> args) {
         long t = System.nanoTime();
         List<T> result = getNamedParameterJdbcTemplate().query(sql, args, rowMapper);
         log(sql, t);
@@ -165,12 +165,12 @@ public class AbstractDao {
         return result;
     }
 
-    protected <T> T queryOne(String sql, RowMapper rowMapper, Object... args) {
+    protected <T> T queryOne(String sql, RowMapper<T> rowMapper, Object... args) {
         List<T> list = query(sql, rowMapper, args);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    protected <T> T namedQueryOne(String sql, RowMapper rowMapper, Map<String, Object> args) {
+    protected <T> T namedQueryOne(String sql, RowMapper<T> rowMapper, Map<String, Object> args) {
         List<T> list = namedQuery(sql, rowMapper, args);
         return list.isEmpty() ? null : list.get(0);
     }

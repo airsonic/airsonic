@@ -39,7 +39,7 @@ public class ArtistDao extends AbstractDao {
     private static final String INSERT_COLUMNS = "name, cover_art_path, album_count, last_scanned, present, folder_id";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
-    private final RowMapper rowMapper = new ArtistMapper();
+    private final RowMapper<Artist> rowMapper = new ArtistMapper();
 
     /**
      * Returns the artist with the given name.

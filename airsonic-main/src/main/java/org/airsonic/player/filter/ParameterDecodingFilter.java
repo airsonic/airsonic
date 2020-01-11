@@ -79,14 +79,13 @@ public class ParameterDecodingFilter implements Filter {
         }
 
         @Override
-        public Map getParameterMap() {
-            Map map = super.getParameterMap();
+        public Map<String, String[]> getParameterMap() {
+            Map<String, String[]> map = super.getParameterMap();
             Map<String, String[]> result = new HashMap<String, String[]>();
 
-            for (Object o : map.entrySet()) {
-                Map.Entry entry = (Map.Entry) o;
-                String name = (String) entry.getKey();
-                String[] values = (String[]) entry.getValue();
+            for (Map.Entry<String, String[]> entry : map.entrySet()) {
+                String name = entry.getKey();
+                String[] values = entry.getValue();
 
                 if (name.endsWith(PARAM_SUFFIX)) {
                     result.put(name.replace(PARAM_SUFFIX, ""), decode(values));
@@ -98,11 +97,11 @@ public class ParameterDecodingFilter implements Filter {
         }
 
         @Override
-        public Enumeration getParameterNames() {
-            Enumeration e = super.getParameterNames();
+        public Enumeration<String> getParameterNames() {
+            Enumeration<String> e = super.getParameterNames();
             Vector<String> v = new Vector<String>();
             while (e.hasMoreElements()) {
-                String name = (String) e.nextElement();
+                String name = e.nextElement();
                 if (name.endsWith(PARAM_SUFFIX)) {
                     name = name.replace(PARAM_SUFFIX, "");
                 }
