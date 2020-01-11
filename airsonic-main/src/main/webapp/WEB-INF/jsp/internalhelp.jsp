@@ -71,16 +71,6 @@
 
 <table width="75%" class="ruleTable indent">
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.luceneversion"/></td><td class="ruleTableCell">${model.indexLuceneVersion}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.songdeletedcount"/></td><td class="ruleTableCell">${model.indexSongDeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumdeletedcount"/></td><td class="ruleTableCell">${model.indexAlbumDeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistdeletedcount"/></td><td class="ruleTableCell">${model.indexArtistDeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumid3deletedcount"/></td><td class="ruleTableCell">${model.indexAlbumId3DeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistid3deletedcount"/></td><td class="ruleTableCell">${model.indexArtistId3DeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.songcount"/></td><td class="ruleTableCell">${model.indexSongCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumcount"/></td><td class="ruleTableCell">${model.indexAlbumCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistcount"/></td><td class="ruleTableCell">${model.indexArtistCount}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumid3count"/></td><td class="ruleTableCell">${model.indexAlbumId3Count}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistid3count"/></td><td class="ruleTableCell">${model.indexArtistId3Count}</td></tr>
 </table>
 
 <p></p>
@@ -138,10 +128,6 @@
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.distinctalbumcount"/></td><td class="ruleTableCell">${model.dbMediaFileDistinctAlbumCount}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.distinctartistcount"/></td><td class="ruleTableCell">${model.dbMediaFileDistinctArtistCount}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.distinctalbumartistcount"/></td><td class="ruleTableCell">${model.dbMediaFileDistinctAlbumArtistCount}</td></tr>
-
-    <c:forEach var="tableCount" items="${model.dbTableCount}">
-        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tablecount"><fmt:param value="${tableCount.key}"/></fmt:message></td><td class="ruleTableCell">${tableCount.value}</td></tr>
-    </c:forEach>
 </table>
 
 <p></p>
@@ -341,6 +327,35 @@
         </tr>
     </c:if>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.lcallvar"/></td><td class="ruleTableCell">${model.localeLcAll}</td></tr>
+</table>
+
+<p></p>
+
+<h2>
+    <img src="<spring:theme code='logImage'/>" alt="">
+    <span style="vertical-align: middle"><fmt:message key="internalhelp.indexdetails"/></span>
+</h2>
+
+<table width="75%" class="ruleTable indent">
+    <c:forEach var="stat" items="${model.indexStatistics}">
+        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.indexdeletedcount"><fmt:param value="${stat.value.name}"/></fmt:message></td><td class="ruleTableCell">${stat.value.deletedCount}</td></tr>
+    </c:forEach>
+    <c:forEach var="stat" items="${model.indexStatistics}">
+        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.indexcount"><fmt:param value="${stat.value.name}"/></fmt:message></td><td class="ruleTableCell">${stat.value.count}</td></tr>
+    </c:forEach>
+</table>
+
+<p></p>
+
+<h2>
+    <img src="<spring:theme code='logImage'/>" alt="">
+    <span style="vertical-align: middle"><fmt:message key="internalhelp.databasedetails"/></span>
+</h2>
+
+<table width="75%" class="ruleTable indent">
+    <c:forEach var="tableCount" items="${model.dbTableCount}">
+        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tablecount"><fmt:param value="${tableCount.key}"/></fmt:message></td><td class="ruleTableCell">${tableCount.value}</td></tr>
+    </c:forEach>
 </table>
 
 <p></p>
