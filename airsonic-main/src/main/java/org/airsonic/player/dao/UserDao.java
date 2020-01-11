@@ -326,7 +326,7 @@ public class UserDao extends AbstractDao {
         }
     }
 
-    private class UserRowMapper implements RowMapper<User> {
+    private static class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new User(rs.getString(1),
                     decrypt(rs.getString(2)),

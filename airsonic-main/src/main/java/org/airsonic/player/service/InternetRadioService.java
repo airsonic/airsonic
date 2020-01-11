@@ -42,7 +42,7 @@ public class InternetRadioService {
     /**
      * Generic exception class for playlists.
      */
-    private class PlaylistException extends Exception {
+    private static class PlaylistException extends Exception {
         public PlaylistException(String message) {
             super(message);
         }
