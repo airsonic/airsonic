@@ -54,12 +54,12 @@
 </h2>
 
 <table width="75%" class="ruleTable indent">
-    <tr><td class="ruleTableHeader">statAlbumCount</td><td class="ruleTableCell">${model.statAlbumCount}</td></tr>
-    <tr><td class="ruleTableHeader">statArtistCount</td><td class="ruleTableCell">${model.statArtistCount}</td></tr>
-    <tr><td class="ruleTableHeader">statSongCount</td><td class="ruleTableCell">${model.statSongCount}</td></tr>
-    <tr><td class="ruleTableHeader">statLastScanDate</td><td class="ruleTableCell">${model.statLastScanDate}</td></tr>
-    <tr><td class="ruleTableHeader">statTotalDurationSeconds</td><td class="ruleTableCell">${model.statTotalDurationSeconds}</td></tr>
-    <tr><td class="ruleTableHeader">statTotalLengthBytes</td><td class="ruleTableCell">${model.statTotalLengthBytes}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumcount"/></td><td class="ruleTableCell">${model.statAlbumCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistcount"/></td><td class="ruleTableCell">${model.statArtistCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.songcount"/></td><td class="ruleTableCell">${model.statSongCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.lastscandate"/></td><td class="ruleTableCell">${model.statLastScanDate}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.totaldurationseconds"/></td><td class="ruleTableCell">${model.statTotalDurationSeconds}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.totalsizebytes"/></td><td class="ruleTableCell">${model.statTotalLengthBytes}</td></tr>
 </table>
 
 <p></p>
@@ -70,20 +70,17 @@
 </h2>
 
 <table width="75%" class="ruleTable indent">
-    <tr><td class="ruleTableHeader">indexLuceneVersion</td><td class="ruleTableCell">${model.indexLuceneVersion}</td></tr>
-
-
-    <tr><td class="ruleTableHeader">indexSongDeletedCount</td><td class="ruleTableCell">${model.indexSongDeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexAlbumDeletedCount</td><td class="ruleTableCell">${model.indexAlbumDeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexArtistDeletedCount</td><td class="ruleTableCell">${model.indexArtistDeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexAlbumId3DeletedCount</td><td class="ruleTableCell">${model.indexAlbumId3DeletedCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexArtistId3DeletedCount</td><td class="ruleTableCell">${model.indexArtistId3DeletedCount}</td></tr>
-
-    <tr><td class="ruleTableHeader">indexSongCount</td><td class="ruleTableCell">${model.indexSongCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexAlbumCount</td><td class="ruleTableCell">${model.indexAlbumCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexArtistCount</td><td class="ruleTableCell">${model.indexArtistCount}</td></tr>
-    <tr><td class="ruleTableHeader">indexAlbumId3Count</td><td class="ruleTableCell">${model.indexAlbumId3Count}</td></tr>
-    <tr><td class="ruleTableHeader">indexArtistId3Count</td><td class="ruleTableCell">${model.indexArtistId3Count}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.luceneversion"/></td><td class="ruleTableCell">${model.indexLuceneVersion}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.songdeletedcount"/></td><td class="ruleTableCell">${model.indexSongDeletedCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumdeletedcount"/></td><td class="ruleTableCell">${model.indexAlbumDeletedCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistdeletedcount"/></td><td class="ruleTableCell">${model.indexArtistDeletedCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumid3deletedcount"/></td><td class="ruleTableCell">${model.indexAlbumId3DeletedCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistid3deletedcount"/></td><td class="ruleTableCell">${model.indexArtistId3DeletedCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.songcount"/></td><td class="ruleTableCell">${model.indexSongCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumcount"/></td><td class="ruleTableCell">${model.indexAlbumCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistcount"/></td><td class="ruleTableCell">${model.indexArtistCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumid3count"/></td><td class="ruleTableCell">${model.indexAlbumId3Count}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.artistid3count"/></td><td class="ruleTableCell">${model.indexArtistId3Count}</td></tr>
 </table>
 
 <p></p>
@@ -100,52 +97,50 @@
             <c:choose>
                 <c:when test="${model.dbLogSizeBytes < 268435456}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    The database log file (db/airsonic.log) appears healthy.
+                    <fmt:message key="internalhelp.dblogsize.ok"/>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    The database log file (db/airsonic.log) is large (greater than 256M). Run a scan to clean it up.
+                    <fmt:message key="internalhelp.dblogsize.warn"/>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
 
-    <tr><td class="ruleTableHeader">dbDriverName</td><td class="ruleTableCell">${model.dbDriverName}</td></tr>
-    <tr><td class="ruleTableHeader">dbDriverVersion</td><td class="ruleTableCell">${model.dbDriverVersion}</td></tr>
-    <tr><td class="ruleTableHeader">dbDirectorySize</td><td class="ruleTableCell">${model.dbDirectorySize}</td></tr>
-    <tr><td class="ruleTableHeader">dbLogSize</td><td class="ruleTableCell">${model.dbLogSize}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdrivername"/></td><td class="ruleTableCell">${model.dbDriverName}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdriverversion"/></td><td class="ruleTableCell">${model.dbDriverVersion}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdirectorysize"/></td><td class="ruleTableCell">${model.dbDirectorySize}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dblogsize"/></td><td class="ruleTableCell">${model.dbLogSize}</td></tr>
 
     <tr>
         <td colspan="2" class="ruleTableCell">
             <c:choose>
                 <c:when test="${model.dbMediaFileAlbumNonPresentCount + model.dbMediaFileDirectoryNonPresentCount + model.dbMediaFileMusicNonPresentCount + model.dbMediaFilePodcastNonPresentCount == 0}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    The database does not contain non-present items.
+                    <fmt:message key="internalhelp.dbnonpresent.ok"/>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    The database contains non-present items. Run "clean-up database" to clean them up.
+                    <fmt:message key="internalhelp.dbnonpresent.warn"/>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
 
-    <tr><td class="ruleTableHeader">dbMediaFileMusicNonPresentCount</td><td class="ruleTableCell">${model.dbMediaFileMusicNonPresentCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFilePodcastNonPresentCount</td><td class="ruleTableCell">${model.dbMediaFilePodcastNonPresentCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFileDirectoryNonPresentCount</td><td class="ruleTableCell">${model.dbMediaFileDirectoryNonPresentCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFileAlbumNonPresentCount</td><td class="ruleTableCell">${model.dbMediaFileAlbumNonPresentCount}</td></tr>
-
-    <tr><td class="ruleTableHeader">dbMediaFileMusicPresentCount</td><td class="ruleTableCell">${model.dbMediaFileMusicPresentCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFilePodcastPresentCount</td><td class="ruleTableCell">${model.dbMediaFilePodcastPresentCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFileDirectoryPresentCount</td><td class="ruleTableCell">${model.dbMediaFileDirectoryPresentCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFileAlbumPresentCount</td><td class="ruleTableCell">${model.dbMediaFileAlbumPresentCount}</td></tr>
-
-    <tr><td class="ruleTableHeader">dbMediaFileDistinctAlbumCount</td><td class="ruleTableCell">${model.dbMediaFileDistinctAlbumCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFileDistinctArtistCount</td><td class="ruleTableCell">${model.dbMediaFileDistinctArtistCount}</td></tr>
-    <tr><td class="ruleTableHeader">dbMediaFileDistinctAlbumArtistCount</td><td class="ruleTableCell">${model.dbMediaFileDistinctAlbumArtistCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.musicdeletedcount"/></td><td class="ruleTableCell">${model.dbMediaFileMusicNonPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.podcastdeletedcount"/></td><td class="ruleTableCell">${model.dbMediaFilePodcastNonPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.directorydeletedcount"/></td><td class="ruleTableCell">${model.dbMediaFileDirectoryNonPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumdeletedcount"/></td><td class="ruleTableCell">${model.dbMediaFileAlbumNonPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.musiccount"/></td><td class="ruleTableCell">${model.dbMediaFileMusicPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.podcastcount"/></td><td class="ruleTableCell">${model.dbMediaFilePodcastPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.directorycount"/></td><td class="ruleTableCell">${model.dbMediaFileDirectoryPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.albumcount"/></td><td class="ruleTableCell">${model.dbMediaFileAlbumPresentCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.distinctalbumcount"/></td><td class="ruleTableCell">${model.dbMediaFileDistinctAlbumCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.distinctartistcount"/></td><td class="ruleTableCell">${model.dbMediaFileDistinctArtistCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.distinctalbumartistcount"/></td><td class="ruleTableCell">${model.dbMediaFileDistinctAlbumArtistCount}</td></tr>
 
     <c:forEach var="tableCount" items="${model.dbTableCount}">
-        <tr><td class="ruleTableHeader">${tableCount.key} count</td><td class="ruleTableCell">${tableCount.value}</td></tr>
+        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tablecount"><fmt:param value="${tableCount.key}"/></fmt:message></td><td class="ruleTableCell">${tableCount.value}</td></tr>
     </c:forEach>
 </table>
 
@@ -153,7 +148,7 @@
 
 <h2>
     <img src="<spring:theme code='logImage'/>" alt="">
-    <span style="vertical-align: middle"><fmt:message key="internalhalp.databaseconsistency"/></span>
+    <span style="vertical-align: middle"><fmt:message key="internalhelp.databaseconsistency"/></span>
 </h2>
 
 <table width="75%" class="ruleTable indent">
@@ -162,17 +157,17 @@
             <c:choose>
                 <c:when test="${model.dbMediaFilesInNonPresentMusicFoldersCount == 0}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    All media files in the database have a valid music folder.
+                    <fmt:message key="internalhelp.mediafilesinnonpresentmusicfoldercount.ok"/>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    The media file database contains files whose music folder is no longer present. Examples are below.
+                    <fmt:message key="internalhelp.mediafilesinnonpresentmusicfoldercount.warn"/>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
 
-    <tr><td class="ruleTableHeader">dbMediaFilesInNonPresentMusicFoldersCount</td><td class="ruleTableCell" colspan="2">${model.dbMediaFilesInNonPresentMusicFoldersCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.mediafilesinnonpresentmusicfoldercount"/></td><td class="ruleTableCell" colspan="2">${model.dbMediaFilesInNonPresentMusicFoldersCount}</td></tr>
     <c:if test="${model.dbMediaFilesInNonPresentMusicFoldersCount > 0}">
         <tr><td class="ruleTableHeader">ID</td><td class="ruleTableHeader">PATH</td><td class="ruleTableHeader">FOLDER</td></tr>
         <c:forEach var="invalidFolderSample" items="${model.dbMediaFilesInNonPresentMusicFoldersSample}">
@@ -189,17 +184,17 @@
             <c:choose>
                 <c:when test="${model.dbMediaFilesWithMusicFolderMismatchCount == 0}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    All media files in the database match their music folder.
+                    <fmt:message key="internalhelp.mediafileswithmusicfoldermismatchcount.ok"/>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    The media file database contains files whose path does not match their music folder path. Examples are below.
+                    <fmt:message key="internalhelp.mediafileswithmusicfoldermismatchcount.warn"/>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
 
-    <tr><td class="ruleTableHeader">dbMediaFilesWithMusicFolderMismatchCount</td><td class="ruleTableCell" colspan="2">${model.dbMediaFilesWithMusicFolderMismatchCount}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.mediafileswithmusicfoldermismatchcount"/></td><td class="ruleTableCell" colspan="2">${model.dbMediaFilesWithMusicFolderMismatchCount}</td></tr>
     <c:if test="${model.dbMediaFilesWithMusicFolderMismatchCount > 0}">
         <tr><td class="ruleTableHeader">ID</td><td class="ruleTableHeader">PATH</td><td class="ruleTableHeader">FOLDER</td></tr>
         <c:forEach var="mismatchSample" items="${model.dbMediaFilesWithMusicFolderMismatchSample}">
@@ -224,11 +219,11 @@
                 <c:choose>
                     <c:when test="${musicFolderStatistics.value.readable}">
                         <img src="<spring:theme code='checkImage'/>" alt="OK">
-                        Airsonic appears to have the correct permissions for music folder "${musicFolderStatistics.key}".
+                        <fmt:message key="internalhelp.folderisreadable.ok"><fmt:param value="${musicFolderStatistics.key}"/></fmt:message>
                     </c:when>
                     <c:otherwise>
                         <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                        Airsonic does not have the correct permissions for music folder "${musicFolderStatistics.key}".
+                        <fmt:message key="internalhelp.folderisreadable.warn"><fmt:param value="${musicFolderStatistics.key}"/></fmt:message>
                     </c:otherwise>
                 </c:choose>
             </td>
@@ -252,35 +247,35 @@
             <c:choose>
                 <c:when test="${model.fsFfprobeInfo.readable and model.fsFfprobeInfo.executable}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    Ffprobe appears configured correctly.
+                    <fmt:message key="internalhelp.tool.ok"><fmt:param value="ffprobe"/></fmt:message>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    Ffprobe is either missing or not executable. Transcoding may not work properly.
+                    <fmt:message key="internalhelp.tool.warn"><fmt:param value="ffprobe"/></fmt:message>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
-    <tr><td class="ruleTableHeader">Ffprobe path</td><td class="ruleTableCell">${model.fsFfprobeInfo.path}</td></tr>
-    <tr><td class="ruleTableHeader">Ffprobe is readable?</td><td class="ruleTableCell">${model.fsFfprobeInfo.readable}</td></tr>
-    <tr><td class="ruleTableHeader">Ffprobe is executable?</td><td class="ruleTableCell">${model.fsFfprobeInfo.executable}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tool.path"><fmt:param value="ffprobe"/></fmt:message></td><td class="ruleTableCell">${model.fsFfprobeInfo.path}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tool.isreadable"><fmt:param value="ffprobe"/></fmt:message></td><td class="ruleTableCell">${model.fsFfprobeInfo.readable}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tool.isexecutable"><fmt:param value="ffprobe"/></fmt:message></td><td class="ruleTableCell">${model.fsFfprobeInfo.executable}</td></tr>
     <tr>
         <td colspan="2" class="ruleTableCell">
             <c:choose>
                 <c:when test="${model.fsFfmpegInfo.readable and model.fsFfmpegInfo.executable}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    Ffmpeg appears configured correctly.
+                    <fmt:message key="internalhelp.tool.ok"><fmt:param value="ffmpeg"/></fmt:message>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    Ffmpeg is either missing or not executable. Transcoding may not work properly.
+                    <fmt:message key="internalhelp.tool.warn"><fmt:param value="ffprobe"/></fmt:message>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
-    <tr><td class="ruleTableHeader">Ffmpeg path</td><td class="ruleTableCell">${model.fsFfmpegInfo.path}</td></tr>
-    <tr><td class="ruleTableHeader">Ffmpeg is readable?</td><td class="ruleTableCell">${model.fsFfmpegInfo.readable}</td></tr>
-    <tr><td class="ruleTableHeader">Ffmpeg is executable?</td><td class="ruleTableCell">${model.fsFfmpegInfo.executable}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tool.path"><fmt:param value="ffmpeg"/></fmt:message></td><td class="ruleTableCell">${model.fsFfmpegInfo.path}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tool.isreadable"><fmt:param value="ffmpeg"/></fmt:message></td><td class="ruleTableCell">${model.fsFfmpegInfo.readable}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.tool.isexecutable"><fmt:param value="ffmpeg"/></fmt:message></td><td class="ruleTableCell">${model.fsFfmpegInfo.executable}</td></tr>
 </table>
 
 <p></p>
@@ -307,25 +302,25 @@
     </tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.defaultcharset"/></td><td class="ruleTableCell">${model.localeDefaultCharset}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.defaultlocale"/></td><td class="ruleTableCell">${model.localeDefault}</td></tr>
-    <tr><td class="ruleTableHeader">user.language</td><td class="ruleTableCell">${model.localeUserLanguage}</td></tr>
-    <tr><td class="ruleTableHeader">user.country</td><td class="ruleTableCell">${model.localeUserCountry}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.user.language"/></td><td class="ruleTableCell">${model.localeUserLanguage}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.user.country"/></td><td class="ruleTableCell">${model.localeUserCountry}</td></tr>
     <tr>
         <td colspan="2" class="ruleTableCell">
             <c:choose>
                 <c:when test="${fn:contains(model.localeFileEncoding, 'UTF-8')}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    Java file encoding appears to have UTF-8 support.
+                    <fmt:message key="internalhelp.file.encoding.ok"/>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    Java file encoding appears to have no UTF-8 support. International characters may be partially supported.
+                    <fmt:message key="internalhelp.file.encoding.warn"/>
                 </c:otherwise>
             </c:choose>
         </td>
     </tr>
-    <tr><td class="ruleTableHeader">file.encoding</td><td class="ruleTableCell">${model.localeFileEncoding}</td></tr>
-    <tr><td class="ruleTableHeader">sun.jnu.encoding</td><td class="ruleTableCell">${model.localeSunJnuEncoding}</td></tr>
-    <tr><td class="ruleTableHeader">sun.io.unicode.encoding</td><td class="ruleTableCell">${model.localeSunIoUnicodeEncoding}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.file.encoding"/></td><td class="ruleTableCell">${model.localeFileEncoding}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.sun.jnu.encoding"/></td><td class="ruleTableCell">${model.localeSunJnuEncoding}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.sun.io.unicode.encoding"/></td><td class="ruleTableCell">${model.localeSunIoUnicodeEncoding}</td></tr>
 
     <c:if test="${not empty model.localeLang and not fn:contains(model.localeLang, 'UTF-8')}">
         <tr>
@@ -335,7 +330,7 @@
             </td>
         </tr>
     </c:if>
-    <tr><td class="ruleTableHeader">LANG</td><td class="ruleTableCell">${model.localeLang}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.langvar"/></td><td class="ruleTableCell">${model.localeLang}</td></tr>
 
     <c:if test="${not empty model.localeLcAll and not fn:contains(model.localeLcAll, 'UTF-8')}">
         <tr>
@@ -345,7 +340,7 @@
             </td>
         </tr>
     </c:if>
-    <tr><td class="ruleTableHeader">LC_ALL</td><td class="ruleTableCell">${model.localeLcAll}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.lcallvar"/></td><td class="ruleTableCell">${model.localeLcAll}</td></tr>
 </table>
 
 <p></p>
