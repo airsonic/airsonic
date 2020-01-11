@@ -54,8 +54,8 @@ public class MediaFileDao extends AbstractDao {
     public static final int VERSION = 4;
 
     private final RowMapper<MediaFile> rowMapper = new MediaFileMapper();
-    private final RowMapper musicFileInfoRowMapper = new MusicFileInfoMapper();
-    private final RowMapper genreRowMapper = new GenreMapper();
+    private final RowMapper<MediaFile> musicFileInfoRowMapper = new MusicFileInfoMapper();
+    private final RowMapper<Genre> genreRowMapper = new GenreMapper();
 
     /**
      * Returns the media file for the given path.

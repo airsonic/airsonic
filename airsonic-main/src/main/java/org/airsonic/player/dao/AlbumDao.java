@@ -45,7 +45,7 @@ public class AlbumDao extends AbstractDao {
 
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
-    private final RowMapper rowMapper = new AlbumMapper();
+    private final RowMapper<Album> rowMapper = new AlbumMapper();
 
     public Album getAlbum(int id) {
         return queryOne("select " + QUERY_COLUMNS + " from album where id=?", rowMapper, id);
