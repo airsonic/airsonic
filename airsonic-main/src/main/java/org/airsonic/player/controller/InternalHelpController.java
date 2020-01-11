@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -274,21 +275,23 @@ public class InternalHelpController {
     }
 
     private void gatherDatabaseInfo(Map<String, Object> map) {
+
         try (Connection conn = daoHelper.getDataSource().getConnection()) {
+
+            // Driver name/version
             map.put("dbDriverName", conn.getMetaData().getDriverName());
             map.put("dbDriverVersion", conn.getMetaData().getDriverVersion());
-        } catch (SQLException e) {
-            LOG.debug("Unable to gather information", e);
-        }
-        File dbDirectory = new File(settingsService.getAirsonicHome(), "db");
-        map.put("dbDirectorySizeBytes", dbDirectory.exists() ? FileUtils.sizeOfDirectory(dbDirectory) : 0);
-        map.put("dbDirectorySize", FileUtils.byteCountToDisplaySize((long) map.get("dbDirectorySizeBytes")));
-        File dbLogFile = new File(dbDirectory, "airsonic.log");
-        map.put("dbLogSizeBytes", dbLogFile.exists() ? dbLogFile.length() : 0);
-        map.put("dbLogSize", FileUtils.byteCountToDisplaySize((long) map.get("dbLogSizeBytes")));
-        SortedMap<String, Long> dbTableCount = new TreeMap<>();
-        try {
-            for (String tableName : daoHelper.getJdbcTemplate().queryForList("SELECT table_name FROM INFORMATION_SCHEMA.SYSTEM_TABLES WHERE table_schem = 'PUBLIC'", String.class)) {
+
+            // Gather information for existing database tables
+            ResultSet resultSet = conn.getMetaData().getTables(null, null, "%", null);
+            SortedMap<String, Long> dbTableCount = new TreeMap<>();
+            while (resultSet.next()) {
+                String tableSchema = resultSet.getString("TABLE_SCHEM");
+                String tableName = resultSet.getString("TABLE_NAME");
+                String tableType = resultSet.getString("TABLE_TYPE");
+                LOG.debug("Got database table {}, schema {}, type {}", tableName, tableSchema, tableType);
+                if (!"table".equalsIgnoreCase(tableType)) continue;   // Table type
+                if (!"public".equalsIgnoreCase(tableSchema)) continue;  // Table schema
                 try {
                     Long tableCount = daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM %s", tableName), Long.class);
                     dbTableCount.put(tableName, tableCount);
@@ -296,9 +299,18 @@ public class InternalHelpController {
                     LOG.debug("Unable to gather information", e);
                 }
             }
-        } catch (Exception e) {
+            map.put("dbTableCount", dbTableCount);
+
+        } catch (SQLException e) {
             LOG.debug("Unable to gather information", e);
         }
+
+        File dbDirectory = new File(settingsService.getAirsonicHome(), "db");
+        map.put("dbDirectorySizeBytes", dbDirectory.exists() ? FileUtils.sizeOfDirectory(dbDirectory) : 0);
+        map.put("dbDirectorySize", FileUtils.byteCountToDisplaySize((long) map.get("dbDirectorySizeBytes")));
+        File dbLogFile = new File(dbDirectory, "airsonic.log");
+        map.put("dbLogSizeBytes", dbLogFile.exists() ? dbLogFile.length() : 0);
+        map.put("dbLogSize", FileUtils.byteCountToDisplaySize((long) map.get("dbLogSizeBytes")));
 
         map.put("dbMediaFileMusicNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'MUSIC'"), Long.class));
         map.put("dbMediaFilePodcastNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'PODCAST'"), Long.class));
@@ -319,8 +331,6 @@ public class InternalHelpController {
 
         map.put("dbMediaFilesWithMusicFolderMismatchCount", mediaFileDao.getFilesWithMusicFolderMismatchCount());
         map.put("dbMediaFilesWithMusicFolderMismatchSample", mediaFileDao.getFilesWithMusicFolderMismatch(10));
-
-        map.put("dbTableCount", dbTableCount);
     }
 
     private void gatherFilesystemInfo(Map<String, Object> map) {
