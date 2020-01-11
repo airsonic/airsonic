@@ -68,6 +68,36 @@ public class InternalHelpController {
 
     private static final int LOG_LINES_TO_SHOW = 50;
 
+    public class IndexStatistics {
+        private String name;
+        private int count;
+        private int deletedCount;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public int getDeletedCount() {
+            return deletedCount;
+        }
+
+        public void setDeletedCount(int deletedCount) {
+            this.deletedCount = deletedCount;
+        }
+    }
+
     public class FileStatistics {
         private String name;
         private String path;
@@ -225,36 +255,20 @@ public class InternalHelpController {
     }
 
     private void gatherIndexInfo(Map<String, Object> map) {
-        try (IndexReader reader = indexManager.getSearcher(IndexType.SONG).getIndexReader()) {
-            map.put("indexSongCount", reader.numDocs());
-            map.put("indexSongDeletedCount", reader.numDeletedDocs());
-        } catch (IOException e) {
-            LOG.debug("Unable to gather information", e);
+        SortedMap<String, IndexStatistics> indexStats = new TreeMap<>();
+        for (IndexType indexType : IndexType.values()) {
+            try (IndexReader reader = indexManager.getSearcher(indexType).getIndexReader()) {
+                IndexStatistics stat = new IndexStatistics();
+                stat.setName(indexType.name());
+                stat.setCount(reader.numDocs());
+                stat.setDeletedCount(reader.numDeletedDocs());
+                indexStats.put(indexType.name(), stat);
+            } catch (IOException e) {
+                LOG.debug("Unable to gather information about {} index", indexType.name(), e);
+            }
         }
-        try (IndexReader reader = indexManager.getSearcher(IndexType.ALBUM).getIndexReader()) {
-            map.put("indexAlbumCount", reader.numDocs());
-            map.put("indexAlbumDeletedCount", reader.numDeletedDocs());
-        } catch (IOException e) {
-            LOG.debug("Unable to gather information", e);
-        }
-        try (IndexReader reader = indexManager.getSearcher(IndexType.ARTIST).getIndexReader()) {
-            map.put("indexArtistCount", reader.numDocs());
-            map.put("indexArtistDeletedCount", reader.numDeletedDocs());
-        } catch (IOException e) {
-            LOG.debug("Unable to gather information", e);
-        }
-        try (IndexReader reader = indexManager.getSearcher(IndexType.ALBUM_ID3).getIndexReader()) {
-            map.put("indexAlbumId3Count", reader.numDocs());
-            map.put("indexAlbumId3DeletedCount", reader.numDeletedDocs());
-        } catch (IOException e) {
-            LOG.debug("Unable to gather information", e);
-        }
-        try (IndexReader reader = indexManager.getSearcher(IndexType.ARTIST_ID3).getIndexReader()) {
-            map.put("indexArtistId3Count", reader.numDocs());
-            map.put("indexArtistId3DeletedCount", reader.numDeletedDocs());
-        } catch (IOException e) {
-            LOG.debug("Unable to gather information", e);
-        }
+        map.put("indexStatistics", indexStats);
+
         try (Analyzer analyzer = analyzerFactory.getAnalyzer()) {
             map.put("indexLuceneVersion", analyzer.getVersion().toString());
         } catch (IOException e) {
