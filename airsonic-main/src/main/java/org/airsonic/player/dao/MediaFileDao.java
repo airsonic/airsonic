@@ -592,7 +592,9 @@ public class MediaFileDao extends AbstractDao {
 
         query += " order by rand()";
 
-        return namedQueryWithLimit(query, rowMapper, args, criteria.getCount());
+        query += " limit " + criteria.getCount();
+
+        return namedQuery(query, rowMapper, args);
     }
 
     public int getAlbumCount(final List<MusicFolder> musicFolders) {

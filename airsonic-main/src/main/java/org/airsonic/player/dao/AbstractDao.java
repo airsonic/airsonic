@@ -102,16 +102,6 @@ public class AbstractDao {
         return result;
     }
 
-    protected <T> List<T> namedQueryWithLimit(String sql, RowMapper<T> rowMapper, Map<String, Object> args, int limit) {
-        long t = System.nanoTime();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(daoHelper.getDataSource());
-        jdbcTemplate.setMaxRows(limit);
-        NamedParameterJdbcTemplate namedTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        List<T> result = namedTemplate.query(sql, args, rowMapper);
-        log(sql, t);
-        return result;
-    }
-
     protected List<String> queryForStrings(String sql, Object... args) {
         long t = System.nanoTime();
         List<String> result = getJdbcTemplate().queryForList(sql, args, String.class);
