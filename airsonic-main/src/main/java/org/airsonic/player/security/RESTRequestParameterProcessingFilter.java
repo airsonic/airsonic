@@ -180,6 +180,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
                 "{}: Client tried to use deprecated token+salt authentication while loading {}",
                 httpRequest.getRemoteAddr(),
                 Util.getAnonymizedURLForRequest(httpRequest));
+            return null;
         }
 
         return SubsonicRESTController.ErrorCode.MISSING_PARAMETER;

@@ -126,6 +126,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             restAuthenticationFilter.setSecurityService(securityService);
             restAuthenticationFilter.setEventPublisher(eventPublisher);
             http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            http.httpBasic();
 
             // Try to load the 'remember me' key.
             //
