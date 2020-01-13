@@ -25,6 +25,7 @@ import org.airsonic.player.domain.User;
 import org.airsonic.player.domain.Version;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.util.StringUtil;
+import org.airsonic.player.util.Util;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -148,7 +149,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
             return null;
         }
 
-        if (salt != null && token != null) {
+        if (salt != null && token != null && securityService.isTokenSaltAuthenticationAllowed()) {
             User user = securityService.getUserByName(username);
             if (user == null) {
                 return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
@@ -172,6 +173,13 @@ public class RESTRequestParameterProcessingFilter implements Filter {
                 eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(authRequest, x));
                 return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
             }
+        }
+
+        if (salt != null && token != null && !securityService.isTokenSaltAuthenticationAllowed()) {
+            LOG.warn(
+                "{}: Client tried to use deprecated token+salt authentication while loading {}",
+                httpRequest.getRemoteAddr(),
+                Util.getAnonymizedURLForRequest(httpRequest));
         }
 
         return SubsonicRESTController.ErrorCode.MISSING_PARAMETER;

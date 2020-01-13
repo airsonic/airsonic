@@ -133,6 +133,8 @@ public class SettingsService {
 
     private static final String KEY_UPNP_PORT = "UPNP_PORT";
 
+    private static final String KEY_TOKEN_SALT_AUTHENTICATION_ALLOWED = "TokenSaltAuthenticationAllowed";
+
     // Default values.
     private static final String DEFAULT_JWT_KEY = null;
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
@@ -213,6 +215,8 @@ public class SettingsService {
     private static final String DEFAULT_DATABASE_USERTABLE_QUOTE = null;
 
     private static final int DEFAULT_UPNP_PORT = 4041;
+
+    private static final boolean DEFAULT_TOKEN_SALT_AUTHENTICATION_ALLOWED = true;
 
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
@@ -1369,6 +1373,14 @@ public class SettingsService {
 
     public void setDatabaseConfigEmbedUrl(String url) {
         setString(KEY_DATABASE_CONFIG_EMBED_URL, url);
+    }
+
+    public boolean isTokenSaltAuthenticationAllowed() {
+        return getBoolean(KEY_TOKEN_SALT_AUTHENTICATION_ALLOWED, DEFAULT_TOKEN_SALT_AUTHENTICATION_ALLOWED);
+    }
+
+    public void setTokenSaltAuthenticationAllowed(boolean value) {
+        setBoolean(KEY_TOKEN_SALT_AUTHENTICATION_ALLOWED, value);
     }
 
     public String getDatabaseConfigEmbedUsername() {

@@ -347,4 +347,8 @@ public class SecurityService implements UserDetailsService {
     public void setUserCache(Ehcache userCache) {
         this.userCache = userCache;
     }
+
+    public boolean isTokenSaltAuthenticationAllowed() {
+        return settingsService.isTokenSaltAuthenticationAllowed();
+    }
 }
