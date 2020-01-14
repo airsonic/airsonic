@@ -28,6 +28,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * Provides services for maintaining the list of stream, download and upload statuses.
@@ -43,35 +45,27 @@ public class StatusService {
     @Autowired
     private MediaFileService mediaFileService;
 
-    private final List<TransferStatus> streamStatuses = new ArrayList<TransferStatus>();
-    private final List<TransferStatus> downloadStatuses = new ArrayList<TransferStatus>();
-    private final List<TransferStatus> uploadStatuses = new ArrayList<TransferStatus>();
-    private final List<PlayStatus> remotePlays = new ArrayList<PlayStatus>();
+    private final List<TransferStatus> streamStatuses = Collections.synchronizedList(new ArrayList<>());
+    private final List<TransferStatus> downloadStatuses = Collections.synchronizedList(new ArrayList<>());
+    private final List<TransferStatus> uploadStatuses = Collections.synchronizedList(new ArrayList<>());
+    private final List<PlayStatus> remotePlays = Collections.synchronizedList(new ArrayList<>());
 
     // Maps from player ID to latest inactive stream status.
-    private final Map<Integer, TransferStatus> inactiveStreamStatuses = new LinkedHashMap<Integer, TransferStatus>();
+    private final Map<Integer, TransferStatus> inactiveStreamStatuses = new ConcurrentHashMap<>();
 
-    public synchronized TransferStatus createStreamStatus(Player player) {
-        // Reuse existing status, if possible.
-        TransferStatus status = inactiveStreamStatuses.get(player.getId());
-        if (status != null) {
-            status.setActive(true);
-        } else {
-            status = createStatus(player, streamStatuses);
-        }
-        return status;
+    public TransferStatus createStreamStatus(Player player) {
+        return createStatus(player, streamStatuses);
     }
 
     public synchronized void removeStreamStatus(TransferStatus status) {
-        // Move it to the map of inactive statuses.
+        // Move it to the map of inactive statuses
         status.setActive(false);
         inactiveStreamStatuses.put(status.getPlayer().getId(), status);
         streamStatuses.remove(status);
     }
 
-    public synchronized List<TransferStatus> getAllStreamStatuses() {
-
-        List<TransferStatus> result = new ArrayList<TransferStatus>(streamStatuses);
+    public List<TransferStatus> getAllStreamStatuses() {
+        List<TransferStatus> result = new ArrayList<>(streamStatuses);
 
         // Add inactive status for those players that have no active status.
         Set<Integer> activePlayers = new HashSet<Integer>();
@@ -87,7 +81,7 @@ public class StatusService {
         return result;
     }
 
-    public synchronized List<TransferStatus> getStreamStatusesForPlayer(Player player) {
+    public List<TransferStatus> getStreamStatusesForPlayer(Player player) {
         List<TransferStatus> result = new ArrayList<TransferStatus>();
         for (TransferStatus status : streamStatuses) {
             if (status.getPlayer().getId().equals(player.getId())) {
@@ -106,31 +100,31 @@ public class StatusService {
         return result;
     }
 
-    public synchronized TransferStatus createDownloadStatus(Player player) {
+    public TransferStatus createDownloadStatus(Player player) {
         return createStatus(player, downloadStatuses);
     }
 
-    public synchronized void removeDownloadStatus(TransferStatus status) {
+    public void removeDownloadStatus(TransferStatus status) {
         downloadStatuses.remove(status);
     }
 
-    public synchronized List<TransferStatus> getAllDownloadStatuses() {
+    public List<TransferStatus> getAllDownloadStatuses() {
         return new ArrayList<TransferStatus>(downloadStatuses);
     }
 
-    public synchronized TransferStatus createUploadStatus(Player player) {
+    public TransferStatus createUploadStatus(Player player) {
         return createStatus(player, uploadStatuses);
     }
 
-    public synchronized void removeUploadStatus(TransferStatus status) {
+    public void removeUploadStatus(TransferStatus status) {
         uploadStatuses.remove(status);
     }
 
-    public synchronized List<TransferStatus> getAllUploadStatuses() {
+    public List<TransferStatus> getAllUploadStatuses() {
         return new ArrayList<TransferStatus>(uploadStatuses);
     }
 
-    public synchronized void addRemotePlay(PlayStatus playStatus) {
+    public void addRemotePlay(PlayStatus playStatus) {
         remotePlays.removeIf(PlayStatus::isExpired);
         remotePlays.add(playStatus);
     }
@@ -163,9 +157,8 @@ public class StatusService {
         return new ArrayList<PlayStatus>(result.values());
     }
 
-    private synchronized TransferStatus createStatus(Player player, List<TransferStatus> statusList) {
-        TransferStatus status = new TransferStatus();
-        status.setPlayer(player);
+    private static TransferStatus createStatus(Player player, List<TransferStatus> statusList) {
+        TransferStatus status = new TransferStatus(player);
         statusList.add(status);
         return status;
     }
