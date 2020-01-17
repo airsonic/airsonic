@@ -71,6 +71,8 @@ public class RESTRequestParameterProcessingFilter implements Filter {
 
     private static RequestMatcher requiresAuthenticationRequestMatcher = new RegexRequestMatcher("/rest/.+",null);
 
+    private static boolean hasTokenSaltWarningBeenSent = false;
+
     protected boolean requiresAuthentication(HttpServletRequest request,
                                              HttpServletResponse response) {
         return requiresAuthenticationRequestMatcher.matches(request);
@@ -176,10 +178,13 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
 
         if (salt != null && token != null && !securityService.isTokenSaltAuthenticationAllowed()) {
-            LOG.warn(
-                "{}: Client tried to use deprecated token+salt authentication while loading {}",
-                httpRequest.getRemoteAddr(),
-                Util.getAnonymizedURLForRequest(httpRequest));
+            if (!hasTokenSaltWarningBeenSent) {
+                LOG.warn(
+                    "{}: Client tried to use deprecated token+salt authentication while loading {}",
+                    httpRequest.getRemoteAddr(),
+                    Util.getAnonymizedURLForRequest(httpRequest));
+                hasTokenSaltWarningBeenSent = true;
+            }
             return null;
         }
 
