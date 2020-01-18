@@ -16,7 +16,7 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.3.4</cxf.version>
+        <cxf.version>3.3.5</cxf.version>
     </properties>
 
     <repositories>
