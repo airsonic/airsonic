@@ -2115,7 +2115,10 @@ public class SubsonicRESTController {
         command.setShareRole(getBooleanParameter(request, "shareRole", u.isShareRole()));
 
         int maxBitRate = getIntParameter(request, "maxBitRate", s.getTranscodeScheme().getMaxBitRate());
-        command.setTranscodeSchemeName(TranscodeScheme.fromMaxBitRate(maxBitRate).name());
+        TranscodeScheme transcodeScheme = TranscodeScheme.fromMaxBitRate(maxBitRate);
+        if (transcodeScheme != null) {
+            command.setTranscodeSchemeName(transcodeScheme.name());
+        }
 
         if (hasParameter(request, "password")) {
             command.setPassword(decrypt(getRequiredStringParameter(request, "password")));
