@@ -112,45 +112,46 @@ public class JaudiotaggerParser extends MetaDataParser {
                             && ID3v24Tag.REVISION == id3Tag.getRevision()) {
 
                         audioFile.getTag().getFields().forEachRemaining(f -> {
+                            String s = stripNullCharacters(f.toString());
                             switch (f.getId()) {
                                 case ID3v24Frames.FRAME_ID_ALBUM:
                                     if (StringUtils.isBlank(metaData.getAlbumName())) {
-                                        metaData.setAlbumName(f.toString());
+                                        metaData.setAlbumName(s);
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_TITLE:
                                     if (StringUtils.isBlank(metaData.getTitle())) {
-                                        metaData.setTitle(f.toString());
+                                        metaData.setTitle(s);
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_YEAR:
                                     if (ObjectUtils.isEmpty(metaData.getYear())) {
-                                        metaData.setYear(parseYear(f.toString()));
+                                        metaData.setYear(parseYear(s));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_GENRE:
                                     if (StringUtils.isBlank(metaData.getGenre())) {
-                                        metaData.setGenre(mapGenre(f.toString()));
+                                        metaData.setGenre(mapGenre(s));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_SET:
                                     if (ObjectUtils.isEmpty(metaData.getDiscNumber())) {
-                                        metaData.setDiscNumber(parseInteger(f.toString()));
+                                        metaData.setDiscNumber(parseInteger(s));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_TRACK:
                                     if (ObjectUtils.isEmpty(metaData.getTrackNumber())) {
-                                        metaData.setTrackNumber(parseTrackNumber(f.toString()));
+                                        metaData.setTrackNumber(parseTrackNumber(s));
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_ARTIST:
                                     if (StringUtils.isBlank(metaData.getArtist())) {
-                                        metaData.setArtist(f.toString());
+                                        metaData.setArtist(s);
                                     }
                                     break;
                                 case ID3v24Frames.FRAME_ID_ACCOMPANIMENT:
                                     if (StringUtils.isBlank(metaData.getAlbumArtist())) {
-                                        metaData.setAlbumArtist(f.toString());
+                                        metaData.setAlbumArtist(s);
                                     }
                                     break;
                                 default:
@@ -185,9 +186,17 @@ public class JaudiotaggerParser extends MetaDataParser {
 
     private String getTagField(Tag tag, FieldKey fieldKey) {
         try {
-            return StringUtils.trimToNull(tag.getFirst(fieldKey));
+            return stripNullCharacters(StringUtils.trimToNull(tag.getFirst(fieldKey)));
         } catch (Exception x) {
             // Ignored.
+            return null;
+        }
+    }
+
+    private String stripNullCharacters(String s) {
+        if (s != null) {
+            return s.replace("\0", "");
+        } else {
             return null;
         }
     }
