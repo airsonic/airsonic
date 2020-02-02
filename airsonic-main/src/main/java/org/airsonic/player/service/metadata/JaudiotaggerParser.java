@@ -86,7 +86,7 @@ public class JaudiotaggerParser extends MetaDataParser {
         AudioFile audioFile;
         try {
             audioFile = AudioFileIO.read(file);
-        } catch (Throwable x) {
+        } catch (Exception x) {
             LOG.warn("Error when parsing tags in " + file, x);
             return metaData;
         }
@@ -229,7 +229,7 @@ public class JaudiotaggerParser extends MetaDataParser {
 
             audioFile.commit();
 
-        } catch (Throwable x) {
+        } catch (Exception x) {
             LOG.warn("Failed to update tags for file " + file, x);
             throw new RuntimeException("Failed to update tags for file " + file + ". " + x.getMessage(), x);
         }
