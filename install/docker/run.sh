@@ -12,7 +12,7 @@ if [[ $# -lt 1 ]] || [[ ! "$1" == "java"* ]]; then
     while IFS= read -r -d '' item; do
         java_opts_array+=( "$item" )
     done < <([[ $JAVA_OPTS ]] && xargs printf '%s\0' <<<"$JAVA_OPTS")
-    exec java -Xmx256m \
+    exec java -Xmx${JVM_HEAP} \
      -Dserver.host=0.0.0.0 \
      -Dserver.port=$AIRSONIC_PORT \
      -Dserver.contextPath=$CONTEXT_PATH \
