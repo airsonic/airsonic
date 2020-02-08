@@ -7,8 +7,6 @@
     <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 </head>
 <body class="mainframe bgcolor1">
-<script type="text/javascript" src="<c:url value='/script/wz_tooltip.js'/>"></script>
-<script type="text/javascript" src="<c:url value='/script/tip_balloon.js'/>"></script>
 
 <script lang="javascript">
 

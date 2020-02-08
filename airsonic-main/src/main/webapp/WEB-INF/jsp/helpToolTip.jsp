@@ -8,11 +8,41 @@ PARAMETERS
   topic: Refers to a key in the resource bundle containing the text to display in the tool tip.
 --%>
 
+<script>
+    $(function () {
+        $(document).tooltip({
+            content: function () { return $(this).prop('title');}
+        });
+    });
+</script>
+
+<style>
+    div.ui-tooltip {
+        max-width: 400px;
+        box-shadow:none;
+        background-color: #f1f1f1;
+        border-radius: 6px;
+        border: 1px solid #3333;
+    }
+</style>
+
 <spring:theme code="helpPopupImage" var="imageUrl"/>
 <fmt:message key="common.help" var="help"/>
 
 <div id="placeholder-${param.topic}" style="display:none">
-    <div style="font-weight:bold;"><fmt:message key="helppopup.${param.topic}.title"><fmt:param value="Airsonic"/></fmt:message></div>
-    <div><fmt:message key="helppopup.${param.topic}.text"><fmt:param value="Airsonic"/></fmt:message></div>
+    <div style="font-weight:bold;">
+        <fmt:message key="helppopup.${param.topic}.title">
+            <fmt:param value="Airsonic"/>
+        </fmt:message>
+    </div>
 </div>
-<img src="${imageUrl}" alt="${help}" title="${help}" onmouseover="TagToTip('placeholder-${param.topic}', BALLOON, true, ABOVE, true, OFFSETX, -17, PADDING, 8, WIDTH, -240, CLICKSTICKY, true, CLICKCLOSE, true)" onmouseout="UnTip()"/>
+
+<fmt:message key="helppopup.${param.topic}.text" var="text">
+    <fmt:param value="Airsonic"/>
+</fmt:message>
+
+<img id="looltop-${param.topic}"
+     src="${imageUrl}"
+     alt="${fn:replace(text, '\"', '&quot;')}"
+     title="${fn:replace(text, '\"', '&quot;')}"
+/>
