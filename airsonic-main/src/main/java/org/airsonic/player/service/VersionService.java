@@ -19,7 +19,8 @@
  */
 package org.airsonic.player.service;
 
-import com.jayway.jsonpath.JsonPath;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.airsonic.player.domain.Version;
 import org.airsonic.player.util.FileUtil;
 import org.apache.http.client.ResponseHandler;
@@ -37,10 +38,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -243,7 +241,10 @@ public class VersionService {
             return;
         }
 
-        List<String> unsortedTags = JsonPath.read(content, JSON_PATH);
+        List<String>unsortedTags = new LinkedList<>();
+        for (JsonNode item: new ObjectMapper().readTree(content)) {
+            unsortedTags.add(item.path("tag_name").asText());
+        }
 
         Function<String, Version> convertToVersion = s -> {
             Matcher match = VERSION_REGEX.matcher(s);
