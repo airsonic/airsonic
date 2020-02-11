@@ -16,16 +16,6 @@ PARAMETERS
     });
 </script>
 
-<style>
-    div.ui-tooltip {
-        max-width: 400px;
-        box-shadow:none;
-        background-color: #f1f1f1;
-        border-radius: 6px;
-        border: 1px solid #3333;
-    }
-</style>
-
 <spring:theme code="helpPopupImage" var="imageUrl"/>
 <fmt:message key="common.help" var="help"/>
 
