@@ -82,25 +82,30 @@
 
 <table width="75%" class="ruleTable indent">
 
-    <tr>
-        <td colspan="2" class="ruleTableCell">
-            <c:choose>
-                <c:when test="${model.dbLogSizeBytes < 268435456}">
-                    <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    <fmt:message key="internalhelp.dblogsize.ok"/>
-                </c:when>
-                <c:otherwise>
-                    <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    <fmt:message key="internalhelp.dblogsize.warn"/>
-                </c:otherwise>
-            </c:choose>
-        </td>
-    </tr>
+    <c:if test="${model.dbIsLegacy}">
+        <tr>
+            <td colspan="2" class="ruleTableCell">
+                <c:choose>
+                    <c:when test="${model.dbLogSizeBytes < 268435456}">
+                        <img src="<spring:theme code='checkImage'/>" alt="OK">
+                        <fmt:message key="internalhelp.dblogsize.ok"/>
+                    </c:when>
+                    <c:otherwise>
+                        <img src="<spring:theme code='alertImage'/>" alt="Warning">
+                        <fmt:message key="internalhelp.dblogsize.warn"/>
+                    </c:otherwise>
+                </c:choose>
+            </td>
+        </tr>
+    </c:if>
 
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdrivername"/></td><td class="ruleTableCell">${model.dbDriverName}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdriverversion"/></td><td class="ruleTableCell">${model.dbDriverVersion}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdirectorysize"/></td><td class="ruleTableCell">${model.dbDirectorySize}</td></tr>
-    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dblogsize"/></td><td class="ruleTableCell">${model.dbLogSize}</td></tr>
+
+    <c:if test="${model.dbIsLegacy}">
+        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdirectorysize"/></td><td class="ruleTableCell">${model.dbDirectorySize}</td></tr>
+        <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dblogsize"/></td><td class="ruleTableCell">${model.dbLogSize}</td></tr>
+    </c:if>
 
     <tr>
         <td colspan="2" class="ruleTableCell">

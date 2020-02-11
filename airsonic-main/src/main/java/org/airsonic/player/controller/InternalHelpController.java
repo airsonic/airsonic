@@ -38,6 +38,7 @@ import org.apache.lucene.index.IndexReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -197,6 +198,8 @@ public class InternalHelpController {
     private MediaFileDao mediaFileDao;
     @Autowired
     private TranscodingService transcodingService;
+    @Autowired
+    private Environment environment;
 
     @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
@@ -319,12 +322,17 @@ public class InternalHelpController {
             LOG.debug("Unable to gather information", e);
         }
 
-        File dbDirectory = new File(settingsService.getAirsonicHome(), "db");
-        map.put("dbDirectorySizeBytes", dbDirectory.exists() ? FileUtils.sizeOfDirectory(dbDirectory) : 0);
-        map.put("dbDirectorySize", FileUtils.byteCountToDisplaySize((long) map.get("dbDirectorySizeBytes")));
-        File dbLogFile = new File(dbDirectory, "airsonic.log");
-        map.put("dbLogSizeBytes", dbLogFile.exists() ? dbLogFile.length() : 0);
-        map.put("dbLogSize", FileUtils.byteCountToDisplaySize((long) map.get("dbLogSizeBytes")));
+        if (environment.acceptsProfiles("legacy")) {
+            map.put("dbIsLegacy", true);
+            File dbDirectory = new File(settingsService.getAirsonicHome(), "db");
+            map.put("dbDirectorySizeBytes", dbDirectory.exists() ? FileUtils.sizeOfDirectory(dbDirectory) : 0);
+            map.put("dbDirectorySize", FileUtils.byteCountToDisplaySize((long) map.get("dbDirectorySizeBytes")));
+            File dbLogFile = new File(dbDirectory, "airsonic.log");
+            map.put("dbLogSizeBytes", dbLogFile.exists() ? dbLogFile.length() : 0);
+            map.put("dbLogSize", FileUtils.byteCountToDisplaySize((long) map.get("dbLogSizeBytes")));
+        } else {
+            map.put("dbIsLegacy", false);
+        }
 
         map.put("dbMediaFileMusicNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'MUSIC'"), Long.class));
         map.put("dbMediaFilePodcastNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'PODCAST'"), Long.class));
