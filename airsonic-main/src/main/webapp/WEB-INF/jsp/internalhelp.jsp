@@ -101,6 +101,7 @@
 
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdrivername"/></td><td class="ruleTableCell">${model.dbDriverName}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdriverversion"/></td><td class="ruleTableCell">${model.dbDriverVersion}</td></tr>
+    <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbserverversion"/></td><td class="ruleTableCell">${model.dbServerVersion}</td></tr>
 
     <c:if test="${model.dbIsLegacy}">
         <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.dbdirectorysize"/></td><td class="ruleTableCell">${model.dbDirectorySize}</td></tr>

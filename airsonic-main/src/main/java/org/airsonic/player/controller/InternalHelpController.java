@@ -298,6 +298,7 @@ public class InternalHelpController {
             // Driver name/version
             map.put("dbDriverName", conn.getMetaData().getDriverName());
             map.put("dbDriverVersion", conn.getMetaData().getDriverVersion());
+            map.put("dbServerVersion", conn.getMetaData().getDatabaseProductVersion());
 
             // Gather information for existing database tables
             ResultSet resultSet = conn.getMetaData().getTables(null, null, "%", null);
