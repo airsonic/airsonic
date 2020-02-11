@@ -308,7 +308,8 @@ public class InternalHelpController {
                 String tableType = resultSet.getString("TABLE_TYPE");
                 LOG.debug("Got database table {}, schema {}, type {}", tableName, tableSchema, tableType);
                 if (!"table".equalsIgnoreCase(tableType)) continue;   // Table type
-                if (!"public".equalsIgnoreCase(tableSchema)) continue;  // Table schema
+                // MariaDB has "null" schemas, while other databases use "public".
+                if (tableSchema != null && !"public".equalsIgnoreCase(tableSchema)) continue;  // Table schema
                 try {
                     Long tableCount = daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM %s", tableName), Long.class);
                     dbTableCount.put(tableName, tableCount);
@@ -334,19 +335,19 @@ public class InternalHelpController {
             map.put("dbIsLegacy", false);
         }
 
-        map.put("dbMediaFileMusicNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'MUSIC'"), Long.class));
-        map.put("dbMediaFilePodcastNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'PODCAST'"), Long.class));
-        map.put("dbMediaFileDirectoryNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'DIRECTORY'"), Long.class));
-        map.put("dbMediaFileAlbumNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE NOT present AND type = 'ALBUM'"), Long.class));
+        map.put("dbMediaFileMusicNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE NOT present AND type = 'MUSIC'"), Long.class));
+        map.put("dbMediaFilePodcastNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE NOT present AND type = 'PODCAST'"), Long.class));
+        map.put("dbMediaFileDirectoryNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE NOT present AND type = 'DIRECTORY'"), Long.class));
+        map.put("dbMediaFileAlbumNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file wheRE NOT present AND type = 'ALBUM'"), Long.class));
 
-        map.put("dbMediaFileMusicPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE present AND type = 'MUSIC'"), Long.class));
-        map.put("dbMediaFilePodcastPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE present AND type = 'PODCAST'"), Long.class));
-        map.put("dbMediaFileDirectoryPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE present AND type = 'DIRECTORY'"), Long.class));
-        map.put("dbMediaFileAlbumPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM MEDIA_FILE WHERE present AND type = 'ALBUM'"), Long.class));
+        map.put("dbMediaFileMusicPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'MUSIC'"), Long.class));
+        map.put("dbMediaFilePodcastPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'PODCAST'"), Long.class));
+        map.put("dbMediaFileDirectoryPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'DIRECTORY'"), Long.class));
+        map.put("dbMediaFileAlbumPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'ALBUM'"), Long.class));
 
-        map.put("dbMediaFileDistinctAlbumCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album) FROM MEDIA_FILE WHERE present"), Long.class));
-        map.put("dbMediaFileDistinctArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT artist) FROM MEDIA_FILE WHERE present"), Long.class));
-        map.put("dbMediaFileDistinctAlbumArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album_artist) FROM MEDIA_FILE WHERE present"), Long.class));
+        map.put("dbMediaFileDistinctAlbumCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album) FROM media_file WHERE present"), Long.class));
+        map.put("dbMediaFileDistinctArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT artist) FROM media_file WHERE present"), Long.class));
+        map.put("dbMediaFileDistinctAlbumArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album_artist) FROM media_file WHERE present"), Long.class));
 
         map.put("dbMediaFilesInNonPresentMusicFoldersCount", mediaFileDao.getFilesInNonPresentMusicFoldersCount(Arrays.asList(settingsService.getPodcastFolder())));
         map.put("dbMediaFilesInNonPresentMusicFoldersSample", mediaFileDao.getFilesInNonPresentMusicFolders(10, Arrays.asList(settingsService.getPodcastFolder())));
