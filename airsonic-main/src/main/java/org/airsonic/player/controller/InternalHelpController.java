@@ -413,9 +413,9 @@ public class InternalHelpController {
         File executableLocation = null;
         for (String name: Arrays.asList(executableName, String.format("%s.exe", executableName))) {
             executableLocation = new File(transcodingService.getTranscodeDirectory(), name);
-            if (executableLocation.exists()) return executableLocation;
+            if (executableLocation != null && executableLocation.exists()) return executableLocation;
             executableLocation = lookForExecutable(executableName);
-            if (executableLocation.exists()) return executableLocation;
+            if (executableLocation != null && executableLocation.exists()) return executableLocation;
         }
         return null;
     }
