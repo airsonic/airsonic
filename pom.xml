@@ -31,7 +31,7 @@
         </repository>
         <repository>
           <id>4thline-repo</id>
-          <url>http://4thline.org/m2</url>
+          <url>https://4thline.org/m2</url>
           <snapshots>
               <enabled>false</enabled>
           </snapshots>
