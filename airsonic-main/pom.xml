@@ -669,7 +669,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jspc-maven-plugin</artifactId>
-                <version>9.4.19.v20190610</version>
+                <version>9.4.26.v20200117</version>
                 <executions>
                     <execution>
                         <id>jspc</id>
