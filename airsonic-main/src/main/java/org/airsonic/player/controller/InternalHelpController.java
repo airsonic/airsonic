@@ -326,7 +326,7 @@ public class InternalHelpController {
 
         if (environment.acceptsProfiles("legacy")) {
             map.put("dbIsLegacy", true);
-            File dbDirectory = new File(settingsService.getAirsonicHome(), "db");
+            File dbDirectory = new File(SettingsService.getAirsonicHome(), "db");
             map.put("dbDirectorySizeBytes", dbDirectory.exists() ? FileUtils.sizeOfDirectory(dbDirectory) : 0);
             map.put("dbDirectorySize", FileUtils.byteCountToDisplaySize((long) map.get("dbDirectorySizeBytes")));
             File dbLogFile = new File(dbDirectory, "airsonic.log");
@@ -336,19 +336,19 @@ public class InternalHelpController {
             map.put("dbIsLegacy", false);
         }
 
-        map.put("dbMediaFileMusicNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE NOT present AND type = 'MUSIC'"), Long.class));
-        map.put("dbMediaFilePodcastNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE NOT present AND type = 'PODCAST'"), Long.class));
-        map.put("dbMediaFileDirectoryNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE NOT present AND type = 'DIRECTORY'"), Long.class));
-        map.put("dbMediaFileAlbumNonPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file wheRE NOT present AND type = 'ALBUM'"), Long.class));
+        map.put("dbMediaFileMusicNonPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE NOT present AND type = 'MUSIC'", Long.class));
+        map.put("dbMediaFilePodcastNonPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE NOT present AND type = 'PODCAST'", Long.class));
+        map.put("dbMediaFileDirectoryNonPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE NOT present AND type = 'DIRECTORY'", Long.class));
+        map.put("dbMediaFileAlbumNonPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file wheRE NOT present AND type = 'ALBUM'", Long.class));
 
-        map.put("dbMediaFileMusicPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'MUSIC'"), Long.class));
-        map.put("dbMediaFilePodcastPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'PODCAST'"), Long.class));
-        map.put("dbMediaFileDirectoryPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'DIRECTORY'"), Long.class));
-        map.put("dbMediaFileAlbumPresentCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(*) FROM media_file WHERE present AND type = 'ALBUM'"), Long.class));
+        map.put("dbMediaFileMusicPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE present AND type = 'MUSIC'", Long.class));
+        map.put("dbMediaFilePodcastPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE present AND type = 'PODCAST'", Long.class));
+        map.put("dbMediaFileDirectoryPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE present AND type = 'DIRECTORY'", Long.class));
+        map.put("dbMediaFileAlbumPresentCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(*) FROM media_file WHERE present AND type = 'ALBUM'", Long.class));
 
-        map.put("dbMediaFileDistinctAlbumCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album) FROM media_file WHERE present"), Long.class));
-        map.put("dbMediaFileDistinctArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT artist) FROM media_file WHERE present"), Long.class));
-        map.put("dbMediaFileDistinctAlbumArtistCount", daoHelper.getJdbcTemplate().queryForObject(String.format("SELECT count(DISTINCT album_artist) FROM media_file WHERE present"), Long.class));
+        map.put("dbMediaFileDistinctAlbumCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(DISTINCT album) FROM media_file WHERE present", Long.class));
+        map.put("dbMediaFileDistinctArtistCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(DISTINCT artist) FROM media_file WHERE present", Long.class));
+        map.put("dbMediaFileDistinctAlbumArtistCount", daoHelper.getJdbcTemplate().queryForObject("SELECT count(DISTINCT album_artist) FROM media_file WHERE present", Long.class));
 
         map.put("dbMediaFilesInNonPresentMusicFoldersCount", mediaFileDao.getFilesInNonPresentMusicFoldersCount(Arrays.asList(settingsService.getPodcastFolder())));
         map.put("dbMediaFilesInNonPresentMusicFoldersSample", mediaFileDao.getFilesInNonPresentMusicFolders(10, Arrays.asList(settingsService.getPodcastFolder())));
@@ -358,11 +358,11 @@ public class InternalHelpController {
     }
 
     private void gatherFilesystemInfo(Map<String, Object> map) {
-        map.put("fsHomeDirectorySizeBytes", FileUtils.sizeOfDirectory(settingsService.getAirsonicHome()));
+        map.put("fsHomeDirectorySizeBytes", FileUtils.sizeOfDirectory(SettingsService.getAirsonicHome()));
         map.put("fsHomeDirectorySize", FileUtils.byteCountToDisplaySize((long)map.get("fsHomeDirectorySizeBytes")));
-        map.put("fsHomeTotalSpaceBytes", settingsService.getAirsonicHome().getTotalSpace());
+        map.put("fsHomeTotalSpaceBytes", SettingsService.getAirsonicHome().getTotalSpace());
         map.put("fsHomeTotalSpace", FileUtils.byteCountToDisplaySize((long)map.get("fsHomeTotalSpaceBytes")));
-        map.put("fsHomeUsableSpaceBytes", settingsService.getAirsonicHome().getUsableSpace());
+        map.put("fsHomeUsableSpaceBytes", SettingsService.getAirsonicHome().getUsableSpace());
         map.put("fsHomeUsableSpace", FileUtils.byteCountToDisplaySize((long)map.get("fsHomeUsableSpaceBytes")));
         SortedMap<String, FileStatistics> fsMusicFolderStatistics = new TreeMap<>();
         for (MusicFolder folder: musicFolderDao.getAllMusicFolders()) {
