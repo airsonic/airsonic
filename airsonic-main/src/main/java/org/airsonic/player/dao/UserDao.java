@@ -42,7 +42,7 @@ import java.util.List;
 public class UserDao extends AbstractDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserDao.class);
-    private static final String USER_COLUMNS = "username, password, email, ldap_authenticated, bytes_streamed, bytes_downloaded, bytes_uploaded";
+    private static final String USER_COLUMNS = "username, password, rest_token, email, ldap_authenticated, bytes_streamed, bytes_downloaded, bytes_uploaded";
     private static final String USER_SETTINGS_COLUMNS = "username, locale, theme_id, final_version_notification, beta_version_notification, " +
             "song_notification, main_track_number, main_artist, main_album, main_genre, " +
             "main_year, main_bit_rate, main_duration, main_format, main_file_size, " +
@@ -137,7 +137,7 @@ public class UserDao extends AbstractDao {
      */
     public void createUser(User user) {
         String sql = "insert into " + getUserTable() + " (" + USER_COLUMNS + ") values (" + questionMarks(USER_COLUMNS) + ')';
-        update(sql, user.getUsername(), encrypt(user.getPassword()), user.getEmail(), user.isLdapAuthenticated(),
+        update(sql, user.getUsername(), encrypt(user.getPassword()), user.getRestToken(), user.getEmail(), user.isLdapAuthenticated(),
                 user.getBytesStreamed(), user.getBytesDownloaded(), user.getBytesUploaded());
         writeRoles(user);
     }
@@ -163,9 +163,9 @@ public class UserDao extends AbstractDao {
      * @param user The user to update.
      */
     public void updateUser(User user) {
-        String sql = "update " + getUserTable() + " set password=?, email=?, ldap_authenticated=?, bytes_streamed=?, bytes_downloaded=?, bytes_uploaded=? " +
+        String sql = "update " + getUserTable() + " set password=?, rest_token=?, email=?, ldap_authenticated=?, bytes_streamed=?, bytes_downloaded=?, bytes_uploaded=? " +
                 "where username=?";
-        getJdbcTemplate().update(sql, encrypt(user.getPassword()), user.getEmail(), user.isLdapAuthenticated(),
+        getJdbcTemplate().update(sql, encrypt(user.getPassword()), user.getRestToken(), user.getEmail(), user.isLdapAuthenticated(),
                 user.getBytesStreamed(), user.getBytesDownloaded(), user.getBytesUploaded(),
                 user.getUsername());
         writeRoles(user);
@@ -331,10 +331,11 @@ public class UserDao extends AbstractDao {
             return new User(rs.getString(1),
                     decrypt(rs.getString(2)),
                     rs.getString(3),
-                    rs.getBoolean(4),
-                    rs.getLong(5),
+                    rs.getString(4),
+                    rs.getBoolean(5),
                     rs.getLong(6),
-                    rs.getLong(7));
+                    rs.getLong(7),
+                    rs.getLong(8));
         }
     }
 

@@ -49,7 +49,9 @@ public class User {
     private boolean isJukeboxRole;
     private boolean isShareRole;
 
-    public User(String username, String password, String email, boolean ldapAuthenticated,
+    private String restToken;
+
+    public User(String username, String password, String restToken, String email, boolean ldapAuthenticated,
                 long bytesStreamed, long bytesDownloaded, long bytesUploaded) {
         this.username = username;
         this.password = password;
@@ -58,10 +60,11 @@ public class User {
         this.bytesStreamed = bytesStreamed;
         this.bytesDownloaded = bytesDownloaded;
         this.bytesUploaded = bytesUploaded;
+        this.restToken = restToken;
     }
 
     public User(String username, String password, String email) {
-        this(username, password, email, false, 0, 0, 0);
+        this(username, password, null, email, false, 0, 0, 0);
     }
 
     public String getUsername() {
@@ -202,6 +205,14 @@ public class User {
 
     public void setShareRole(boolean shareRole) {
         isShareRole = shareRole;
+    }
+
+    public String getRestToken() {
+        return restToken;
+    }
+
+    public void setRestToken(String restToken) {
+        this.restToken = restToken;
     }
 
     @Override

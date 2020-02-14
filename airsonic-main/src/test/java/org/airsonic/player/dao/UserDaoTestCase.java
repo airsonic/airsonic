@@ -32,7 +32,7 @@ public class UserDaoTestCase extends DaoTestCaseBean2 {
 
     @Test
     public void testCreateUser() {
-        User user = new User("sindre", "secret", "sindre@activeobjects.no", false, 1000L, 2000L, 3000L);
+        User user = new User("sindre", "secret", null, "sindre@activeobjects.no", false, 1000L, 2000L, 3000L);
         user.setAdminRole(true);
         user.setCommentRole(true);
         user.setCoverArtRole(true);

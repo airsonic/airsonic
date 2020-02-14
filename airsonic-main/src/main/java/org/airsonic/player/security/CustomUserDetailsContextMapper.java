@@ -65,7 +65,7 @@ public class CustomUserDetailsContextMapper implements UserDetailsContextMapper 
         }
 
         if (user == null) {
-            User newUser = new User(username, "", null, true, 0L, 0L, 0L);
+            User newUser = new User(username, "", null, null, true, 0L, 0L, 0L);
             newUser.setStreamRole(true);
             newUser.setSettingsRole(true);
             securityService.createUser(newUser);
