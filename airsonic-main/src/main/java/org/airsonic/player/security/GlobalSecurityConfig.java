@@ -50,6 +50,17 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     @Autowired
     ApplicationEventPublisher eventPublisher;
 
+    private String getJWTKey() {
+        String jwtKey = settingsService.getJWTKey();
+        if (StringUtils.isBlank(jwtKey)) {
+            LOG.warn("Generating new jwt key");
+            jwtKey = JWTSecurityService.generateKey();
+            settingsService.setJWTKey(jwtKey);
+            settingsService.save();
+        }
+        return jwtKey;
+    }
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         if (settingsService.isLdapEnabled()) {
@@ -62,15 +73,13 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .userSearchFilter(settingsService.getLdapSearchFilter())
                     .userDetailsContextMapper(customUserDetailsContextMapper);
         }
+
         auth.userDetailsService(securityService);
-        String jwtKey = settingsService.getJWTKey();
-        if (StringUtils.isBlank(jwtKey)) {
-            LOG.warn("Generating new jwt key");
-            jwtKey = JWTSecurityService.generateKey();
-            settingsService.setJWTKey(jwtKey);
-            settingsService.save();
-        }
-        auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
+        JWTAuthenticationProvider jwtAuthenticationProvider = new JWTAuthenticationProvider(getJWTKey());
+        RESTAuthenticationProvider restAuthenticationProvider = new RESTAuthenticationProvider();
+        restAuthenticationProvider.setUserDetailsService(securityService);
+        auth.authenticationProvider(jwtAuthenticationProvider);
+        auth.authenticationProvider(restAuthenticationProvider);
     }
 
     private static String generateRememberMeKey() {

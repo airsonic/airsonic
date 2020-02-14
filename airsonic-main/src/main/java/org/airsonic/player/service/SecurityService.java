@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -59,6 +60,39 @@ public class SecurityService implements UserDetailsService {
     private SettingsService settingsService;
     @Autowired
     private Ehcache userCache;
+
+    public static class UserDetail extends org.springframework.security.core.userdetails.User {
+        private String restToken;
+
+        public UserDetail(
+                String username,
+                String password,
+                Collection<? extends GrantedAuthority> authorities) {
+            super(username, password, authorities);
+            this.restToken = restToken;
+        }
+
+        public UserDetail(
+                String username,
+                String password,
+                String restToken,
+                boolean enabled,
+                boolean accountNonExpired,
+                boolean credentialsNonExpired,
+                boolean accountNonLocked,
+                Collection<? extends GrantedAuthority> authorities) {
+            super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+            this.restToken = restToken;
+        }
+
+        public String getRestToken() {
+            return restToken;
+        }
+
+        public void setRestToken(String restToken) {
+            this.restToken = restToken;
+        }
+    }
 
     /**
      * Locates the user based on the username.
@@ -81,9 +115,10 @@ public class SecurityService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = getGrantedAuthorities(username);
 
-        return new org.springframework.security.core.userdetails.User(
+        return new UserDetail(
                 username,
                 user.getPassword(),
+                user.getRestToken(),
                 !user.isLdapAuthenticated(),
                 true,
                 true,

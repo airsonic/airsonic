@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -153,16 +152,18 @@ public class RESTRequestParameterProcessingFilter implements Filter {
             if (user == null) {
                 return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
             }
-            String expectedToken = DigestUtils.md5Hex(user.getPassword() + salt);
-            if (!expectedToken.equals(token)) {
+            if (DigestUtils.md5Hex(user.getRestToken() + salt).equals(token)) {
+                password = user.getRestToken();
+            // FIXME: Remove this case when the t+s auth is removed for user passwords
+            } else if (DigestUtils.md5Hex(user.getPassword() + salt).equals(token)) {
+                password = user.getPassword();
+            } else {
                 return SubsonicRESTController.ErrorCode.NOT_AUTHENTICATED;
             }
-
-            password = user.getPassword();
         }
 
         if (password != null) {
-            UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
+            RESTAuthenticationToken authRequest = new RESTAuthenticationToken(username, password);
             authRequest.setDetails(authenticationDetailsSource.buildDetails(httpRequest));
             try {
                 Authentication authResult = authenticationManager.authenticate(authRequest);
