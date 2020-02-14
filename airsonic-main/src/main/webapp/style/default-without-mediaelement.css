@@ -443,6 +443,14 @@ img {
     color: black;
 }
 
+.restToken {
+    font-family: monospace;
+    padding: 5px;
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+}
+
 /*
  * Styles related to java jukebox controls
  */

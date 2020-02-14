@@ -22,6 +22,26 @@
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
+<h2><fmt:message key="personalsettings.api.title"/></h2>
+<form:form method="post" action="personalSettings.view">
+    <table class="indent">
+        <tr>
+            <td><fmt:message key="personalsettings.api.password"/></td>
+            <td class="restToken">
+                <c:choose>
+                    <c:when test="${empty command.user.restToken}">
+                        (<fmt:message key="personalsettings.api.none"/>)
+                    </c:when>
+                    <c:otherwise>
+                        ${command.user.restToken}
+                    </c:otherwise>
+                </c:choose>
+            </td>
+        </tr>
+    </table>
+</form:form>
+<p><fmt:message key="personalsettings.api.passwordhelp"/></p>
+
 <fmt:message key="personalsettings.title" var="title"><fmt:param>${command.user.username}</fmt:param></fmt:message>
 <h2>${fn:escapeXml(title)}</h2>
 

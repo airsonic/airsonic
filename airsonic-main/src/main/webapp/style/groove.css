@@ -108,3 +108,7 @@ html {
 label, p {
 	color: #CCC;
 }
+
+.restToken {
+    border-color: white;
+}
