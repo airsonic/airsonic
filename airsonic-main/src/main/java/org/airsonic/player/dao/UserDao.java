@@ -21,6 +21,7 @@ package org.airsonic.player.dao;
 
 import org.airsonic.player.domain.*;
 import org.airsonic.player.util.StringUtil;
+import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +170,16 @@ public class UserDao extends AbstractDao {
                 user.getBytesStreamed(), user.getBytesDownloaded(), user.getBytesUploaded(),
                 user.getUsername());
         writeRoles(user);
+    }
+
+
+    /**
+     * Updates the given user with a new REST token.
+     * @param user
+     */
+    public void updateRestTokenForUser(User user) {
+        user.setRestToken(RandomStringUtils.randomAlphanumeric(20));
+        this.updateUser(user);
     }
 
     /**

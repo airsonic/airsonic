@@ -20,6 +20,7 @@
 package org.airsonic.player.controller;
 
 import org.airsonic.player.command.PersonalSettingsCommand;
+import org.airsonic.player.dao.UserDao;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +53,8 @@ public class PersonalSettingsController {
     private SettingsService settingsService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private UserDao userDao;
 
     @ModelAttribute
     protected void formBackingObject(HttpServletRequest request,Model model) {
@@ -116,7 +120,13 @@ public class PersonalSettingsController {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) {
+    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, @RequestParam(value = "regenerateRestToken", required = false) String regenerateRestToken, RedirectAttributes redirectAttributes) {
+
+        if (regenerateRestToken != null) {
+            User user = command.getUser();
+            userDao.updateRestTokenForUser(user);
+            return "redirect:personalSettings.view";
+        }
 
         int localeIndex = Integer.parseInt(command.getLocaleIndex());
         Locale locale = null;

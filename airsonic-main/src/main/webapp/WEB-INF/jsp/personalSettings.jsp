@@ -37,6 +37,7 @@
                     </c:otherwise>
                 </c:choose>
             </td>
+            <td><input type="submit" value="<fmt:message key='personalsettings.api.regenerate'/>" name="regenerateRestToken"/></td>
         </tr>
     </table>
 </form:form>
