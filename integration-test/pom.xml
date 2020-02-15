@@ -148,25 +148,6 @@
         </testResources>
         <plugins>
             <plugin>
-                <groupId>com.github.temyers</groupId>
-                <artifactId>cucumber-jvm-parallel-plugin</artifactId>
-                <version>5.0.0</version>
-                <executions>
-                    <execution>
-                        <id>generateRunners</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>generateRunners</goal>
-                        </goals>
-                        <configuration>
-                            <featuresDirectory>src/test/resources/features</featuresDirectory>
-                            <format>pretty</format>
-                            <glue>org.airsonic.test.cucumber.steps</glue>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -184,7 +165,6 @@
                 <executions>
                     <execution>
                         <id>default-jar</id>
-                        <phase/>
                         <configuration>
                             <finalName>unwanted</finalName>
                             <classifier>unwanted</classifier>
