@@ -205,7 +205,7 @@
 			<groupId>org.checkerframework</groupId>
 			<artifactId>checker-qual</artifactId>
 			<scope>compile</scope>
-			<version>2.5.2</version>
+			<version>3.1.1</version>
 		</dependency>
 
         <dependency>
