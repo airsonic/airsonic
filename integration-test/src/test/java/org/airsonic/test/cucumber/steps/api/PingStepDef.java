@@ -1,6 +1,6 @@
 package org.airsonic.test.cucumber.steps.api;
 
-import io.cucumber.api.java8.En;
+import io.cucumber.java8.En;
 import org.airsonic.test.cucumber.server.AirsonicServer;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;

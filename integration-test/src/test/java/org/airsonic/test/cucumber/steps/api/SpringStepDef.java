@@ -1,6 +1,6 @@
 package org.airsonic.test.cucumber.steps.api;
 
-import io.cucumber.api.java.Before;
+import io.cucumber.java.Before;
 import org.airsonic.test.SpringContext;
 import org.airsonic.test.cucumber.server.AirsonicServer;
 import org.springframework.test.context.ContextConfiguration;

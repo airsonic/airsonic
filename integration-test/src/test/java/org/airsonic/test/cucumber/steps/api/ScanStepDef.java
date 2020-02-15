@@ -3,7 +3,7 @@ package org.airsonic.test.cucumber.steps.api;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cucumber.api.java8.En;
+import io.cucumber.java8.En;
 import org.airsonic.test.cucumber.server.AirsonicServer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.RequestBuilder;
