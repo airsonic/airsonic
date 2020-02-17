@@ -16,7 +16,7 @@ RUN mvn package
 
 ################################################################################################################ runtime
 
-FROM alpine:3.9 as runtime
+FROM openjdk:8-jdk-alpine as runtime
 LABEL description="Airsonic is a free, web-based media streamer, providing ubiquitious access to your music." \
       url="https://github.com/airsonic/airsonic"
 ENV AIRSONIC_PORT=4040 AIRSONIC_DIR=/airsonic CONTEXT_PATH=/ UPNP_PORT=4041 JVM_HEAP=256m
@@ -30,9 +30,7 @@ RUN apk --no-cache add \
     fontconfig \
     ttf-dejavu \
     ca-certificates \
-    tini \
-    curl \
-    openjdk8-jre
+    tini
 COPY install/docker/run.sh /usr/local/bin/run.sh
 RUN chmod +x /usr/local/bin/run.sh
 COPY --from=builder  /build/airsonic-main/target/airsonic.war airsonic.war
