@@ -238,9 +238,9 @@ public class PlayQueueService {
     }
 
     /**
-     * @param index Start playing at this index, or play whole radio playlist if {@code null}.
+     * @param startIndex Start playing at this index in the list of radio streams, or play whole radio playlist if {@code null}.
      */
-    public PlayQueueInfo playInternetRadio(int id, Integer index) throws Exception {
+    public PlayQueueInfo playInternetRadio(int id, Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 
         InternetRadio radio = internetRadioDao.getInternetRadioById(id);
@@ -269,9 +269,9 @@ public class PlayQueueService {
     }
 
     /**
-     * @param index Start playing at this index, or play whole playlist if {@code null}.
+     * @param startIndex Start playing at this index, or play whole playlist if {@code null}.
      */
-    public PlayQueueInfo playPlaylist(int id, Integer index) throws Exception {
+    public PlayQueueInfo playPlaylist(int id, Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
@@ -279,11 +279,11 @@ public class PlayQueueService {
         boolean queueFollowingSongs = settingsService.getUserSettings(username).isQueueFollowingSongs();
 
         List<MediaFile> files = playlistService.getFilesInPlaylist(id, true);
-        if (!files.isEmpty() && index != null) {
+        if (!files.isEmpty() && startIndex != null) {
             if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
+                files = files.subList(startIndex, files.size());
             } else {
-                files = Arrays.asList(files.get(index));
+                files = Arrays.asList(files.get(startIndex));
             }
         }
 
@@ -296,9 +296,9 @@ public class PlayQueueService {
     }
 
     /**
-     * @param index Start playing at this index, or play all top songs if {@code null}.
+     * @param startIndex Start playing at this index, or play all top songs if {@code null}.
      */
-    public PlayQueueInfo playTopSong(int id, Integer index) throws Exception {
+    public PlayQueueInfo playTopSong(int id, Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
@@ -307,11 +307,11 @@ public class PlayQueueService {
 
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
         List<MediaFile> files = lastFmService.getTopSongs(mediaFileService.getMediaFile(id), 50, musicFolders);
-        if (!files.isEmpty() && index != null) {
+        if (!files.isEmpty() && startIndex != null) {
             if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
+                files = files.subList(startIndex, files.size());
             } else {
-                files = Arrays.asList(files.get(index));
+                files = Arrays.asList(files.get(startIndex));
             }
         }
 
@@ -361,7 +361,7 @@ public class PlayQueueService {
         return doPlay(request, player, files).setStartPlayerAt(0);
     }
 
-    public PlayQueueInfo playNewestPodcastEpisode(Integer index) throws Exception {
+    public PlayQueueInfo playNewestPodcastEpisode(Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
@@ -371,11 +371,11 @@ public class PlayQueueService {
         String username = securityService.getCurrentUsername(request);
         boolean queueFollowingSongs = settingsService.getUserSettings(username).isQueueFollowingSongs();
 
-        if (!files.isEmpty() && index != null) {
+        if (!files.isEmpty() && startIndex != null) {
             if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
+                files = files.subList(startIndex, files.size());
             } else {
-                files = Arrays.asList(files.get(index));
+                files = Arrays.asList(files.get(startIndex));
             }
         }
 
@@ -503,8 +503,10 @@ public class PlayQueueService {
 
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
+     * @param addAtIndex if not null, insert the media files at the specified index
+     *                   otherwise, append the media files at the end of the play queue
      */
-    public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer index, boolean removeVideoFiles) {
+    public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer addAtIndex, boolean removeVideoFiles) {
         List<MediaFile> files = new ArrayList<MediaFile>(ids.length);
         for (int id : ids) {
             MediaFile ancestor = mediaFileService.getMediaFile(id);
@@ -513,8 +515,8 @@ public class PlayQueueService {
         if (removeVideoFiles) {
             mediaFileService.removeVideoFiles(files);
         }
-        if (index != null) {
-            playQueue.addFilesAt(files, index);
+        if (addAtIndex != null) {
+            playQueue.addFilesAt(files, addAtIndex);
         } else {
             playQueue.addFiles(true, files);
         }
@@ -523,13 +525,17 @@ public class PlayQueueService {
         return playQueue;
     }
 
-    public PlayQueueInfo doAdd(HttpServletRequest request, HttpServletResponse response, int[] ids, Integer index) throws Exception {
+    /**
+     * @param addAtIndex if not null, insert the media files at the specified index
+     *                   otherwise, append the media files at the end of the play queue
+     */
+    public PlayQueueInfo doAdd(HttpServletRequest request, HttpServletResponse response, int[] ids, Integer addAtIndex) throws Exception {
         Player player = getCurrentPlayer(request, response);
         boolean removeVideoFiles = false;
         if (player.isWeb()) {
             removeVideoFiles = true;
         }
-        addMediaFilesToPlayQueue(player.getPlayQueue(), ids, index, removeVideoFiles);
+        addMediaFilesToPlayQueue(player.getPlayQueue(), ids, addAtIndex, removeVideoFiles);
         return convert(request, player, false);
     }
 
