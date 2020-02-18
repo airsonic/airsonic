@@ -38,6 +38,7 @@
                 </c:choose>
             </td>
             <td><input type="submit" value="<fmt:message key='personalsettings.api.regenerate'/>" name="regenerateRestToken"/></td>
+            <td><input type="submit" value="<fmt:message key='personalsettings.api.clear'/>" name="clearRestToken"/></td>
         </tr>
     </table>
 </form:form>

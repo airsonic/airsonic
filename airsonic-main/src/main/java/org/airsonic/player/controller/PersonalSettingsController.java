@@ -120,11 +120,22 @@ public class PersonalSettingsController {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, @RequestParam(value = "regenerateRestToken", required = false) String regenerateRestToken, RedirectAttributes redirectAttributes) {
+    protected String doSubmitAction(
+            @ModelAttribute("command") PersonalSettingsCommand command,
+            @RequestParam(value = "regenerateRestToken", required = false) String regenerateRestToken,
+            @RequestParam(value = "clearRestToken", required = false) String clearRestToken,
+            RedirectAttributes redirectAttributes) {
 
         if (regenerateRestToken != null) {
             User user = command.getUser();
             userDao.updateRestTokenForUser(user);
+            return "redirect:personalSettings.view";
+        }
+
+        if (clearRestToken != null) {
+            User user = command.getUser();
+            user.setRestToken(null);
+            userDao.updateUser(user);
             return "redirect:personalSettings.view";
         }
 
