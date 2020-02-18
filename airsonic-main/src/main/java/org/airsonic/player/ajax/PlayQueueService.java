@@ -252,31 +252,20 @@ public class PlayQueueService {
         return doPlayInternetRadio(request, player, radio).setStartPlayerAt(0);
     }
 
-    /**
-     * @param index Start playing at this index, or play whole playlist if {@code null}.
-     */
-    public PlayQueueInfo addPlaylist(int id, Integer index) throws Exception {
+    public PlayQueueInfo addPlaylist(int id) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
         String username = securityService.getCurrentUsername(request);
-        boolean queueFollowingSongs = settingsService.getUserSettings(username).isQueueFollowingSongs();
 
         List<MediaFile> files = playlistService.getFilesInPlaylist(id, true);
-        if (!files.isEmpty() && index != null) {
-            if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
-            } else {
-                files = Arrays.asList(files.get(index));
-            }
-        }
 
         // Remove non-present files
         files.removeIf(file -> !file.isPresent());
 
         // Add to the play queue
         int[] ids = files.stream().mapToInt(f -> f.getId()).toArray();
-        return doAdd(request, response, ids, index);
+        return doAdd(request, response, ids, null);
     }
 
     /**
