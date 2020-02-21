@@ -49,9 +49,5 @@ VOLUME $AIRSONIC_DIR/music
 VOLUME $AIRSONIC_DIR/playlists
 VOLUME $AIRSONIC_DIR/podcasts
 
-# workaround for https://github.com/AdoptOpenJDK/openjdk-docker/issues/75
-# RUN ln -s /lib/libc.musl-x86_64.so.1 /usr/lib/libc.musl-x86_64.so.1
-# ENV LD_LIBRARY_PATH /usr/lib
-
 HEALTHCHECK --interval=15s --timeout=3s CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"rest/ping -O /dev/null || exit 1
 ENTRYPOINT ["tini", "--", "run.sh"]
