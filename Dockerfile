@@ -16,10 +16,15 @@ RUN mvn package
 
 ################################################################################################################ runtime
 
-FROM openjdk:8-jre-alpine as runtime
+FROM adoptopenjdk/openjdk8-openj9:alpine  as runtime
 LABEL description="Airsonic is a free, web-based media streamer, providing ubiquitious access to your music." \
       url="https://github.com/airsonic/airsonic"
-ENV AIRSONIC_PORT=4040 AIRSONIC_DIR=/airsonic CONTEXT_PATH=/ UPNP_PORT=4041 JVM_HEAP=256m
+
+ENV AIRSONIC_PORT=4040
+ENV AIRSONIC_DIR=/airsonic
+ENV CONTEXT_PATH=/
+ENV UPNP_PORT=4041
+ENV JVM_HEAP=256m
 
 WORKDIR $AIRSONIC_DIR
 RUN apk --no-cache add \
@@ -34,9 +39,19 @@ RUN apk --no-cache add \
 COPY install/docker/run.sh /usr/local/bin/run.sh
 RUN chmod +x /usr/local/bin/run.sh
 COPY --from=builder  /build/airsonic-main/target/airsonic.war airsonic.war
+
 EXPOSE $AIRSONIC_PORT
 EXPOSE $UPNP_PORT
 EXPOSE 1900/udp
-VOLUME $AIRSONIC_DIR/data $AIRSONIC_DIR/music $AIRSONIC_DIR/playlists $AIRSONIC_DIR/podcasts
+
+VOLUME $AIRSONIC_DIR/data
+VOLUME $AIRSONIC_DIR/music
+VOLUME $AIRSONIC_DIR/playlists
+VOLUME $AIRSONIC_DIR/podcasts
+
+# workaround for https://github.com/AdoptOpenJDK/openjdk-docker/issues/75
+# RUN ln -s /lib/libc.musl-x86_64.so.1 /usr/lib/libc.musl-x86_64.so.1
+# ENV LD_LIBRARY_PATH /usr/lib
+
 HEALTHCHECK --interval=15s --timeout=3s CMD wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"rest/ping -O /dev/null || exit 1
 ENTRYPOINT ["tini", "--", "run.sh"]
