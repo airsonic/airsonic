@@ -216,7 +216,11 @@
         if (currentSong) {
             updateWindowTitle(currentSong);
             <c:if test="${model.notify}">
-            showNotification(currentSong);
+            if ('mediaSession' in top.playQueue.navigator) {
+                showMediaSessionMetadata(currentSong);
+            } else {
+                showNotification(currentSong);
+            }
             </c:if>
         }
     }
@@ -829,6 +833,27 @@
                     createNotification(song);
                 }
             });
+        }
+    }
+
+    function showMediaSessionMetadata(song) {
+        if ('mediaSession' in top.playQueue.navigator) {
+            var metadata = new MediaMetadata({
+                title: song.title,
+                artist: song.artist,
+                album: song.album,
+                artwork: [
+                    // Adding the '&size=' argument will not work here because
+                    // the JWT token used to expose this URL requires all
+                    // parameters to stay exactly the same.
+                    { src: song.remoteCoverArtUrl, type: 'image/jpeg' },
+                ]
+            });
+            top.playQueue.navigator.mediaSession.metadata = metadata;
+            top.playQueue.navigator.mediaSession.setActionHandler('play', function() { onStart(); });
+            top.playQueue.navigator.mediaSession.setActionHandler('pause', function() { onStop(); });
+            top.playQueue.navigator.mediaSession.setActionHandler('previoustrack', function() { onPrevious(); });
+            top.playQueue.navigator.mediaSession.setActionHandler('nexttrack', function() { onNext(); });
         }
     }
 
