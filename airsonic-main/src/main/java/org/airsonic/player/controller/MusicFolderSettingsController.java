@@ -101,29 +101,41 @@ public class MusicFolderSettingsController {
     }
 
 
-    private void expunge() {
+    private synchronized void expunge() {
 
-        // to be before dao#expunge
         MediaLibraryStatistics statistics = indexManager.getStatistics();
-        if (statistics != null) {
+
+        /*
+         * indexManager#expunge depends on DB delete flag.
+         * For consistency, clean of DB and Lucene must run in one block.
+         *
+         * Lucene's writing is exclusive.
+         * This process cannot be performed
+         * while during scan or scan has never been performed.
+         */
+        if (statistics != null && !mediaScannerService.isScanning()) {
+
+            // to be before dao#expunge
             LOG.debug("Cleaning search index...");
             indexManager.startIndexing();
             indexManager.expunge();
             indexManager.stopIndexing(statistics);
             LOG.debug("Search index cleanup complete.");
-        } else {
-            LOG.warn("Missing index statistics - index probably hasn't been created yet. Not expunging index.");
-        }
 
-        LOG.debug("Cleaning database...");
-        LOG.debug("Deleting non-present artists...");
-        artistDao.expunge();
-        LOG.debug("Deleting non-present albums...");
-        albumDao.expunge();
-        LOG.debug("Deleting non-present media files...");
-        mediaFileDao.expunge();
-        LOG.debug("Database cleanup complete.");
-        mediaFileDao.checkpoint();
+            // to be after indexManager#expunge
+            LOG.debug("Cleaning database...");
+            LOG.debug("Deleting non-present artists...");
+            artistDao.expunge();
+            LOG.debug("Deleting non-present albums...");
+            albumDao.expunge();
+            LOG.debug("Deleting non-present media files...");
+            mediaFileDao.expunge();
+            LOG.debug("Database cleanup complete.");
+            mediaFileDao.checkpoint();
+
+        } else {
+            LOG.warn("Index hasn't been created yet or during scanning. Plese execute clean up after scan is completed.");
+        }
     }
 
     private List<MusicFolderSettingsCommand.MusicFolderInfo> wrap(List<MusicFolder> musicFolders) {
