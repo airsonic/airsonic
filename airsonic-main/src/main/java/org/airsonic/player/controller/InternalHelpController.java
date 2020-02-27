@@ -35,6 +35,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.IndexSearcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,14 +261,18 @@ public class InternalHelpController {
     private void gatherIndexInfo(Map<String, Object> map) {
         SortedMap<String, IndexStatistics> indexStats = new TreeMap<>();
         for (IndexType indexType : IndexType.values()) {
-            try (IndexReader reader = indexManager.getSearcher(indexType).getIndexReader()) {
-                IndexStatistics stat = new IndexStatistics();
-                stat.setName(indexType.name());
+            IndexStatistics stat = new IndexStatistics();
+            IndexSearcher searcher = indexManager.getSearcher(indexType);
+            stat.setName(indexType.name());
+            indexStats.put(indexType.name(), stat);
+            if (searcher != null) {
+                IndexReader reader = searcher.getIndexReader();
                 stat.setCount(reader.numDocs());
                 stat.setDeletedCount(reader.numDeletedDocs());
-                indexStats.put(indexType.name(), stat);
-            } catch (IOException e) {
-                LOG.debug("Unable to gather information about {} index", indexType.name(), e);
+                indexManager.release(indexType, searcher);
+            } else {
+                stat.setCount(0);
+                stat.setDeletedCount(0);
             }
         }
         map.put("indexStatistics", indexStats);
