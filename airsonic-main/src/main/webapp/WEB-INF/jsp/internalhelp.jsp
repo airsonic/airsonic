@@ -266,7 +266,7 @@
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    <fmt:message key="internalhelp.tool.warn"><fmt:param value="ffprobe"/></fmt:message>
+                    <fmt:message key="internalhelp.tool.warn"><fmt:param value="ffmpeg"/></fmt:message>
                 </c:otherwise>
             </c:choose>
         </td>
@@ -289,11 +289,11 @@
             <c:choose>
                 <c:when test="${fn:contains(model.localeDefaultCharset, 'UTF-8')}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
-                    Java default charset appears to have UTF-8 support.
+                    <fmt:message key="internalhelp.defaultcharset.ok"/>
                 </c:when>
                 <c:otherwise>
                     <img src="<spring:theme code='alertImage'/>" alt="Warning">
-                    Java default charset appears to have no UTF-8 support. International characters may be partially supported.
+                    <fmt:message key="internalhelp.defaultcharset.warn"/>
                 </c:otherwise>
             </c:choose>
         </td>
