@@ -49,12 +49,12 @@ public class JWTSecurityService {
         return Algorithm.HMAC256(jwtKey);
     }
 
-    private static String createToken(String jwtKey, String path, Date expireDate) {
+    private static String createToken(String jwtKey, String path, Date expireDate, String username) {
         UriComponents components = UriComponentsBuilder.fromUriString(path).build();
         String query = components.getQuery();
         String claim = components.getPath() + (!StringUtils.isBlank(query) ? "?" + components.getQuery() : "");
-        LOG.debug("Creating token with claim " + claim);
         return JWT.create()
+                .withClaim(CLAIM_USERNAME, username)
                 .withClaim(CLAIM_PATH, claim)
                 .withExpiresAt(expireDate)
                 .sign(getAlgorithm(jwtKey));
@@ -69,10 +69,12 @@ public class JWTSecurityService {
     }
 
     public UriComponentsBuilder addJWTToken(UriComponentsBuilder builder, Date expires) {
+        String username = SecurityService.getLoginUser();
         String token = JWTSecurityService.createToken(
                 settingsService.getJWTKey(),
                 builder.toUriString(),
-                expires);
+                expires,
+                username);
         builder.queryParam(JWTSecurityService.JWT_PARAM_NAME, token);
         return builder;
     }
@@ -102,10 +104,7 @@ public class JWTSecurityService {
 
     public SonosLink verifySonosLink(String sonosLinkToken) {
         DecodedJWT jwt = verify(sonosLinkToken);
-
-        SonosLink sonosLink = new SonosLink(jwt.getClaim(CLAIM_USERNAME).asString(),
+        return new SonosLink(jwt.getClaim(CLAIM_USERNAME).asString(),
                 jwt.getClaim(CLAIM_HOUSEHOLDID).asString(), jwt.getClaim(CLAIM_LINKCODE).asString());
-
-        return sonosLink;
     }
 }

@@ -150,7 +150,7 @@ public class SecurityService implements UserDetailsService {
         return username == null ? null : getUserByName(username);
     }
 
-    public String getLoginUser() {
+    public static String getLoginUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User) {

@@ -39,6 +39,7 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
         String rawToken = (String) auth.getCredentials();
         DecodedJWT token = JWTSecurityService.verify(jwtKey, rawToken);
         Claim path = token.getClaim(JWTSecurityService.CLAIM_PATH);
+        Claim username = token.getClaim(JWTSecurityService.CLAIM_USERNAME);
         authentication.setAuthenticated(true);
 
         // TODO:AD This is super unfortunate, but not sure there is a better way when using JSP
@@ -52,7 +53,7 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("IS_AUTHENTICATED_FULLY"));
         authorities.add(new SimpleGrantedAuthority("ROLE_TEMP"));
-        return new JWTAuthenticationToken(authorities, rawToken, authentication.getRequestedPath());
+        return new JWTAuthenticationToken(authorities, rawToken, authentication.getRequestedPath(), username.asString());
     }
 
     private static boolean roughlyEqual(String expectedRaw, String requestedPathRaw) {
