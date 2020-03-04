@@ -17,6 +17,7 @@
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cxf.version>3.3.5</cxf.version>
+        <jackson.version>2.10.3</jackson.version>
         <tomcat.version>8.5.51</tomcat.version>
     </properties>
 
@@ -113,17 +114,17 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.10.2</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.10.0</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.10.2</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -177,7 +178,7 @@
                 <groupId>javax.jws</groupId>
                 <artifactId>javax.jws-api</artifactId>
                 <version>1.1</version>
-              </dependency>
+            </dependency>
 
             <!-- Tomcat dependencies are normally managed by Spring Boot, but we handle
                  patch version updates ourselves in order to fix CVEs. -->
