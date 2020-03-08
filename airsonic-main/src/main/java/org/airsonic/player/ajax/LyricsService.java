@@ -66,6 +66,13 @@ public class LyricsService {
      */
     public LyricsInfo getLyrics(String artist, String song) {
         LyricsInfo lyrics = new LyricsInfo();
+
+        // chartlyrics.com has been offline for more than a year and no indications it is coming back, so to avoid
+        // continual fetch attempts (and errors about them in the log), bypass this pending replacement or removal
+        if (true) {
+            return lyrics;
+        }
+
         try {
 
             artist = StringUtil.urlEncode(artist);
