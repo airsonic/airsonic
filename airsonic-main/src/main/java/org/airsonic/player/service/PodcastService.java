@@ -657,10 +657,11 @@ public class PodcastService {
 
         File channelDir = getChannelDirectory(channel);
 
-        String filename = StringUtil.getUrlFile(episode.getUrl());
+        String filename = channel.getTitle() + " - " + episode.getPublishDate().toString() + " - " + episode.getTitle();
         if (filename == null) {
-            filename = episode.getTitle();
+            filename = StringUtil.getUrlFile(episode.getUrl());
         }
+     
         filename = StringUtil.fileSystemSafe(filename);
         String extension = FilenameUtils.getExtension(filename);
         filename = FilenameUtils.removeExtension(filename);
