@@ -661,7 +661,7 @@ public class PodcastService {
         if (filename == null) {
             filename = StringUtil.getUrlFile(episode.getUrl());
         }
-     
+
         filename = StringUtil.fileSystemSafe(filename);
         String extension = FilenameUtils.getExtension(filename);
         filename = FilenameUtils.removeExtension(filename);
