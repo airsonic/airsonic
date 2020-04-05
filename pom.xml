@@ -16,7 +16,7 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.3.5</cxf.version>
+        <cxf.version>3.3.6</cxf.version>
         <jackson.version>2.10.3</jackson.version>
         <tomcat.version>8.5.51</tomcat.version>
     </properties>
