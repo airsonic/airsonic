@@ -27,6 +27,13 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.13</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-client</artifactId>
+                        <version>8.16.0</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>default</id>
