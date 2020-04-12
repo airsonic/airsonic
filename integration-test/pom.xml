@@ -12,49 +12,21 @@
     </parent>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cucumber.version>4.2.0</cucumber.version>
+        <docker.testing.container>it-container</docker.testing.container>
+        <docker.testing.host>http://localhost:4040</docker.testing.host>
+        <docker.testing.default-music-folder>/tmp/music</docker.testing.default-music-folder>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-core</artifactId>
-            <version>${cucumber.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
-            <version>${cucumber.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java8</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-spring</artifactId>
-            <version>${cucumber.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -74,28 +46,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.spotify</groupId>
-            <artifactId>docker-client</artifactId>
-            <version>8.16.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Needed by docker-client, see https://github.com/tdomzal/junit-docker-rule/issues/42 -->
-            <groupId>org.glassfish.jersey.inject</groupId>
-            <artifactId>jersey-hk2</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -121,13 +71,16 @@
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-core</artifactId>
-            <version>2.6.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.xmlunit</groupId>
             <artifactId>xmlunit-matchers</artifactId>
-            <version>2.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -142,51 +95,13 @@
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/application.properties</include>
-                </includes>
-            </testResource>
-            <testResource>
-                <directory>src/test/resources</directory>
                 <filtering>false</filtering>
             </testResource>
         </testResources>
         <plugins>
             <plugin>
-                <groupId>com.github.temyers</groupId>
-                <artifactId>cucumber-jvm-parallel-plugin</artifactId>
-                <version>5.0.0</version>
-                <executions>
-                    <execution>
-                        <id>generateRunners</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>generateRunners</goal>
-                        </goals>
-                        <configuration>
-                            <featuresDirectory>src/test/resources/features</featuresDirectory>
-                            <format>pretty</format>
-                            <glue>org.airsonic.test.cucumber.steps</glue>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <compilerVersion>1.8</compilerVersion>
-                    <showWarnings>true</showWarnings>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>default-jar</id>
@@ -199,15 +114,77 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-it-container</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                        <configuration>
+                            <showLogs>true</showLogs>
+                            <images>
+                                <image>
+                                    <name>${docker.container.repo}:latest</name>
+                                    <alias>${docker.testing.container}</alias>
+                                    <run>
+                                        <network>
+                                            <mode>host</mode>
+                                        </network>
+                                        <ports>
+                                            <port>4040:4040</port>
+                                        </ports>
+                                        <wait>
+                                            <time>100000</time>
+                                            <healthy>true</healthy>
+                                        </wait>
+                                        <env>
+                                            <DatabaseConfigType>${env.DatabaseConfigType}</DatabaseConfigType>
+                                            <DatabaseConfigEmbedDriver>${env.DatabaseConfigEmbedDriver}</DatabaseConfigEmbedDriver>
+                                            <DatabaseConfigEmbedUrl>${env.DatabaseConfigEmbedUrl}</DatabaseConfigEmbedUrl>
+                                            <DatabaseConfigEmbedUsername>${env.DatabaseConfigEmbedUsername}</DatabaseConfigEmbedUsername>
+                                            <DatabaseConfigEmbedPassword>${env.DatabaseConfigEmbedPassword}</DatabaseConfigEmbedPassword>
+                                            <DatabaseUsertableQuote>${env.DatabaseUsertableQuote}</DatabaseUsertableQuote>
+                                        </env>
+                                        <volumes>
+                                            <bind>
+                                                <volume>${docker.testing.default-music-folder}:/var/music</volume>
+                                            </bind>
+                                        </volumes>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>remove-it-container</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <forkCount>1</forkCount>
-                    <reuseForks>false</reuseForks>
-                    <includes>
-                        <include>**/Parallel*IT.class</include>
-                    </includes>
-                </configuration>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <DockerTestingContainer>${docker.testing.container}</DockerTestingContainer>
+                                <DockerTestingHost>${docker.testing.host}</DockerTestingHost>
+                                <DockerTestingDefaultMusicFolder>${docker.testing.default-music-folder}</DockerTestingDefaultMusicFolder>
+                            </systemPropertyVariables>
+                        </configuration>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
