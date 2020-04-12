@@ -193,6 +193,7 @@
                 <executions>
                     <execution>
                         <configuration>
+                            <skip>${failsafe.skip}</skip>
                             <systemPropertyVariables>
                                 <DockerTestingContainer>${docker.testing.container}</DockerTestingContainer>
                                 <DockerTestingHost>${docker.testing.host}</DockerTestingHost>
