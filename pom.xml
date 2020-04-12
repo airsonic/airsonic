@@ -19,6 +19,7 @@
         <cxf.version>3.3.6</cxf.version>
         <jackson.version>2.10.3</jackson.version>
         <tomcat.version>9.0.33</tomcat.version>
+        <docker.container.repo>airsonic/airsonic</docker.container.repo>
     </properties>
 
     <repositories>
