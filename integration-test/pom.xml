@@ -14,7 +14,7 @@
     <properties>
         <docker.testing.container>it-container</docker.testing.container>
         <docker.testing.host>http://localhost:4040</docker.testing.host>
-        <docker.testing.default-music-folder>/tmp/music</docker.testing.default-music-folder>
+        <docker.testing.default-music-folder>${project.build.directory}/data/music</docker.testing.default-music-folder>
     </properties>
 
     <dependencies>
@@ -169,7 +169,8 @@
                                         </env>
                                         <volumes>
                                             <bind>
-                                                <volume>${docker.testing.default-music-folder}:/var/music</volume>
+                                                <!-- This binds a directory inside the integration-test/target directory in the host to the music directory in the Docker container -->
+                                                <volume>${docker.testing.default-music-folder}:/airsonic/music</volume>
                                             </bind>
                                         </volumes>
                                     </run>
@@ -193,10 +194,12 @@
                 <executions>
                     <execution>
                         <configuration>
+                            <!-- Skip integration tests by adding -Dfailsafe.skip to the Maven command-line -->
                             <skip>${failsafe.skip}</skip>
                             <systemPropertyVariables>
                                 <DockerTestingContainer>${docker.testing.container}</DockerTestingContainer>
                                 <DockerTestingHost>${docker.testing.host}</DockerTestingHost>
+                                <!-- This is the folder on the host (not on the container), used in org.airsonic.test.Scanner -->
                                 <DockerTestingDefaultMusicFolder>${docker.testing.default-music-folder}</DockerTestingDefaultMusicFolder>
                             </systemPropertyVariables>
                         </configuration>
