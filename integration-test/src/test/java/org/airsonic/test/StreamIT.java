@@ -1,10 +1,12 @@
 package org.airsonic.test;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,6 +40,10 @@ public class StreamIT {
         byte[] fromServer = Scanner.getMediaFileData(mediaFileId);
         String expectedBodyResource = String.format("/blobs/stream/" + file + "/responses/1.dat");
         byte[] expected = IOUtils.toByteArray(StreamIT.class.getResourceAsStream(expectedBodyResource));
+        if (!StringUtils.isBlank(System.getProperty("IntegrationTestsOutputDirectory", ""))) {
+            Path fromServerPath = Paths.get(System.getProperty("IntegrationTestsOutputDirectory", ""), file + ".dat");
+            FileUtils.writeByteArrayToFile(fromServerPath.toFile(), fromServer);
+        }
         assertThat(fromServer).containsExactly(expected);
     }
 }
