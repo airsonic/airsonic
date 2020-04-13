@@ -14,7 +14,10 @@
     <properties>
         <docker.testing.container>it-container</docker.testing.container>
         <docker.testing.host>http://localhost:4040</docker.testing.host>
+        <!-- Used as a music folder, mounted in Docker container during integration tests -->
         <docker.testing.default-music-folder>${project.build.directory}/data/music</docker.testing.default-music-folder>
+        <!-- Used as output folder for saving responses during integration tests -->
+        <docker.testing.output-folder>${project.build.directory}/data/responses</docker.testing.output-folder>
     </properties>
 
     <dependencies>
@@ -183,6 +186,27 @@
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-host-music-folder-for-docker</id>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="${docker.testing.default-music-folder}"/>
+                                <mkdir dir="${docker.testing.default-music-folder}"/>
+                                <delete dir="${docker.testing.output-folder}"/>
+                                <mkdir dir="${docker.testing.output-folder}"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
