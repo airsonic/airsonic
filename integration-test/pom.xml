@@ -201,6 +201,7 @@
                                 <DockerTestingHost>${docker.testing.host}</DockerTestingHost>
                                 <!-- This is the folder on the host (not on the container), used in org.airsonic.test.Scanner -->
                                 <DockerTestingDefaultMusicFolder>${docker.testing.default-music-folder}</DockerTestingDefaultMusicFolder>
+                                <IntegrationTestsOutputDirectory>${project.build.directory}/data/responses</IntegrationTestsOutputDirectory>
                             </systemPropertyVariables>
                         </configuration>
                         <goals>
