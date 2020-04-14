@@ -1,4 +1,4 @@
-FROM alpine:3.9
+FROM alpine:3.11
 
 LABEL description="Airsonic is a free, web-based media streamer, providing ubiquitious access to your music." \
       url="https://github.com/airsonic/airsonic"
@@ -16,8 +16,7 @@ RUN apk --no-cache add \
     ttf-dejavu \
     ca-certificates \
     tini \
-    curl \
-    openjdk8-jre
+    openjdk11-jre
 
 COPY run.sh /usr/local/bin/run.sh
 
