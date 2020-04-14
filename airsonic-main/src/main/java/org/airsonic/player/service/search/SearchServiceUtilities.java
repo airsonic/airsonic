@@ -102,6 +102,7 @@ public class SearchServiceUtilities {
         for (String algorithmName : new String[]{"NativePRNG", "SHA1PRNG"}) {
             if (algorithms.contains(algorithmName)) {
                 random = createSecureRandom(algorithmName);
+                break;
             }
         }
 
