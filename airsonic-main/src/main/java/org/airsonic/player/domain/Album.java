@@ -20,6 +20,7 @@
 package org.airsonic.player.domain;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Sindre Mehus
@@ -31,8 +32,8 @@ public class Album {
     private String path;
     private String name;
     private String artist;
-    private int songCount;
-    private int durationSeconds;
+    private final AtomicInteger songCount = new AtomicInteger(0);
+    private final AtomicInteger durationSeconds = new AtomicInteger(0);
     private String coverArtPath;
     private Integer year;
     private String genre;
@@ -55,8 +56,8 @@ public class Album {
         this.path = path;
         this.name = name;
         this.artist = artist;
-        this.songCount = songCount;
-        this.durationSeconds = durationSeconds;
+        this.songCount.set(songCount);
+        this.durationSeconds.set(durationSeconds);
         this.coverArtPath = coverArtPath;
         this.year = year;
         this.genre = genre;
@@ -103,19 +104,27 @@ public class Album {
     }
 
     public int getSongCount() {
-        return songCount;
+        return songCount.get();
     }
 
     public void setSongCount(int songCount) {
-        this.songCount = songCount;
+        this.songCount.set(songCount);
+    }
+
+    public void incrementSongCount() {
+        this.songCount.incrementAndGet();
     }
 
     public int getDurationSeconds() {
-        return durationSeconds;
+        return durationSeconds.get();
     }
 
     public void setDurationSeconds(int durationSeconds) {
-        this.durationSeconds = durationSeconds;
+        this.durationSeconds.set(durationSeconds);
+    }
+
+    public void incrementDurationSeconds(int durationSeconds) {
+        this.durationSeconds.addAndGet(durationSeconds);
     }
 
     public String getCoverArtPath() {
