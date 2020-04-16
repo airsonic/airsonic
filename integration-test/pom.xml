@@ -162,14 +162,6 @@
                                             <time>100000</time>
                                             <healthy>true</healthy>
                                         </wait>
-                                        <env>
-                                            <DatabaseConfigType>${env.DatabaseConfigType}</DatabaseConfigType>
-                                            <DatabaseConfigEmbedDriver>${env.DatabaseConfigEmbedDriver}</DatabaseConfigEmbedDriver>
-                                            <DatabaseConfigEmbedUrl>${env.DatabaseConfigEmbedUrl}</DatabaseConfigEmbedUrl>
-                                            <DatabaseConfigEmbedUsername>${env.DatabaseConfigEmbedUsername}</DatabaseConfigEmbedUsername>
-                                            <DatabaseConfigEmbedPassword>${env.DatabaseConfigEmbedPassword}</DatabaseConfigEmbedPassword>
-                                            <DatabaseUsertableQuote>${env.DatabaseUsertableQuote}</DatabaseUsertableQuote>
-                                        </env>
                                         <volumes>
                                             <bind>
                                                 <!-- This binds a directory inside the integration-test/target directory in the host to the music directory in the Docker container -->
