@@ -122,7 +122,7 @@ public class UPnPService {
     }
 
     private synchronized void createService() {
-        upnpService = new UpnpServiceImpl(new ApacheUpnpServiceConfiguration());
+        upnpService = new UpnpServiceImpl(new ApacheUpnpServiceConfiguration(SettingsService.getDefaultUPnPPort()));
 
         // Asynch search for other devices (most importantly UPnP-enabled routers for port-mapping)
         upnpService.getControlPoint().search();
