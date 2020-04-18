@@ -51,9 +51,11 @@ public class LoginController {
         map.put("brand", settingsService.getBrand());
         map.put("loginMessage", settingsService.getLoginMessage());
 
-        User admin = securityService.getUserByName(User.USERNAME_ADMIN);
-        if (User.USERNAME_ADMIN.equals(admin.getPassword())) {
-            map.put("insecure", true);
+        User admin = securityService.getUserByName("admin");
+        if (admin != null) {
+            if (admin.getUsername().equals(admin.getPassword())) {
+                map.put("insecure", true);
+            }
         }
 
         return new ModelAndView("login", "model", map);

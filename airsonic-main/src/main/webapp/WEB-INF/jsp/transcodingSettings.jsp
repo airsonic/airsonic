@@ -59,15 +59,6 @@
     <table style="white-space:nowrap" class="indent">
         <tr>
             <td style="font-weight: bold;">
-                <fmt:message key="advancedsettings.downsamplecommand"/>
-                <c:import url="helpToolTip.jsp"><c:param name="topic" value="downsamplecommand"/></c:import>
-            </td>
-            <td>
-                <input class="monospace" type="text" name="downsampleCommand" size="100" value="${model.downsampleCommand}"/>
-            </td>
-        </tr>
-        <tr>
-            <td style="font-weight: bold;">
                 <fmt:message key="advancedsettings.hlscommand"/>
                 <c:import url="helpToolTip.jsp"><c:param name="topic" value="hlscommand"/></c:import>
             </td>

@@ -148,10 +148,6 @@ public class UserDao extends AbstractDao {
      * @param username The username.
      */
     public void deleteUser(String username) {
-        if (User.USERNAME_ADMIN.equals(username)) {
-            throw new IllegalArgumentException("Can't delete admin user.");
-        }
-
         update("delete from user_role where username=?", username);
         update("delete from player where username=?", username);
         update("delete from " + getUserTable() + " where username=?", username);

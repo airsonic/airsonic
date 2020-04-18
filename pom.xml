@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.airsonic.player</groupId>
     <artifactId>airsonic</artifactId>
-    <version>10.6.0-SNAPSHOT</version>
+    <version>11.0.0-SNAPSHOT</version>
     <name>Airsonic</name>
     <packaging>pom</packaging>
     <organization>
@@ -16,9 +16,9 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.3.5</cxf.version>
+        <cxf.version>3.3.6</cxf.version>
         <jackson.version>2.10.3</jackson.version>
-        <tomcat.version>8.5.51</tomcat.version>
+        <tomcat.version>8.5.54</tomcat.version>
     </properties>
 
     <repositories>
@@ -92,7 +92,7 @@
             <dependency>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
-                <version>3.8.7</version>
+                <version>3.8.9</version>
             </dependency>
 
             <!-- Fix convergence issues -->
@@ -104,7 +104,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.9</version>
+                <version>3.10</version>
             </dependency>
             <dependency>
                 <groupId>commons-io</groupId>

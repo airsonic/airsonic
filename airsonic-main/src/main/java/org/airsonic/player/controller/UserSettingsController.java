@@ -96,7 +96,7 @@ public class UserSettingsController {
             command = (UserSettingsCommand) model.asMap().get("command");
         }
         command.setUsers(securityService.getAllUsers());
-        command.setTranscodingSupported(transcodingService.isDownsamplingSupported(null));
+        command.setTranscodingSupported(transcodingService.isTranscodingSupported(null));
         command.setTranscodeDirectory(transcodingService.getTranscodeDirectory().getPath());
         command.setTranscodeSchemes(TranscodeScheme.values());
         command.setLdapEnabled(settingsService.isLdapEnabled());

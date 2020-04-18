@@ -27,7 +27,6 @@ import org.airsonic.player.dao.PlaylistDao;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.PlayQueue;
 import org.airsonic.player.domain.Playlist;
-import org.airsonic.player.domain.User;
 import org.airsonic.player.service.playlist.PlaylistExportHandler;
 import org.airsonic.player.service.playlist.PlaylistImportHandler;
 import org.airsonic.player.util.FileUtil;
@@ -296,7 +295,9 @@ public class PlaylistService {
         }
         InputStream in = new FileInputStream(file);
         try {
-            importPlaylist(User.USERNAME_ADMIN, FilenameUtils.getBaseName(fileName), fileName, in, existingPlaylist);
+            // With the transition away from a hardcoded admin account to Admin Roles, there is no longer
+            //   a specific account to use for auto-imported playlists, so use the first admin account
+            importPlaylist(securityService.getAdminUsername(), FilenameUtils.getBaseName(fileName), fileName, in, existingPlaylist);
             LOG.info("Auto-imported playlist " + file);
         } finally {
             FileUtil.closeQuietly(in);

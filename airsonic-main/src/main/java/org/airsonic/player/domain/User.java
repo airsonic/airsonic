@@ -26,7 +26,6 @@ package org.airsonic.player.domain;
  */
 public class User {
 
-    public static final String USERNAME_ADMIN = "admin";
     public static final String USERNAME_GUEST = "guest";
 
     private final String username;
@@ -125,7 +124,7 @@ public class User {
     }
 
     public boolean isSettingsRole() {
-        return isSettingsRole;
+        return isAdminRole || isSettingsRole;
     }
 
     public void setSettingsRole(boolean isSettingsRole) {
