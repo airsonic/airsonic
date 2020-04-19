@@ -3,6 +3,60 @@
 # airsonic/airsonic
 # -->
 
+## v10.6.0 - 15 Apr 2020
+
+### New features
+
+* Support for sending scrobbling information to the "ListenBrainz" service has
+  been added (#1224)
+
+* A new "More" link has been added to the "About" page, containing detailed
+  system diagnostic information. This page will help us diagnose issues more
+  easily in the future. (#1457)
+
+* The default 'admin' user can now be deleted if another admin user is present
+  on the system, which can improve security by avoiding having a hardcoded
+  username always available. Features that require an admin user (namely,
+  automated playlist import) will use the first admin user in the database. (#1131)
+
+* The play queue can now be toggled on/off with a button, which helps use
+  Airsonic on touch devices (tablets, ultrabooks). (#1539)
+
+* An 'add to play queue' action has been added to playlist pages. (#1433)
+
+### Fixes and updates
+
+* External database drivers have been updated to more recent versions. In
+  particular, the MySQL driver now supports MySQL 8.0, and initial migrations
+  on PostgreSQL should work properly again. (#1452 and #1511)
+
+* The seek support for transcoding has now been re-enabled again, now that
+  we're more confident that this works fine with the HTML5 player. (#1123)
+
+* Accuracy of the "search" feature has been improved, with search now ranking
+  by artist (resp. album or song) name in the artists (resp. albums or songs)
+  category. (#1235)
+
+* The systemd example file has been updated with a couple of changes related to
+  device/driver access. (#1406)
+
+* DLNA support should now be exposed properly through Docker, which wasn't the
+  case before. (#1380)
+
+* The tabs on the main page no longer auto-refresh at regular intervals.
+  Instead a "refresh" link is available to trigger a reload manually. (#1338 #1339 #1413)
+
+### Others
+
+* The dark theme has seen some tweaks.
+* Fix harmless error message about missing "web.xml"
+* Fix not to perform clean up during scan
+* Change to new shuffle generator
+* The `pt_BR` locale has been updated.
+* Avoid exceptions if Lucene index is not ready on first startup
+* Avoid exceptions if database is not ready and fully migrated on first startup
+* A lot of dependency upgrades, as well as other fixes and optimizations
+
 ## v10.5.0 - 7 Nov 2019
 
 **New index version. Scan will be triggered on startup**
