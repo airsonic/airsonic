@@ -3,6 +3,13 @@
 # airsonic/airsonic
 # -->
 
+## v10.6.1 - 19 Apr 2020
+
+### Fixes
+
+* Fix issue with DLNA not working (#1634)
+* Fix issue with scanning error on some media types (e.g. WAV) (#1626)
+
 ## v10.6.0 - 15 Apr 2020
 
 ### New features
