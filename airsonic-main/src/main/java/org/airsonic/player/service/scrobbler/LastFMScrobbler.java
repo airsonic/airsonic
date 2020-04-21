@@ -149,8 +149,8 @@ public class LastFMScrobbler {
      * <p/>
      * Line 0: Always "OK"
      * Line 1: Session ID, e.g., "17E61E13454CDD8B68E8D7DEEEDF6170"
-     * Line 2: URL to use for now playing, e.g., "https://post.audioscrobbler.com:80/np_1.2"
-     * Line 3: URL to use for submissions, e.g., "https://post2.audioscrobbler.com:80/protocol_1.2"
+     * Line 2: URL to use for now playing, e.g., "http://post.audioscrobbler.com:80/np_1.2"
+     * Line 3: URL to use for submissions, e.g., "http://post2.audioscrobbler.com:80/protocol_1.2"
      * <p/>
      * If authentication fails, <code>null</code> is returned.
      */
@@ -159,7 +159,8 @@ public class LastFMScrobbler {
         String clientVersion = "0.1";
         long timestamp = System.currentTimeMillis() / 1000L;
         String authToken = calculateAuthenticationToken(registrationData.password, timestamp);
-        URI uri = new URI("https",
+        // NOTE: HTTPS support DOES NOT WORK on the AudioScrobbler v1 API.
+        URI uri = new URI("http",
                 /* userInfo= */ null, "post.audioscrobbler.com", -1,
                 "/",
                 String.format("hs=true&p=1.2.1&c=%s&v=%s&u=%s&t=%s&a=%s",
