@@ -1,6 +1,7 @@
 package org.airsonic.player.api.jukebox;
 
 import org.airsonic.player.TestCaseUtils;
+import org.airsonic.player.controller.SubsonicRESTController;
 import org.airsonic.player.dao.*;
 import org.airsonic.player.domain.*;
 import org.airsonic.player.service.MediaScannerService;
@@ -180,10 +181,7 @@ public abstract class AbstractAirsonicRestApiJukeboxIntTest {
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].suffix").value(mediaFile.getFormat()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].duration").value(mediaFile.getDurationSeconds()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].bitRate").value(mediaFile.getBitRate()).match(result);
-
-            // The path is absolute, we remove the folder source with replace the folder with nothing
-            // and the "/" they stay with substring(1), must be a method in mediaFile for method to obtain the relative path is same every where.
-            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value(mediaFile.getPath().replace(mediaFile.getFolder(), "").substring(1)).match(result);
+            jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].path").value(SubsonicRESTController.getRelativePath(mediaFile, settingsService)).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].isVideo").value(mediaFile.isVideo()).match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].playCount").isNumber().match(result);
             jsonPath("$.subsonic-response.jukeboxPlaylist.entry[0].created").value(convertDateToString(mediaFile.getCreated())).match(result);
