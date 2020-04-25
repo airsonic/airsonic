@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -81,14 +81,12 @@ public class InternetRadioServiceTest {
         // Prepare the mocked URL connection for the redirection to simple playlist
         HttpURLConnection mockURLConnectionMove = Mockito.mock(HttpURLConnection.class);
         InputStream mockURLInputStreamMove = new ByteArrayInputStream("".getBytes());
-        doReturn(mockURLInputStreamMove).when(mockURLConnectionMove).getInputStream();
         doReturn(HttpURLConnection.HTTP_MOVED_PERM).when(mockURLConnectionMove).getResponseCode();
         doReturn(TEST_PLAYLIST_URL_2).when(mockURLConnectionMove).getHeaderField(eq("Location"));
 
         // Prepare the mocked URL connection for the redirection loop
         HttpURLConnection mockURLConnectionMoveLoop = Mockito.mock(HttpURLConnection.class);
         InputStream mockURLInputStreamMoveLoop = new ByteArrayInputStream("".getBytes());
-        doReturn(mockURLInputStreamMoveLoop).when(mockURLConnectionMoveLoop).getInputStream();
         doReturn(HttpURLConnection.HTTP_MOVED_PERM).when(mockURLConnectionMoveLoop).getResponseCode();
         doReturn(TEST_PLAYLIST_URL_MOVE_LOOP).when(mockURLConnectionMoveLoop).getHeaderField(eq("Location"));
 
