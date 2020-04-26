@@ -284,6 +284,22 @@ public class InternalHelpController {
         }
     }
 
+    /**
+     * Returns true if a locale string (e.g. en_US.UTF-8) appears to support UTF-8 correctly.
+     *
+     * Some systems use non-standard locales (e.g. en_US.utf8 instead of en_US.UTF-8)
+     * to specify Unicode support, which are usually supported by the Glibc.
+     *
+     * See: https://superuser.com/questions/999133/differences-between-en-us-utf8-and-en-us-utf-8
+     */
+    private boolean doesLocaleSupportUtf8(String locale) {
+        if (locale == null) {
+            return false;
+        } else {
+            return locale.toLowerCase().replaceAll("\\W", "").contains("utf8");
+        }
+    }
+
     private void gatherLocaleInfo(Map<String, Object> map) {
         map.put("localeDefault", Locale.getDefault());
         map.put("localeUserLanguage", System.getProperty("user.language"));
@@ -293,7 +309,12 @@ public class InternalHelpController {
         map.put("localeSunIoUnicodeEncoding", System.getProperty("sun.io.unicode.encoding"));
         map.put("localeLang", System.getenv("LANG"));
         map.put("localeLcAll", System.getenv("LC_ALL"));
-        map.put("localeDefaultCharset", Charset.defaultCharset());
+        map.put("localeDefaultCharset", Charset.defaultCharset().toString());
+
+        map.put("localeFileEncodingSupportsUtf8", doesLocaleSupportUtf8(System.getProperty("file.encoding")));
+        map.put("localeLangSupportsUtf8", doesLocaleSupportUtf8(System.getenv("LANG")));
+        map.put("localeLcAllSupportsUtf8", doesLocaleSupportUtf8(System.getenv("LC_ALL")));
+        map.put("localeDefaultCharsetSupportsUtf8", doesLocaleSupportUtf8(Charset.defaultCharset().toString()));
     }
 
     private void gatherDatabaseInfo(Map<String, Object> map) {
