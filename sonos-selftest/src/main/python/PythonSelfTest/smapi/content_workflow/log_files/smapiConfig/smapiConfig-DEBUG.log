@@ -1,5 +1,0 @@
-2019-09-10 06:03:25,323 [INFO] SONOS.sonos.workflow.result - Summary Report Files: log_files/smapiConfig/SummaryReport.html and log_files/smapiConfig/smapiConfig.txt
-2019-09-10 06:03:25,323 [INFO] SONOS.sonos.workflow.result - Detailed Debug Log File: log_files/smapiConfig/smapiConfig-DEBUG.log
-2019-09-10 06:03:25,323 [INFO] SONOS.sonos.workflow.basicsuite.BasicWorkflowTestSuite - -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  
-2019-09-10 06:03:25,323 [INFO] SONOS.sonos.workflow.basicsuite.BasicWorkflowTestSuite - Current Working Directory: /home/michel/Dev/sonos-selftest/PythonSelfTest/smapi/content_workflow
-2019-09-10 06:03:25,323 [INFO] SONOS.sonos.workflow.basicsuite.BasicWorkflowTestSuite - Result file: log_files/smapiConfig/SummaryReport.html
