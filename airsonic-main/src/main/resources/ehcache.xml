@@ -223,6 +223,17 @@ used with JMX monitors.
            diskSpoolBufferSizeMB="1"
            statistics="true"/>
 
+    <!-- The sonos LinkCode, but is put in the cache before login, after success login is save on user data.-->
+    <!-- 420 = 7 min, maximum time the user can login after ask link to Sonos-->
+    <cache name="sonosLinkcodeCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           timeToIdleSeconds="420"
+           timeToLiveSeconds="420"
+           overflowToDisk="false"
+           diskSpoolBufferSizeMB="1"
+           statistics="false"/>
+
     <!--
     Sample caches. Following are some example caches. Remove these before use.
     -->

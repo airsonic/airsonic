@@ -87,9 +87,12 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             super(true);
         }
 
+        @Autowired
+        JWTSecurityService jwtSecurityService;
+
         @Bean(name = "jwtAuthenticationFilter")
         public JWTRequestParameterProcessingFilter jwtAuthFilter() throws Exception {
-            return new JWTRequestParameterProcessingFilter(authenticationManager(), FAILURE_URL);
+            return new JWTRequestParameterProcessingFilter(authenticationManager(), jwtSecurityService, FAILURE_URL);
         }
 
         @Override
@@ -120,6 +123,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            securityService.setAuthenticationManager(authenticationManagerBean());
 
             RESTRequestParameterProcessingFilter restAuthenticationFilter = new RESTRequestParameterProcessingFilter();
             restAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
@@ -155,14 +159,14 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
             http
                     .csrf()
+                    .ignoringAntMatchers("/ws/Sonos/**")
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
                     .and().headers()
                     .frameOptions()
                     .sameOrigin()
                     .and().authorizeRequests()
-                    .antMatchers("/recover*", "/accessDenied*",
-                            "/style/**", "/icons/**", "/flash/**", "/script/**",
-                            "/sonos/**", "/login", "/error")
+                    .antMatchers("/recover*", "/accessDenied*", "/style/**", "/icons/**", "/flash/**", "/script/**",
+                            "/login", "/error", "/sonos/**", "/sonoslink/**", "/ws/Sonos/**")
                     .permitAll()
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")

@@ -1,0 +1,149 @@
+=== Updates since release PythonSelfTest_1.2.0.697 ===
+
+1. Updated Sonos.wsdl
+
+2. authentication.py: added refreshAuthToken test
+
+3. Updated browse.py and search.py tests to include verification of tags
+
+4. Bug fixed in SvgValidator
+
+=== Updates since release PythonSelfTest_1.2.0.524 ===
+
+1. Added a check for minimum OpenSSL version (1.0.1)
+If OpenSSL version is < 1.0.1, the test will fail.
+
+2. Replaced DHE cipher suites with ECDHE
+
+=== Updates since release PythonSelfTest_1.2.0.420 ===
+
+1. Updated User-Agent to "Linux UPnP/1.0 Sonos/32.11-30010 (Self-Test)"
+
+2. Updated Sonos.wsdl
+
+=== Updates since release PythonSelfTest_1.2.0.332 ===
+
+1. Disabled sending zonePlayerId in credentials
+
+=== Updates since release PythonSelfTest_1.2.0.309 ===
+
+1. Updated presentationmap.xsd
+
+=== Updates since release PythonSelfTest_1.2.0.258 ===
+
+1. Updated Sonos.wsdl
+
+2. Updated presentationmap.xsd
+
+=== Updates since release PythonSelfTest_1.2.0.220 ===
+
+1. Changed test_certificate_expiration in ssl_validation to warn if a certificate will expire within 30 days (instead
+of 90)
+
+2. Changed test_support_tls_10 in ssl_validation so that it no longer accepts RC4-MD5 or RC4-SHA ciphers
+
+3. Changed ssl_validation suite to skip secure endpoints which SSLyze is unable to scan successfully (this will prevent
+false negatives)
+
+4. Changed test_certificate_chain in ssl_validation to warn (instead of fail) if there is an error when extracting a
+certificate from an endpoint
+
+=== Updates since release PythonSelfTest_1.2.0.137 ===
+
+1. Updated Sonos.wsdl
+
+=== Updates since release PythonSelfTest_1.2.0.91 ===
+
+1. Numerous bug fixes
+
+=== Updates since release PythonSelfTest_1.1.0.2030 ===
+
+1. Added an automated crawler for test content to auto-populate the .cfg file (please refer to the README for further instruction)
+
+2. Improved SSL verification for service and content endpoints
+
+3. Added support for "DisplayType" in presentation map
+
+4. Numerous bug fixes
+
+=== Updates since release PythonSelfTest_1.1.0.1925 ===
+
+1. OpenSSL is now listed as a requirement in the README file
+
+2. Removed the Rating IDs section from the config file requirements (the test no longer uses this section)
+
+3. Added extra verification for SSL certificate chains
+
+4. Added SSL verification for stream/track mediaURI's
+
+5. Numerous bug fixes
+
+=== Updates since release PythonSelfTest_1.1.0.1634 ===
+
+1. Added a test to validate that sending different languages in the language header does not cause errors
+
+2. Added a test to validate the entire SSL certificate chain for partners
+
+3. Results are now saved into a 'log_files' directory
+
+4. Added excerpts from the debug log into SummaryReport.html so that relevant information is easier to find for debugging
+
+5. Numerous bug fixes
+
+=== Updates since release PythonSelfTest_1.1.0.1441 ===
+
+1. Added new test suite ssl_validation.py to validate if server supports TLS1.0, RFC 5746(secure renegotiation), and has valid X.509 certificate
+
+2. Updated ratings.py to check that all URLs configured in a ratings presentation map are valid
+
+3. Numerous bug fixes
+
+=== Updates since release PythonSelfTest_1.1.0.1247 ===
+
+1. Added SVG validation of conforming to "SVG 1.1 Basic" DTD to existing test fixtures:  albumart.py, ratings.py
+
+2. Added a "migrationToDeviceLink" configuration option (see README file for more information) and related test_migration_to_deviceLink() to authentication.py.
+This test checks that the service is of authType DEVICELINK, verifies the migrationToDeviceLink value is True, verifies the service provided a supported account,
+then calls getSessionId with that account and looks for the server to return Client.AuthTokenExpired.
+
+3. Added new test fixture smapi_reporting.py for new status reporting APIs as follows:
+ * reportAccountAction: http://musicpartners.sonos.com/node/387
+ Set Capabilities:accountLogging to True in SelfTest configuration file if your service supports this API
+
+ * reportPlaySeconds: http://musicpartners.sonos.com/node/388
+ Set Capabilities:eventAndDurationLoggingDuringPlayback to True in SelfTest configuration file if your service supports this API
+
+ * reportPlayStatus: http://musicpartners.sonos.com/node/389
+ Set Capabilities:eventAndDurationLoggingDuringPlayback to True in SelfTest configuration file if your service supports this API
+
+4. Added an "Additional Settings" section on SelfTest configuration file. See README for details
+
+5. README and CHANGELOG.txt (this file) are moved to root directory
+
+6. Improved SelfTest handling of non-ASCII characters (such as track title in other languages than English)
+
+7. Improved SelfTest coverage to validate that string resources in strings.xml cover all Sonos Error codes returned by SMAPI service
+
+=== Updates since release PythonSelfTest_1.1.0.1028 ===
+
+1. devicelink_test.py was renamed to devicelink_manual.py
+
+2. Added presentationmap_sample.xml for presentation map file
+
+3. Added new test suite stringtable.py to validate strings xml file
+
+4. Added stringtable.xsd and stringtable_sample.xml for strings xml file
+
+5. Implemented handling of OAuth Token Refresh. A new Exception type TokenRefreshRequired was added. While the TokenRefreshRequired fault is returned to client, the client handles the exception: update auth token and refresh token (stored in private key); and then make a new request with the updated credential.
+
+6. Implemented testing playlist as search container
+
+7. Improved robustness: Implemented re-try logic in SelfTest to reduce random failures caused by Http request timeout or recoverable Http request errors
+
+8. Updated Sonos.wsdl
+
+9. albumart.py: added validation of custom browse icon configuration in presentation map file
+
+10. ratings.py: added validation of hi resolution rating icon configuration in presentation map file
+
+11. search.py: added validation of unified search configuration in presentation map file

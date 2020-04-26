@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.airsonic.player</groupId>
@@ -32,12 +33,12 @@
             <url>https://dl.bintray.com/ijabz/maven</url>
         </repository>
         <repository>
-          <id>4thline-repo</id>
-          <url>http://4thline.org/m2</url>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-      </repository>
+            <id>4thline-repo</id>
+            <url>http://4thline.org/m2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -54,17 +55,17 @@
         <url>https://github.com/airsonic/airsonic.git</url>
     </scm>
 
-<!--    <ciManagement>
-        <system>continuum</system>
-        <notifiers>
-            <notifier>
-                <type>mail</type>
-                <configuration>
-                    <address>sindre@activeobjects.no</address>
-                </configuration>
-            </notifier>
-        </notifiers>
-    </ciManagement> -->
+    <!--    <ciManagement>
+            <system>continuum</system>
+            <notifiers>
+                <notifier>
+                    <type>mail</type>
+                    <configuration>
+                        <address>sindre@activeobjects.no</address>
+                    </configuration>
+                </notifier>
+            </notifiers>
+        </ciManagement> -->
 
     <developers>
         <developer>
@@ -178,6 +179,11 @@
                 <groupId>javax.jws</groupId>
                 <artifactId>javax.jws-api</artifactId>
                 <version>1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.11.3</version>
             </dependency>
 
             <!-- Tomcat dependencies are normally managed by Spring Boot, but we handle
@@ -434,6 +440,7 @@
                                 <!-- Needed for airsonic-booter to load Airsonic correctly -->
                                 <ignoredUnusedDeclaredDependency>org.springframework.security:*</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.springframework.boot:spring-boot*</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.cxf:cxf-rt-frontend-jaxws</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>

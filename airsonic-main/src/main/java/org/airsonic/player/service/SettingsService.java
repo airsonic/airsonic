@@ -24,11 +24,12 @@ import org.airsonic.player.dao.InternetRadioDao;
 import org.airsonic.player.dao.MusicFolderDao;
 import org.airsonic.player.dao.UserDao;
 import org.airsonic.player.domain.*;
+import org.airsonic.player.service.sonos.SonosServiceRegistration;
 import org.airsonic.player.spring.DataSourceConfigType;
 import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.airsonic.player.util.Util;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,6 +134,11 @@ public class SettingsService {
 
     private static final String KEY_UPNP_PORT = "UPNP_PORT";
 
+
+    private static final String KEY_SONOS_CALLBACK_HOST_ADDRESS = "SonosCallbackHostAddress";
+    private static final String KEY_SONOS_LINK_METHOD = "SonosLinkMethod";
+
+
     // Default values.
     private static final String DEFAULT_JWT_KEY = null;
     private static final String DEFAULT_INDEX_STRING = "A B C D E F G H I J K L M N O P Q R S T U V W X-Z(XYZ)";
@@ -214,6 +220,9 @@ public class SettingsService {
 
     private static final int DEFAULT_UPNP_PORT = 4041;
 
+    private static final String DEFAULT_SONOS_LINK_METHOD = SonosServiceRegistration.AuthenticationType.APPLICATION_LINK.name();
+
+
     // Array of obsolete keys.  Used to clean property file.
     private static final List<String> OBSOLETE_KEYS = Arrays.asList("PortForwardingPublicPort", "PortForwardingLocalPort",
             "DownsamplingCommand", "DownsamplingCommand2", "DownsamplingCommand3", "AutoCoverBatch", "MusicMask",
@@ -252,6 +261,9 @@ public class SettingsService {
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
 
     private Pattern excludePattern;
+
+    private String hostAddress;
+    private String hostName;
 
     private void removeObsoleteProperties() {
 
@@ -657,6 +669,7 @@ public class SettingsService {
     String getJukeboxCommand() {
         return getProperty(KEY_JUKEBOX_COMMAND, DEFAULT_JUKEBOX_COMMAND);
     }
+
     public String getVideoImageCommand() {
         return getProperty(KEY_VIDEO_IMAGE_COMMAND, DEFAULT_VIDEO_IMAGE_COMMAND);
     }
@@ -917,7 +930,7 @@ public class SettingsService {
     /**
      * Returns all music folders.
      *
-     * @param includeDisabled Whether to include disabled folders.
+     * @param includeDisabled    Whether to include disabled folders.
      * @param includeNonExisting Whether to include non-existing folders.
      * @return Possibly empty list of all music folders.
      */
@@ -1305,6 +1318,7 @@ public class SettingsService {
             return s;
         }
     }
+
     public void setSmtpPassword(String smtpPassword) {
         try {
             smtpPassword = StringUtil.utf8HexEncode(smtpPassword);
@@ -1436,5 +1450,26 @@ public class SettingsService {
 
     String getPlaylistExportFormat() {
         return getProperty(KEY_EXPORT_PLAYLIST_FORMAT, DEFAULT_EXPORT_PLAYLIST_FORMAT);
+    }
+
+
+    public String getSonosLinkMethod() {
+        return getString(KEY_SONOS_LINK_METHOD, DEFAULT_SONOS_LINK_METHOD);
+    }
+
+    public void setSonosLinkMethod(String linkMethod) {
+        setString(KEY_SONOS_LINK_METHOD, linkMethod);
+    }
+
+    public String getSonosCallbackHostAddress() {
+        return getSonosCallbackHostAddress(null);
+    }
+
+    public String getSonosCallbackHostAddress(String def) {
+        return getString(KEY_SONOS_CALLBACK_HOST_ADDRESS, def);
+    }
+
+    public void setSonosCallbackHostAddress(String hostAddress) {
+        setString(KEY_SONOS_CALLBACK_HOST_ADDRESS, hostAddress);
     }
 }

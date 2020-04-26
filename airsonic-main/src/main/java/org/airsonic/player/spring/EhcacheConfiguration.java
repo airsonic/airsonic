@@ -27,6 +27,11 @@ public class EhcacheConfiguration {
     }
 
     @Bean
+    public Ehcache sonosLinkcodeCache(CacheFactory cacheFactory) {
+        return cacheFactory.getCache("sonosLinkcodeCache");
+    }
+
+    @Bean
     public CacheFactory cacheFactory() {
         return new CacheFactory();
     }
