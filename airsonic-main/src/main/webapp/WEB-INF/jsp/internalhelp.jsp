@@ -287,7 +287,7 @@
     <tr>
         <td colspan="2" class="ruleTableCell">
             <c:choose>
-                <c:when test="${fn:contains(model.localeDefaultCharset, 'UTF-8')}">
+                <c:when test="${model.localeDefaultCharsetSupportsUtf8}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
                     <fmt:message key="internalhelp.defaultcharset.ok"/>
                 </c:when>
@@ -305,7 +305,7 @@
     <tr>
         <td colspan="2" class="ruleTableCell">
             <c:choose>
-                <c:when test="${fn:contains(model.localeFileEncoding, 'UTF-8')}">
+                <c:when test="${model.localeFileEncodingSupportsUtf8}">
                     <img src="<spring:theme code='checkImage'/>" alt="OK">
                     <fmt:message key="internalhelp.file.encoding.ok"/>
                 </c:when>
@@ -320,7 +320,7 @@
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.sun.jnu.encoding"/></td><td class="ruleTableCell">${model.localeSunJnuEncoding}</td></tr>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.sun.io.unicode.encoding"/></td><td class="ruleTableCell">${model.localeSunIoUnicodeEncoding}</td></tr>
 
-    <c:if test="${not empty model.localeLang and not fn:contains(model.localeLang, 'UTF-8')}">
+    <c:if test="${not empty model.localeLang and not model.localeLangSupportsUtf8}">
         <tr>
             <td colspan="2" class="ruleTableCell">
                 <img src="<spring:theme code='alertImage'/>" alt="Warning">
@@ -330,7 +330,7 @@
     </c:if>
     <tr><td class="ruleTableHeader"><fmt:message key="internalhelp.langvar"/></td><td class="ruleTableCell">${model.localeLang}</td></tr>
 
-    <c:if test="${not empty model.localeLcAll and not fn:contains(model.localeLcAll, 'UTF-8')}">
+    <c:if test="${not empty model.localeLcAll and not model.localeLcAllSupportsUtf8}">
         <tr>
             <td colspan="2" class="ruleTableCell">
                 <img src="<spring:theme code='alertImage'/>" alt="Warning">
