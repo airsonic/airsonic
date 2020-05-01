@@ -190,12 +190,12 @@
                         <id>create-host-music-folder-for-docker</id>
                         <phase>process-resources</phase>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <delete dir="${docker.testing.default-music-folder}"/>
                                 <mkdir dir="${docker.testing.default-music-folder}"/>
                                 <delete dir="${docker.testing.output-folder}"/>
                                 <mkdir dir="${docker.testing.output-folder}"/>
-                            </tasks>
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
