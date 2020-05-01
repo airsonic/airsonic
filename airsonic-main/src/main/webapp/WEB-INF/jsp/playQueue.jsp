@@ -842,10 +842,11 @@
                 artist: song.artist,
                 album: song.album,
                 artwork: [
-                    // Adding the '&size=' argument will not work here because
-                    // the JWT token used to expose this URL requires all
-                    // parameters to stay exactly the same.
-                    { src: song.remoteCoverArtUrl, type: 'image/jpeg' },
+                    // The "&size=" parameter always resizes the image to a JPEG image (even if the original is PNG).
+                    { src: song.coverArtUrl + "&size=96", sizes: '96x96', type: 'image/jpeg' },
+                    { src: song.coverArtUrl + "&size=128", sizes: '128x128', type: 'image/jpeg' },
+                    { src: song.coverArtUrl + "&size=256", sizes: '256x256', type: 'image/jpeg' },
+                    { src: song.coverArtUrl + "&size=512", sizes: '512x512', type: 'image/jpeg' }
                 ]
             });
             top.playQueue.navigator.mediaSession.metadata = metadata;
