@@ -215,12 +215,11 @@
 
         if (currentSong) {
             updateWindowTitle(currentSong);
-            <c:if test="${model.notify}">
             if ('mediaSession' in top.playQueue.navigator) {
-                showMediaSessionMetadata(currentSong);
-            } else {
-                showNotification(currentSong);
+              showMediaSessionMetadata(currentSong);
             }
+            <c:if test="${model.notify}">
+            showNotification(currentSong);
             </c:if>
         }
     }
