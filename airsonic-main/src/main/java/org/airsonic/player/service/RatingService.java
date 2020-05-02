@@ -59,7 +59,10 @@ public class RatingService {
         for (String path : highestRated) {
             File file = new File(path);
             if (FileUtil.exists(file) && securityService.isReadAllowed(file)) {
-                result.add(mediaFileService.getMediaFile(path));
+                MediaFile mediaFile = mediaFileService.getMediaFile(path);
+                if (mediaFile != null) {
+                    result.add(mediaFile);
+                }
             }
         }
         return result;
