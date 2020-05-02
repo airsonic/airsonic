@@ -47,7 +47,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/editTags")
-public class EditTagsController  {
+public class EditTagsController {
 
     @Autowired
     private MetaDataParserFactory metaDataParserFactory;

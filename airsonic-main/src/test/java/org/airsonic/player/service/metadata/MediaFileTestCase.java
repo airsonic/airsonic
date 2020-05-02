@@ -29,7 +29,7 @@ import org.airsonic.player.domain.MediaFile;
  */
 public class MediaFileTestCase extends TestCase {
 
-    public void testGetDurationAsString() throws Exception {
+    public void testGetDurationAsString() {
         doTestGetDurationAsString(0, "0:00");
         doTestGetDurationAsString(1, "0:01");
         doTestGetDurationAsString(10, "0:10");

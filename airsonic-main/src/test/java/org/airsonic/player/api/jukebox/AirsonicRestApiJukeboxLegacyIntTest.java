@@ -11,7 +11,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.test.context.support.WithMockUser;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class AirsonicRestApiJukeboxLegacyIntTest extends AirsonicRestApiJukeboxIntTest {

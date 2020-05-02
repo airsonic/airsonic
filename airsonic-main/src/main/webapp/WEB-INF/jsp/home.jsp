@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 
 <html><head>
     <%@ include file="head.jsp" %>
@@ -7,10 +7,6 @@
 
     <script type="text/javascript" language="javascript">
         function init() {
-            <c:if test="${model.listReloadDelay gt 0}">
-            setTimeout("refresh()", ${model.listReloadDelay * 1000});
-            </c:if>
-
             <c:if test="${not model.musicFoldersExist}">
             $().toastmessage("showNoticeToast", "<fmt:message key="top.missing"/>");
             </c:if>
@@ -33,7 +29,7 @@
 <body class="mainframe bgcolor1" onload="init();">
 <c:if test="${not empty model.welcomeTitle}">
 <h1>
-    <img src="<spring:theme code="homeImage"/>" alt="">
+    <img src="<spring:theme code='homeImage'/>" alt="">
     <span style="vertical-align: middle">${model.welcomeTitle}</span>
 </h1>
 </c:if>
@@ -42,7 +38,7 @@
     <h2>${model.welcomeSubtitle}</h2>
 </c:if>
 
-<h2>
+<p>
     <c:forTokens items="random newest starred highest frequent recent decade genre alphabetical" delims=" " var="cat" varStatus="loopStatus">
         <c:if test="${loopStatus.count > 1}">&nbsp;|&nbsp;</c:if>
         <sub:url var="url" value="home.view">
@@ -59,13 +55,13 @@
         </c:choose>
 
     </c:forTokens>
-</h2>
+</p>
 
 <%@ include file="homePager.jsp" %>
 
 <c:if test="${not empty model.welcomeMessage}">
-    <div style="width:15em;float:right;padding:0 1em 0 1em;border-left:1px solid #<spring:theme code="detailColor"/>">
-        <sub:wiki text="${model.welcomeMessage}"/>
+    <div style="width:15em;float:right;padding:0 1em 0 1em;border-left:1px solid #<spring:theme code='detailColor'/>">
+        ${model.welcomeMessage}
     </div>
 </c:if>
 

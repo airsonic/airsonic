@@ -30,7 +30,6 @@ public class IndexController {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("showRight", userSettings.isShowNowPlayingEnabled());
         map.put("autoHidePlayQueue", userSettings.isAutoHidePlayQueue());
-        map.put("listReloadDelay", userSettings.getListReloadDelay());
         map.put("keyboardShortcutsEnabled", userSettings.isKeyboardShortcutsEnabled());
         map.put("showSideBar", userSettings.isShowSideBar());
         map.put("brand", settingsService.getBrand());

@@ -1,10 +1,10 @@
 package org.airsonic.player.dao;
 
+import org.airsonic.player.domain.PodcastChannel;
+import org.airsonic.player.domain.PodcastEpisode;
 import org.airsonic.player.domain.PodcastStatus;
 import org.junit.Before;
 import org.junit.Test;
-import org.airsonic.player.domain.PodcastChannel;
-import org.airsonic.player.domain.PodcastEpisode;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -23,7 +23,7 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
     PodcastDao podcastDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         getJdbcTemplate().execute("delete from podcast_channel");
     }
 

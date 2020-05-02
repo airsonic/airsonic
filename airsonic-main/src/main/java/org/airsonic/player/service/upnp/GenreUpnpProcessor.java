@@ -93,12 +93,12 @@ public class GenreUpnpProcessor extends UpnpContentProcessor <Genre, MediaFile> 
         return null;
     }
 
-    public  List<MediaFile> getChildren(Genre item) {
+    public List<MediaFile> getChildren(Genre item) {
         List<MusicFolder> allFolders = getDispatcher().getSettingsService().getAllMusicFolders();
         return getDispatcher().getMediaFileProcessor().getMediaFileDao().getSongsByGenre(item.getName(), 0, Integer.MAX_VALUE, allFolders);
     }
 
-    public void addChild(DIDLContent didl, MediaFile child) throws Exception {
+    public void addChild(DIDLContent didl, MediaFile child) {
         didl.addItem(getDispatcher().getMediaFileProcessor().createItem(child));
     }
 }

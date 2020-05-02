@@ -19,7 +19,7 @@
  */
 package org.airsonic.player.domain;
 
-import org.airsonic.player.util.BoundedList;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 import java.io.File;
 
@@ -288,7 +288,7 @@ public class TransferStatus {
     /**
      * Contains recent history of samples.
      */
-    public static class SampleHistory extends BoundedList<Sample> {
+    public static class SampleHistory extends CircularFifoQueue<Sample> {
 
         public SampleHistory() {
             super(HISTORY_LENGTH);
@@ -297,6 +297,10 @@ public class TransferStatus {
         public SampleHistory(SampleHistory other) {
             super(HISTORY_LENGTH);
             addAll(other);
+        }
+
+        public Sample getLast() {
+            return this.get(this.size() - 1);
         }
     }
 }

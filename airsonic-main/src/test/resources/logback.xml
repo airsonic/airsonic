@@ -4,5 +4,4 @@
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
-    <logger name="liquibase" level="ERROR" />
 </configuration>

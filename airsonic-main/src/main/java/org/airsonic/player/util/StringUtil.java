@@ -19,8 +19,8 @@
  */
 package org.airsonic.player.util;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -34,6 +34,7 @@ import java.text.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Miscellaneous string utility methods.
@@ -43,15 +44,8 @@ import java.util.regex.Pattern;
 public final class StringUtil {
 
     public static final String ENCODING_UTF8 = "UTF-8";
-    private static final DateFormat ISO_8601_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    private static final String[][] HTML_SUBSTITUTIONS = {
-            {"&", "&amp;"},
-            {"<", "&lt;"},
-            {">", "&gt;"},
-            {"'", "&#39;"},
-            {"\"", "&#34;"},
-    };
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("\"([^\"]*)\"|(\\S+)");
 
     private static final String[][] MIME_TYPES = {
             {"mp3", "audio/mpeg"},
@@ -97,58 +91,6 @@ public final class StringUtil {
      * Disallow external instantiation.
      */
     private StringUtil() {
-    }
-
-    /**
-     * Returns the specified string converted to a format suitable for
-     * HTML. All single-quote, double-quote, greater-than, less-than and
-     * ampersand characters are replaces with their corresponding HTML
-     * Character Entity code.
-     *
-     * @param s the string to convert
-     * @return the converted string
-     */
-    public static String toHtml(String s) {
-        if (s == null) {
-            return null;
-        }
-        for (String[] substitution : HTML_SUBSTITUTIONS) {
-            if (s.contains(substitution[0])) {
-                s = s.replaceAll(substitution[0], substitution[1]);
-            }
-        }
-        return s;
-    }
-
-
-    /**
-     * Formats the given date to a ISO-8601 date/time format, and UTC timezone.
-     * <p/>
-     * The returned date uses the following format: 2007-12-17T14:57:17
-     *
-     * @param date The date to format
-     * @return The corresponding ISO-8601 formatted string.
-     */
-    public static String toISO8601(Date date) {
-        if (date == null) {
-            return null;
-        }
-
-        synchronized (ISO_8601_DATE_FORMAT) {
-            return ISO_8601_DATE_FORMAT.format(date);
-        }
-    }
-
-    /**
-     * Removes the suffix (the substring after the last dot) of the given string. The dot is
-     * also removed.
-     *
-     * @param s The string in question, e.g., "foo.mp3".
-     * @return The string without the suffix, e.g., "foo".
-     */
-    public static String removeSuffix(String s) {
-        int index = s.lastIndexOf('.');
-        return index == -1 ? s : s.substring(0, index);
     }
 
     /**
@@ -204,7 +146,7 @@ public final class StringUtil {
             NumberFormat teraByteFormat = new DecimalFormat("0.00 TB", new DecimalFormatSymbols(locale));
             return teraByteFormat.format(byteCount / ((double) 1024 * 1024 * 1024 * 1024));
         }
-     
+
         // More than 1 GB?
         if (byteCount >= 1024L * 1024 * 1024) {
             NumberFormat gigaByteFormat = new DecimalFormat("0.00 GB", new DecimalFormatSymbols(locale));
@@ -227,19 +169,33 @@ public final class StringUtil {
     }
 
     /**
-     * Formats a duration with minutes and seconds, e.g., "93:45"
+     * Formats a duration with minutes and seconds, e.g., "4:34" or "93:45"
+     */
+    public static String formatDurationMSS(int seconds) {
+        if (seconds < 0) {
+            throw new IllegalArgumentException("seconds must be >= 0");
+        }
+        return String.format("%d:%02d", seconds / 60, seconds % 60);
+    }
+
+    /**
+     * Formats a duration with H:MM:SS, e.g., "1:33:45"
+     */
+    public static String formatDurationHMMSS(int seconds) {
+        int hours = seconds / 3600;
+        seconds -= hours * 3600;
+
+        return String.format("%d:%s%s", hours, seconds < 600 ? "0" : "", formatDurationMSS(seconds));
+    }
+
+    /**
+     * Formats a duration to M:SS or H:MM:SS
      */
     public static String formatDuration(int seconds) {
-        int minutes = seconds / 60;
-        int secs = seconds % 60;
-
-        StringBuilder builder = new StringBuilder(6);
-        builder.append(minutes).append(":");
-        if (secs < 10) {
-            builder.append("0");
+        if (seconds >= 3600) {
+            return formatDurationHMMSS(seconds);
         }
-        builder.append(secs);
-        return builder.toString();
+        return formatDurationMSS(seconds);
     }
 
     /**
@@ -256,16 +212,14 @@ public final class StringUtil {
             return new String[0];
         }
 
-        Pattern pattern = Pattern.compile("\".*?\"|\\S+");
-        Matcher matcher = pattern.matcher(input);
-
-        List<String> result = new ArrayList<String>();
-        while (matcher.find()) {
-            String element = matcher.group();
-            if (element.startsWith("\"") && element.endsWith("\"") && element.length() > 1) {
-                element = element.substring(1, element.length() - 1);
+        List<String> result = new ArrayList<>();
+        Matcher m = SPLIT_PATTERN.matcher(input);
+        while (m.find()) {
+            if (m.group(1) != null) {
+                result.add(m.group(1)); // quoted string
+            } else {
+                result.add(m.group(2)); // unquoted string
             }
-            result.add(element);
         }
 
         return result.toArray(new String[result.size()]);
@@ -280,10 +234,7 @@ public final class StringUtil {
      * @throws IOException If an I/O error occurs.
      */
     public static String[] readLines(InputStream in) throws IOException {
-        BufferedReader reader = null;
-
-        try {
-            reader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             List<String> result = new ArrayList<String>();
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 line = line.trim();
@@ -294,8 +245,7 @@ public final class StringUtil {
             return result.toArray(new String[result.size()]);
 
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(reader);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -311,21 +261,9 @@ public final class StringUtil {
             return new int[0];
         }
 
-        String[] strings = StringUtils.split(s);
-        int[] ints = new int[strings.length];
-        for (int i = 0; i < strings.length; i++) {
-            ints[i] = Integer.parseInt(strings[i]);
-        }
-        return ints;
-    }
-
-    /**
-     * Determines whether a is equal to b, taking null into account.
-     *
-     * @return Whether a and b are equal, or both null.
-     */
-    public static boolean isEqual(Object a, Object b) {
-        return Objects.equals(a, b);
+        return Stream.of(StringUtils.split(s))
+                .mapToInt(Integer::parseInt)
+                .toArray();
     }
 
     /**
@@ -339,18 +277,11 @@ public final class StringUtil {
             return null;
         }
 
-        String[] elements = s.split("_");
-
-        if (elements.length == 0) {
-            return new Locale(s, "", "");
+        List<String> elements = new ArrayList<>(Arrays.asList(s.split("_", 3)));
+        while (elements.size() < 3) {
+            elements.add("");
         }
-        if (elements.length == 1) {
-            return new Locale(elements[0], "", "");
-        }
-        if (elements.length == 2) {
-            return new Locale(elements[0], elements[1], "");
-        }
-        return new Locale(elements[0], elements[1], elements[2]);
+        return new Locale(elements.get(0), elements.get(1), elements.get(2));
     }
 
     /**
@@ -409,8 +340,9 @@ public final class StringUtil {
      *
      * @param s Data to digest.
      * @return MD5 digest as a hex string.
+     * @throws DecoderException If an error occurs.
      */
-    public static String md5Hex(String s) {
+    public static String utf8HexDecode(String s) throws DecoderException {
         if (s == null) {
             return null;
         }

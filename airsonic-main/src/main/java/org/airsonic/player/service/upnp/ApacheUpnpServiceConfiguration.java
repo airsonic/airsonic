@@ -39,6 +39,14 @@ import java.util.concurrent.Executors;
  */
 public class ApacheUpnpServiceConfiguration extends DefaultUpnpServiceConfiguration {
 
+    public ApacheUpnpServiceConfiguration() {
+        super();
+    }
+
+    public ApacheUpnpServiceConfiguration(int streamListenPort) {
+        super(streamListenPort);
+    }
+
     @Override
     public StreamClient createStreamClient() {
         return new StreamClientImpl(new StreamClientConfigurationImpl(Executors.newCachedThreadPool()));

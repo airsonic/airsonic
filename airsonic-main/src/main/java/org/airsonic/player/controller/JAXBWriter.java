@@ -19,8 +19,8 @@
  */
 package org.airsonic.player.controller;
 
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.persistence.jaxb.JAXBContext;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.jdom2.Attribute;
@@ -42,6 +42,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -104,7 +105,7 @@ public class JAXBWriter {
             Attribute version = document.getRootElement().getAttribute("version");
             return version.getValue();
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -157,7 +158,7 @@ public class JAXBWriter {
     }
 
     public void writeErrorResponse(HttpServletRequest request, HttpServletResponse response,
-                                   SubsonicRESTController.ErrorCode code, String message) throws Exception {
+                                   SubsonicRESTController.ErrorCode code, String message) {
         Response res = createResponse(false);
         Error error = new Error();
         res.setError(error);
@@ -174,5 +175,13 @@ public class JAXBWriter {
         GregorianCalendar c = new GregorianCalendar();
         c.setTime(date);
         return datatypeFactory.newXMLGregorianCalendar(c).normalize();
+    }
+
+    public XMLGregorianCalendar convertCalendar(Calendar calendar) {
+        if (calendar == null) {
+            return null;
+        }
+
+        return datatypeFactory.newXMLGregorianCalendar((GregorianCalendar)calendar).normalize();
     }
 }

@@ -20,7 +20,7 @@ public class AirsonicRestApiJukeboxIntTest extends AbstractAirsonicRestApiJukebo
     public void setup() throws Exception {
         super.setup();
         JavaPlayer mockJavaPlayer = mock(JavaPlayer.class);
-        when(mockJavaPlayer.getPlayingInfos()).thenReturn( () -> 0 );
+        when(mockJavaPlayer.getPlayingInfos()).thenReturn(() -> 0);
         when(mockJavaPlayer.getGain()).thenReturn(0.75f);
         when(javaPlayerFactory.createJavaPlayer()).thenReturn(mockJavaPlayer);
     }

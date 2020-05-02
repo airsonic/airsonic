@@ -23,6 +23,8 @@ import org.airsonic.player.domain.Theme;
 import org.airsonic.player.domain.UserSettings;
 import org.airsonic.player.service.SecurityService;
 import org.airsonic.player.service.SettingsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ThemeResolver;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +38,7 @@ import java.util.Set;
  *
  * @author Sindre Mehus
  */
+@Component("themeResolver")
 public class CustomThemeResolver implements ThemeResolver {
 
     private SecurityService securityService;
@@ -90,8 +93,8 @@ public class CustomThemeResolver implements ThemeResolver {
     private synchronized boolean themeExists(String themeId) {
         // Lazily create set of theme IDs.
         if (themeIds == null) {
-            themeIds = new HashSet<String>();
             Theme[] themes = settingsService.getAvailableThemes();
+            themeIds = new HashSet<>(themes.length);
             for (Theme theme : themes) {
                 themeIds.add(theme.getId());
             }
@@ -113,10 +116,12 @@ public class CustomThemeResolver implements ThemeResolver {
         throw new UnsupportedOperationException("Cannot change theme - use a different theme resolution strategy");
     }
 
+    @Autowired
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
 
+    @Autowired
     public void setSettingsService(SettingsService settingsService) {
         this.settingsService = settingsService;
     }

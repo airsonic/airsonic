@@ -42,7 +42,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/changeCoverArt")
-public class ChangeCoverArtController  {
+public class ChangeCoverArtController {
 
     @Autowired
     private MediaFileService mediaFileService;

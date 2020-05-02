@@ -48,7 +48,7 @@ public class FormatBytesTag extends BodyTagSupport {
 
     private long bytes;
 
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         return EVAL_BODY_BUFFERED;
     }
 

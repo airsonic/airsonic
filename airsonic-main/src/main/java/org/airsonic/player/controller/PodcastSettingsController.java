@@ -46,7 +46,7 @@ public class PodcastSettingsController {
     private PodcastService podcastService;
 
     @GetMapping
-    protected String formBackingObject(Model model) throws Exception {
+    protected String formBackingObject(Model model) {
         PodcastSettingsCommand command = new PodcastSettingsCommand();
 
         command.setInterval(String.valueOf(settingsService.getPodcastUpdateInterval()));
@@ -59,7 +59,7 @@ public class PodcastSettingsController {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute PodcastSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute PodcastSettingsCommand command, RedirectAttributes redirectAttributes) {
         settingsService.setPodcastUpdateInterval(Integer.parseInt(command.getInterval()));
         settingsService.setPodcastEpisodeRetentionCount(Integer.parseInt(command.getEpisodeRetentionCount()));
         settingsService.setPodcastEpisodeDownloadCount(Integer.parseInt(command.getEpisodeDownloadCount()));

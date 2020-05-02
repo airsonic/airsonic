@@ -131,13 +131,7 @@ public class StatusService {
     }
 
     public synchronized void addRemotePlay(PlayStatus playStatus) {
-        Iterator<PlayStatus> iterator = remotePlays.iterator();
-        while (iterator.hasNext()) {
-            PlayStatus rp = iterator.next();
-            if (rp.isExpired()) {
-                iterator.remove();
-            }
-        }
+        remotePlays.removeIf(PlayStatus::isExpired);
         remotePlays.add(playStatus);
     }
 

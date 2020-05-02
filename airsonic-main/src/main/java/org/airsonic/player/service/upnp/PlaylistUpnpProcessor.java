@@ -59,7 +59,7 @@ public class PlaylistUpnpProcessor extends UpnpContentProcessor <Playlist, Media
         return getPlaylistService().getAllPlaylists();
     }
 
-    public Playlist getItemById(String id) throws Exception {
+    public Playlist getItemById(String id) {
         return getDispatcher().getPlaylistService().getPlaylist(Integer.parseInt(id));
     }
 
@@ -67,7 +67,7 @@ public class PlaylistUpnpProcessor extends UpnpContentProcessor <Playlist, Media
         return getPlaylistService().getFilesInPlaylist(item.getId());
     }
 
-    public void addChild(DIDLContent didl, MediaFile child) throws Exception {
+    public void addChild(DIDLContent didl, MediaFile child) {
         didl.addItem(getDispatchingContentDirectory().createItem(child));
     }
 

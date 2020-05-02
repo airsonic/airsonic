@@ -51,16 +51,20 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Component
 public final class AnalyzerFactory {
 
+    private static final String STOP_WORDS = "org/airsonic/player/service/search/analysis/stopwords.txt";
+
+    private static final String STOP_WORDS_ARTIST = "org/airsonic/player/service/search/analysis/stopwords_artist.txt";
+
     private Analyzer analyzer;
 
     private Analyzer queryAnalyzer;
 
     /*
      * XXX 3.x -> 8.x : Convert UAX#29 Underscore Analysis to Legacy Analysis
-     * 
+     *
      * Because changes in underscores before and after words
      * have a major effect on user's forward match search.
-     * 
+     *
      * @see AnalyzerFactoryTestCase
      */
     private void addTokenFilterForUnderscoreRemovalAroundToken(Builder builder) throws IOException {
@@ -73,14 +77,14 @@ public final class AnalyzerFactory {
 
     /*
      * XXX 3.x -> 8.x : Handle brackets correctly
-     * 
+     *
      * Process the input value of Genre search for search of domain value.
-     * 
+     *
      * The tag parser performs special character conversion
      * when converting input values ​​from a file.
      * Therefore, the domain value may be different from the original value.
      * This filter allows searching by user readable value (file tag value).
-     * 
+     *
      * @see org.jaudiotagger.tag.id3.framebody.FrameBodyTCON#convertID3v23GenreToGeneric
      * (TCON stands for Genre with ID3 v2.3-v2.4)
      * Such processing exists because brackets in the Gener string have a special meaning.
@@ -105,7 +109,19 @@ public final class AnalyzerFactory {
                 .addTokenFilter(CJKWidthFilterFactory.class)
                 .addTokenFilter(ASCIIFoldingFilterFactory.class, "preserveOriginal", "false")
                 .addTokenFilter(LowerCaseFilterFactory.class)
-                .addTokenFilter(StopFilterFactory.class)
+                .addTokenFilter(StopFilterFactory.class, "words", STOP_WORDS)
+                .addTokenFilter(EnglishPossessiveFilterFactory.class);
+        addTokenFilterForUnderscoreRemovalAroundToken(builder);
+        return builder;
+    }
+
+    private Builder createArtistAnalyzerBuilder() throws IOException {
+        Builder builder = CustomAnalyzer.builder()
+                .withTokenizer(StandardTokenizerFactory.class)
+                .addTokenFilter(CJKWidthFilterFactory.class)
+                .addTokenFilter(ASCIIFoldingFilterFactory.class, "preserveOriginal", "false")
+                .addTokenFilter(LowerCaseFilterFactory.class)
+                .addTokenFilter(StopFilterFactory.class, "words", STOP_WORDS_ARTIST)
                 .addTokenFilter(EnglishPossessiveFilterFactory.class);
         addTokenFilterForUnderscoreRemovalAroundToken(builder);
         return builder;
@@ -124,17 +140,25 @@ public final class AnalyzerFactory {
 
     /**
      * Returns the Analyzer to use when generating the index.
-     * 
+     *
      * Whether this analyzer is applied to input values ​​depends on
      * the definition of the document's fields.
-     * 
+     *
      * @return analyzer for index
      * @see DocumentFactory
      */
     public Analyzer getAnalyzer() throws IOException {
         if (isEmpty(analyzer)) {
             try {
-                analyzer = createDefaultAnalyzerBuilder().build();
+
+                Analyzer defaultAnalyzer = createDefaultAnalyzerBuilder().build();
+                Analyzer artistAnalyzer = createArtistAnalyzerBuilder().build();
+
+                Map<String, Analyzer> fieldAnalyzers = new HashMap<>();
+                fieldAnalyzers.put(FieldNames.ARTIST, artistAnalyzer);
+
+                analyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, fieldAnalyzers);
+
             } catch (IOException e) {
                 throw new IOException("Error when initializing Analyzer.", e);
             }
@@ -144,15 +168,15 @@ public final class AnalyzerFactory {
 
     /**
      * Returns the analyzer to use when generating a query for index search.
-     * 
+     *
      * String processing handled by QueryFactory
      * is limited to Lucene's modifier.
-     * 
+     *
      * The processing of the operands is expressed
      * in the AnalyzerFactory implementation.
      * Rules for tokenizing/converting input values ​
      * should not be described in QueryFactory.
-     * 
+     *
      * @return analyzer for query
      * @see QueryFactory
      */
@@ -161,9 +185,11 @@ public final class AnalyzerFactory {
             try {
 
                 Analyzer defaultAnalyzer = createDefaultAnalyzerBuilder().build();
+                Analyzer artistAnalyzer = createArtistAnalyzerBuilder().build();
                 Analyzer genreAnalyzer = createGenreAnalyzerBuilder().build();
 
                 Map<String, Analyzer> fieldAnalyzers = new HashMap<>();
+                fieldAnalyzers.put(FieldNames.ARTIST, artistAnalyzer);
                 fieldAnalyzers.put(FieldNames.GENRE, genreAnalyzer);
 
                 queryAnalyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer, fieldAnalyzers);

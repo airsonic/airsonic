@@ -49,7 +49,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/playerSettings")
-public class PlayerSettingsController  {
+public class PlayerSettingsController {
 
     @Autowired
     private PlayerService playerService;
@@ -59,7 +59,7 @@ public class PlayerSettingsController  {
     private TranscodingService transcodingService;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "playerSettings";
     }
 
@@ -99,7 +99,7 @@ public class PlayerSettingsController  {
             command.setActiveTranscodingIds(activeTranscodingIds);
         }
 
-        command.setTranscodingSupported(transcodingService.isDownsamplingSupported(null));
+        command.setTranscodingSupported(transcodingService.isTranscodingSupported(null));
         command.setTranscodeDirectory(transcodingService.getTranscodeDirectory().getPath());
         command.setTranscodeSchemes(TranscodeScheme.values());
         command.setTechnologies(PlayerTechnology.values());
@@ -114,7 +114,7 @@ public class PlayerSettingsController  {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PlayerSettingsCommand command, RedirectAttributes redirectAttributes) {
         Player player = playerService.getPlayerById(command.getPlayerId());
         if (player != null) {
             player.setAutoControlEnabled(command.isAutoControlEnabled());

@@ -40,7 +40,7 @@ import java.util.Map;
 public class LyricsController {
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
 
         map.put("artist", request.getParameter("artist"));

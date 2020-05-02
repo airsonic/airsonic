@@ -51,13 +51,12 @@ public class TranscodingSettingsController {
     private SettingsService settingsService;
 
     @GetMapping
-    public String doGet(Model model) throws Exception {
+    public String doGet(Model model) {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
         map.put("transcodings", transcodingService.getAllTranscodings());
         map.put("transcodeDirectory", transcodingService.getTranscodeDirectory());
-        map.put("downsampleCommand", settingsService.getDownsamplingCommand());
         map.put("hlsCommand", settingsService.getHlsCommand());
         map.put("brand", settingsService.getBrand());
 
@@ -66,12 +65,13 @@ public class TranscodingSettingsController {
     }
 
     @PostMapping
-    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         String error = handleParameters(request, redirectAttributes);
         if (error != null) {
+            redirectAttributes.addFlashAttribute("error", error);
+        } else {
             redirectAttributes.addFlashAttribute("settings_toast", true);
         }
-        redirectAttributes.addFlashAttribute("error", error);
         return "redirect:transcodingSettings.view";
     }
 
@@ -132,7 +132,6 @@ public class TranscodingSettingsController {
                 return error;
             }
         }
-        settingsService.setDownsamplingCommand(StringUtils.trim(request.getParameter("downsampleCommand")));
         settingsService.setHlsCommand(StringUtils.trim(request.getParameter("hlsCommand")));
         settingsService.save();
         return null;

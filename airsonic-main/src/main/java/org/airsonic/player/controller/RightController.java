@@ -41,7 +41,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/right")
-public class RightController  {
+public class RightController {
 
     @Autowired
     private SettingsService settingsService;
@@ -51,7 +51,7 @@ public class RightController  {
     private VersionService versionService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
         ModelAndView result = new ModelAndView("right");
 

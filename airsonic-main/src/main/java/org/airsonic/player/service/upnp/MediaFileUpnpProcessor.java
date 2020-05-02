@@ -62,7 +62,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         return createBrowseResult(didl, 1, 1);
     }
 
-    public Container createContainer(MediaFile item) throws Exception {
+    public Container createContainer(MediaFile item) {
         MusicAlbum container = new MusicAlbum();
         if (item.isAlbum()) {
             container.setAlbumArtURIs(new URI[] { getDispatcher().getAlbumProcessor().getAlbumArtURI(item.getId())});
@@ -88,7 +88,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         return container;
     }
 
-    public List<MediaFile> getAllItems() throws Exception {
+    public List<MediaFile> getAllItems() {
         List<MusicFolder> allFolders = getDispatcher().getSettingsService().getAllMusicFolders();
         List<MediaFile> returnValue = new ArrayList<MediaFile>();
         if (allFolders.size() == 1) {
@@ -102,7 +102,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         return returnValue;
     }
 
-    public MediaFile getItemById(String id) throws Exception {
+    public MediaFile getItemById(String id) {
         return getMediaFileService().getMediaFile(Integer.parseInt(id));
     }
 
@@ -112,7 +112,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         return children;
     }
 
-    public void addItem(DIDLContent didl, MediaFile item) throws Exception {
+    public void addItem(DIDLContent didl, MediaFile item) {
         if (item.isFile()) {
             didl.addItem(createItem(item));
         } else {
@@ -120,7 +120,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         }
     }
 
-    public void addChild(DIDLContent didl, MediaFile child) throws Exception {
+    public void addChild(DIDLContent didl, MediaFile child) {
         if (child.isFile()) {
             didl.addItem(createItem(child));
         } else {
@@ -128,7 +128,7 @@ public class MediaFileUpnpProcessor extends UpnpContentProcessor <MediaFile, Med
         }
     }
 
-    public Item createItem(MediaFile song) throws Exception {
+    public Item createItem(MediaFile song) {
         MediaFile parent = getMediaFileService().getParentOf(song);
         MusicTrack item = new MusicTrack();
         item.setId(String.valueOf(song.getId()));

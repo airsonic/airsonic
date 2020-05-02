@@ -182,8 +182,8 @@ public class PodcastDao extends AbstractDao {
         update(sql, id);
     }
 
-    private static class PodcastChannelRowMapper implements RowMapper {
-        public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+    private static class PodcastChannelRowMapper implements RowMapper<PodcastChannel> {
+        public PodcastChannel mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new PodcastChannel(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5),
                                       PodcastStatus.valueOf(rs.getString(6)), rs.getString(7));
         }

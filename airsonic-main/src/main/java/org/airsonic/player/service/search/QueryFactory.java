@@ -31,6 +31,7 @@ import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BoostQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
@@ -94,14 +95,15 @@ public class QueryFactory {
      *  XXX 3.x -> 8.x :
      * In order to support wildcards,
      * MultiFieldQueryParser has been replaced by the following process.
-     * 
+     *
      *  - There is also an override of MultiFieldQueryParser, but it is known to be high cost.
      *  - MultiFieldQueryParser was created before Java API was modernized.
      *  - The spec of Parser has changed from time to time. Using parser does not reduce library update risk.
      *  - Self made parser process reduces one library dependency.
      *  - It is easy to make corrections later when changing the query to improve search accuracy.
      */
-    private Query createMultiFieldWildQuery(@NonNull String[] fieldNames, @NonNull String queryString)
+    private Query createMultiFieldWildQuery(@NonNull String[] fieldNames, @NonNull String queryString,
+            @NonNull IndexType indexType)
             throws IOException {
 
         BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
@@ -117,7 +119,11 @@ public class QueryFactory {
                 while (stream.incrementToken()) {
                     String token = stream.getAttribute(CharTermAttribute.class).toString();
                     WildcardQuery wildcardQuery = new WildcardQuery(new Term(fieldName, token.concat(ASTERISK)));
-                    fieldQuerys.add(wildcardQuery);
+                    if (indexType.getBoosts().containsKey(fieldName)) {
+                        fieldQuerys.add(new BoostQuery(wildcardQuery, indexType.getBoosts().get(fieldName)));
+                    } else {
+                        fieldQuerys.add(wildcardQuery);
+                    }
                 }
                 fieldsQuerys.add(fieldQuerys);
             }
@@ -141,8 +147,7 @@ public class QueryFactory {
         }
 
         return mainQuery.build();
-
-    };
+    }
 
     /*
      * XXX 3.x -> 8.x :
@@ -158,7 +163,7 @@ public class QueryFactory {
     /**
      * Query generation expression extracted from
      * {@link org.airsonic.player.service.SearchService#search(SearchCriteria, List, IndexType)}.
-     * 
+     *
      * @param criteria criteria
      * @param musicFolders musicFolders
      * @param indexType {@link IndexType}
@@ -170,7 +175,7 @@ public class QueryFactory {
 
         BooleanQuery.Builder mainQuery = new BooleanQuery.Builder();
 
-        Query multiFieldQuery = createMultiFieldWildQuery(indexType.getFields(), criteria.getQuery());
+        Query multiFieldQuery = createMultiFieldWildQuery(indexType.getFields(), criteria.getQuery(), indexType);
         mainQuery.add(multiFieldQuery, Occur.MUST);
 
         boolean isId3 = indexType == IndexType.ALBUM_ID3 || indexType == IndexType.ARTIST_ID3;
@@ -178,23 +183,18 @@ public class QueryFactory {
         mainQuery.add(folderQuery, Occur.MUST);
 
         return mainQuery.build();
-
     }
 
     /**
      * Query generation expression extracted from
      * {@link org.airsonic.player.service.SearchService#getRandomSongs(RandomSearchCriteria)}.
-     * 
-     * @param criteria criteria
-     * @return Query
-     * @throws IOException 
      */
     public Query getRandomSongs(RandomSearchCriteria criteria) throws IOException {
 
         BooleanQuery.Builder query = new BooleanQuery.Builder();
-        
+
         Analyzer analyzer = analyzerFactory.getQueryAnalyzer();
-        
+
         // Unanalyzed field
         query.add(new TermQuery(new Term(FieldNames.MEDIA_TYPE, MediaType.MUSIC.name())), Occur.MUST);
 
@@ -217,13 +217,12 @@ public class QueryFactory {
         query.add(toFolderQuery.apply(false, criteria.getMusicFolders()), Occur.MUST);
 
         return query.build();
-
     }
 
     /**
      * Query generation expression extracted from
      * {@link org.airsonic.player.service.SearchService#searchByName( String, String, int, int, List, Class)}.
-     * 
+     *
      * @param fieldName {@link FieldNames}
      * @return Query
      * @throws IOException When parsing of QueryParser fails
@@ -259,13 +258,12 @@ public class QueryFactory {
         }
 
         return mainQuery.build();
-
     }
 
     /**
      * Query generation expression extracted from
      * {@link org.airsonic.player.service.SearchService#getRandomAlbums(int, List)}.
-     * 
+     *
      * @param musicFolders musicFolders
      * @return Query
      */
@@ -278,7 +276,7 @@ public class QueryFactory {
     /**
      * Query generation expression extracted from
      * {@link org.airsonic.player.service.SearchService#getRandomAlbumsId3(int, List)}.
-     * 
+     *
      * @param musicFolders musicFolders
      * @return Query
      */
@@ -287,5 +285,4 @@ public class QueryFactory {
                 .add(toFolderQuery.apply(true, musicFolders), Occur.SHOULD)
                 .build();
     }
-
 }

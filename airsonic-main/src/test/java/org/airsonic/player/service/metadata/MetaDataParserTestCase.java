@@ -32,7 +32,7 @@ import java.io.File;
  */
 public class MetaDataParserTestCase extends TestCase {
 
-    public void testRemoveTrackNumberFromTitle() throws Exception {
+    public void testRemoveTrackNumberFromTitle() {
 
         MetaDataParser parser = new MetaDataParser() {
             public MetaData getRawMetaData(File file) {

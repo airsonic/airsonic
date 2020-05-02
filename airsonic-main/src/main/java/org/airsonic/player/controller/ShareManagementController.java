@@ -44,7 +44,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/createShare")
-public class ShareManagementController  {
+public class ShareManagementController {
 
     @Autowired
     private MediaFileService mediaFileService;
@@ -109,15 +109,11 @@ public class ShareManagementController  {
             for (int index : indexes) {
                 result.add(children.get(index));
             }
-        }
-
-        else if (playerId != null) {
+        } else if (playerId != null) {
             Player player = playerService.getPlayerById(playerId);
             PlayQueue playQueue = player.getPlayQueue();
             result = playQueue.getFiles();
-        }
-
-        else if (playlistId != null) {
+        } else if (playlistId != null) {
             result = playlistService.getFilesInPlaylist(playlistId);
         }
 

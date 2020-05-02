@@ -32,7 +32,7 @@ public interface Router {
      * @param internalPort  The internal client port where data should be redirected.
      * @param leaseDuration Seconds the lease duration in seconds, or 0 for an infinite time.
      */
-    void addPortMapping(int externalPort, int internalPort, int leaseDuration) throws Exception;
+    void addPortMapping(int externalPort, int internalPort, int leaseDuration);
 
     /**
      * Deletes a NAT entry on the UPNP device.
@@ -40,5 +40,5 @@ public interface Router {
      * @param externalPort The external port of the NAT entry to delete.
      * @param internalPort The internal port of the NAT entry to delete.
      */
-    void deletePortMapping(int externalPort, int internalPort) throws Exception;
+    void deletePortMapping(int externalPort, int internalPort);
 }

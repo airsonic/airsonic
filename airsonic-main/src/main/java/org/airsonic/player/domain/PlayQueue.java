@@ -21,7 +21,6 @@ package org.airsonic.player.domain;
 
 import org.apache.commons.lang.StringUtils;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -167,9 +166,8 @@ public class PlayQueue {
      *
      * @param mediaFiles The music files to add.
      * @param index Where to add them.
-     * @throws IOException If an I/O error occurs.
      */
-    public synchronized void addFilesAt(Iterable<MediaFile> mediaFiles, int index) throws IOException {
+    public synchronized void addFilesAt(Iterable<MediaFile> mediaFiles, int index) {
         makeBackup();
         for (MediaFile mediaFile : mediaFiles) {
             files.add(index, mediaFile);
@@ -183,9 +181,8 @@ public class PlayQueue {
      *
      * @param append     Whether existing songs in the playlist should be kept.
      * @param mediaFiles The music files to add.
-     * @throws IOException If an I/O error occurs.
      */
-    public synchronized void addFiles(boolean append, Iterable<MediaFile> mediaFiles) throws IOException {
+    public synchronized void addFiles(boolean append, Iterable<MediaFile> mediaFiles) {
         makeBackup();
         if (!append) {
             index = 0;
@@ -200,7 +197,7 @@ public class PlayQueue {
     /**
      * Convenience method, equivalent to {@link #addFiles(boolean, Iterable)}.
      */
-    public synchronized void addFiles(boolean append, MediaFile... mediaFiles) throws IOException {
+    public synchronized void addFiles(boolean append, MediaFile... mediaFiles) {
         addFiles(append, Arrays.asList(mediaFiles));
     }
 
@@ -251,36 +248,34 @@ public class PlayQueue {
         makeBackup();
         MediaFile currentFile = getCurrentFile();
 
-        Comparator<MediaFile> comparator = new Comparator<MediaFile>() {
-            public int compare(MediaFile a, MediaFile b) {
-                switch (sortOrder) {
-                    case TRACK:
-                        Integer trackA = a.getTrackNumber();
-                        Integer trackB = b.getTrackNumber();
-                        if (trackA == null) {
-                            trackA = 0;
-                        }
-                        if (trackB == null) {
-                            trackB = 0;
-                        }
-                        return trackA.compareTo(trackB);
+        Comparator<MediaFile> comparator = (a, b) -> {
+            switch (sortOrder) {
+                case TRACK:
+                    Integer trackA = a.getTrackNumber();
+                    Integer trackB = b.getTrackNumber();
+                    if (trackA == null) {
+                        trackA = 0;
+                    }
+                    if (trackB == null) {
+                        trackB = 0;
+                    }
+                    return trackA.compareTo(trackB);
 
-                    case ARTIST:
-                        String artistA = StringUtils.trimToEmpty(a.getArtist());
-                        String artistB = StringUtils.trimToEmpty(b.getArtist());
-                        return artistA.compareTo(artistB);
+                case ARTIST:
+                    String artistA = StringUtils.trimToEmpty(a.getArtist());
+                    String artistB = StringUtils.trimToEmpty(b.getArtist());
+                    return artistA.compareTo(artistB);
 
-                    case ALBUM:
-                        String albumA = StringUtils.trimToEmpty(a.getAlbumName());
-                        String albumB = StringUtils.trimToEmpty(b.getAlbumName());
-                        return albumA.compareTo(albumB);
-                    default:
-                        return 0;
-                }
+                case ALBUM:
+                    String albumA = StringUtils.trimToEmpty(a.getAlbumName());
+                    String albumB = StringUtils.trimToEmpty(b.getAlbumName());
+                    return albumA.compareTo(albumB);
+                default:
+                    return 0;
             }
         };
 
-        Collections.sort(files, comparator);
+        files.sort(comparator);
         if (currentFile != null) {
             index = files.indexOf(currentFile);
         }
@@ -316,17 +311,7 @@ public class PlayQueue {
      * @param index The playlist index.
      */
     public synchronized void moveUp(int index) {
-        makeBackup();
-        if (index <= 0 || index >= size()) {
-            return;
-        }
-        Collections.swap(files, index, index - 1);
-
-        if (this.index == index) {
-            this.index--;
-        } else if (this.index == index - 1) {
-            this.index++;
-        }
+        moveDown(index - 1);
     }
 
     /**
@@ -371,14 +356,18 @@ public class PlayQueue {
      *
      * @return Whether the play queue is a shuffle radio mode.
      */
-    public synchronized boolean isShuffleRadioEnabled() { return this.randomSearchCriteria != null; }
+    public synchronized boolean isShuffleRadioEnabled() {
+        return this.randomSearchCriteria != null;
+    }
 
     /**
      * Returns whether the play queue is a internet radio mode.
      *
      * @return Whether the play queue is a internet radio mode.
      */
-    public synchronized boolean isInternetRadioEnabled() { return this.internetRadio != null; }
+    public synchronized boolean isInternetRadioEnabled() {
+        return this.internetRadio != null;
+    }
 
     /**
      * Revert the last operation.
@@ -420,28 +409,36 @@ public class PlayQueue {
      *
      * @param internetRadio An internet radio, or <code>null</code> if this is not an internet radio playlist
      */
-    public void setInternetRadio(InternetRadio internetRadio) { this.internetRadio = internetRadio; }
+    public void setInternetRadio(InternetRadio internetRadio) {
+        this.internetRadio = internetRadio;
+    }
 
     /**
      * Gets the current internet radio
      *
      * @return The current internet radio, or <code>null</code> if this is not an internet radio playlist
      */
-    public InternetRadio getInternetRadio() { return internetRadio; }
+    public InternetRadio getInternetRadio() {
+        return internetRadio;
+    }
 
     /**
      * Returns the criteria used to generate this random playlist
      *
      * @return The search criteria, or <code>null</code> if this is not a random playlist.
      */
-    public synchronized RandomSearchCriteria getRandomSearchCriteria() { return randomSearchCriteria; }
+    public synchronized RandomSearchCriteria getRandomSearchCriteria() {
+        return randomSearchCriteria;
+    }
 
     /**
      * Sets the criteria used to generate this random playlist
      *
      * @param randomSearchCriteria The search criteria, or <code>null</code> if this is not a random playlist.
      */
-    public synchronized void setRandomSearchCriteria(RandomSearchCriteria randomSearchCriteria) { this.randomSearchCriteria = randomSearchCriteria; }
+    public synchronized void setRandomSearchCriteria(RandomSearchCriteria randomSearchCriteria) {
+        this.randomSearchCriteria = randomSearchCriteria;
+    }
 
     /**
      * Returns the total length in bytes.

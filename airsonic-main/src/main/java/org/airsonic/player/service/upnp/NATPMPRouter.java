@@ -42,7 +42,7 @@ public class NATPMPRouter implements Router {
         }
     }
 
-    public void addPortMapping(int externalPort, int internalPort, int leaseDuration) throws Exception {
+    public void addPortMapping(int externalPort, int internalPort, int leaseDuration) {
 
         // Use one week if lease duration is "forever".
         if (leaseDuration == 0) {
@@ -54,7 +54,7 @@ public class NATPMPRouter implements Router {
         device.waitUntilQueueEmpty();
     }
 
-    public void deletePortMapping(int externalPort, int internalPort) throws Exception {
+    public void deletePortMapping(int externalPort, int internalPort) {
         MapRequestMessage map = new MapRequestMessage(true, internalPort, externalPort, 0, null);
         device.enqueueMessage(map);
         device.waitUntilQueueEmpty();

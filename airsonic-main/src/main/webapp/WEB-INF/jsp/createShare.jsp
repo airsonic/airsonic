@@ -7,18 +7,18 @@
 <body class="mainframe bgcolor1">
 
 <h1>
-    <img src="<spring:theme code="shareImage"/>" alt="" style="height:18px;">
+    <img src="<spring:theme code='shareImage'/>" alt="" style="height:18px;">
     <span style="vertical-align: middle"><fmt:message key="share.title"/></span>
 </h1>
 
 <fmt:message key="share.warning"/>
 <p>
-    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank" rel="noopener noreferrer"><img src="<spring:theme code="shareFacebookImage"/>" alt=""></a>&nbsp;
+    <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank" rel="noopener noreferrer"><img src="<spring:theme code='shareFacebookImage'/>" alt=""></a>&nbsp;
     <a href="https://www.facebook.com/sharer.php?u=${model.playUrl}" target="_blank" rel="noopener noreferrer"><fmt:message key="share.facebook"/></a>
 </p>
 
 <p>
-    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank" rel="noopener noreferrer"><img src="<spring:theme code="shareTwitterImage"/>" alt=""></a>&nbsp;
+    <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank" rel="noopener noreferrer"><img src="<spring:theme code='shareTwitterImage'/>" alt=""></a>&nbsp;
     <a href="https://twitter.com/?status=Listening to ${model.playUrl}" target="_blank" rel="noopener noreferrer"><fmt:message key="share.twitter"/></a>
 </p>
 <p>

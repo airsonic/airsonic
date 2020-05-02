@@ -37,13 +37,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/settings")
-public class SettingsController  {
+public class SettingsController {
 
     @Autowired
     private SecurityService securityService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) {
 
         User user = securityService.getCurrentUser(request);
 

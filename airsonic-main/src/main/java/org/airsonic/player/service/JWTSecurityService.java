@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Service("jwtSecurityService")
 public class JWTSecurityService {
-    private static final Logger logger = LoggerFactory.getLogger(JWTSecurityService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JWTSecurityService.class);
 
     public static final String JWT_PARAM_NAME = "jwt";
     public static final String CLAIM_PATH = "path";
@@ -47,7 +47,7 @@ public class JWTSecurityService {
         UriComponents components = UriComponentsBuilder.fromUriString(path).build();
         String query = components.getQuery();
         String claim = components.getPath() + (!StringUtils.isBlank(query) ? "?" + components.getQuery() : "");
-        logger.debug("Creating token with claim " + claim);
+        LOG.debug("Creating token with claim " + claim);
         return JWT.create()
                 .withClaim(CLAIM_PATH, claim)
                 .withExpiresAt(expireDate)

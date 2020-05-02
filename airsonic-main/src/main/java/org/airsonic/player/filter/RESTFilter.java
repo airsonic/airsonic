@@ -30,8 +30,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
-
 /**
  * Intercepts exceptions thrown by RESTController.
  *
@@ -46,7 +44,7 @@ public class RESTFilter implements Filter {
 
     private final JAXBWriter jaxbWriter = new JAXBWriter();
 
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
         try {
             HttpServletResponse response = (HttpServletResponse) res;
             response.setHeader("Access-Control-Allow-Origin", "*");

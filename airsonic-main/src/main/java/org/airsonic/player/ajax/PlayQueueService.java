@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.ajax;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.airsonic.player.dao.InternetRadioDao;
 import org.airsonic.player.dao.MediaFileDao;
@@ -29,8 +28,6 @@ import org.airsonic.player.service.*;
 import org.airsonic.player.service.PlaylistService;
 import org.airsonic.player.util.StringUtil;
 import org.directwebremoting.WebContextFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -82,8 +79,6 @@ public class PlayQueueService {
     private JWTSecurityService jwtSecurityService;
     @Autowired
     private InternetRadioService internetRadioService;
-
-    private static final Logger LOG = LoggerFactory.getLogger(PlayQueueService.class);
 
     /**
      * Returns the play queue for the player of the current user.
@@ -243,22 +238,40 @@ public class PlayQueueService {
     }
 
     /**
-     * @param index Start playing at this index, or play whole radio playlist if {@code null}.
+     * @param startIndex Start playing at this index in the list of radio streams, or play whole radio playlist if {@code null}.
      */
-    public PlayQueueInfo playInternetRadio(int id, Integer index) throws Exception {
+    public PlayQueueInfo playInternetRadio(int id, Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
 
         InternetRadio radio = internetRadioDao.getInternetRadioById(id);
-        if (!radio.isEnabled()) { throw new Exception("Radio is not enabled"); }
+        if (!radio.isEnabled()) {
+            throw new Exception("Radio is not enabled");
+        }
 
         Player player = resolvePlayer();
         return doPlayInternetRadio(request, player, radio).setStartPlayerAt(0);
     }
 
+    public PlayQueueInfo addPlaylist(int id) throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+
+        String username = securityService.getCurrentUsername(request);
+
+        List<MediaFile> files = playlistService.getFilesInPlaylist(id, true);
+
+        // Remove non-present files
+        files.removeIf(file -> !file.isPresent());
+
+        // Add to the play queue
+        int[] ids = files.stream().mapToInt(f -> f.getId()).toArray();
+        return doAdd(request, response, ids, null);
+    }
+
     /**
-     * @param index Start playing at this index, or play whole playlist if {@code null}.
+     * @param startIndex Start playing at this index, or play whole playlist if {@code null}.
      */
-    public PlayQueueInfo playPlaylist(int id, Integer index) throws Exception {
+    public PlayQueueInfo playPlaylist(int id, Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
@@ -266,30 +279,26 @@ public class PlayQueueService {
         boolean queueFollowingSongs = settingsService.getUserSettings(username).isQueueFollowingSongs();
 
         List<MediaFile> files = playlistService.getFilesInPlaylist(id, true);
-        if (!files.isEmpty() && index != null) {
+        if (!files.isEmpty() && startIndex != null) {
             if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
+                files = files.subList(startIndex, files.size());
             } else {
-                files = Arrays.asList(files.get(index));
+                files = Arrays.asList(files.get(startIndex));
             }
         }
 
         // Remove non-present files
-        Iterator<MediaFile> iterator = files.iterator();
-        while (iterator.hasNext()) {
-            MediaFile file = iterator.next();
-            if (!file.isPresent()) {
-                iterator.remove();
-            }
-        }
+        files.removeIf(file -> !file.isPresent());
+
+        // Play now
         Player player = getCurrentPlayer(request, response);
         return doPlay(request, player, files).setStartPlayerAt(0);
     }
 
     /**
-     * @param index Start playing at this index, or play all top songs if {@code null}.
+     * @param startIndex Start playing at this index, or play all top songs if {@code null}.
      */
-    public PlayQueueInfo playTopSong(int id, Integer index) throws Exception {
+    public PlayQueueInfo playTopSong(int id, Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
@@ -298,11 +307,11 @@ public class PlayQueueService {
 
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username);
         List<MediaFile> files = lastFmService.getTopSongs(mediaFileService.getMediaFile(id), 50, musicFolders);
-        if (!files.isEmpty() && index != null) {
+        if (!files.isEmpty() && startIndex != null) {
             if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
+                files = files.subList(startIndex, files.size());
             } else {
-                files = Arrays.asList(files.get(index));
+                files = Arrays.asList(files.get(startIndex));
             }
         }
 
@@ -352,26 +361,21 @@ public class PlayQueueService {
         return doPlay(request, player, files).setStartPlayerAt(0);
     }
 
-    public PlayQueueInfo playNewestPodcastEpisode(Integer index) throws Exception {
+    public PlayQueueInfo playNewestPodcastEpisode(Integer startIndex) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
 
         List<PodcastEpisode> episodes = podcastService.getNewestEpisodes(10);
-        List<MediaFile> files = Lists.transform(episodes, new Function<PodcastEpisode, MediaFile>() {
-            @Override
-            public MediaFile apply(PodcastEpisode episode) {
-                return mediaFileService.getMediaFile(episode.getMediaFileId());
-            }
-        });
+        List<MediaFile> files = Lists.transform(episodes, episode -> mediaFileService.getMediaFile(episode.getMediaFileId()));
 
         String username = securityService.getCurrentUsername(request);
         boolean queueFollowingSongs = settingsService.getUserSettings(username).isQueueFollowingSongs();
 
-        if (!files.isEmpty() && index != null) {
+        if (!files.isEmpty() && startIndex != null) {
             if (queueFollowingSongs) {
-                files = files.subList(index, files.size());
+                files = files.subList(startIndex, files.size());
             } else {
-                files = Arrays.asList(files.get(index));
+                files = Arrays.asList(files.get(startIndex));
             }
         }
 
@@ -394,7 +398,6 @@ public class PlayQueueService {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
         String username = securityService.getCurrentUsername(request);
-        UserSettings userSettings = settingsService.getUserSettings(securityService.getCurrentUsername(request));
 
         MusicFolder selectedMusicFolder = settingsService.getSelectedMusicFolder(username);
         List<MusicFolder> musicFolders = settingsService.getMusicFoldersForUser(username,
@@ -435,7 +438,7 @@ public class PlayQueueService {
         return doPlay(request, player, songs).setStartPlayerAt(0);
     }
 
-    private PlayQueueInfo doPlay(HttpServletRequest request, Player player, List<MediaFile> files) throws Exception {
+    private PlayQueueInfo doPlay(HttpServletRequest request, Player player, List<MediaFile> files) {
         if (player.isWeb()) {
             mediaFileService.removeVideoFiles(files);
         }
@@ -448,7 +451,7 @@ public class PlayQueueService {
         return convert(request, player, true);
     }
 
-    private PlayQueueInfo doPlayInternetRadio(HttpServletRequest request, Player player, InternetRadio radio) throws Exception {
+    private PlayQueueInfo doPlayInternetRadio(HttpServletRequest request, Player player, InternetRadio radio) {
         internetRadioService.clearInternetRadioSourceCache(radio.getId());
         player.getPlayQueue().clear();
         player.getPlayQueue().setRandomSearchCriteria(null);
@@ -500,8 +503,10 @@ public class PlayQueueService {
 
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
+     * @param addAtIndex if not null, insert the media files at the specified index
+     *                   otherwise, append the media files at the end of the play queue
      */
-    public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer index, boolean removeVideoFiles) throws Exception {
+    public PlayQueue addMediaFilesToPlayQueue(PlayQueue playQueue,int[] ids, Integer addAtIndex, boolean removeVideoFiles) {
         List<MediaFile> files = new ArrayList<MediaFile>(ids.length);
         for (int id : ids) {
             MediaFile ancestor = mediaFileService.getMediaFile(id);
@@ -510,8 +515,8 @@ public class PlayQueueService {
         if (removeVideoFiles) {
             mediaFileService.removeVideoFiles(files);
         }
-        if (index != null) {
-            playQueue.addFilesAt(files, index);
+        if (addAtIndex != null) {
+            playQueue.addFilesAt(files, addAtIndex);
         } else {
             playQueue.addFiles(true, files);
         }
@@ -520,20 +525,24 @@ public class PlayQueueService {
         return playQueue;
     }
 
-    public PlayQueueInfo doAdd(HttpServletRequest request, HttpServletResponse response, int[] ids, Integer index) throws Exception {
+    /**
+     * @param addAtIndex if not null, insert the media files at the specified index
+     *                   otherwise, append the media files at the end of the play queue
+     */
+    public PlayQueueInfo doAdd(HttpServletRequest request, HttpServletResponse response, int[] ids, Integer addAtIndex) throws Exception {
         Player player = getCurrentPlayer(request, response);
         boolean removeVideoFiles = false;
         if (player.isWeb()) {
             removeVideoFiles = true;
         }
-        addMediaFilesToPlayQueue(player.getPlayQueue(), ids, index, removeVideoFiles);
+        addMediaFilesToPlayQueue(player.getPlayQueue(), ids, addAtIndex, removeVideoFiles);
         return convert(request, player, false);
     }
 
     /**
      * TODO This method should be moved to a real PlayQueueService not dedicated to Ajax DWR.
      */
-    public PlayQueue resetPlayQueue(PlayQueue playQueue,int[] ids, boolean removeVideoFiles) throws Exception {
+    public PlayQueue resetPlayQueue(PlayQueue playQueue,int[] ids, boolean removeVideoFiles) {
         MediaFile currentFile = playQueue.getCurrentFile();
         PlayQueue.Status status = playQueue.getStatus();
 
@@ -670,14 +679,12 @@ public class PlayQueueService {
         return convert(request, player, false);
     }
 
-    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist) throws Exception {
+    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist) {
         return convert(request, player, serverSidePlaylist, 0);
     }
 
-    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) throws Exception {
+    private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist, int offset) {
 
-        String url = NetworkService.getBaseUrl(request);
-        Locale locale = RequestContextUtils.getLocale(request);
         PlayQueue playQueue = player.getPlayQueue();
 
         List<PlayQueueInfo.Entry> entries;
@@ -734,7 +741,7 @@ public class PlayQueueService {
         return entries;
     }
 
-    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) throws Exception {
+    private List<PlayQueueInfo.Entry> convertInternetRadio(HttpServletRequest request, Player player) {
 
         PlayQueue playQueue = player.getPlayQueue();
         InternetRadio radio = playQueue.getInternetRadio();

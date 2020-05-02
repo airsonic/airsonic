@@ -19,7 +19,6 @@
  */
 package org.airsonic.player.service;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.airsonic.player.dao.PodcastDao;
@@ -30,6 +29,7 @@ import org.airsonic.player.domain.PodcastStatus;
 import org.airsonic.player.service.metadata.MetaData;
 import org.airsonic.player.service.metadata.MetaDataParser;
 import org.airsonic.player.service.metadata.MetaDataParserFactory;
+import org.airsonic.player.util.FileUtil;
 import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -95,13 +95,10 @@ public class PodcastService {
     private MetaDataParserFactory metaDataParserFactory;
 
     public PodcastService() {
-        ThreadFactory threadFactory = new ThreadFactory() {
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread t = Executors.defaultThreadFactory().newThread(r);
-                t.setDaemon(true);
-                return t;
-            }
+        ThreadFactory threadFactory = r -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
         };
         refreshExecutor = Executors.newFixedThreadPool(5, threadFactory);
         downloadExecutor = Executors.newFixedThreadPool(3, threadFactory);
@@ -127,13 +124,10 @@ public class PodcastService {
     }
 
     public synchronized void schedule() {
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                LOG.info("Starting scheduled Podcast refresh.");
-                refreshAllChannels(true);
-                LOG.info("Completed scheduled Podcast refresh.");
-            }
+        Runnable task = () -> {
+            LOG.info("Starting scheduled Podcast refresh.");
+            refreshAllChannels(true);
+            LOG.info("Completed scheduled Podcast refresh.");
         };
 
         if (scheduledRefresh != null) {
@@ -223,16 +217,13 @@ public class PodcastService {
     public List<PodcastEpisode> getNewestEpisodes(int count) {
         List<PodcastEpisode> episodes = addMediaFileIdToEpisodes(podcastDao.getNewestEpisodes(count));
 
-        return Lists.newArrayList(Iterables.filter(episodes, new Predicate<PodcastEpisode>() {
-            @Override
-            public boolean apply(PodcastEpisode episode) {
-                Integer mediaFileId = episode.getMediaFileId();
-                if (mediaFileId == null) {
-                    return false;
-                }
-                MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
-                return mediaFile != null && mediaFile.isPresent();
+        return Lists.newArrayList(Iterables.filter(episodes, episode -> {
+            Integer mediaFileId = episode.getMediaFileId();
+            if (mediaFileId == null) {
+                return false;
             }
+            MediaFile mediaFile = mediaFileService.getMediaFile(mediaFileId);
+            return mediaFile != null && mediaFile.isPresent();
         }));
     }
 
@@ -299,12 +290,7 @@ public class PodcastService {
 
     private void refreshChannels(final List<PodcastChannel> channels, final boolean downloadEpisodes) {
         for (final PodcastChannel channel : channels) {
-            Runnable task = new Runnable() {
-                @Override
-                public void run() {
-                    doRefreshChannel(channel, downloadEpisodes);
-                }
-            };
+            Runnable task = () -> doRefreshChannel(channel, downloadEpisodes);
             refreshExecutor.submit(task);
         }
     }
@@ -345,7 +331,7 @@ public class PodcastService {
             channel.setErrorMessage(getErrorMessage(x));
             podcastDao.updateChannel(channel);
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
 
         if (downloadEpisodes) {
@@ -384,8 +370,8 @@ public class PodcastService {
         } catch (Exception x) {
             LOG.warn("Failed to download cover art for podcast channel '" + channel.getTitle() + "': " + x, x);
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(out);
         }
     }
 
@@ -416,12 +402,7 @@ public class PodcastService {
     }
 
     public void downloadEpisode(final PodcastEpisode episode) {
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                doDownloadEpisode(episode);
-            }
-        };
+        Runnable task = () -> doDownloadEpisode(episode);
         downloadExecutor.submit(task);
     }
 
@@ -470,14 +451,11 @@ public class PodcastService {
         }
 
         // Sort episode in reverse chronological order (newest first)
-        Collections.sort(episodes, new Comparator<PodcastEpisode>() {
-            @Override
-            public int compare(PodcastEpisode a, PodcastEpisode b) {
-                long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
-                long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
+        episodes.sort((a, b) -> {
+            long timeA = a.getPublishDate() == null ? 0L : a.getPublishDate().getTime();
+            long timeB = b.getPublishDate() == null ? 0L : b.getPublishDate().getTime();
 
-                return Long.compare(timeB, timeA);
-            }
+            return Long.compare(timeB, timeA);
         });
 
         // Create episodes in database, skipping the proper number of episodes.
@@ -600,14 +578,16 @@ public class PodcastService {
 
                 if (isEpisodeDeleted(episode)) {
                     LOG.info("Podcast " + episode.getUrl() + " was deleted. Aborting download.");
-                    IOUtils.closeQuietly(out);
-                    file.delete();
+                    FileUtil.closeQuietly(out);
+                    if (!file.delete()) {
+                        LOG.warn("Unable to delete " + file);
+                    }
                 } else {
                     addMediaFileIdToEpisodes(Arrays.asList(episode));
                     episode.setBytesDownloaded(bytesDownloaded);
                     podcastDao.updateEpisode(episode);
                     LOG.info("Downloaded " + bytesDownloaded + " bytes from Podcast " + episode.getUrl());
-                    IOUtils.closeQuietly(out);
+                    FileUtil.closeQuietly(out);
                     updateTags(file, episode);
                     episode.setStatus(PodcastStatus.COMPLETED);
                     podcastDao.updateEpisode(episode);
@@ -620,8 +600,8 @@ public class PodcastService {
             episode.setErrorMessage(getErrorMessage(x));
             podcastDao.updateEpisode(episode);
         } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
+            FileUtil.closeQuietly(in);
+            FileUtil.closeQuietly(out);
         }
     }
 
@@ -677,10 +657,10 @@ public class PodcastService {
 
         File channelDir = getChannelDirectory(channel);
 
-        String filename = StringUtil.getUrlFile(episode.getUrl());
-        if (filename == null) {
-            filename = episode.getTitle();
-        }
+        String episodeDate = String.format("%tY-%tm-%td", episode.getPublishDate());
+        String filename = channel.getTitle() + " - " + episodeDate + " - " + episode.getId() + " - " + episode.getTitle();
+        filename = filename.substring(0, Math.min(filename.length(), 146));
+
         filename = StringUtil.fileSystemSafe(filename);
         String extension = FilenameUtils.getExtension(filename);
         filename = FilenameUtils.removeExtension(filename);

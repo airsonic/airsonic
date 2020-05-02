@@ -47,7 +47,7 @@ public class RecoverController {
     private SecurityService securityService;
 
     @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView recover(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView recover(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         String usernameOrEmail = StringUtils.trimToNull(request.getParameter("usernameOrEmail"));
@@ -65,7 +65,7 @@ public class RecoverController {
             } else {
                 captchaOk = true;
             }
-            
+
             if (!captchaOk) {
                 map.put("error", "recover.error.invalidcaptcha");
             } else if (user == null) {

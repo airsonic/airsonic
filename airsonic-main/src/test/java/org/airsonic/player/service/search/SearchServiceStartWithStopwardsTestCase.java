@@ -1,11 +1,6 @@
 
 package org.airsonic.player.service.search;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.SearchCriteria;
 import org.airsonic.player.domain.SearchResult;
@@ -14,12 +9,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /*
  * Test cases related to #1142.
  * The filter is not properly applied when analyzing the query,
- * 
+ *
  * In the process of hardening the Analyzer implementation,
  * this problem is solved side by side.
  */
@@ -41,7 +42,7 @@ public class SearchServiceStartWithStopwardsTestCase extends AbstractAirsonicHom
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         populateDatabaseOnlyOnce();
     }
 
@@ -56,8 +57,8 @@ public class SearchServiceStartWithStopwardsTestCase extends AbstractAirsonicHom
 
         criteria.setQuery("will");
         SearchResult result = searchService.search(criteria, folders, IndexType.ARTIST_ID3);
-        // XXX 3.x -> 8.x : The filter is properly applied to the input(Stopward)
-        Assert.assertEquals("Williams hit by \"will\" ", 0, result.getTotalHits());
+        // Will hit because Airsonic's stopword is defined(#1235)
+        Assert.assertEquals("Williams hit by \"will\" ", 1, result.getTotalHits());
 
         criteria.setQuery("the");
         result = searchService.search(criteria, folders, IndexType.SONG);

@@ -4,18 +4,17 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
 
     <script type="text/javascript" language="javascript">
-        function enableLastFmFields() {
+        function enableFields() {
             $("#lastFm").is(":checked") ? $("#lastFmTable").show() : $("#lastFmTable").hide();
+            $("#listenBrainz").is(":checked") ? $("#listenBrainzTable").show() : $("#listenBrainzTable").hide();
         }
     </script>
 </head>
 
-<body class="mainframe bgcolor1" onload="enableLastFmFields()">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
+<body class="mainframe bgcolor1" onload="enableFields()">
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="personal"/>
@@ -27,7 +26,7 @@
 <h2>${fn:escapeXml(title)}</h2>
 
 <fmt:message key="common.default" var="defaultTitle"/>
-<form:form method="post" action="personalSettings.view" commandName="command">
+<form:form method="post" action="personalSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
 
@@ -172,8 +171,12 @@
 
     <table class="indent">
         <tr>
-            <td><form:checkbox path="lastFmEnabled" id="lastFm" cssClass="checkbox" onclick="enableLastFmFields()"/></td>
+            <td><form:checkbox path="lastFmEnabled" id="lastFm" cssClass="checkbox" onclick="enableFields()"/></td>
             <td><label for="lastFm"><fmt:message key="personalsettings.lastfmenabled"/></label></td>
+        </tr>
+        <tr>
+            <td><form:checkbox path="listenBrainzEnabled" id="listenBrainz" cssClass="checkbox" onclick="enableFields()"/></td>
+            <td><label for="listenBrainz"><fmt:message key="personalsettings.listenbrainzenabled"/></label></td>
         </tr>
     </table>
 
@@ -185,10 +188,6 @@
     </table>
 
     <table class="indent">
-        <tr>
-            <td><fmt:message key="personalsettings.listreloaddelay"/></td>
-            <td><form:input path="listReloadDelay" size="24"/></td>
-        </tr>
         <tr>
             <td><fmt:message key="personalsettings.paginationsize"/></td>
             <td><form:input path="paginationSize" size="24"/></td>
@@ -206,9 +205,16 @@
         </tr>
     </table>
 
+    <table id="listenBrainzTable" style="padding-left:2em">
+        <tr>
+            <td><fmt:message key="personalsettings.listenbrainztoken"/></td>
+            <td><form:input path="listenBrainzToken" size="36"/></td>
+        </tr>
+    </table>
+
     <p style="padding-top:1em;padding-bottom:1em">
-        <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em"/>
-        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
+        <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em"/>
+        <a href='nowPlaying.view'><input type="button" value="<fmt:message key='common.cancel'/>"></a>
     </p>
 
     <h2><fmt:message key="personalsettings.avatar.title"/></h2>
@@ -220,7 +226,7 @@
             </c:url>
             <span style="white-space:nowrap;">
                 <form:radiobutton id="avatar-${avatar.id}" path="avatarId" value="${avatar.id}"/>
-                <label for="avatar-${avatar.id}"><img src="${avatarUrl}" alt="${avatar.name}" width="${avatar.width}" height="${avatar.height}" style="padding-right:2em;padding-bottom:1em"/></label>
+                <label for="avatar-${avatar.id}"><img src="${avatarUrl}" alt="${fn:escapeXml(avatar.name)}" width="${avatar.width}" height="${avatar.height}" style="padding-right:2em;padding-bottom:1em"/></label>
             </span>
         </c:forEach>
     </p>
@@ -236,7 +242,7 @@
                     <sub:param name="username" value="${command.user.username}"/>
                     <sub:param name="forceCustom" value="true"/>
                 </sub:url>
-                <img src="${avatarUrl}" alt="${command.customAvatar.name}" width="${command.customAvatar.width}" height="${command.customAvatar.height}" style="padding-right:2em"/>
+                <img src="${avatarUrl}" alt="${fn:escapeXml(command.customAvatar.name)}" width="${command.customAvatar.width}" height="${command.customAvatar.height}" style="padding-right:2em"/>
             </c:if>
         </label>
     </p>
@@ -247,7 +253,7 @@
         <tr>
             <td style="padding-right:1em"><fmt:message key="personalsettings.avatar.changecustom"/></td>
             <td style="padding-right:1em"><input type="file" id="file" name="file" size="40"/></td>
-            <td style="padding-right:1em"><input type="submit" value="<fmt:message key="personalsettings.avatar.upload"/>"/></td>
+            <td style="padding-right:1em"><input type="submit" value="<fmt:message key='personalsettings.avatar.upload'/>"/></td>
         </tr>
     </table>
 </form>

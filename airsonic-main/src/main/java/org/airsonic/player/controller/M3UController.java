@@ -36,7 +36,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -47,7 +46,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/play.m3u")
-public class M3UController  {
+public class M3UController {
 
     @Autowired
     private PlayerService playerService;
@@ -74,7 +73,7 @@ public class M3UController  {
         return null;
     }
 
-    private void createClientSidePlaylist(PrintWriter out, Player player, String url) throws Exception {
+    private void createClientSidePlaylist(PrintWriter out, Player player, String url) {
         if (player.isM3uBomEnabled()) {
             out.print("\ufeff");
         }
@@ -90,14 +89,14 @@ public class M3UController  {
             }
             out.println("#EXTINF:" + duration + "," + mediaFile.getArtist() + " - " + mediaFile.getTitle());
 
-            String urlNoAuth = url +  "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." +
+            String urlNoAuth = url + "player=" + player.getId() + "&id=" + mediaFile.getId() + "&suffix=." +
                     transcodingService.getSuffix(player, mediaFile, null);
             String urlWithAuth = jwtSecurityService.addJWTToken(urlNoAuth);
             out.println(urlWithAuth);
         }
     }
 
-    private void createServerSidePlaylist(PrintWriter out, Player player, String url) throws IOException {
+    private void createServerSidePlaylist(PrintWriter out, Player player, String url) {
 
         url += "player=" + player.getId();
 
