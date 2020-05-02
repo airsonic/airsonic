@@ -48,7 +48,8 @@ public class UserDao extends AbstractDao {
             "main_year, main_bit_rate, main_duration, main_format, main_file_size, " +
             "playlist_track_number, playlist_artist, playlist_album, playlist_genre, " +
             "playlist_year, playlist_bit_rate, playlist_duration, playlist_format, playlist_file_size, " +
-            "last_fm_enabled, last_fm_username, last_fm_password, transcode_scheme, show_now_playing, selected_music_folder_id, " +
+            "last_fm_enabled, last_fm_username, last_fm_password, listenbrainz_enabled, listenbrainz_token, " +
+            "transcode_scheme, show_now_playing, selected_music_folder_id, " +
             "party_mode_enabled, now_playing_allowed, avatar_scheme, system_avatar_id, changed, show_artist_info, auto_hide_play_queue, " +
             "view_as_list, default_album_list, queue_following_songs, show_side_bar, list_reload_delay, " +
             "keyboard_shortcuts_enabled, pagination_size";
@@ -147,10 +148,6 @@ public class UserDao extends AbstractDao {
      * @param username The username.
      */
     public void deleteUser(String username) {
-        if (User.USERNAME_ADMIN.equals(username)) {
-            throw new IllegalArgumentException("Can't delete admin user.");
-        }
-
         update("delete from user_role where username=?", username);
         update("delete from player where username=?", username);
         update("delete from " + getUserTable() + " where username=?", username);
@@ -219,12 +216,13 @@ public class UserDao extends AbstractDao {
                 playlist.isGenreVisible(), playlist.isYearVisible(), playlist.isBitRateVisible(), playlist.isDurationVisible(),
                 playlist.isFormatVisible(), playlist.isFileSizeVisible(),
                 settings.isLastFmEnabled(), settings.getLastFmUsername(), encrypt(settings.getLastFmPassword()),
+                settings.isListenBrainzEnabled(), settings.getListenBrainzToken(),
                 settings.getTranscodeScheme().name(), settings.isShowNowPlayingEnabled(),
                 settings.getSelectedMusicFolderId(), settings.isPartyModeEnabled(), settings.isNowPlayingAllowed(),
                 settings.getAvatarScheme().name(), settings.getSystemAvatarId(), settings.getChanged(),
                 settings.isShowArtistInfoEnabled(), settings.isAutoHidePlayQueue(),
                 settings.isViewAsList(), settings.getDefaultAlbumList().getId(), settings.isQueueFollowingSongs(),
-                settings.isShowSideBar(), settings.getListReloadDelay(), settings.isKeyboardShortcutsEnabled(),
+                settings.isShowSideBar(), 60 /* Unused listReloadDelay */, settings.isKeyboardShortcutsEnabled(),
                 settings.getPaginationSize());
     }
 
@@ -324,7 +322,7 @@ public class UserDao extends AbstractDao {
         }
     }
 
-    private class UserRowMapper implements RowMapper<User> {
+    private static class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new User(rs.getString(1),
                     decrypt(rs.getString(2)),
@@ -370,6 +368,9 @@ public class UserDao extends AbstractDao {
             settings.setLastFmUsername(rs.getString(col++));
             settings.setLastFmPassword(decrypt(rs.getString(col++)));
 
+            settings.setListenBrainzEnabled(rs.getBoolean(col++));
+            settings.setListenBrainzToken(rs.getString(col++));
+
             settings.setTranscodeScheme(TranscodeScheme.valueOf(rs.getString(col++)));
             settings.setShowNowPlayingEnabled(rs.getBoolean(col++));
             settings.setSelectedMusicFolderId(rs.getInt(col++));
@@ -384,7 +385,7 @@ public class UserDao extends AbstractDao {
             settings.setDefaultAlbumList(AlbumListType.fromId(rs.getString(col++)));
             settings.setQueueFollowingSongs(rs.getBoolean(col++));
             settings.setShowSideBar(rs.getBoolean(col++));
-            settings.setListReloadDelay((Integer) rs.getObject(col++));
+            col++;  // Skip the now unused listReloadDelay
             settings.setKeyboardShortcutsEnabled(rs.getBoolean(col++));
             settings.setPaginationSize(rs.getInt(col++));
 

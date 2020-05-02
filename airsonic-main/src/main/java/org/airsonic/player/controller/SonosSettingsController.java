@@ -51,7 +51,7 @@ public class SonosSettingsController {
     private SonosService sonosService;
 
     @GetMapping
-    public String doGet(Model model) throws Exception {
+    public String doGet(Model model) {
 
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -63,7 +63,7 @@ public class SonosSettingsController {
     }
 
     @PostMapping
-    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         handleParameters(request);
 
         redirectAttributes.addFlashAttribute("settings_toast", true);

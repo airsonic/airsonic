@@ -22,6 +22,7 @@ package org.airsonic.player.domain;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.airsonic.player.util.FileUtil;
+import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
@@ -68,12 +69,13 @@ public class MediaFile {
     private boolean present;
     private int version;
     private String musicBrainzReleaseId;
+    private String musicBrainzRecordingId;
 
     public MediaFile(int id, String path, String folder, MediaType mediaType, String format, String title,
                      String albumName, String artist, String albumArtist, Integer discNumber, Integer trackNumber, Integer year, String genre, Integer bitRate,
                      boolean variableBitRate, Integer durationSeconds, Long fileSize, Integer width, Integer height, String coverArtPath,
                      String parentPath, int playCount, Date lastPlayed, String comment, Date created, Date changed, Date lastScanned,
-                     Date childrenLastUpdated, boolean present, int version, String musicBrainzReleaseId) {
+                     Date childrenLastUpdated, boolean present, int version, String musicBrainzReleaseId, String musicBrainzRecordingId) {
         this.id = id;
         this.path = path;
         this.folder = folder;
@@ -105,6 +107,7 @@ public class MediaFile {
         this.present = present;
         this.version = version;
         this.musicBrainzReleaseId = musicBrainzReleaseId;
+        this.musicBrainzRecordingId = musicBrainzRecordingId;
     }
 
     public MediaFile() {
@@ -279,31 +282,8 @@ public class MediaFile {
         if (durationSeconds == null) {
             return null;
         }
-
-        StringBuilder result = new StringBuilder(8);
-
-        int seconds = durationSeconds;
-
-        int hours = seconds / 3600;
-        seconds -= hours * 3600;
-
-        int minutes = seconds / 60;
-        seconds -= minutes * 60;
-
-        if (hours > 0) {
-            result.append(hours).append(':');
-            if (minutes < 10) {
-                result.append('0');
-            }
-        }
-
-        result.append(minutes).append(':');
-        if (seconds < 10) {
-            result.append('0');
-        }
-        result.append(seconds);
-
-        return result.toString();
+        // Return in M:SS or H:MM:SS
+        return StringUtil.formatDuration(durationSeconds);
     }
 
     public Long getFileSize() {
@@ -415,6 +395,14 @@ public class MediaFile {
         this.musicBrainzReleaseId = musicBrainzReleaseId;
     }
 
+    public String getMusicBrainzRecordingId() {
+        return musicBrainzRecordingId;
+    }
+
+    public void setMusicBrainzRecordingId(String musicBrainzRecordingId) {
+        this.musicBrainzRecordingId = musicBrainzRecordingId;
+    }
+
     /**
      * Returns when the children was last updated in the database.
      */
@@ -463,12 +451,7 @@ public class MediaFile {
     }
 
     public static Function<MediaFile, Integer> toId() {
-        return new Function<MediaFile, Integer>() {
-            @Override
-            public Integer apply(MediaFile from) {
-                return from.getId();
-            }
-        };
+        return from -> from.getId();
     }
 
     public static enum MediaType {

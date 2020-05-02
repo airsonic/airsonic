@@ -34,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 
 /**
@@ -45,7 +44,7 @@ import java.util.Arrays;
 @Service
 public class DispatchingContentDirectory extends CustomContentDirectory {
 
-    public static final Logger LOG = LoggerFactory.getLogger(DispatchingContentDirectory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DispatchingContentDirectory.class);
 
     public static final String CONTAINER_ID_ROOT = "0";
     public static final String CONTAINER_ID_PLAYLIST_PREFIX = "playlist";
@@ -171,7 +170,7 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
         return null;
     }
 
-    public Item createItem(MediaFile song) throws Exception {
+    public Item createItem(MediaFile song) {
         MediaFile parent = mediaFileService.getParentOf(song);
         MusicTrack item = new MusicTrack();
         item.setId(String.valueOf(song.getId()));
@@ -196,7 +195,7 @@ public class DispatchingContentDirectory extends CustomContentDirectory {
         return item;
     }
 
-    public URI getAlbumArtUrl(int id) throws URISyntaxException {
+    public URI getAlbumArtUrl(int id) {
         return jwtSecurityService.addJWTToken(UriComponentsBuilder.fromUriString(getBaseUrl() + "/ext/coverArt.view").queryParam("id", id).queryParam("size", CoverArtScheme.LARGE.getSize())).build().encode().toUri();
     }
 

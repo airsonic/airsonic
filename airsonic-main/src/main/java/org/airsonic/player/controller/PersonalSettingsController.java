@@ -45,7 +45,7 @@ import java.util.Locale;
  */
 @Controller
 @RequestMapping("/personalSettings")
-public class PersonalSettingsController  {
+public class PersonalSettingsController {
 
     @Autowired
     private SettingsService settingsService;
@@ -53,7 +53,7 @@ public class PersonalSettingsController  {
     private SecurityService securityService;
 
     @ModelAttribute
-    protected void formBackingObject(HttpServletRequest request,Model model) throws Exception {
+    protected void formBackingObject(HttpServletRequest request,Model model) {
         PersonalSettingsCommand command = new PersonalSettingsCommand();
 
         User user = securityService.getCurrentUser(request);
@@ -78,11 +78,12 @@ public class PersonalSettingsController  {
         command.setBetaVersionNotificationEnabled(userSettings.isBetaVersionNotificationEnabled());
         command.setSongNotificationEnabled(userSettings.isSongNotificationEnabled());
         command.setAutoHidePlayQueue(userSettings.isAutoHidePlayQueue());
-        command.setListReloadDelay(userSettings.getListReloadDelay());
         command.setKeyboardShortcutsEnabled(userSettings.isKeyboardShortcutsEnabled());
         command.setLastFmEnabled(userSettings.isLastFmEnabled());
         command.setLastFmUsername(userSettings.getLastFmUsername());
         command.setLastFmPassword(userSettings.getLastFmPassword());
+        command.setListenBrainzEnabled(userSettings.isListenBrainzEnabled());
+        command.setListenBrainzToken(userSettings.getListenBrainzToken());
         command.setPaginationSize(userSettings.getPaginationSize());
 
         Locale currentLocale = userSettings.getLocale();
@@ -110,12 +111,12 @@ public class PersonalSettingsController  {
     }
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "personalSettings";
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute("command") PersonalSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         int localeIndex = Integer.parseInt(command.getLocaleIndex());
         Locale locale = null;
@@ -146,10 +147,11 @@ public class PersonalSettingsController  {
         settings.setBetaVersionNotificationEnabled(command.isBetaVersionNotificationEnabled());
         settings.setSongNotificationEnabled(command.isSongNotificationEnabled());
         settings.setAutoHidePlayQueue(command.isAutoHidePlayQueue());
-        settings.setListReloadDelay(command.getListReloadDelay());
         settings.setKeyboardShortcutsEnabled(command.isKeyboardShortcutsEnabled());
         settings.setLastFmEnabled(command.isLastFmEnabled());
         settings.setLastFmUsername(command.getLastFmUsername());
+        settings.setListenBrainzEnabled(command.isListenBrainzEnabled());
+        settings.setListenBrainzToken(command.getListenBrainzToken());
         settings.setSystemAvatarId(getSystemAvatarId(command));
         settings.setAvatarScheme(getAvatarScheme(command));
         settings.setPaginationSize(command.getPaginationSize());

@@ -178,20 +178,10 @@ public class MusicFolder implements Serializable {
     }
 
     public static Function<MusicFolder, Integer> toId() {
-        return new Function<MusicFolder, Integer>() {
-            @Override
-            public Integer apply(MusicFolder from) {
-                return from.getId();
-            }
-        };
+        return from -> from.getId();
     }
 
     public static Function<MusicFolder, String> toPath() {
-        return new Function<MusicFolder, String>() {
-            @Override
-            public String apply(MusicFolder from) {
-                return from.getPath().getPath();
-            }
-        };
+        return from -> from.getPath().getPath();
     }
 }

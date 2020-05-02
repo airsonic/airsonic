@@ -50,7 +50,7 @@ public class PlaylistsController {
     private PlaylistService playlistService;
 
     @GetMapping
-    public String doGet(HttpServletRequest request, Model model) throws Exception {
+    public String doGet(HttpServletRequest request, Model model) {
         Map<String, Object> map = new HashMap<>();
 
         User user = securityService.getCurrentUser(request);

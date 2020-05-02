@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.controller;
 
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.InputStream;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * A proxy for external HTTP requests.
@@ -45,7 +46,7 @@ import static org.springframework.http.HttpStatus.*;
  */
 @Controller
 @RequestMapping("/proxy")
-public class ProxyController  {
+public class ProxyController {
 
     @GetMapping
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -70,7 +71,7 @@ public class ProxyController  {
                 }
             }
         } finally {
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
         return null;
     }

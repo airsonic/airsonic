@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class AbstractDao {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDao.class);
-    
+
     @Autowired
     private DaoHelper daoHelper;
 
@@ -60,7 +60,7 @@ public class AbstractDao {
     }
 
     protected String questionMarks(String columns) {
-        int numberOfColumns =  StringUtils.countMatches(columns, ",") + 1;
+        int numberOfColumns = StringUtils.countMatches(columns, ",") + 1;
         return StringUtils.repeat("?", ", ", numberOfColumns);
     }
 
@@ -88,26 +88,16 @@ public class AbstractDao {
         }
     }
 
-    protected <T> List<T> query(String sql, RowMapper rowMapper, Object... args) {
+    protected <T> List<T> query(String sql, RowMapper<T> rowMapper, Object... args) {
         long t = System.nanoTime();
         List<T> result = getJdbcTemplate().query(sql, args, rowMapper);
         log(sql, t);
         return result;
     }
 
-    protected <T> List<T> namedQuery(String sql, RowMapper rowMapper, Map<String, Object> args) {
+    protected <T> List<T> namedQuery(String sql, RowMapper<T> rowMapper, Map<String, Object> args) {
         long t = System.nanoTime();
         List<T> result = getNamedParameterJdbcTemplate().query(sql, args, rowMapper);
-        log(sql, t);
-        return result;
-    }
-
-    protected <T> List<T> namedQueryWithLimit(String sql, RowMapper<T> rowMapper, Map<String, Object> args, int limit) {
-        long t = System.nanoTime();
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(daoHelper.getDataSource());
-        jdbcTemplate.setMaxRows(limit);
-        NamedParameterJdbcTemplate namedTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        List<T> result = namedTemplate.query(sql, args, rowMapper);
         log(sql, t);
         return result;
     }
@@ -165,12 +155,12 @@ public class AbstractDao {
         return result;
     }
 
-    protected <T> T queryOne(String sql, RowMapper rowMapper, Object... args) {
+    protected <T> T queryOne(String sql, RowMapper<T> rowMapper, Object... args) {
         List<T> list = query(sql, rowMapper, args);
         return list.isEmpty() ? null : list.get(0);
     }
 
-    protected <T> T namedQueryOne(String sql, RowMapper rowMapper, Map<String, Object> args) {
+    protected <T> T namedQueryOne(String sql, RowMapper<T> rowMapper, Map<String, Object> args) {
         List<T> list = namedQuery(sql, rowMapper, args);
         return list.isEmpty() ? null : list.get(0);
     }
@@ -179,6 +169,8 @@ public class AbstractDao {
         this.daoHelper = daoHelper;
     }
 
-    public void checkpoint() { daoHelper.checkpoint(); }
+    public void checkpoint() {
+        daoHelper.checkpoint();
+    }
 
 }

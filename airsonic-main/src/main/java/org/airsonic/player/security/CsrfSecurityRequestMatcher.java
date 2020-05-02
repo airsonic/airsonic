@@ -6,9 +6,8 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * See
@@ -20,24 +19,21 @@ import java.util.regex.Pattern;
  */
 @Component
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
-    private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
-    private Collection<RegexRequestMatcher> whiteListedMatchers;
+    static private List<String> allowedMethods = Arrays.asList("GET", "HEAD", "TRACE", "OPTIONS");
+    private List<RegexRequestMatcher> whiteListedMatchers;
 
     public CsrfSecurityRequestMatcher() {
-        Collection<RegexRequestMatcher> whiteListedMatchers = new ArrayList<>();
-        whiteListedMatchers.add(new RegexRequestMatcher("/dwr/.*\\.dwr", "POST"));
-        whiteListedMatchers.add(new RegexRequestMatcher("/rest/.*\\.view(\\?.*)?", "POST"));
-        whiteListedMatchers.add(new RegexRequestMatcher("/search(?:\\.view)?", "POST"));
-        this.whiteListedMatchers = whiteListedMatchers;
+        this.whiteListedMatchers = Arrays.asList(
+            new RegexRequestMatcher("/dwr/.*\\.dwr", "POST"),
+            new RegexRequestMatcher("/rest/.*\\.view(\\?.*)?", "POST"),
+            new RegexRequestMatcher("/search(?:\\.view)?", "POST")
+        );
     }
 
     @Override
     public boolean matches(HttpServletRequest request) {
-
-        boolean skipCSRF =
-                allowedMethods.matcher(request.getMethod()).matches() ||
-                whiteListedMatchers.stream().anyMatch(matcher -> matcher.matches(request));
-
+        boolean skipCSRF = allowedMethods.contains(request.getMethod()) ||
+            whiteListedMatchers.stream().anyMatch(matcher -> matcher.matches(request));
         return !skipCSRF;
     }
 }

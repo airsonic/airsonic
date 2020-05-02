@@ -53,7 +53,7 @@ public class NetworkService {
             }
 
             String baseUrl = uri.toString() + "/";
-            LOG.debug("Calculated base url to "  + baseUrl);
+            LOG.debug("Calculated base url to " + baseUrl);
             return baseUrl;
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException("Could not calculate base url: " + e.getMessage());

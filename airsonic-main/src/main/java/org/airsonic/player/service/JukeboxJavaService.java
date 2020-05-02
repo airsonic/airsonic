@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 
@@ -67,11 +66,7 @@ public class JukeboxJavaService {
                 if (StringUtils.isBlank(mixer)) {
                     mixer = DEFAULT_MIXER_ENTRY_KEY;
                 }
-                List<com.github.biconou.AudioPlayer.api.Player> playersForMixer = activeAudioPlayersPerMixer.get(mixer);
-                if (playersForMixer == null) {
-                    playersForMixer = new ArrayList<>();
-                    activeAudioPlayersPerMixer.put(mixer, playersForMixer);
-                }
+                List<com.github.biconou.AudioPlayer.api.Player> playersForMixer = activeAudioPlayersPerMixer.computeIfAbsent(mixer, k -> new ArrayList<>());
                 playersForMixer.add(newPlayer);
                 foundPlayer = newPlayer;
             }
@@ -230,7 +225,7 @@ public class JukeboxJavaService {
             audioPlayer.setPlayList(new PlayList() {
 
                 @Override
-                public File getNextAudioFile() throws IOException {
+                public File getNextAudioFile() {
                     airsonicPlayer.getPlayQueue().next();
                     return getCurrentAudioFile();
                 }
@@ -292,7 +287,7 @@ public class JukeboxJavaService {
         audioPlayer.pause();
     }
 
-    public void skip(Player airsonicPlayer, int index, int offset) throws Exception {
+    public void skip(Player airsonicPlayer, int index, int offset) {
         log.debug("begin skip jukebox : player = id:{};name:{}", airsonicPlayer.getId(), airsonicPlayer.getName());
 
         com.github.biconou.AudioPlayer.api.Player audioPlayer = retrieveAudioPlayerForAirsonicPlayer(airsonicPlayer);

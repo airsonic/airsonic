@@ -85,8 +85,6 @@ public class DocumentFactory {
 
     }
 
-    ;
-
     private BiConsumer<@NonNull Document, @NonNull Integer> fieldId = (doc, value) -> {
         doc.add(new StoredField(FieldNames.ID, Integer.toString(value), TYPE_ID));
     };
@@ -99,10 +97,10 @@ public class DocumentFactory {
         doc.add(new StoredField(field, value, TYPE_KEY));
     };
 
-    private BiConsumer<@NonNull  Document, @NonNull String> fieldMediatype = (doc, value) ->
+    private BiConsumer<@NonNull Document, @NonNull String> fieldMediatype = (doc, value) ->
         fieldKey.accept(doc, FieldNames.MEDIA_TYPE, value);
 
-    private BiConsumer<@NonNull Document, @NonNull String> fieldFolderPath = (doc, value) -> 
+    private BiConsumer<@NonNull Document, @NonNull String> fieldFolderPath = (doc, value) ->
         fieldKey.accept(doc, FieldNames.FOLDER, value);
 
     private BiConsumer<@NonNull Document, @Nullable String> fieldGenre = (doc, value) -> {
@@ -127,21 +125,25 @@ public class DocumentFactory {
         doc.add(new SortedDocValuesField(fieldName, new BytesRef(value)));
     };
 
+    public final Term createPrimarykey(Integer id) {
+        return new Term(FieldNames.ID, Integer.toString(id));
+    }
+
     public final Term createPrimarykey(Album album) {
-        return new Term(FieldNames.ID, Integer.toString(album.getId()));
-    };
+        return createPrimarykey(album.getId());
+    }
 
     public final Term createPrimarykey(Artist artist) {
-        return new Term(FieldNames.ID, Integer.toString(artist.getId()));
-    };
+        return createPrimarykey(artist.getId());
+    }
 
     public final Term createPrimarykey(MediaFile mediaFile) {
-        return new Term(FieldNames.ID, Integer.toString(mediaFile.getId()));
-    };
+        return createPrimarykey(mediaFile.getId());
+    }
 
     /**
      * Create a document.
-     * 
+     *
      * @param mediaFile target of document
      * @return document
      * @since legacy
@@ -157,7 +159,7 @@ public class DocumentFactory {
 
     /**
      * Create a document.
-     * 
+     *
      * @param mediaFile target of document
      * @return document
      * @since legacy
@@ -172,7 +174,7 @@ public class DocumentFactory {
 
     /**
      * Create a document.
-     * 
+     *
      * @param album target of document
      * @return document
      * @since legacy
@@ -188,7 +190,7 @@ public class DocumentFactory {
 
     /**
      * Create a document.
-     * 
+     *
      * @param artist target of document
      * @param musicFolder target folder exists
      * @return document
@@ -198,10 +200,10 @@ public class DocumentFactory {
      *  XXX 3.x -> 8.x :
      *  Only null check specification of createArtistId3Document is different from legacy.
      *  (The reason is only to simplify the function.)
-     *  
+     *
      *  Since the field of domain object Album is nonnull,
      *  null check was not performed.
-     *  
+     *
      *  In implementation ARTIST and ALBUM became nullable,
      *  but null is not input at this point in data flow.
      */
@@ -215,7 +217,7 @@ public class DocumentFactory {
 
     /**
      * Create a document.
-     * 
+     *
      * @param mediaFile target of document
      * @return document
      * @since legacy

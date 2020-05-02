@@ -21,7 +21,7 @@ package org.airsonic.player.controller;
 
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.MediaFileService;
-import org.airsonic.player.util.StringUtil;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -52,7 +52,7 @@ public class SetMusicFileInfoController {
         MediaFile mediaFile = mediaFileService.getMediaFile(id);
 
         if ("comment".equals(action)) {
-            mediaFile.setComment(StringUtil.toHtml(request.getParameter("comment")));
+            mediaFile.setComment(StringEscapeUtils.escapeHtml(request.getParameter("comment")));
             mediaFileService.updateMediaFile(mediaFile);
         }
 

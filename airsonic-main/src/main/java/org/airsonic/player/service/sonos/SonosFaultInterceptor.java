@@ -26,6 +26,7 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.phase.Phase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,6 +38,7 @@ import javax.xml.namespace.QName;
  * @author Sindre Mehus
  * @version $Id$
  */
+@Component
 public class SonosFaultInterceptor extends AbstractSoapInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(SonosFaultInterceptor.class);

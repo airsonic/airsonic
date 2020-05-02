@@ -22,7 +22,7 @@
     <c:otherwise>
         <fmt:message key="passwordsettings.title" var="title"><fmt:param>${command.username}</fmt:param></fmt:message>
         <h2>${fn:escapeXml(title)}</h2>
-        <form:form method="post" action="passwordSettings.view" commandName="command">
+        <form:form method="post" action="passwordSettings.view" modelAttribute="command">
             <form:hidden path="username"/>
             <table class="indent">
                 <tr>
@@ -37,8 +37,8 @@
                 </tr>
                 <tr>
                     <td colspan="3" style="padding-top:1.5em">
-                        <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-                        <a href='nowPlaying.view'><input type="button" value="<fmt:message key="common.cancel"/>"></a>
+                        <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em">
+                        <a href='nowPlaying.view'><input type="button" value="<fmt:message key='common.cancel'/>"></a>
                     </td>
                 </tr>
 

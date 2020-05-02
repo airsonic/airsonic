@@ -19,9 +19,10 @@
  */
 package org.airsonic.player.service;
 
-import com.jayway.jsonpath.JsonPath;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.airsonic.player.domain.Version;
-import org.apache.commons.io.IOUtils;
+import org.airsonic.player.util.FileUtil;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
@@ -29,20 +30,15 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -188,22 +184,18 @@ public class VersionService {
      * @param resourceName The resource name.
      * @return The first line of the resource.
      */
-    private String readLineFromResource(String resourceName) {
+    private String readLineFromResource(@NonNull String resourceName) {
         InputStream in = VersionService.class.getResourceAsStream(resourceName);
         if (in == null) {
             return null;
         }
-        BufferedReader reader = null;
-        try {
 
-            reader = new BufferedReader(new InputStreamReader(in));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             return reader.readLine();
-
         } catch (IOException x) {
             return null;
         } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(in);
+            FileUtil.closeQuietly(in);
         }
     }
 
@@ -224,7 +216,7 @@ public class VersionService {
         }
     }
 
-    private final String JSON_PATH = "$..tag_name";
+    private final static String JSON_PATH = "$..tag_name";
     private final Pattern VERSION_REGEX = Pattern.compile("^v(.*)");
     private static final String VERSION_URL = "https://api.github.com/repos/airsonic/airsonic/releases";
 
@@ -249,7 +241,10 @@ public class VersionService {
             return;
         }
 
-        List<String> unsortedTags = JsonPath.read(content, JSON_PATH);
+        List<String>unsortedTags = new LinkedList<>();
+        for (JsonNode item: new ObjectMapper().readTree(content)) {
+            unsortedTags.add(item.path("tag_name").asText());
+        }
 
         Function<String, Version> convertToVersion = s -> {
             Matcher match = VERSION_REGEX.matcher(s);

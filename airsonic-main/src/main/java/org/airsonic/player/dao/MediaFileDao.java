@@ -31,6 +31,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -42,11 +43,11 @@ import java.util.*;
  */
 @Repository
 public class MediaFileDao extends AbstractDao {
-    private static final Logger logger = LoggerFactory.getLogger(MediaFileDao.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MediaFileDao.class);
     private static final String INSERT_COLUMNS = "path, folder, type, format, title, album, artist, album_artist, disc_number, " +
                                                 "track_number, year, genre, bit_rate, variable_bit_rate, duration_seconds, file_size, width, height, cover_art_path, " +
                                                 "parent_path, play_count, last_played, comment, created, changed, last_scanned, children_last_updated, present, " +
-                                                "version, mb_release_id";
+                                                "version, mb_release_id, mb_recording_id";
 
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private static final String GENRE_COLUMNS = "name, song_count, album_count";
@@ -54,8 +55,8 @@ public class MediaFileDao extends AbstractDao {
     public static final int VERSION = 4;
 
     private final RowMapper<MediaFile> rowMapper = new MediaFileMapper();
-    private final RowMapper musicFileInfoRowMapper = new MusicFileInfoMapper();
-    private final RowMapper genreRowMapper = new GenreMapper();
+    private final RowMapper<MediaFile> musicFileInfoRowMapper = new MusicFileInfoMapper();
+    private final RowMapper<Genre> genreRowMapper = new GenreMapper();
 
     /**
      * Returns the media file for the given path.
@@ -133,7 +134,7 @@ public class MediaFileDao extends AbstractDao {
      */
     @Transactional
     public void createOrUpdateMediaFile(MediaFile file) {
-        logger.trace("Creating/Updating new media file at {}", file.getPath());
+        LOG.trace("Creating/Updating new media file at {}", file.getPath());
         String sql = "update media_file set " +
                      "folder=?," +
                      "type=?," +
@@ -162,10 +163,11 @@ public class MediaFileDao extends AbstractDao {
                      "children_last_updated=?," +
                      "present=?, " +
                      "version=?, " +
-                     "mb_release_id=? " +
+                     "mb_release_id=?, " +
+                     "mb_recording_id=? " +
                      "where path=?";
 
-        logger.trace("Updating media file {}", Util.debugObject(file));
+        LOG.trace("Updating media file {}", Util.debugObject(file));
 
         int n = update(sql,
                        file.getFolder(), file.getMediaType().name(), file.getFormat(), file.getTitle(), file.getAlbumName(), file.getArtist(),
@@ -173,7 +175,7 @@ public class MediaFileDao extends AbstractDao {
                        file.isVariableBitRate(), file.getDurationSeconds(), file.getFileSize(), file.getWidth(), file.getHeight(),
                        file.getCoverArtPath(), file.getParentPath(), file.getPlayCount(), file.getLastPlayed(), file.getComment(),
                        file.getChanged(), file.getLastScanned(), file.getChildrenLastUpdated(), file.isPresent(), VERSION,
-                       file.getMusicBrainzReleaseId(), file.getPath());
+                       file.getMusicBrainzReleaseId(), file.getMusicBrainzRecordingId(), file.getPath());
 
         if (n == 0) {
 
@@ -191,7 +193,7 @@ public class MediaFileDao extends AbstractDao {
                    file.isVariableBitRate(), file.getDurationSeconds(), file.getFileSize(), file.getWidth(), file.getHeight(),
                    file.getCoverArtPath(), file.getParentPath(), file.getPlayCount(), file.getLastPlayed(), file.getComment(),
                    file.getCreated(), file.getChanged(), file.getLastScanned(),
-                   file.getChildrenLastUpdated(), file.isPresent(), VERSION, file.getMusicBrainzReleaseId());
+                   file.getChildrenLastUpdated(), file.isPresent(), VERSION, file.getMusicBrainzReleaseId(), file.getMusicBrainzRecordingId());
         }
 
         int id = queryForInt("select id from media_file where path=?", null, file.getPath());
@@ -591,7 +593,70 @@ public class MediaFileDao extends AbstractDao {
 
         query += " order by rand()";
 
-        return namedQueryWithLimit(query, rowMapper, args, criteria.getCount());
+        query += " limit " + criteria.getCount();
+
+        return namedQuery(query, rowMapper, args);
+    }
+
+    /**
+     * Return a list of media file objects that don't belong to an existing music folder
+     * @param count maximum number of media file objects to return
+     * @param excludeFolders music folder paths excluded from the results
+     * @return a list of media files, sorted by id
+     */
+    public List<MediaFile> getFilesInNonPresentMusicFolders(final int count, List<String> excludeFolders) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("excludeFolders", excludeFolders);
+        args.put("count", count);
+        return namedQuery(
+                "SELECT " + prefix(QUERY_COLUMNS, "media_file") + " FROM media_file " +
+                "LEFT OUTER JOIN music_folder ON music_folder.path = media_file.folder " +
+                "WHERE music_folder.id IS NULL " +
+                "AND media_file.folder NOT IN (:excludeFolders) " +
+                "ORDER BY media_file.id LIMIT :count",
+                rowMapper, args);
+    }
+
+    /**
+     * Count the number of media files that don't belong to an existing music folder
+     * @param excludeFolders music folder paths excluded from the results
+     * @return a number of media file rows in the database
+     */
+    public int getFilesInNonPresentMusicFoldersCount(List<String> excludeFolders) {
+        Map<String, Object> args = new HashMap<>();
+        args.put("excludeFolders", excludeFolders);
+        return namedQueryForInt(
+                "SELECT count(media_file.id) FROM media_file " +
+                "LEFT OUTER JOIN music_folder ON music_folder.path = media_file.folder " +
+                "WHERE music_folder.id IS NULL " +
+                "AND media_file.folder NOT IN (:excludeFolders) ",
+                0, args);
+    }
+
+    /**
+     * Return a list of media file objects whose path don't math their music folder
+     * @param count maximum number of media file objects to return
+     * @return a list of media files, sorted by id
+     */
+    public List<MediaFile> getFilesWithMusicFolderMismatch(final int count) {
+        return query(
+                "SELECT " + prefix(QUERY_COLUMNS, "media_file") + " FROM media_file " +
+                "WHERE media_file.path != media_file.folder " +
+                "AND media_file.path NOT LIKE concat(media_file.folder, concat(?, '%')) " +
+                "ORDER BY media_file.id LIMIT ?",
+                rowMapper, File.separator, count);
+    }
+
+    /**
+     * Count the number of media files whose path don't math their music folder
+     * @return a number of media file rows in the database
+     */
+    public int getFilesWithMusicFolderMismatchCount() {
+        return queryForInt(
+                "SELECT count(media_file.id) FROM media_file " +
+                "WHERE media_file.path != media_file.folder " +
+                "AND media_file.path NOT LIKE concat(media_file.folder, '/%')",
+                0);
     }
 
     public int getAlbumCount(final List<MusicFolder> musicFolders) {
@@ -646,19 +711,36 @@ public class MediaFileDao extends AbstractDao {
     }
 
     public void markPresent(String path, Date lastScanned) {
-        update("update media_file set present=?, last_scanned=? where path=?", true, lastScanned, path);
+        update("update media_file set present=?, last_scanned = ? where path=?", true, lastScanned, path);
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from media_file where last_scanned != ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from media_file where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from media_file where last_scanned < ? and present", 0, lastScanned);
+        int maxId = queryForInt("select max(id) from media_file where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
         Date childrenLastUpdated = new Date(0L);  // Used to force a children rescan if file is later resurrected.
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("update media_file set present=false, children_last_updated=? where id between ? and ? and last_scanned != ? and present",
+            update("update media_file set present=false, children_last_updated=? where id between ? and ? and " +
+                            "last_scanned < ? and present",
                    childrenLastUpdated, id, id + batchSize, lastScanned);
         }
+    }
+
+    public List<Integer> getArtistExpungeCandidates() {
+        return queryForInts("select id from media_file where media_file.type = ? and not present",
+                MediaFile.MediaType.DIRECTORY.name());
+    }
+
+    public List<Integer> getAlbumExpungeCandidates() {
+        return queryForInts("select id from media_file where media_file.type = ? and not present",
+                MediaFile.MediaType.ALBUM.name());
+    }
+
+    public List<Integer> getSongExpungeCandidates() {
+        return queryForInts("select id from media_file where media_file.type in (?,?,?,?) and not present",
+                MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(),
+                MediaFile.MediaType.AUDIOBOOK.name(), MediaFile.MediaType.VIDEO.name());
     }
 
     public void expunge() {
@@ -704,7 +786,8 @@ public class MediaFileDao extends AbstractDao {
                     rs.getTimestamp(28),
                     rs.getBoolean(29),
                     rs.getInt(30),
-                    rs.getString(31));
+                    rs.getString(31),
+                    rs.getString(32));
         }
     }
 

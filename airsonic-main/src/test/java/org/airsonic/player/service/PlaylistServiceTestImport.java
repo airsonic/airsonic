@@ -19,7 +19,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 import java.io.ByteArrayInputStream;
@@ -95,7 +95,7 @@ public class PlaylistServiceTestImport {
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
-        String path = "/path/to/"+playlistName+".m3u";
+        String path = "/path/to/" + playlistName + ".m3u";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
         verify(playlistDao).setFilesInPlaylist(eq(23), medias.capture());
@@ -129,7 +129,7 @@ public class PlaylistServiceTestImport {
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
-        String path = "/path/to/"+playlistName+".pls";
+        String path = "/path/to/" + playlistName + ".pls";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
         verify(playlistDao).setFilesInPlaylist(eq(23), medias.capture());
@@ -166,7 +166,7 @@ public class PlaylistServiceTestImport {
         doAnswer(new PersistPlayList(23)).when(playlistDao).createPlaylist(any());
         doAnswer(new MediaFileHasEverything()).when(mediaFileService).getMediaFile(any(File.class));
         InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
-        String path = "/path/to/"+playlistName+".xspf";
+        String path = "/path/to/" + playlistName + ".xspf";
         playlistService.importPlaylist(username, playlistName, path, inputStream, null);
         verify(playlistDao).createPlaylist(actual.capture());
         verify(playlistDao).setFilesInPlaylist(eq(23), medias.capture());
@@ -182,25 +182,25 @@ public class PlaylistServiceTestImport {
         assertEquals(3, mediaFiles.size());
     }
 
-    private class PersistPlayList implements Answer {
+    private static class PersistPlayList implements Answer {
         private final int id;
         public PersistPlayList(int id) {
             this.id = id;
         }
 
         @Override
-        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-            Playlist playlist = invocationOnMock.getArgumentAt(0, Playlist.class);
+        public Object answer(InvocationOnMock invocationOnMock) {
+            Playlist playlist = invocationOnMock.getArgument(0);
             playlist.setId(id);
             return null;
         }
     }
 
-    private class MediaFileHasEverything implements Answer {
+    private static class MediaFileHasEverything implements Answer {
 
         @Override
-        public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-            File file = invocationOnMock.getArgumentAt(0, File.class);
+        public Object answer(InvocationOnMock invocationOnMock) {
+            File file = invocationOnMock.getArgument(0);
             MediaFile mediaFile = new MediaFile();
             mediaFile.setPath(file.getPath());
             return mediaFile;

@@ -1,8 +1,6 @@
 
 package org.airsonic.player.service.search;
 
-import static org.junit.Assert.assertEquals;
-
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.domain.RandomSearchCriteria;
 import org.airsonic.player.domain.SearchCriteria;
@@ -15,8 +13,8 @@ import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
@@ -25,17 +23,15 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Test case for QueryFactory.
  * These cases have the purpose of observing the current situation
  * and observing the impact of upgrading Lucene.
  */
-@ContextConfiguration(
-        locations = {
-                "/applicationContext-service.xml",
-                "/applicationContext-cache.xml",
-                "/applicationContext-testdb.xml",
-                "/applicationContext-mockSonos.xml" })
+
+@SpringBootTest
 @DirtiesContext(
     classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class QueryFactoryTestCase {
@@ -68,19 +64,19 @@ public class QueryFactoryTestCase {
     private static final int FID2 = 20;
 
     private static final MusicFolder MUSIC_FOLDER1 =
-            new MusicFolder(Integer.valueOf(FID1), new File(PATH1), "music1", true, new java.util.Date());
-    private static final MusicFolder MUSIC_FOLDER2 = 
-            new MusicFolder(Integer.valueOf(FID2), new File(PATH2), "music2", true, new java.util.Date());
+            new MusicFolder(FID1, new File(PATH1), "music1", true, new java.util.Date());
+    private static final MusicFolder MUSIC_FOLDER2 =
+            new MusicFolder(FID2, new File(PATH2), "music2", true, new java.util.Date());
 
     private static final List<MusicFolder> SINGLE_FOLDERS = Arrays.asList(MUSIC_FOLDER1);
-    private static final List<MusicFolder> MULTI_FOLDERS  = Arrays.asList(MUSIC_FOLDER1, MUSIC_FOLDER2);
+    private static final List<MusicFolder> MULTI_FOLDERS = Arrays.asList(MUSIC_FOLDER1, MUSIC_FOLDER2);
 
 
     /*
      * XXX 3.x -> 8.x :
      * It does not change the basic functional requirements for the query.
      * However, some minor improvements are included.
-     * 
+     *
      *  - Use 'Or' instead of 'SpanOr'.
      *    This is suitable for 8.x document definition and query grammar.
      *    A more rigorous comparison.
@@ -93,7 +89,7 @@ public class QueryFactoryTestCase {
      *    Currently, these are "key" strings, both in the requirements and in the implementation.
      *    The legacy "normalize" is dirty code that compensates for the incomplete analytics implementation
      *    and is not necessary as long as proper key comparison can be done.
-     *    
+     *
      *    => Treating these strictly as keys enables DB reference.
      *       For example, can support multi-genre by creating a new genre field that implements another Tokenizer.
      *
@@ -127,13 +123,13 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.ALBUM);
         assertEquals("SearchAlbum",
-                "+((album:abc* artist:abc*) (album:def* artist:def*)) +(folder:" + PATH1
+                "+(((album:abc*)^1.1 artist:abc*) ((album:def*)^1.1 artist:def*)) +(folder:" + PATH1
                         + ")",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.ALBUM);
         assertEquals("SearchAlbum",
-                "+((album:abc* artist:abc*) (album:def* artist:def*)) +(folder:" + PATH1
+                "+(((album:abc*)^1.1 artist:abc*) ((album:def*)^1.1 artist:def*)) +(folder:" + PATH1
                         + " folder:" + PATH2 + ")",
                 query.toString());
     }
@@ -147,11 +143,11 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.SONG);
         assertEquals("SearchSong",
-                "+((title:abc* artist:abc*) (title:def* artist:def*)) +(folder:" + PATH1 + ")",
+                "+(((title:abc*)^1.1 artist:abc*) ((title:def*)^1.1 artist:def*)) +(folder:" + PATH1 + ")",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.SONG);
-        assertEquals("SearchSong", "+((title:abc* artist:abc*) (title:def* artist:def*)) +(folder:" + PATH1
+        assertEquals("SearchSong", "+(((title:abc*)^1.1 artist:abc*) ((title:def*)^1.1 artist:def*)) +(folder:" + PATH1
                 + " folder:" + PATH2 + ")", query.toString());
     }
 
@@ -182,13 +178,13 @@ public class QueryFactoryTestCase {
 
         Query query = queryFactory.search(criteria, SINGLE_FOLDERS, IndexType.ALBUM_ID3);
         assertEquals(
-                "SearchAlbumId3", "+((album:abc* artist:abc*) (album:def* artist:def*)) "
+                "SearchAlbumId3", "+(((album:abc*)^1.1 artist:abc*) ((album:def*)^1.1 artist:def*)) "
                         + "+(folderId:" + FID1 + ")",
                 query.toString());
 
         query = queryFactory.search(criteria, MULTI_FOLDERS, IndexType.ALBUM_ID3);
         assertEquals("SearchAlbumId3",
-                "+((album:abc* artist:abc*) (album:def* artist:def*)) +(folderId:"
+                "+(((album:abc*)^1.1 artist:abc*) ((album:def*)^1.1 artist:def*)) +(folderId:"
                         + FID1 + " folderId:"
                         + FID2 + ")",
                 query.toString());
@@ -215,15 +211,15 @@ public class QueryFactoryTestCase {
     @Test
     public void testGetRandomSongs() throws IOException {
         RandomSearchCriteria criteria = new RandomSearchCriteria(50, "Classic Rock",
-                Integer.valueOf(1900), Integer.valueOf(2000), SINGLE_FOLDERS);
+                1900, 2000, SINGLE_FOLDERS);
 
         Query query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
                 "+mediaType:MUSIC +genre:Classic Rock +year:[1900 TO 2000] +(folder:" + PATH1 + ")",
                 query.toString());
 
-        criteria = new RandomSearchCriteria(50, "Classic Rock", Integer.valueOf(1900),
-                Integer.valueOf(2000), MULTI_FOLDERS);
+        criteria = new RandomSearchCriteria(50, "Classic Rock", 1900,
+                2000, MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
                 "+mediaType:MUSIC +genre:Classic Rock +year:[1900 TO 2000] +(folder:" + PATH1 + " folder:" + PATH2
@@ -236,7 +232,7 @@ public class QueryFactoryTestCase {
                 "+mediaType:MUSIC +genre:Classic Rock +(folder:" + PATH1 + " folder:" + PATH2 + ")",
                 query.toString());
 
-        criteria = new RandomSearchCriteria(50, "Classic Rock", Integer.valueOf(1900), null,
+        criteria = new RandomSearchCriteria(50, "Classic Rock", 1900, null,
                 MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),
@@ -244,7 +240,7 @@ public class QueryFactoryTestCase {
                         + ")",
                 query.toString());
 
-        criteria = new RandomSearchCriteria(50, "Classic Rock", null, Integer.valueOf(2000),
+        criteria = new RandomSearchCriteria(50, "Classic Rock", null, 2000,
                 MULTI_FOLDERS);
         query = queryFactory.getRandomSongs(criteria);
         assertEquals(ToStringBuilder.reflectionToString(criteria),

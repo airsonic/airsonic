@@ -191,7 +191,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
     }
 
-    private void sendErrorXml(HttpServletRequest request, HttpServletResponse response, SubsonicRESTController.ErrorCode errorCode) throws IOException {
+    private void sendErrorXml(HttpServletRequest request, HttpServletResponse response, SubsonicRESTController.ErrorCode errorCode) {
         try {
             jaxbWriter.writeErrorResponse(request, response, errorCode, errorCode.getMessage());
         } catch (Exception e) {
@@ -199,7 +199,7 @@ public class RESTRequestParameterProcessingFilter implements Filter {
         }
     }
 
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
     public void destroy() {

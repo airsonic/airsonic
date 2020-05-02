@@ -7,7 +7,7 @@
 </head><body class="mainframe bgcolor1">
 
 <h1 style="padding-bottom: 1em">
-    <img src="<spring:theme code="playlistImage"/>" alt="">
+    <img src="<spring:theme code='playlistImage'/>" alt="">
     <span style="vertical-align: middle"><fmt:message key="left.playlists"/></span>
 </h1>
 

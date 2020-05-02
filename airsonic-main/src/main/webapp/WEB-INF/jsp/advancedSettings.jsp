@@ -4,7 +4,7 @@
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
     <script type="text/javascript" language="javascript">
         function enableLdapFields() {
             $("#ldap").is(":checked") ? $("#ldapTable").show() : $("#ldapTable").hide();
@@ -13,15 +13,13 @@
 </head>
 
 <body class="mainframe bgcolor1" onload="enableLdapFields()">
-<script type="text/javascript" src="<c:url value="/script/wz_tooltip.js"/>"></script>
-<script type="text/javascript" src="<c:url value="/script/tip_balloon.js"/>"></script>
 
 <c:import url="settingsHeader.jsp">
     <c:param name="cat" value="advanced"/>
     <c:param name="toast" value="${settings_toast}"/>
 </c:import>
 
-<form:form method="post" action="advancedSettings.view" commandName="command">
+<form:form method="post" action="advancedSettings.view" modelAttribute="command">
 
     <table style="white-space:nowrap" class="indent">
         <tr>
@@ -167,8 +165,8 @@
 
     <p class="warning"><fmt:message key="advancedsettings.ldapRequiresRestart"/></p>
 
-    <input type="submit" value="<fmt:message key="common.save"/>" style="margin-right:0.3em">
-    <a href="nowPlaying.view"><input type="button" value="<fmt:message key="common.cancel"/>"></a>
+    <input type="submit" value="<fmt:message key='common.save'/>" style="margin-right:0.3em">
+    <a href="nowPlaying.view"><input type="button" value="<fmt:message key='common.cancel'/>"></a>
 
 </form:form>
 

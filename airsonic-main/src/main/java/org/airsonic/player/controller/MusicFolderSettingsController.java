@@ -23,9 +23,11 @@ import org.airsonic.player.command.MusicFolderSettingsCommand;
 import org.airsonic.player.dao.AlbumDao;
 import org.airsonic.player.dao.ArtistDao;
 import org.airsonic.player.dao.MediaFileDao;
+import org.airsonic.player.domain.MediaLibraryStatistics;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.MediaScannerService;
 import org.airsonic.player.service.SettingsService;
+import org.airsonic.player.service.search.IndexManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,16 +65,18 @@ public class MusicFolderSettingsController {
     private AlbumDao albumDao;
     @Autowired
     private MediaFileDao mediaFileDao;
+    @Autowired
+    private IndexManager indexManager;
 
     @GetMapping
-    protected String displayForm() throws Exception {
+    protected String displayForm() {
         return "musicFolderSettings";
     }
 
     @ModelAttribute
     protected void formBackingObject(@RequestParam(value = "scanNow",required = false) String scanNow,
                                        @RequestParam(value = "expunge",required = false) String expunge,
-                                       Model model) throws Exception {
+                                       Model model) {
         MusicFolderSettingsCommand command = new MusicFolderSettingsCommand();
 
         if (scanNow != null) {
@@ -97,16 +101,41 @@ public class MusicFolderSettingsController {
     }
 
 
-    private void expunge() {
-        LOG.debug("Cleaning database...");
-        LOG.debug("Deleting non-present artists...");
-        artistDao.expunge();
-        LOG.debug("Deleting non-present albums...");
-        albumDao.expunge();
-        LOG.debug("Deleting non-present media files...");
-        mediaFileDao.expunge();
-        LOG.debug("Database cleanup complete.");
-        mediaFileDao.checkpoint();
+    private synchronized void expunge() {
+
+        MediaLibraryStatistics statistics = indexManager.getStatistics();
+
+        /*
+         * indexManager#expunge depends on DB delete flag.
+         * For consistency, clean of DB and Lucene must run in one block.
+         *
+         * Lucene's writing is exclusive.
+         * This process cannot be performed
+         * while during scan or scan has never been performed.
+         */
+        if (statistics != null && !mediaScannerService.isScanning()) {
+
+            // to be before dao#expunge
+            LOG.debug("Cleaning search index...");
+            indexManager.startIndexing();
+            indexManager.expunge();
+            indexManager.stopIndexing(statistics);
+            LOG.debug("Search index cleanup complete.");
+
+            // to be after indexManager#expunge
+            LOG.debug("Cleaning database...");
+            LOG.debug("Deleting non-present artists...");
+            artistDao.expunge();
+            LOG.debug("Deleting non-present albums...");
+            albumDao.expunge();
+            LOG.debug("Deleting non-present media files...");
+            mediaFileDao.expunge();
+            LOG.debug("Database cleanup complete.");
+            mediaFileDao.checkpoint();
+
+        } else {
+            LOG.warn("Index hasn't been created yet or during scanning. Plese execute clean up after scan is completed.");
+        }
     }
 
     private List<MusicFolderSettingsCommand.MusicFolderInfo> wrap(List<MusicFolder> musicFolders) {
@@ -114,7 +143,7 @@ public class MusicFolderSettingsController {
     }
 
     @PostMapping
-    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String onSubmit(@ModelAttribute("command") MusicFolderSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         for (MusicFolderSettingsCommand.MusicFolderInfo musicFolderInfo : command.getMusicFolders()) {
             if (musicFolderInfo.isDelete()) {

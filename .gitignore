@@ -110,6 +110,12 @@ local.properties
 # Eclipse Core
 .project
 
+# m2e-code-quality Eclipse IDE plugin temporary configuration files for Eclipse CS Checkstyle / PMD / SpotBugs Plug-Ins
+.checkstyle
+.pmd
+.pmdruleset.xml
+.fbExcludeFilterFile
+
 # Intellij
 *.iml
 .idea

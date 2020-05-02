@@ -27,11 +27,10 @@ import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.StatusService;
 import org.airsonic.player.upload.MonitoredDiskFileItemFactory;
 import org.airsonic.player.upload.UploadListener;
-import org.airsonic.player.util.StringUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +71,7 @@ public class UploadController {
     public static final String UPLOAD_STATUS = "uploadStatus";
 
     @PostMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         Map<String, Object> map = new HashMap<>();
         List<File> uploadedFiles = new ArrayList<>();
@@ -127,7 +126,7 @@ public class UploadController {
                         File targetFile = new File(dir, new File(fileName).getName());
 
                         if (!securityService.isUploadAllowed(targetFile)) {
-                            throw new Exception("Permission denied: " + StringUtil.toHtml(targetFile.getPath()));
+                            throw new Exception("Permission denied: " + StringEscapeUtils.escapeHtml(targetFile.getPath()));
                         }
 
                         if (!dir.exists()) {
@@ -174,22 +173,20 @@ public class UploadController {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
                 File entryFile = new File(file.getParentFile(), entry.getName());
                 if (!entryFile.toPath().normalize().startsWith(file.getParentFile().toPath())) {
-                    throw new Exception("Bad zip filename: " + StringUtil.toHtml(entryFile.getPath()));
+                    throw new Exception("Bad zip filename: " + StringEscapeUtils.escapeHtml(entryFile.getPath()));
                 }
 
                 if (!entry.isDirectory()) {
 
                     if (!securityService.isUploadAllowed(entryFile)) {
-                        throw new Exception("Permission denied: " + StringUtil.toHtml(entryFile.getPath()));
+                        throw new Exception("Permission denied: " + StringEscapeUtils.escapeHtml(entryFile.getPath()));
                     }
 
                     entryFile.getParentFile().mkdirs();
-                    InputStream inputStream = null;
-                    OutputStream outputStream = null;
-                    try {
-                        inputStream = zipFile.getInputStream(entry);
-                        outputStream = new FileOutputStream(entryFile);
-
+                    try (
+                            OutputStream outputStream = new FileOutputStream(entryFile);
+                            InputStream inputStream = zipFile.getInputStream(entry)
+                    ) {
                         byte[] buf = new byte[8192];
                         while (true) {
                             int n = inputStream.read(buf);
@@ -198,19 +195,14 @@ public class UploadController {
                             }
                             outputStream.write(buf, 0, n);
                         }
-
                         LOG.info("Unzipped " + entryFile);
                         unzippedFiles.add(entryFile);
-                    } finally {
-                        IOUtils.closeQuietly(inputStream);
-                        IOUtils.closeQuietly(outputStream);
                     }
                 }
             }
 
             zipFile.close();
             file.delete();
-
         }
     }
 

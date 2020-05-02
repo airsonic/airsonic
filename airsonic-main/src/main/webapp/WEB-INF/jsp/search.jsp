@@ -24,7 +24,7 @@
 <body class="mainframe bgcolor1">
 
 <h1>
-    <img src="<spring:theme code="searchImage"/>" alt=""/>
+    <img src="<spring:theme code='searchImage'/>" alt=""/>
     <span style="vertical-align: middle"><fmt:message key="search.title"/></span>
 </h1>
 

@@ -166,11 +166,22 @@ public class SecurityService implements UserDetailsService {
      * Returns whether the given user has administrative rights.
      */
     public boolean isAdmin(String username) {
-        if (User.USERNAME_ADMIN.equals(username)) {
-            return true;
-        }
         User user = getUserByName(username);
         return user != null && user.isAdminRole();
+    }
+
+    /**
+     * Returns username with admin rights.
+     *
+     * @return username of admin user
+     */
+    public String getAdminUsername() {
+        for (User user : userDao.getAllUsers()) {
+            if (user.isAdminRole()) {
+                return user.getUsername();
+            }
+        }
+        return null;
     }
 
     /**

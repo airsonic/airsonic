@@ -4,12 +4,14 @@ import org.airsonic.player.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Component
 public class LoggingExceptionResolver implements HandlerExceptionResolver, Ordered {
 
     private static final Logger LOG = LoggerFactory.getLogger(LoggingExceptionResolver.class);
@@ -21,9 +23,7 @@ public class LoggingExceptionResolver implements HandlerExceptionResolver, Order
         // This happens often and outside of the control of the server, so
         // we catch Tomcat/Jetty "connection aborted by client" exceptions
         // and display a short error message.
-        boolean shouldCatch = false;
-        shouldCatch |= Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
-        shouldCatch |= Util.isInstanceOfClassName(e, "org.eclipse.jetty.io.EofException");
+        boolean shouldCatch = Util.isInstanceOfClassName(e, "org.apache.catalina.connector.ClientAbortException");
         if (shouldCatch) {
             LOG.info("{}: Client unexpectedly closed connection while loading {} ({})", request.getRemoteAddr(), Util.getAnonymizedURLForRequest(request), e.getCause().toString());
             return null;
