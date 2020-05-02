@@ -657,7 +657,8 @@ public class PodcastService {
 
         File channelDir = getChannelDirectory(channel);
 
-        String episodeDate = String.format("%tY-%tm-%td", episode.getPublishDate());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String episodeDate = simpleDateFormat.format(episode.getPublishDate());
         String filename = channel.getTitle() + " - " + episodeDate + " - " + episode.getId() + " - " + episode.getTitle();
         filename = filename.substring(0, Math.min(filename.length(), 146));
 
