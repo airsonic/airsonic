@@ -44,14 +44,11 @@ public class SearchServiceImpl implements SearchService {
     private static final Logger LOG = LoggerFactory.getLogger(SearchServiceImpl.class);
 
     @Autowired
-    private QueryFactory           queryFactory;
+    private QueryFactory queryFactory;
     @Autowired
-    private IndexManager           indexManager;
+    private IndexManager indexManager;
     @Autowired
     private SearchServiceUtilities util;
-
-    // TODO Should be changed to SecureRandom?
-    private final Random random = new Random(System.currentTimeMillis());
 
     @Override
     public SearchResult search(SearchCriteria criteria, List<MusicFolder> musicFolders,
@@ -93,13 +90,9 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * Common processing of random method.
-     * 
+     *
      * @param count Number of albums to return.
-     * @param searcher
-     * @param query
      * @param id2ListCallBack Callback to get D from id and store it in List
-     * @return result
-     * @throws IOException
      */
     private final <D> List<D> createRandomDocsList(
             int count, IndexSearcher searcher, Query query, BiConsumer<List<D>, Integer> id2ListCallBack)
@@ -112,7 +105,7 @@ public class SearchServiceImpl implements SearchService {
 
         List<D> result = new ArrayList<>();
         while (!docs.isEmpty() && result.size() < count) {
-            int randomPos = random.nextInt(docs.size());
+            int randomPos = util.nextInt.apply(docs.size());
             Document document = searcher.doc(docs.get(randomPos));
             id2ListCallBack.accept(result, util.getId.apply(document));
             docs.remove(randomPos);

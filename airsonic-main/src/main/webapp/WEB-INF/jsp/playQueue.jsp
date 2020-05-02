@@ -1,16 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="iso-8859-1"%>
 <html><head>
     <%@ include file="head.jsp" %>
     <%@ include file="jquery.jsp" %>
-    <script type="text/javascript" src="<c:url value="/script/utils.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/nowPlayingService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playQueueService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/interface/playlistService.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/engine.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/dwr/util.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/mediaelement/mediaelement-and-player.min.js"/>"></script>
-    <script type="text/javascript" src="<c:url value="/script/playQueueCast.js"/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/utils.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/nowPlayingService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/playQueueService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/interface/playlistService.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/engine.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/dwr/util.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/mediaelement/mediaelement-and-player.min.js'/>"></script>
+    <script type="text/javascript" src="<c:url value='/script/playQueueCast.js'/>"></script>
     <style type="text/css">
         .ui-slider .ui-slider-handle {
             width: 11px;
@@ -40,6 +40,9 @@
 
     // Stream URL of the media being played
     var currentStreamUrl = null;
+
+    // Current song being played
+    var currentSong = null;
 
     // Is autorepeat enabled?
     var repeatEnabled = false;
@@ -139,6 +142,8 @@
     function onHidePlayQueue() {
       setFrameHeight(50);
       isVisible = false;
+      $(".playqueue-shown").hide();
+      $(".playqueue-hidden").show();
     }
 
     function onShowPlayQueue() {
@@ -146,6 +151,8 @@
       height = Math.min(height, window.top.innerHeight * 0.8);
       setFrameHeight(height);
       isVisible = true;
+      $(".playqueue-shown").show();
+      $(".playqueue-hidden").hide();
     }
 
     function onTogglePlayQueue() {
@@ -187,30 +194,50 @@
             getPlayQueue();
         <c:if test="${not model.player.web}">
             currentStreamUrl = nowPlayingInfo.streamUrl;
-            updateCurrentImage();
+            currentSong = null;
+            onPlaying();
         </c:if>
         }
     }
 
+    /**
+     * Callback function called when playback for the current song has ended.
+     */
     function onEnded() {
         onNext(repeatEnabled);
     }
 
-    function createMediaElementPlayer() {
+    /**
+     * Callback function called when playback for the current song has started.
+     */
+    function onPlaying() {
+        updateCurrentImage();
 
-        var player = $('#audioPlayer').get(0);
+        if (currentSong) {
+            updateWindowTitle(currentSong);
+            <c:if test="${model.notify}">
+            showNotification(currentSong);
+            </c:if>
+        }
+    }
+
+    /**
+     * Initialize the Media Element Player, including callbacks.
+     */
+    function createMediaElementPlayer() {
+        // Manually run MediaElement.js initialization.
+        //
+        // Warning: Bugs will happen if MediaElement.js is not initialized when
+        // we modify the media elements (e.g. adding event handlers). Running
+        // MediaElement.js's automatic initialization does not guarantee that
+        // (it depends on when we call createMediaElementPlayer at load time).
+        $('#audioPlayer').mediaelementplayer();
 
         // Once playback reaches the end, go to the next song, if any.
-        player.addEventListener("ended", onEnded);
+        $('#audioPlayer').on("ended", onEnded);
 
-        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
-        //
-        // Once a media is loaded, we can start playback, but not before.
-        //
-        // Trying to start playback after a song has endred but before the
-        // 'canplay' event for the next song currently causes a race condition
-        // in the MediaElement.js player (4.2.10).
-        player.addEventListener("canplay", function() { player.play(); });
+        // Whenever playback starts, show a notification for the current playing song.
+        $('#audioPlayer').on("playing", onPlaying);
     }
 
     function getPlayQueue() {
@@ -238,7 +265,7 @@
                 $('#audioPlayer').get(0).play();  // Resume playing if the player was paused
             }
             else {
-                skip(0);  // Start the first track if the player was not yet loaded
+                loadPlayer(0);  // Start the first track if the player was not yet loaded
             }
         } else {
             playQueueService.start(playQueueCallback);
@@ -318,7 +345,7 @@
     function onSkip(index) {
     <c:choose>
     <c:when test="${model.player.web}">
-        skip(index);
+        loadPlayer(index);
     </c:when>
     <c:otherwise>
         currentStreamUrl = songs[index].streamUrl;
@@ -383,6 +410,9 @@
     }
     function onAddNext(id) {
         playQueueService.addAt(id, getCurrentSongIndex() + 1, playQueueCallback);
+    }
+    function onAddPlaylist(id) {
+        playQueueService.addPlaylist(id, playQueueCallback);
     }
     function onShuffle() {
         playQueueService.shuffle(playQueueCallback);
@@ -529,6 +559,12 @@
             $("#empty").hide();
         }
 
+        // On the web player, the play button is handled by MEJS and does
+        // nothing if a first song hasn't been loaded.
+        <c:if test="${model.player.web}">
+        if (songs.length > 0 && !currentStreamUrl) preparePlayer(0);
+        </c:if>
+
         // Delete all the rows except for the "pattern" row
         dwr.util.removeAllRows("playlistBody", { filter:function(tr) {
             return (tr.id != "pattern");
@@ -641,7 +677,7 @@
     function triggerPlayer(index, positionMillis) {
         if (index != -1) {
             if (songs.length > index) {
-                skip(index);
+                loadPlayer(index);
                 if (positionMillis != 0) {
                     $('#audioPlayer').get(0).currentTime = positionMillis / 1000;
                 }
@@ -653,68 +689,126 @@
         }
     }
 
-    function loadMediaElementPlayer(song, position) {
-        var player = $('#audioPlayer').get(0);
-
-        // Is this a new song?
-        if (player.src != song.streamUrl) {
-            // Stop the current playing song and change the media source.
-            player.src = song.streamUrl;
-            // Inform MEJS that we need to load a new media source. The
-            // 'canplay' event will be fired once playback is possible.
-            player.load();
-            // The 'skip' function takes a 'position' argument. We don't
-            // usually send it, and in this case it's better to do nothing.
-            // Otherwise, the 'canplay' event will also be fired after
-            // setting 'currentTime'.
-            if (position && position > 0) {
-                player.currentTime = position;
-            }
-
-        // Are we seeking on an already-playing song?
-        } else {
-            // Seeking also starts playing. The 'canplay' event will be
-            // fired after setting 'currentTime'.
-            player.currentTime = position || 0;
-        }
-
-        // FIXME: Uncomment once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
-        //
-        // Calling 'player.play()' at this point may work by chance, but it's
-        // not guaranteed in the current MediaElement.js player (4.2.10).  See
-        // the 'createMediaElementPlayer()' function above.
-        //
-        // player.play();
-
-        // FIXME: Remove once https://github.com/mediaelement/mediaelement/issues/2650 is fixed.
-        //
-        // Instead, we're triggering a 'waiting' event so that the player shows
-        // a progress bar to indicate that it's loading the stream.
-        player.dispatchEvent(new Event("waiting"));
+    /**
+     * Return the current Media Element Player instance
+     */
+    function getMediaElementPlayer() {
+        return $('#audioPlayer').get(0);
     }
 
-    function skip(index, position) {
+    /**
+     * Prepare playback for a song on the Cast player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function prepareCastPlayer(song, position) {
+        // The Cast player does not support preloading a song, so we don't do
+        // anything here and return directly.
+    }
+
+    /**
+     * Prepare playback for a song on the Media Element player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function prepareMediaElementPlayer(song, position) {
+        // The Media Element player supports setting the current song URL,
+        // which allows the user to start playback by interacting with the
+        // controls, without going through the Airsonic code.
+        getMediaElementPlayer().src = song.streamUrl;
+    }
+
+    /**
+     * Start playing a song on the Cast player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function loadCastPlayer(song, position, prepareOnly) {
+        // Start playback immediately
+        CastPlayer.loadCastMedia(song, position);
+        // The Cast player does not handle events, so we call the 'onPlaying' function manually.
+        onPlaying();
+    }
+
+    /**
+     * Start playing a song on the Media Element player.
+     *
+     * @param song         song object
+     * @param position     position in the song, in seconds
+     */
+    function loadMediaElementPlayer(song, position) {
+        // Retrieve the media element player
+        var player = getMediaElementPlayer();
+        // The player should have been prepared by `preparePlayer`, but if
+        // it hasn't we set it here so that the function behaves correctly.
+        if (player.src != song.streamUrl) player.src = song.streamUrl;
+        // Inform MEJS that we need to load the media source. The
+        // 'canplay' event will be fired once playback is possible.
+        player.load();
+        // The 'skip' function takes a 'position' argument. We don't
+        // usually send it, and in this case it's better to do nothing.
+        // Otherwise, the 'canplay' event will also be fired after
+        // setting 'currentTime'.
+        if (position && position > 0) {
+            player.currentTime = position;
+        }
+        // Start playback immediately. The 'onPlaying' function will be called
+        // when the player notifies us that playback has started.
+        player.play();
+    }
+
+    /**
+     * Prepare for playing a song by its index on the active player.
+     *
+     * The song is not played immediately, but set as the current song.
+     *
+     * The active player is then prepared for playback: in Media Element
+     * Player's case, for example, this lets the player start playback using
+     * its own controls without relying on Airsonic code.
+     *
+     * @param index        song index in the play queue
+     * @param position     position in the song, in seconds
+     */
+    function preparePlayer(index, position) {
+
+        // Check that the song index is valid for the current play queue
         if (index < 0 || index >= songs.length) {
             return;
         }
 
-        var song = songs[index];
-        currentStreamUrl = song.streamUrl;
-        updateCurrentImage();
+        // Set the current song, index and URL as global variables
+        currentSong = songs[index];
+        currentStreamUrl = currentSong.streamUrl;
 
-        // Handle ChromeCast player.
+        // Run player-specific preparation code
         if (CastPlayer.castSession) {
-            CastPlayer.loadCastMedia(song, position);
-        // Handle MediaElement (HTML5) player.
+            prepareCastPlayer(currentSong, position);
+        } else {
+            prepareMediaElementPlayer(currentSong, position);
+        }
+
+        return currentSong;
+    }
+
+    /**
+     * Start playing a song by its index on the active player.
+     *
+     * @param index        song index in the play queue
+     * @param position     position in the song, in seconds
+     */
+    function loadPlayer(index, position) {
+        // Prepare playback on the active player
+        var song = preparePlayer(index, position);
+        if (!song) return;
+        // Run player-specific code to start playback
+        if (CastPlayer.castSession) {
+            loadCastPlayer(song, position);
         } else {
             loadMediaElementPlayer(song, position);
         }
-
-        updateWindowTitle(song);
-
-        <c:if test="${model.notify}">
-        showNotification(song);
-        </c:if>
     }
 
     function updateWindowTitle(song) {
@@ -851,14 +945,14 @@
                     <c:if test="${model.player.web}">
                         <td>
                             <div id="player" style="width:340px; height:40px">
-                                <audio id="audioPlayer" class="mejs__player" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height"40px" tabindex="-1" />
+                                <audio id="audioPlayer" data-mejsoptions='{"alwaysShowControls": true, "enableKeyboard": false}' width="340px" height="40px" tabindex="-1" />
                             </div>
                             <div id="castPlayer" style="display: none">
                                 <div style="float:left">
-                                    <img alt="Play" id="castPlay" src="<spring:theme code="castPlayImage"/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
-                                    <img alt="Pause" id="castPause" src="<spring:theme code="castPauseImage"/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
-                                    <img alt="Mute on" id="castMuteOn" src="<spring:theme code="volumeImage"/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
-                                    <img alt="Mute off" id="castMuteOff" src="<spring:theme code="muteImage"/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
+                                    <img alt="Play" id="castPlay" src="<spring:theme code='castPlayImage'/>" onclick="CastPlayer.playCast()" style="cursor:pointer">
+                                    <img alt="Pause" id="castPause" src="<spring:theme code='castPauseImage'/>" onclick="CastPlayer.pauseCast()" style="cursor:pointer; display:none">
+                                    <img alt="Mute on" id="castMuteOn" src="<spring:theme code='volumeImage'/>" onclick="CastPlayer.castMuteOn()" style="cursor:pointer">
+                                    <img alt="Mute off" id="castMuteOff" src="<spring:theme code='muteImage'/>" onclick="CastPlayer.castMuteOff()" style="cursor:pointer; display:none">
                                 </div>
                                 <div style="float:left">
                                     <div id="castVolume" style="width:80px;height:4px;margin-left:10px;margin-right:10px;margin-top:8px"></div>
@@ -870,21 +964,21 @@
                             </div>
                         </td>
                         <td>
-                            <img alt="Cast on" id="castOn" src="<spring:theme code="castIdleImage"/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
-                            <img alt="Cast off" id="castOff" src="<spring:theme code="castActiveImage"/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast on" id="castOn" src="<spring:theme code='castIdleImage'/>" onclick="CastPlayer.launchCastApp()" style="cursor:pointer; display:none">
+                            <img alt="Cast off" id="castOff" src="<spring:theme code='castActiveImage'/>" onclick="CastPlayer.stopCastApp()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
                     <c:if test="${model.user.streamRole and not model.player.web}">
                         <td>
-                            <img alt="Start" id="start" src="<spring:theme code="castPlayImage"/>" onclick="onStart()" style="cursor:pointer">
-                            <img alt="Stop" id="stop" src="<spring:theme code="castPauseImage"/>" onclick="onStop()" style="cursor:pointer; display:none">
+                            <img alt="Start" id="start" src="<spring:theme code='castPlayImage'/>" onclick="onStart()" style="cursor:pointer">
+                            <img alt="Stop" id="stop" src="<spring:theme code='castPauseImage'/>" onclick="onStop()" style="cursor:pointer; display:none">
                         </td>
                     </c:if>
 
                     <c:if test="${model.player.jukebox}">
                         <td style="white-space:nowrap;">
-                            <img src="<spring:theme code="volumeImage"/>" alt="">
+                            <img src="<spring:theme code='volumeImage'/>" alt="">
                         </td>
                         <td style="white-space:nowrap;">
                             <div id="jukeboxVolume" style="width:80px;height:4px"></div>
@@ -897,55 +991,55 @@
 
                     <c:if test="${model.player.web}">
                         <td><span class="header">
-                            <img src="<spring:theme code="backImage"/>" alt="Play next" title="Play next" onclick="onPrevious()" style="cursor:pointer"></span>
+                            <img src="<spring:theme code='backImage'/>" alt="Play next" title="Play next" onclick="onPrevious()" style="cursor:pointer"></span>
                         </td>
                         <td><span class="header">
-                            <img src="<spring:theme code="forwardImage"/>" alt="Play next" title="Play next" onclick="onNext(false)" style="cursor:pointer"></span> |
+                            <img src="<spring:theme code='forwardImage'/>" alt="Play next" title="Play next" onclick="onNext(false)" style="cursor:pointer"></span> |
                         </td>
                     </c:if>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onClear()">
-                            <img src="<spring:theme code="clearImage"/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
+                        <a href="javascript:onClear()" class="player-control">
+                            <img src="<spring:theme code='clearImage'/>" alt="Clear playlist" title="Clear playlist" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onShuffle()" id="shuffleQueue">
-                            <img src="<spring:theme code="shuffleImage"/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
+                        <a href="javascript:onShuffle()" id="shuffleQueue" class="player-control">
+                            <img src="<spring:theme code='shuffleImage'/>" alt="Shuffle" title="Shuffle" style="cursor:pointer; height:18px">
                         </a>
                       </span> |</td>
 
                     <c:if test="${model.player.web or model.player.jukebox or model.player.external}">
                         <td style="white-space:nowrap;">
                           <span class="header">
-                            <a href="javascript:onToggleRepeat()" id="repeatQueue">
-                              <img id="toggleRepeat" src="<spring:theme code="repeatOn"/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
+                            <a href="javascript:onToggleRepeat()" id="repeatQueue" class="player-control">
+                              <img id="toggleRepeat" src="<spring:theme code='repeatOn'/>" alt="Toggle repeat" title="Toggle repeat" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
                     </c:if>
 
                     <td style="white-space:nowrap;">
                       <span class="header">
-                        <a href="javascript:onUndo()" id="undoQueue">
-                          <img src="<spring:theme code="undoImage"/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
+                        <a href="javascript:onUndo()" id="undoQueue" class="player-control">
+                          <img src="<spring:theme code='undoImage'/>" alt="Undo" title="Undo" style="cursor:pointer; height:18px">
                         </a>
                       </span>  |</td>
 
                     <c:if test="${model.user.settingsRole}">
                         <td style="white-space:nowrap;">
                           <span class="header">
-                            <a href="playerSettings.view?id=${model.player.id}" target="main">
-                              <img src="<spring:theme code="settingsImage"/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
+                            <a href="playerSettings.view?id=${model.player.id}" target="main" class="player-control">
+                              <img src="<spring:theme code='settingsImage'/>" alt="Settings" title="Settings" style="cursor:pointer; height:18px">
                             </a>
                           </span> |</td>
                     </c:if>
 
                     <td style="white-space:nowrap;"><select id="moreActions" onchange="actionSelected(this.options[selectedIndex].id)">
                         <option id="top" selected="selected"><fmt:message key="playlist.more"/></option>
-                        <optgroup label="<fmt:message key="playlist.more.playlist"/>">
+                        <optgroup label="<fmt:message key='playlist.more.playlist'/>">
                             <option id="savePlayQueue"><fmt:message key="playlist.saveplayqueue"/></option>
                             <option id="loadPlayQueue"><fmt:message key="playlist.loadplayqueue"/></option>
                             <option id="savePlaylist"><fmt:message key="playlist.save"/></option>
@@ -959,7 +1053,7 @@
                             <option id="sortByAlbum"><fmt:message key="playlist.more.sortbyalbum"/></option>
                             <option id="sortByArtist"><fmt:message key="playlist.more.sortbyartist"/></option>
                         </optgroup>
-                        <optgroup label="<fmt:message key="playlist.more.selection"/>">
+                        <optgroup label="<fmt:message key='playlist.more.selection'/>">
                             <option id="selectAll"><fmt:message key="playlist.more.selectall"/></option>
                             <option id="selectNone"><fmt:message key="playlist.more.selectnone"/></option>
                             <option id="removeSelected"><fmt:message key="playlist.remove"/></option>
@@ -970,6 +1064,15 @@
                         </optgroup>
                     </select>
                     </td>
+
+                    <c:if test="${not model.autoHide}">
+                    <td style="white-space:nowrap; text-align:right; width:100%; padding-right:1.5em">
+                      <a href="javascript:onTogglePlayQueue()">
+                        <img class="playqueue-shown" src="<spring:theme code='playQueueHide'/>" alt="Hide play queue" title="Hide play queue" style="cursor:pointer; height:18px;"/>
+                        <img class="playqueue-hidden" src="<spring:theme code='playQueueShow'/>" alt="Show play queue" title="Show play queue" style="cursor:pointer; height:18px; display: none;"/>
+                      </a>
+                    </td>
+                    </c:if>
 
                 </tr></table>
         </div>
@@ -986,11 +1089,11 @@
     <tbody id="playlistBody">
         <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
             <td class="fit">
-                <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code="ratingOffImage"/>"
+                <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code='ratingOffImage'/>"
                      style="cursor:pointer;height:18px;" alt="" title=""></td>
             <td class="fit">
-                <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code="removeImage"/>"
-                     style="cursor:pointer; height:18px;" alt="<fmt:message key="playlist.remove"/>" title="<fmt:message key="playlist.remove"/>"></td>
+                <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code='removeImage'/>"
+                     style="cursor:pointer; height:18px;" alt="<fmt:message key='playlist.remove'/>" title="<fmt:message key='playlist.remove'/>"></td>
             <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
 
             <c:if test="${model.visibility.trackNumberVisible}">
@@ -998,7 +1101,7 @@
             </c:if>
 
             <td class="truncate">
-                <img id="currentImage" src="<spring:theme code="currentImage"/>" alt="" style="display:none;padding-right: 0.5em">
+                <img id="currentImage" src="<spring:theme code='currentImage'/>" alt="" style="display:none;padding-right: 0.5em">
                 <c:choose>
                     <c:when test="${model.player.externalWithPlaylist}">
                         <span id="title" class="songTitle">Title</span>
@@ -1039,7 +1142,7 @@
 
 <div style="height:3.2em"></div>
 
-<div id="dialog-select-playlist" title="<fmt:message key="main.addtoplaylist.title"/>" style="display: none;">
+<div id="dialog-select-playlist" title="<fmt:message key='main.addtoplaylist.title'/>" style="display: none;">
     <p><fmt:message key="main.addtoplaylist.text"/></p>
     <div id="dialog-select-playlist-list"></div>
 </div>

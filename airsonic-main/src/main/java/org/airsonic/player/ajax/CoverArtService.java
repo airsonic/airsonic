@@ -24,8 +24,9 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.LastFmService;
 import org.airsonic.player.service.MediaFileService;
 import org.airsonic.player.service.SecurityService;
-import org.airsonic.player.util.StringUtil;
+import org.airsonic.player.util.FileUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -108,7 +109,7 @@ public class CoverArtService {
                 // Check permissions.
                 File newCoverFile = new File(path, "cover." + suffix);
                 if (!securityService.isWriteAllowed(newCoverFile)) {
-                    throw new Exception("Permission denied: " + StringUtil.toHtml(newCoverFile.getPath()));
+                    throw new Exception("Permission denied: " + StringEscapeUtils.escapeHtml(newCoverFile.getPath()));
                 }
 
                 // If file exists, create a backup.
@@ -147,19 +148,21 @@ public class CoverArtService {
                 }
             }
         } finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(output);
+            FileUtil.closeQuietly(input);
+            FileUtil.closeQuietly(output);
         }
     }
 
     private boolean isMediaFile(File file) {
-        return !mediaFileService.filterMediaFiles(new File[]{file}).isEmpty();
+        return mediaFileService.includeMediaFile(file);
     }
 
     private void backup(File newCoverFile, File backup) {
         if (newCoverFile.exists()) {
             if (backup.exists()) {
-                backup.delete();
+                if (!backup.delete()) {
+                    LOG.warn("Failed to delete " + backup);
+                }
             }
             if (newCoverFile.renameTo(backup)) {
                 LOG.info("Backed up old image file to " + backup);

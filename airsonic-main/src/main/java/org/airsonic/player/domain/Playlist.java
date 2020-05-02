@@ -113,7 +113,7 @@ public class Playlist {
     }
 
     public String getDurationAsString() {
-        return StringUtil.formatDuration(durationSeconds);
+        return StringUtil.formatDurationMSS(durationSeconds);
     }
 
     public Date getCreated() {

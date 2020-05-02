@@ -33,7 +33,7 @@ public class MusicIndexServiceTestCase extends TestCase {
 
     private final MusicIndexService musicIndexService = new MusicIndexService();
 
-    public void testCreateIndexFromExpression() throws Exception {
+    public void testCreateIndexFromExpression() {
         MusicIndex index = musicIndexService.createIndexFromExpression("A");
         assertEquals("A", index.getIndex());
         assertEquals(1, index.getPrefixes().size());
@@ -52,7 +52,7 @@ public class MusicIndexServiceTestCase extends TestCase {
         assertEquals("Z", index.getPrefixes().get(2));
     }
 
-    public void testCreateIndexesFromExpression() throws Exception {
+    public void testCreateIndexesFromExpression() {
         List<MusicIndex> indexes = musicIndexService.createIndexesFromExpression("A B  The X-Z(XYZ)");
         assertEquals(4, indexes.size());
 

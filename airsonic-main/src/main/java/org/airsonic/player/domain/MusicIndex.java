@@ -100,11 +100,7 @@ public class MusicIndex implements Serializable {
 
         final MusicIndex musicIndex = (MusicIndex) o;
 
-        if (!Objects.equals(index, musicIndex.index)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(index, musicIndex.index);
     }
 
     /**

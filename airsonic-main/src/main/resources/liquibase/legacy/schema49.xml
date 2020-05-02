@@ -26,6 +26,7 @@
         </addColumn>
     </changeSet>
     <changeSet id="schema49_003" author="muff1nman">
+        <validCheckSum>8:48810c74f102adade1af439589febc11</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="album" columnName="genre" />
@@ -36,6 +37,7 @@
         </addColumn>
     </changeSet>
     <changeSet id="schema49_004" author="muff1nman">
+        <validCheckSum>8:7b001d801628d7030007fe2d288adf6b</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="genre" />

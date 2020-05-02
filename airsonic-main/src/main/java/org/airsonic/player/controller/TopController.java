@@ -50,7 +50,7 @@ public class TopController {
     private SecurityService securityService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<>();
 
         User user = securityService.getCurrentUser(request);

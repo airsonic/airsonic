@@ -49,7 +49,7 @@ public class StatusController {
     private StatusService statusService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<>();
 
         List<TransferStatus> streamStatuses = statusService.getAllStreamStatuses();

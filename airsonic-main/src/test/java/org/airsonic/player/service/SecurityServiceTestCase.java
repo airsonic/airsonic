@@ -20,6 +20,7 @@
 package org.airsonic.player.service;
 
 import junit.framework.TestCase;
+
 /**
  * Unit test of {@link SecurityService}.
  *

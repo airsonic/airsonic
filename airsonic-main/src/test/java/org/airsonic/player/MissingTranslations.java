@@ -6,7 +6,7 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-public class MissingTranslations  {
+public class MissingTranslations {
 
     public static void main(String[] args) throws IOException {
         String[] locales = {"da", "de", "es", "pt", "fi", "fr", "is", "it", "ja_JP", "mk", "nl", "no", "pl", "ru", "sl", "sv", "zh_CN", "zh_TW"};

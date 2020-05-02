@@ -3,9 +3,14 @@ package org.airsonic.player.service;
 import com.codahale.metrics.ConsoleReporter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.airsonic.player.TestCaseUtils;
 import org.airsonic.player.dao.*;
+import org.airsonic.player.domain.Album;
+import org.airsonic.player.domain.Artist;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
+import org.airsonic.player.util.HomeRule;
+import org.airsonic.player.util.MusicFolderTestData;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -14,24 +19,18 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.domain.Album;
-import org.airsonic.player.domain.Artist;
-import org.airsonic.player.util.HomeRule;
-import org.airsonic.player.util.MusicFolderTestData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -50,11 +49,7 @@ import static org.junit.Assert.assertNotNull;
  * At runtime, the subsonic_home dir is set to target/test-classes/org/airsonic/player/service/mediaScannerServiceTestCase.
  * An empty database is created on the fly.
  */
-@ContextConfiguration(locations = {
-        "/applicationContext-service.xml",
-        "/applicationContext-cache.xml",
-        "/applicationContext-testdb.xml",
-        "/applicationContext-mockSonos.xml"})
+@SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class MediaScannerServiceTestCase {
 
@@ -101,9 +96,6 @@ public class MediaScannerServiceTestCase {
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    @Autowired
-    ResourceLoader resourceLoader;
-
 
     /**
      * Tests the MediaScannerService by scanning the test media library into an empty database.
@@ -135,13 +127,13 @@ public class MediaScannerServiceTestCase {
 
         System.out.println("--- List of all artists ---");
         System.out.println("artistName#albumCount");
-        List<Artist> allArtists = artistDao.getAlphabetialArtists(0, 0, musicFolderDao.getAllMusicFolders());
+        List<Artist> allArtists = artistDao.getAlphabetialArtists(0, Integer.MAX_VALUE, musicFolderDao.getAllMusicFolders());
         allArtists.forEach(artist -> System.out.println(artist.getName() + "#" + artist.getAlbumCount()));
         System.out.println("--- *********************** ---");
 
         System.out.println("--- List of all albums ---");
         System.out.println("name#artist");
-        List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, 0, true, true, musicFolderDao.getAllMusicFolders());
+        List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, Integer.MAX_VALUE, true, true, musicFolderDao.getAllMusicFolders());
         allAlbums.forEach(album -> System.out.println(album.getName() + "#" + album.getArtist()));
         Assert.assertEquals(5, allAlbums.size());
         System.out.println("--- *********************** ---");
@@ -151,7 +143,7 @@ public class MediaScannerServiceTestCase {
 
         // display out metrics report
         ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
-                .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                .convertRatesTo(TimeUnit.SECONDS)
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         reporter.report();
@@ -161,12 +153,15 @@ public class MediaScannerServiceTestCase {
 
     @Test
     public void testSpecialCharactersInFilename() throws Exception {
-        Resource resource = resourceLoader.getResource("MEDIAS/piano.mp3");
+        InputStream resource = MediaScannerServiceTestCase.class
+                .getClassLoader()
+                .getResourceAsStream("MEDIAS/piano.mp3");
+        assert resource != null;
         String directoryName = "Muff1nman\u2019s \uFF0FMusic";
         String fileName = "Muff1nman\u2019s\uFF0FPiano.mp3";
         File artistDir = temporaryFolder.newFolder(directoryName);
         File musicFile = artistDir.toPath().resolve(fileName).toFile();
-        IOUtils.copy(resource.getInputStream(), new FileOutputStream(musicFile));
+        IOUtils.copy(resource, new FileOutputStream(musicFile));
 
         MusicFolder musicFolder = new MusicFolder(1, temporaryFolder.getRoot(), "Music", true, new Date());
         musicFolderDao.createMusicFolder(musicFolder);
@@ -176,6 +171,12 @@ public class MediaScannerServiceTestCase {
         assertEquals(mediaFile.getFile().toString(), musicFile.toString());
         System.out.println(mediaFile.getFile().getPath());
         assertNotNull(mediaFile);
+    }
+
+    @Test
+    public void testNeverScanned() {
+
+        mediaScannerService.neverScanned();
     }
 
     @Test
@@ -196,14 +197,14 @@ public class MediaScannerServiceTestCase {
         folders.add(musicFolder);
 
         // Test that the artist is correctly imported
-        List<Artist> allArtists = artistDao.getAlphabetialArtists(0, 0, folders);
+        List<Artist> allArtists = artistDao.getAlphabetialArtists(0, Integer.MAX_VALUE, folders);
         Assert.assertEquals(1, allArtists.size());
         Artist artist = allArtists.get(0);
         Assert.assertEquals("TestArtist", artist.getName());
         Assert.assertEquals(1, artist.getAlbumCount());
 
         // Test that the album is correctly imported, along with its MusicBrainz release ID
-        List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, 0, true, true, folders);
+        List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, Integer.MAX_VALUE, true, true, folders);
         Assert.assertEquals(1, allAlbums.size());
         Album album = allAlbums.get(0);
         Assert.assertEquals("TestAlbum", album.getName());
@@ -212,7 +213,7 @@ public class MediaScannerServiceTestCase {
         Assert.assertEquals("0820752d-1043-4572-ab36-2df3b5cc15fa", album.getMusicBrainzReleaseId());
         Assert.assertEquals(musicFolderFile.toPath().resolve("TestAlbum").toString(), album.getPath());
 
-        // Test that the music file is correctly imported, along with its MusicBrainz release ID
+        // Test that the music file is correctly imported, along with its MusicBrainz release ID and recording ID
         List<MediaFile> albumFiles = mediaFileDao.getChildrenOf(allAlbums.get(0).getPath());
         Assert.assertEquals(1, albumFiles.size());
         MediaFile file = albumFiles.get(0);
@@ -226,5 +227,6 @@ public class MediaScannerServiceTestCase {
         Assert.assertEquals(album.getPath(), file.getParentPath());
         Assert.assertEquals(new File(album.getPath()).toPath().resolve("01 - Aria.flac").toString(), file.getPath());
         Assert.assertEquals("0820752d-1043-4572-ab36-2df3b5cc15fa", file.getMusicBrainzReleaseId());
+        Assert.assertEquals("831586f4-56f9-4785-ac91-447ae20af633", file.getMusicBrainzRecordingId());
     }
 }

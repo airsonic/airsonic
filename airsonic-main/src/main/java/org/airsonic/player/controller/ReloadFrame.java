@@ -20,7 +20,6 @@
 package org.airsonic.player.controller;
 
 /**
- * Used in servlet.xml to specify frame reloading.
  *
  * @author Sindre Mehus
  */

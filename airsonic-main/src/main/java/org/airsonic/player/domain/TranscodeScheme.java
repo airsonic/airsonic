@@ -105,7 +105,7 @@ public enum TranscodeScheme {
 
     public static TranscodeScheme fromMaxBitRate(int maxBitRate) {
         for (TranscodeScheme transcodeScheme : TranscodeScheme.values()) {
-            if (maxBitRate == transcodeScheme.getMaxBitRate()) {
+            if (maxBitRate <= transcodeScheme.getMaxBitRate()) {
                 return transcodeScheme;
             }
         }

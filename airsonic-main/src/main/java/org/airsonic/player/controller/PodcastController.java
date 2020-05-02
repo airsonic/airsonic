@@ -45,7 +45,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/podcast")
-public class PodcastController  {
+public class PodcastController {
 
     private static final DateFormat RSS_DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
     @Autowired
@@ -56,7 +56,7 @@ public class PodcastController  {
     private SecurityService securityService;
 
     @GetMapping
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) {
 
         String url = request.getRequestURL().toString();
         String username = securityService.getCurrentUsername(request);

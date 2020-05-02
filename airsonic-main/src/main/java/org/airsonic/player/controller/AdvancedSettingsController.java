@@ -44,7 +44,7 @@ public class AdvancedSettingsController {
     private SettingsService settingsService;
 
     @GetMapping
-    protected String formBackingObject(Model model) throws Exception {
+    protected String formBackingObject(Model model) {
         AdvancedSettingsCommand command = new AdvancedSettingsCommand();
         command.setDownloadLimit(String.valueOf(settingsService.getDownloadBitrateLimit()));
         command.setUploadLimit(String.valueOf(settingsService.getUploadBitrateLimit()));
@@ -69,7 +69,7 @@ public class AdvancedSettingsController {
     }
 
     @PostMapping
-    protected String doSubmitAction(@ModelAttribute AdvancedSettingsCommand command, RedirectAttributes redirectAttributes) throws Exception {
+    protected String doSubmitAction(@ModelAttribute AdvancedSettingsCommand command, RedirectAttributes redirectAttributes) {
 
         redirectAttributes.addFlashAttribute("settings_reload", false);
         redirectAttributes.addFlashAttribute("settings_toast", true);

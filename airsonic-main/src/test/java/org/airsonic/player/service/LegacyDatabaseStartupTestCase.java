@@ -1,24 +1,20 @@
 package org.airsonic.player.service;
 
+import org.airsonic.player.TestCaseUtils;
+import org.airsonic.player.util.HomeRule;
 import org.apache.commons.io.FileUtils;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.airsonic.player.TestCaseUtils;
-import org.airsonic.player.util.HomeRule;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
 import java.io.File;
 
-@ContextConfiguration(locations = {
-        "/applicationContext-service.xml",
-        "/applicationContext-cache.xml",
-        "/applicationContext-testdb.xml",
-        "/applicationContext-mockSonos.xml"})
+@SpringBootTest
 public class LegacyDatabaseStartupTestCase {
 
     @ClassRule
@@ -47,7 +43,7 @@ public class LegacyDatabaseStartupTestCase {
     public final SpringMethodRule springMethodRule = new SpringMethodRule();
 
     @Test
-    public void testStartup() throws Exception {
+    public void testStartup() {
         System.out.println("Successful startup");
     }
 

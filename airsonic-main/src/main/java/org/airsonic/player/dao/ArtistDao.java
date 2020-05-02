@@ -39,7 +39,7 @@ public class ArtistDao extends AbstractDao {
     private static final String INSERT_COLUMNS = "name, cover_art_path, album_count, last_scanned, present, folder_id";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
 
-    private final RowMapper rowMapper = new ArtistMapper();
+    private final RowMapper<Artist> rowMapper = new ArtistMapper();
 
     /**
      * Returns the artist with the given name.
@@ -156,17 +156,21 @@ public class ArtistDao extends AbstractDao {
     }
 
     public void markPresent(String artistName, Date lastScanned) {
-        update("update artist set present=?, last_scanned=? where name=?", true, lastScanned, artistName);
+        update("update artist set present=?, last_scanned = ? where name=?", true, lastScanned, artistName);
     }
 
     public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from artist where last_scanned != ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from artist where last_scanned != ? and present", 0, lastScanned);
+        int minId = queryForInt("select min(id) from artist where last_scanned < ? and present", 0, lastScanned);
+        int maxId = queryForInt("select max(id) from artist where last_scanned < ? and present", 0, lastScanned);
 
         final int batchSize = 1000;
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("update artist set present=false where id between ? and ? and last_scanned != ? and present", id, id + batchSize, lastScanned);
+            update("update artist set present=false where id between ? and ? and last_scanned < ? and present", id, id + batchSize, lastScanned);
         }
+    }
+
+    public List<Integer> getExpungeCandidates() {
+        return queryForInts("select id from artist where not present");
     }
 
     public void expunge() {

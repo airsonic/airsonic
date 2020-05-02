@@ -13,24 +13,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.util.Iterator;
 import java.util.List;
 
 public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibase {
-    private static final Logger logger = LoggerFactory.getLogger(SpringLiquibase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SpringLiquibase.class);
 
     @Override
     public void afterPropertiesSet() throws LiquibaseException {
-        logger.trace("Starting Liquibase Update");
+        LOG.trace("Starting Liquibase Update");
         try {
             super.afterPropertiesSet();
         } catch (Exception e) {
-            logger.error("===============================================");
-            logger.error("An exception occurred during database migration");
-            logger.error("A rollback file has been generated at " + rollbackFile);
-            logger.error("Execute it within your database to rollback any changes");
-            logger.error("The exception is as follows\n", e);
-            logger.error("===============================================");
+            LOG.error("===============================================");
+            LOG.error("An exception occurred during database migration");
+            LOG.error("A rollback file has been generated at " + rollbackFile);
+            LOG.error("Execute it within your database to rollback any changes");
+            LOG.error("The exception is as follows\n", e);
+            LOG.error("===============================================");
             throw(e);
         }
     }
@@ -65,12 +64,6 @@ public class SpringLiquibase extends liquibase.integration.spring.SpringLiquibas
     }
 
     private void removeCurrentHsqlDb(List<Database> implementedDatabases) {
-        Iterator<Database> iterator = implementedDatabases.iterator();
-        while (iterator.hasNext()) {
-            Database db = iterator.next();
-            if (db instanceof liquibase.database.core.HsqlDatabase) {
-                iterator.remove();
-            }
-        }
+        implementedDatabases.removeIf(db -> db instanceof liquibase.database.core.HsqlDatabase);
     }
 }

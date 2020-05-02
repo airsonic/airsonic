@@ -59,7 +59,22 @@
             </delete>
         </rollback>
     </changeSet>
+    <changeSet id="schema35_005_fix_binary_type" author="fxthomas" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="system_avatar" />
+            <sqlCheck expectedResult="oid">
+                SELECT DATA_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = 'system_avatar'
+                AND COLUMN_NAME = 'data'
+            </sqlCheck>
+        </preConditions>
+        <!-- Kept for compatibility with people with an existing table using the workaround in #1213 -->
+        <sql>ALTER TABLE system_avatar ALTER COLUMN data TYPE bytea USING lo_get(data);</sql>
+        <rollback></rollback>
+    </changeSet>
     <changeSet id="schema35_005" author="muff1nman">
+        <validCheckSum>8:d428266eb794ae2f1361a6eec0f67672</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="system_avatar" />
@@ -90,7 +105,22 @@
             <dropTable tableName="system_avatar" />
         </rollback>
     </changeSet>
+    <changeSet id="schema35_006_fix_binary_type" author="fxthomas" dbms="postgresql">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="custom_avatar" />
+            <sqlCheck expectedResult="oid">
+                SELECT DATA_TYPE
+                FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE TABLE_NAME = 'custom_avatar'
+                AND COLUMN_NAME = 'data'
+            </sqlCheck>
+        </preConditions>
+        <!-- Kept for compatibility with people with an existing table using the workaround in #1213 -->
+        <sql>ALTER TABLE custom_avatar ALTER COLUMN data TYPE bytea USING lo_get(data);</sql>
+        <rollback></rollback>
+    </changeSet>
     <changeSet id="schema35_006" author="muff1nman">
+        <validCheckSum>8:60a4f99dea63d7813457a1b8f981f763</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="custom_avatar" />
@@ -125,6 +155,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema35_007" author="muff1nman">
+        <validCheckSum>8:653b5e40160877def2fe855b03f8ed42</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="user_settings" columnName="avatar_scheme" />

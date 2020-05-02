@@ -13,23 +13,28 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter {
 
-    private static Logger logger = LoggerFactory.getLogger(GlobalSecurityConfig.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalSecurityConfig.class);
 
     static final String FAILURE_URL = "/login?error=1";
 
@@ -65,12 +70,38 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
         auth.userDetailsService(securityService);
         String jwtKey = settingsService.getJWTKey();
         if (StringUtils.isBlank(jwtKey)) {
-            logger.warn("Generating new jwt key");
+            LOG.warn("Generating new jwt key");
             jwtKey = JWTSecurityService.generateKey();
             settingsService.setJWTKey(jwtKey);
             settingsService.save();
         }
         auth.authenticationProvider(new JWTAuthenticationProvider(jwtKey));
+    }
+
+    @Bean
+    public PasswordEncoder delegatingPasswordEncoder() {
+
+        // Spring Security 5 require storing the encoder id alongside the encoded password
+        // (e.g. "{md5}hash" for an MD5-encoded password hash), which differs from previous
+        // versions.
+        //
+        // Airsonic unfortunately stores passwords in plain-text, which is why we are setting
+        // the "no-op" (plain-text) password encoder as a default here. This default will be
+        // used when no encoder id is present.
+        //
+        // This means that legacy Airsonic passwords (stored simply as "password" in the db)
+        // will be matched like "{noop}password" and will be recognized successfully. In the
+        // future password encoding updates will be done here.
+
+        PasswordEncoder defaultEncoder = NoOpPasswordEncoder.getInstance();
+        String defaultIdForEncode = "noop";
+
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        encoders.put(defaultIdForEncode, defaultEncoder);
+        DelegatingPasswordEncoder passworEncoder = new DelegatingPasswordEncoder(defaultIdForEncode, encoders);
+        passworEncoder.setDefaultPasswordEncoderForMatches(defaultEncoder);
+
+        return passworEncoder;
     }
 
     private static String generateRememberMeKey() {
@@ -142,15 +173,15 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             boolean development = SettingsService.isDevelopmentMode();
             if (StringUtils.isBlank(rememberMeKey) && !development) {
                 // ...if it is empty, generate a random key on startup (default).
-                logger.debug("Generating a new ephemeral 'remember me' key in a secure way.");
+                LOG.debug("Generating a new ephemeral 'remember me' key in a secure way.");
                 rememberMeKey = generateRememberMeKey();
             } else if (StringUtils.isBlank(rememberMeKey) && development) {
                 // ...if we are in development mode, we can use a fixed key.
-                logger.warn("Using a fixed 'remember me' key because we're in development mode, this is INSECURE.");
+                LOG.warn("Using a fixed 'remember me' key because we're in development mode, this is INSECURE.");
                 rememberMeKey = DEVELOPMENT_REMEMBER_ME_KEY;
             } else {
                 // ...otherwise, use the custom key directly.
-                logger.info("Using a fixed 'remember me' key from system properties, this is insecure.");
+                LOG.info("Using a fixed 'remember me' key from system properties, this is insecure.");
             }
 
             http
@@ -167,7 +198,7 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .antMatchers("/personalSettings*", "/passwordSettings*",
                             "/playerSettings*", "/shareSettings*", "/passwordSettings*")
                     .hasRole("SETTINGS")
-                    .antMatchers("/generalSettings*", "/advancedSettings*", "/userSettings*",
+                    .antMatchers("/generalSettings*", "/advancedSettings*", "/userSettings*", "/internalhelp*",
                             "/musicFolderSettings*", "/databaseSettings*", "/transcodeSettings*", "/rest/startScan*")
                     .hasRole("ADMIN")
                     .antMatchers("/deletePlaylist*", "/savePlaylist*")

@@ -1,21 +1,17 @@
 package org.airsonic.player.dao;
 
+import org.airsonic.player.util.HomeRule;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import org.airsonic.player.util.HomeRule;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
 
-@ContextConfiguration(locations = {
-        "/applicationContext-service.xml",
-        "/applicationContext-cache.xml",
-        "/applicationContext-testdb.xml",
-        "/applicationContext-mockSonos.xml"})
+@SpringBootTest
 public class DaoTestCaseBean2 {
     @ClassRule
     public static final SpringClassRule classRule = new SpringClassRule() {
@@ -32,7 +28,6 @@ public class DaoTestCaseBean2 {
 
     @Autowired
     GenericDaoHelper genericDaoHelper;
-
 
     JdbcTemplate getJdbcTemplate() {
         return genericDaoHelper.getJdbcTemplate();

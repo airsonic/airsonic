@@ -73,7 +73,7 @@ public class JukeboxService {
      * This method should be removed when the jukebox is controlled only through rest api.
      */
     @Deprecated
-    public void updateJukebox(Player airsonicPlayer, int offset) throws Exception {
+    public void updateJukebox(Player airsonicPlayer, int offset) {
         if (airsonicPlayer.getTechnology().equals(PlayerTechnology.JUKEBOX)) {
             jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,offset);
         }
@@ -92,7 +92,7 @@ public class JukeboxService {
     /**
      * Plays the playQueue of a jukebox player starting at the first item of the queue.
      */
-    public void play(Player airsonicPlayer) throws Exception {
+    public void play(Player airsonicPlayer) {
         switch (airsonicPlayer.getTechnology()) {
             case JUKEBOX:
                 jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
@@ -103,7 +103,7 @@ public class JukeboxService {
         }
     }
 
-    public void start(Player airsonicPlayer) throws Exception {
+    public void start(Player airsonicPlayer) {
         switch (airsonicPlayer.getTechnology()) {
             case JUKEBOX:
                 jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
@@ -114,7 +114,7 @@ public class JukeboxService {
         }
     }
 
-    public void stop(Player airsonicPlayer) throws Exception {
+    public void stop(Player airsonicPlayer) {
         switch (airsonicPlayer.getTechnology()) {
             case JUKEBOX:
                 jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,0);
@@ -125,7 +125,7 @@ public class JukeboxService {
         }
     }
 
-    public void skip(Player airsonicPlayer,int index,int offset) throws Exception {
+    public void skip(Player airsonicPlayer,int index,int offset) {
         switch (airsonicPlayer.getTechnology()) {
             case JUKEBOX:
                 jukeboxLegacySubsonicService.updateJukebox(airsonicPlayer,offset);

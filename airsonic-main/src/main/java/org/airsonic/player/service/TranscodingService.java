@@ -45,7 +45,7 @@ import java.util.List;
 
 /**
  * Provides services for transcoding media. Transcoding is the process of
- * converting an audio stream to a different format and/or bit rate. The latter is
+ * converting a media file/stream to a different format and/or bit rate. The latter is
  * also called downsampling.
  *
  * @author Sindre Mehus
@@ -81,6 +81,7 @@ public class TranscodingService {
      * @return All active transcodings for the player.
      */
     public List<Transcoding> getTranscodingsForPlayer(Player player) {
+        // FIXME - This should probably check isTranscodingInstalled()
         return transcodingDao.getTranscodingsForPlayer(player.getId());
     }
 
@@ -173,13 +174,10 @@ public class TranscodingService {
     }
 
     /**
-     * Creates parameters for a possibly transcoded or downsampled input stream for the given media file and player combination.
+     * Creates parameters for a possibly transcoded input stream for the given media file and player combination.
      * <p/>
      * A transcoding is applied if it is applicable for the format of the given file, and is activated for the
-     * given player.
-     * <p/>
-     * If no transcoding is applicable, the file may still be downsampled, given that the player is configured
-     * with a bit rate limit which is higher than the actual bit rate of the file.
+     * given player, and either the desired format or bitrate needs changing.
      * <p/>
      * Otherwise, a normal input stream to the original file is returned.
      *
@@ -195,27 +193,48 @@ public class TranscodingService {
 
         Parameters parameters = new Parameters(mediaFile, videoTranscodingSettings);
 
-        TranscodeScheme transcodeScheme = getTranscodeScheme(player);
-        if (maxBitRate == null && transcodeScheme != TranscodeScheme.OFF) {
-            maxBitRate = transcodeScheme.getMaxBitRate();
+        if (maxBitRate == null) {
+            maxBitRate = TranscodeScheme.OFF.getMaxBitRate();
         }
+
+        TranscodeScheme transcodeScheme = getTranscodeScheme(player).strictest(TranscodeScheme.fromMaxBitRate(maxBitRate));
+        maxBitRate = transcodeScheme.getMaxBitRate();
 
         boolean hls = videoTranscodingSettings != null && videoTranscodingSettings.isHls();
         Transcoding transcoding = getTranscoding(mediaFile, player, preferredTargetFormat, hls);
-        if (transcoding != null) {
-            parameters.setTranscoding(transcoding);
-            if (maxBitRate == null) {
-                maxBitRate = mediaFile.isVideo() ? VideoPlayerController.DEFAULT_BIT_RATE : TranscodeScheme.MAX_192.getMaxBitRate();
+        Integer bitRate = mediaFile.getBitRate();
+        if (bitRate == null) {
+            // Assume unlimited bitrate
+            bitRate = TranscodeScheme.OFF.getMaxBitRate();
+        }
+
+        if (mediaFile.isVideo()) {
+            if (maxBitRate == 0) {
+                maxBitRate = VideoPlayerController.DEFAULT_BIT_RATE;
             }
-        } else if (maxBitRate != null) {
-            boolean supported = isDownsamplingSupported(mediaFile);
-            Integer bitRate = mediaFile.getBitRate();
-            if (supported && bitRate != null && bitRate > maxBitRate) {
-                parameters.setDownsample(true);
+        } else {
+            if (mediaFile.isVariableBitRate()) {
+                // Assume VBR needs approx 20% more bandwidth to maintain equivalent quality in CBR
+                bitRate = bitRate * 6 / 5;
+            }
+            // Make sure bitrate is quantized to valid values for CBR
+            if (TranscodeScheme.fromMaxBitRate(bitRate) != null) {
+                bitRate = TranscodeScheme.fromMaxBitRate(bitRate).getMaxBitRate();
             }
         }
 
-        parameters.setMaxBitRate(maxBitRate);
+        if (maxBitRate == 0 || (bitRate != 0 && bitRate < maxBitRate)) {
+            maxBitRate = bitRate;
+        }
+
+        if (transcoding != null && ((maxBitRate != 0 && (bitRate == 0 || bitRate > maxBitRate)) ||
+            (preferredTargetFormat != null && ! mediaFile.getFormat().equalsIgnoreCase(preferredTargetFormat)))) {
+            parameters.setTranscoding(transcoding);
+        }
+
+        parameters.setMaxBitRate(maxBitRate == 0 ? null : maxBitRate);
+        parameters.setExpectedLength(getExpectedLength(parameters));
+        parameters.setRangeAllowed(isRangeAllowed(parameters));
         return parameters;
     }
 
@@ -241,12 +260,10 @@ public class TranscodingService {
                 return createTranscodedInputStream(parameters);
             }
 
-            if (parameters.downsample) {
-                return createDownsampledInputStream(parameters);
-            }
-
+        } catch (IOException x) {
+            LOG.warn("Transcoder failed: {}. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x.toString());
         } catch (Exception x) {
-            LOG.warn("Failed to transcode " + parameters.getMediaFile() + ". Using original.", x);
+            LOG.warn("Transcoder failed. Using original: " + parameters.getMediaFile().getFile().getAbsolutePath(), x);
         }
 
         return new FileInputStream(parameters.getMediaFile().getFile());
@@ -471,33 +488,27 @@ public class TranscodingService {
     }
 
     /**
-     * Returns a downsampled input stream to the music file.
+     * Returns whether transcoding is supported (i.e. whether ffmpeg is installed or not).
      *
-     * @param parameters Downsample parameters.
-     * @throws IOException If an I/O error occurs.
+     * @param mediaFile If not null, returns whether transcoding is supported for this file.
+     * @return Whether transcoding is supported.
      */
-    private InputStream createDownsampledInputStream(Parameters parameters) throws IOException {
-        String command = settingsService.getDownsamplingCommand();
-        return createTranscodeInputStream(command, parameters.getMaxBitRate(), parameters.getVideoTranscodingSettings(),
-                parameters.getMediaFile(), null);
-    }
-
-    /**
-     * Returns whether downsampling is supported (i.e., whether ffmpeg is installed or not.)
-     *
-     * @param mediaFile If not null, returns whether downsampling is supported for this file.
-     * @return Whether downsampling is supported.
-     */
-    public boolean isDownsamplingSupported(MediaFile mediaFile) {
-        if (mediaFile != null) {
-            boolean isMp3 = "mp3".equalsIgnoreCase(mediaFile.getFormat());
-            if (!isMp3) {
-                return false;
+    public boolean isTranscodingSupported(MediaFile mediaFile) {
+        List<Transcoding> transcodings = getAllTranscodings();
+        for (Transcoding transcoding : transcodings) {
+            if (! isTranscodingInstalled(transcoding)) {
+                continue;
+            }
+            if (mediaFile == null) {
+                return true;
+            }
+            for (String sourceFormat : transcoding.getSourceFormatsAsArray()) {
+                if (sourceFormat.equalsIgnoreCase(mediaFile.getFormat())) {
+                    return true;
+                }
             }
         }
-
-        String commandLine = settingsService.getDownsamplingCommand();
-        return isTranscodingStepInstalled(commandLine);
+        return false;
     }
 
     private boolean isTranscodingInstalled(Transcoding transcoding) {
@@ -515,6 +526,55 @@ public class TranscodingService {
         PrefixFileFilter filter = new PrefixFileFilter(executable);
         String[] matches = getTranscodeDirectory().list(filter);
         return matches != null && matches.length > 0;
+    }
+
+    /**
+     * Returns the length (or predicted/expected length) of a (possibly padded) media stream
+     */
+    private Long getExpectedLength(Parameters parameters) {
+        MediaFile file = parameters.getMediaFile();
+
+        if (!parameters.isTranscode()) {
+            return file.getFileSize();
+        }
+        Integer duration = file.getDurationSeconds();
+        Integer maxBitRate = parameters.getMaxBitRate();
+
+        if (duration == null) {
+            LOG.warn("Unknown duration for " + file + ". Unable to estimate transcoded size.");
+            return null;
+        }
+
+        if (maxBitRate == null) {
+            LOG.error("Unknown bit rate for " + file + ". Unable to estimate transcoded size.");
+            return null;
+        }
+
+        // Over-estimate size a bit (2 seconds) so don't cut off early in case of small calculation differences
+        return (duration + 2) * (long)maxBitRate * 1000L / 8L;
+    }
+
+    private boolean isRangeAllowed(Parameters parameters) {
+        Transcoding transcoding = parameters.getTranscoding();
+        List<String> steps = Arrays.asList();
+        if (transcoding != null) {
+            steps = Arrays.asList(transcoding.getStep3(), transcoding.getStep2(), transcoding.getStep1());
+        } else {
+            return true;  // not transcoding
+        }
+
+        // Verify that were able to predict the length
+        if (parameters.getExpectedLength() == null) {
+            return false;
+        }
+
+        // Check if last configured step uses the bitrate, if so, range should be pretty safe
+        for (String step : steps) {
+            if (step != null) {
+                return step.contains("%b");
+            }
+        }
+        return false;
     }
 
     /**
@@ -547,6 +607,8 @@ public class TranscodingService {
 
     public static class Parameters {
         private boolean downsample;
+        private Long expectedLength;
+        private boolean rangeAllowed;
         private final MediaFile mediaFile;
         private final VideoTranscodingSettings videoTranscodingSettings;
         private Integer maxBitRate;
@@ -561,16 +623,24 @@ public class TranscodingService {
             this.maxBitRate = maxBitRate;
         }
 
-        public boolean isDownsample() {
-            return downsample;
-        }
-
-        public void setDownsample(boolean downsample) {
-            this.downsample = downsample;
-        }
-
         public boolean isTranscode() {
             return transcoding != null;
+        }
+
+        public boolean isRangeAllowed() {
+            return this.rangeAllowed;
+        }
+
+        public void setRangeAllowed(boolean rangeAllowed) {
+            this.rangeAllowed = rangeAllowed;
+        }
+
+        public Long getExpectedLength() {
+            return this.expectedLength;
+        }
+
+        public void setExpectedLength(Long expectedLength) {
+            this.expectedLength = expectedLength;
         }
 
         public void setTranscoding(Transcoding transcoding) {

@@ -43,7 +43,7 @@ public class MusicFolderDao extends AbstractDao {
     private static final String INSERT_COLUMNS = "path, name, enabled, changed";
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private final MusicFolderRowMapper rowMapper = new MusicFolderRowMapper();
-    
+
     @Autowired
     private UserDao userDao;
 

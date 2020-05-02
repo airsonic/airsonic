@@ -30,6 +30,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema25_003" author="muff1nman">
+        <validCheckSum>8:f360471c71fa278a72aeb0ef8b3792ee</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="role" />
@@ -68,6 +69,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema25_004" author="muff1nman">
+        <validCheckSum>8:72e07b169e23067bd89ea458ff58fa48</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user" />
@@ -90,6 +92,7 @@
         </rollback>
     </changeSet>
     <changeSet id="schema25_005" author="muff1nman">
+        <validCheckSum>8:4d92e7c97abc6f197f1236b0353ec2f7</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="user_role" />

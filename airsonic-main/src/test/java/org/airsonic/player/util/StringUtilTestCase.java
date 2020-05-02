@@ -20,6 +20,7 @@
 package org.airsonic.player.util;
 
 import junit.framework.TestCase;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -31,21 +32,12 @@ import java.util.Locale;
  */
 public class StringUtilTestCase extends TestCase {
 
-    public void testToHtml() throws Exception {
-        assertEquals(null, StringUtil.toHtml(null));
-        assertEquals("", StringUtil.toHtml(""));
-        assertEquals(" ", StringUtil.toHtml(" "));
-        assertEquals("q &amp; a", StringUtil.toHtml("q & a"));
-        assertEquals("q &amp; a &lt;&gt; b", StringUtil.toHtml("q & a <> b"));
-    }
-
-    public void testRemoveSuffix() {
-        assertEquals("Error in removeSuffix().", "foo", StringUtil.removeSuffix("foo.mp3"));
-        assertEquals("Error in removeSuffix().", "", StringUtil.removeSuffix(".mp3"));
-        assertEquals("Error in removeSuffix().", "foo.bar", StringUtil.removeSuffix("foo.bar.mp3"));
-        assertEquals("Error in removeSuffix().", "foo.", StringUtil.removeSuffix("foo..mp3"));
-        assertEquals("Error in removeSuffix().", "foo", StringUtil.removeSuffix("foo"));
-        assertEquals("Error in removeSuffix().", "", StringUtil.removeSuffix(""));
+    public void testToHtml() {
+        assertEquals(null, StringEscapeUtils.escapeHtml(null));
+        assertEquals("", StringEscapeUtils.escapeHtml(""));
+        assertEquals(" ", StringEscapeUtils.escapeHtml(" "));
+        assertEquals("q &amp; a", StringEscapeUtils.escapeHtml("q & a"));
+        assertEquals("q &amp; a &lt;&gt; b", StringEscapeUtils.escapeHtml("q & a <> b"));
     }
 
     public void testGetMimeType() {
@@ -57,7 +49,7 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in getMimeType().", "application/octet-stream", StringUtil.getMimeType(null));
     }
 
-    public void testFormatBytes() throws Exception {
+    public void testFormatBytes() {
         Locale locale = Locale.ENGLISH;
         assertEquals("Error in formatBytes().", "918 B", StringUtil.formatBytes(918, locale));
         assertEquals("Error in formatBytes().", "1023 B", StringUtil.formatBytes(1023, locale));
@@ -81,6 +73,34 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in formatBytes().", "4413,43 TB", StringUtil.formatBytes(4852617603375432L, locale));
     }
 
+    public void testFormatDurationMSS() {
+        assertEquals("Error in formatDurationMSS().", "0:00", StringUtil.formatDurationMSS(0));
+        assertEquals("Error in formatDurationMSS().", "0:05", StringUtil.formatDurationMSS(5));
+        assertEquals("Error in formatDurationMSS().", "0:10", StringUtil.formatDurationMSS(10));
+        assertEquals("Error in formatDurationMSS().", "0:59", StringUtil.formatDurationMSS(59));
+        assertEquals("Error in formatDurationMSS().", "1:00", StringUtil.formatDurationMSS(60));
+        assertEquals("Error in formatDurationMSS().", "1:01", StringUtil.formatDurationMSS(61));
+        assertEquals("Error in formatDurationMSS().", "1:10", StringUtil.formatDurationMSS(70));
+        assertEquals("Error in formatDurationMSS().", "10:00", StringUtil.formatDurationMSS(600));
+        assertEquals("Error in formatDurationMSS().", "45:50", StringUtil.formatDurationMSS(2750));
+        assertEquals("Error in formatDurationMSS().", "83:45", StringUtil.formatDurationMSS(5025));
+        assertEquals("Error in formatDurationMSS().", "121:40", StringUtil.formatDurationMSS(7300));
+    }
+
+    public void testFormatDurationHMMSS() {
+        assertEquals("Error in formatDurationHMMSS().", "0:00:00", StringUtil.formatDurationHMMSS(0));
+        assertEquals("Error in formatDurationHMMSS().", "0:00:05", StringUtil.formatDurationHMMSS(5));
+        assertEquals("Error in formatDurationHMMSS().", "0:00:10", StringUtil.formatDurationHMMSS(10));
+        assertEquals("Error in formatDurationHMMSS().", "0:00:59", StringUtil.formatDurationHMMSS(59));
+        assertEquals("Error in formatDurationHMMSS().", "0:01:00", StringUtil.formatDurationHMMSS(60));
+        assertEquals("Error in formatDurationHMMSS().", "0:01:01", StringUtil.formatDurationHMMSS(61));
+        assertEquals("Error in formatDurationHMMSS().", "0:01:10", StringUtil.formatDurationHMMSS(70));
+        assertEquals("Error in formatDurationHMMSS().", "0:10:00", StringUtil.formatDurationHMMSS(600));
+        assertEquals("Error in formatDurationHMMSS().", "0:45:50", StringUtil.formatDurationHMMSS(2750));
+        assertEquals("Error in formatDurationHMMSS().", "1:23:45", StringUtil.formatDurationHMMSS(5025));
+        assertEquals("Error in formatDurationHMMSS().", "2:01:40", StringUtil.formatDurationHMMSS(7300));
+    }
+
     public void testFormatDuration() {
         assertEquals("Error in formatDuration().", "0:00", StringUtil.formatDuration(0));
         assertEquals("Error in formatDuration().", "0:05", StringUtil.formatDuration(5));
@@ -91,7 +111,8 @@ public class StringUtilTestCase extends TestCase {
         assertEquals("Error in formatDuration().", "1:10", StringUtil.formatDuration(70));
         assertEquals("Error in formatDuration().", "10:00", StringUtil.formatDuration(600));
         assertEquals("Error in formatDuration().", "45:50", StringUtil.formatDuration(2750));
-        assertEquals("Error in formatDuration().", "83:45", StringUtil.formatDuration(5025));
+        assertEquals("Error in formatDuration().", "1:23:45", StringUtil.formatDuration(5025));
+        assertEquals("Error in formatDuration().", "2:01:40", StringUtil.formatDuration(7300));
     }
 
     public void testSplit() {
@@ -153,12 +174,6 @@ public class StringUtilTestCase extends TestCase {
 
     private void doTestUtf8Hex(String s) throws Exception {
         assertEquals("Error in utf8hex.", s, StringUtil.utf8HexDecode(StringUtil.utf8HexEncode(s)));
-    }
-
-    public void testMd5Hex() {
-        assertNull("Error in md5Hex().", StringUtil.md5Hex(null));
-        assertEquals("Error in md5Hex().", "d41d8cd98f00b204e9800998ecf8427e", StringUtil.md5Hex(""));
-        assertEquals("Error in md5Hex().", "308ed0af23d48f6d2fd4717e77a23e0c", StringUtil.md5Hex("sindre@activeobjects.no"));
     }
 
     public void testGetUrlFile() {

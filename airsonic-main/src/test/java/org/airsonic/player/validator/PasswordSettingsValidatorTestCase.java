@@ -11,17 +11,17 @@ public class PasswordSettingsValidatorTestCase extends TestCase {
     private PasswordSettingsCommand psc;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         psc = new PasswordSettingsCommand();
         psc.setUsername("username");
         psc.setPassword("1234");
     }
 
-    private Errors validatePassword(){
+    private Errors validatePassword() {
         PasswordSettingsValidator psv = new PasswordSettingsValidator();
         Errors errors = new BeanPropertyBindingResult(psc, "psv");
         psv.validate(psc, errors);
-        return  errors;
+        return errors;
     }
 
     public void testValidateEmptyPassword() {

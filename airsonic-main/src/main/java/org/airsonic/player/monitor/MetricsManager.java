@@ -1,7 +1,7 @@
 package org.airsonic.player.monitor;
 
-import com.codahale.metrics.JmxReporter;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.jmx.JmxReporter;
 import org.airsonic.player.service.ApacheCommonsConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +32,7 @@ public class MetricsManager {
 
             // Start a Metrics JMX reporter
             reporter = JmxReporter.forRegistry(metrics)
-                    .convertRatesTo(TimeUnit.SECONDS.SECONDS)
+                    .convertRatesTo(TimeUnit.SECONDS)
                     .convertDurationsTo(TimeUnit.MILLISECONDS)
                     .build();
             reporter.start();
@@ -99,7 +99,7 @@ public class MetricsManager {
 
         public Timer timer(Class clazz, String name) {
             com.codahale.metrics.Timer t = metrics.timer(MetricRegistry.name(clazz,name));
-            com.codahale.metrics.Timer.Context tContext =  t.time();
+            com.codahale.metrics.Timer.Context tContext = t.time();
             return new Timer(tContext);
         }
 
@@ -143,7 +143,7 @@ public class MetricsManager {
         }
 
         @Override
-        public void close()  {
+        public void close() {
             // Does nothing
         }
     }

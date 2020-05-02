@@ -1,12 +1,6 @@
 
 package org.airsonic.player.service.search;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
 import org.airsonic.player.service.SearchService;
@@ -14,15 +8,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 /*
  * Test cases related to #1139.
  * Confirming whether shuffle search can be performed correctly in MusicFolder containing special strings.
- * 
+ *
  * (Since the query of getRandomAlbums consists of folder paths only,
  * this verification is easy to perform.)
- * 
+ *
  * This test case is a FalsePattern for search,
  * but there may be problems with the data flow prior to creating the search index.
  */
@@ -51,7 +52,7 @@ public class SearchServiceSpecialPathTestCase extends AbstractAirsonicHomeTest {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         populateDatabaseOnlyOnce();
     }
 

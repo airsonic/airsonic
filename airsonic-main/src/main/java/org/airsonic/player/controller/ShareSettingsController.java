@@ -61,7 +61,7 @@ public class ShareSettingsController {
 
 
     @GetMapping
-    public String doGet(HttpServletRequest request, Model model) throws Exception {
+    public String doGet(HttpServletRequest request, Model model) {
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("shareInfos", getShareInfos(request));
@@ -72,7 +72,7 @@ public class ShareSettingsController {
     }
 
     @PostMapping
-    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) throws Exception {
+    public String doPost(HttpServletRequest request, RedirectAttributes redirectAttributes) {
         handleParameters(request);
 
         redirectAttributes.addFlashAttribute("settings_toast", true);

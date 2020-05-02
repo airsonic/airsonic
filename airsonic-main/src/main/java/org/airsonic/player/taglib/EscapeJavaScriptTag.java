@@ -51,7 +51,7 @@ public class EscapeJavaScriptTag extends BodyTagSupport {
 
     private String string;
 
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         return EVAL_BODY_BUFFERED;
     }
 

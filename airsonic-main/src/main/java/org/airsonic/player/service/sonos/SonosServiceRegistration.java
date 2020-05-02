@@ -19,8 +19,8 @@
 
 package org.airsonic.player.service.sonos;
 
-import org.airsonic.player.util.Pair;
 import org.airsonic.player.util.StringUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
@@ -54,23 +54,23 @@ public class SonosServiceRegistration {
                  ", SID " + sonosServiceId + ", and Airsonic URL " + localUrl);
 
         List<Pair<String, String>> params = new ArrayList<Pair<String, String>>();
-        params.add(Pair.create("sid", String.valueOf(sonosServiceId)));
+        params.add(Pair.of("sid", String.valueOf(sonosServiceId)));
         if (enabled) {
-            params.add(Pair.create("name", sonosServiceName));
-            params.add(Pair.create("uri", localUrl));
-            params.add(Pair.create("secureUri", localUrl));
-            params.add(Pair.create("pollInterval", "1200"));
-            params.add(Pair.create("authType", "UserId"));
-            params.add(Pair.create("containerType", "MService"));
-            params.add(Pair.create("caps", "search"));
-            params.add(Pair.create("caps", "trFavorites"));
-            params.add(Pair.create("caps", "alFavorites"));
-            params.add(Pair.create("caps", "ucPlaylists"));
-            params.add(Pair.create("caps", "extendedMD"));
-            params.add(Pair.create("presentationMapVersion", "1"));
-            params.add(Pair.create("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
-            params.add(Pair.create("stringsVersion", "5"));
-            params.add(Pair.create("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
+            params.add(Pair.of("name", sonosServiceName));
+            params.add(Pair.of("uri", localUrl));
+            params.add(Pair.of("secureUri", localUrl));
+            params.add(Pair.of("pollInterval", "1200"));
+            params.add(Pair.of("authType", "UserId"));
+            params.add(Pair.of("containerType", "MService"));
+            params.add(Pair.of("caps", "search"));
+            params.add(Pair.of("caps", "trFavorites"));
+            params.add(Pair.of("caps", "alFavorites"));
+            params.add(Pair.of("caps", "ucPlaylists"));
+            params.add(Pair.of("caps", "extendedMD"));
+            params.add(Pair.of("presentationMapVersion", "1"));
+            params.add(Pair.of("presentationMapUri", airsonicBaseUrl + "sonos/presentationMap.xml"));
+            params.add(Pair.of("stringsVersion", "5"));
+            params.add(Pair.of("stringsUri", airsonicBaseUrl + "sonos/strings.xml"));
         }
 
         String result = execute(controllerUrl, params);
@@ -80,7 +80,7 @@ public class SonosServiceRegistration {
     private String execute(String url, List<Pair<String, String>> parameters) throws IOException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         for (Pair<String, String> parameter : parameters) {
-            params.add(new BasicNameValuePair(parameter.getFirst(), parameter.getSecond()));
+            params.add(new BasicNameValuePair(parameter.getLeft(), parameter.getRight()));
         }
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(20 * 1000) // 20 seconds

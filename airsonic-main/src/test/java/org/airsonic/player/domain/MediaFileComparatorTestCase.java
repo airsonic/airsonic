@@ -29,7 +29,7 @@ public class MediaFileComparatorTestCase extends TestCase {
 
     private final MediaFileComparator comparator = new MediaFileComparator(true);
 
-    public void testCompareAlbums() throws Exception {
+    public void testCompareAlbums() {
 
         MediaFile albumA2012 = new MediaFile();
         albumA2012.setMediaType(MediaFile.MediaType.ALBUM);
@@ -65,7 +65,7 @@ public class MediaFileComparatorTestCase extends TestCase {
         assertEquals(1, comparator.compare(albumB2012, albumA2012));
     }
 
-    public void testCompareDiscNumbers() throws Exception {
+    public void testCompareDiscNumbers() {
 
         MediaFile discXtrack1 = new MediaFile();
         discXtrack1.setMediaType(MediaFile.MediaType.MUSIC);
