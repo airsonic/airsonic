@@ -3,6 +3,13 @@
 # airsonic/airsonic
 # -->
 
+## v10.6.2 - 3 May 2020
+
+### Fixes
+
+* Last.fm scrobbling should be working again (#1655)
+* Incomplete support for some platforms in the internal diagnostics page (#1641, #1664)
+
 ## v10.6.1 - 19 Apr 2020
 
 ### Fixes
