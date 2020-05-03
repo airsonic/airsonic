@@ -177,7 +177,8 @@ public class TranscodingService {
      * Creates parameters for a possibly transcoded input stream for the given media file and player combination.
      * <p/>
      * A transcoding is applied if it is applicable for the format of the given file, and is activated for the
-     * given player, and either the desired format or bitrate needs changing.
+     * given player, and either the desired format or bitrate needs changing or only a section of the file should be
+     * returned.
      * <p/>
      * Otherwise, a normal input stream to the original file is returned.
      *
@@ -230,6 +231,10 @@ public class TranscodingService {
         if (transcoding != null && ((maxBitRate != 0 && (bitRate == 0 || bitRate > maxBitRate)) ||
             (preferredTargetFormat != null && ! mediaFile.getFormat().equalsIgnoreCase(preferredTargetFormat)))) {
             parameters.setTranscoding(transcoding);
+        }
+
+        if (mediaFile.isSingleFile()) {
+            parameters.setTranscoding(insertSplit(mediaFile, parameters.getTranscoding()));
         }
 
         parameters.setMaxBitRate(maxBitRate == 0 ? null : maxBitRate);
@@ -470,18 +475,24 @@ public class TranscodingService {
                     }
                 }
             }
+        }
 
-            /*
-             * is this a cue-indexed track? If so, push splitCommand in front of any existing steps, moving them down the line
-             */
-            if (mediaFile.isSingleFile()) {
-                if (transcoding != null) {
-                    transcoding = new Transcoding(null, transcoding.getName(), transcoding.getSourceFormats(), transcoding.getTargetFormat(),
-                        settingsService.getSplitCommand(), transcoding.getStep1(), transcoding.getStep2(), transcoding.getStep3(), true);
-                } else {
-                    transcoding = new Transcoding(null, "split", suffix, suffix, settingsService.getSplitCommand(), null, null, true);
-                }
-            }
+        return transcoding;
+    }
+
+    /**
+     * Returns a transcoding with a split command as the first step, moving any existing steps down the line
+     * @param mediaFile                The media file.
+     * @param transcoding              The transcoding into which a split command is to be inserted (may be {@code null})
+     * @return a transcoding with a split command as the first step followed by up to 3 following steps from the input transcoding
+     */
+    private Transcoding insertSplit(MediaFile mediaFile, Transcoding transcoding) {
+        if (transcoding != null) {
+            transcoding = new Transcoding(null, transcoding.getName(), transcoding.getSourceFormats(), transcoding.getTargetFormat(),
+                settingsService.getSplitCommand(), transcoding.getStep1(), transcoding.getStep2(), transcoding.getStep3(), true);
+        } else {
+            String suffix = mediaFile.getFormat();
+            transcoding = new Transcoding(null, "split", suffix, suffix, settingsService.getSplitCommand(), null, null, true);
         }
 
         return transcoding;
@@ -558,7 +569,7 @@ public class TranscodingService {
         Transcoding transcoding = parameters.getTranscoding();
         List<String> steps = Arrays.asList();
         if (transcoding != null) {
-            steps = Arrays.asList(transcoding.getStep3(), transcoding.getStep2(), transcoding.getStep1());
+            steps = Arrays.asList(transcoding.getStep4(), transcoding.getStep3(), transcoding.getStep2(), transcoding.getStep1());
         } else {
             return true;  // not transcoding
         }
