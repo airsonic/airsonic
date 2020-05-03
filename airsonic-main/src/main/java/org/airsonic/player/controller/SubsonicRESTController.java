@@ -1719,7 +1719,7 @@ public class SubsonicRESTController {
             MediaFile mediaFile = mediaFileService.getMediaFile(bookmark.getMediaFileId());
             if (mediaFile == null) {
                 continue;
-            } 
+            }
             org.subsonic.restapi.Bookmark b = new org.subsonic.restapi.Bookmark();
             result.getBookmark().add(b);
             b.setPosition(bookmark.getPositionMillis());
