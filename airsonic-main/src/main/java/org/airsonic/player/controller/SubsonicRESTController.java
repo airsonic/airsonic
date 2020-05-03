@@ -1716,6 +1716,10 @@ public class SubsonicRESTController {
 
         Bookmarks result = new Bookmarks();
         for (Bookmark bookmark : bookmarkService.getBookmarks(username)) {
+            MediaFile mediaFile = mediaFileService.getMediaFile(bookmark.getMediaFileId());
+            if (mediaFile == null) {
+                continue;
+            } 
             org.subsonic.restapi.Bookmark b = new org.subsonic.restapi.Bookmark();
             result.getBookmark().add(b);
             b.setPosition(bookmark.getPositionMillis());
@@ -1723,11 +1727,7 @@ public class SubsonicRESTController {
             b.setComment(bookmark.getComment());
             b.setCreated(jaxbWriter.convertDate(bookmark.getCreated()));
             b.setChanged(jaxbWriter.convertDate(bookmark.getChanged()));
-
-            MediaFile mediaFile = mediaFileService.getMediaFile(bookmark.getMediaFileId());
-            if (mediaFile != null) {
-                b.setEntry(createJaxbChild(player, mediaFile, username));
-            }
+            b.setEntry(createJaxbChild(player, mediaFile, username));
         }
 
         Response res = createResponse();
