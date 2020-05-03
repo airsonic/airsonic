@@ -134,10 +134,10 @@ public class PodcastDaoTestCase extends DaoTestCaseBean2 {
 
         List<PodcastEpisode> episodes = podcastDao.getEpisodes(channelId);
         assertEquals("Error in getEpisodes().", 4, episodes.size());
-        assertEpisodeEquals(a, episodes.get(0));
-        assertEpisodeEquals(c, episodes.get(1));
-        assertEpisodeEquals(b, episodes.get(2));
-        assertEpisodeEquals(d, episodes.get(3));
+        assertEpisodeEquals(d, episodes.get(0));
+        assertEpisodeEquals(a, episodes.get(1));
+        assertEpisodeEquals(c, episodes.get(2));
+        assertEpisodeEquals(b, episodes.get(3));
     }
 
 

@@ -31,29 +31,25 @@ public class LegacyHsqlDaoHelper extends GenericDaoHelper {
         LOG.debug("Database checkpoint complete.");
     }
 
-    @PreDestroy
-    public void onDestroy() {
-        Connection conn = null;
+    /**
+     * Shutdown the embedded HSQLDB database. After this has run, the database cannot be accessed again from the same DataSource.
+     */
+    private void shutdownHsqldbDatabase() {
         try {
-            // Properly shutdown the embedded HSQLDB database.
             LOG.debug("Database shutdown in progress...");
             JdbcTemplate jdbcTemplate = getJdbcTemplate();
-            conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
-            conn.setAutoCommit(true);
-            jdbcTemplate.execute("SHUTDOWN");
+            try (Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource())) {
+                jdbcTemplate.execute("SHUTDOWN");
+            }
             LOG.debug("Database shutdown complete.");
 
         } catch (SQLException e) {
-            LOG.error("Database shutdown failed: " + e);
-            e.printStackTrace();
-
-        } finally {
-            try {
-                if (conn != null)
-                    conn.close();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            LOG.error("Database shutdown failed", e);
         }
+    }
+
+    @PreDestroy
+    public void onDestroy() {
+        shutdownHsqldbDatabase();
     }
 }
