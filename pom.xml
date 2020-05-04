@@ -175,7 +175,7 @@
             <dependency>
                 <groupId>jakarta.xml.ws</groupId>
                 <artifactId>jakarta.xml.ws-api</artifactId>
-                <version>2.3.2</version>
+                <version>2.3.3</version>
             </dependency>
             <dependency>
                 <groupId>jakarta.xml.soap</groupId>
