@@ -655,8 +655,8 @@ public class MediaFileDao extends AbstractDao {
         return queryForInt(
                 "SELECT count(media_file.id) FROM media_file " +
                 "WHERE media_file.path != media_file.folder " +
-                "AND media_file.path NOT LIKE concat(media_file.folder, '/%')",
-                0);
+                "AND media_file.path NOT LIKE concat(media_file.folder, concat(?, '%'))",
+                0, File.separator);
     }
 
     public int getAlbumCount(final List<MusicFolder> musicFolders) {
