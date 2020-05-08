@@ -1210,7 +1210,7 @@ public class SubsonicRESTController {
             Player player = status.getPlayer();
             MediaFile mediaFile = status.getMediaFile();
             String username = player.getUsername();
-            if (username == null) {
+            if (player == null || mediaFile == null || username == null) {
                 continue;
             }
 
@@ -1601,8 +1601,10 @@ public class SubsonicRESTController {
         String path = episode.getPath();
         if (path != null) {
             MediaFile mediaFile = mediaFileService.getMediaFile(path);
-            e = createJaxbChild(new org.subsonic.restapi.PodcastEpisode(), player, mediaFile, username);
-            e.setStreamId(String.valueOf(mediaFile.getId()));
+            if (mediaFile != null) {
+                e = createJaxbChild(new org.subsonic.restapi.PodcastEpisode(), player, mediaFile, username);
+                e.setStreamId(String.valueOf(mediaFile.getId()));
+            }
         }
 
         e.setId(String.valueOf(episode.getId()));  // Overwrites the previous "id" attribute.
@@ -1714,6 +1716,10 @@ public class SubsonicRESTController {
 
         Bookmarks result = new Bookmarks();
         for (Bookmark bookmark : bookmarkService.getBookmarks(username)) {
+            MediaFile mediaFile = mediaFileService.getMediaFile(bookmark.getMediaFileId());
+            if (mediaFile == null) {
+                continue;
+            }
             org.subsonic.restapi.Bookmark b = new org.subsonic.restapi.Bookmark();
             result.getBookmark().add(b);
             b.setPosition(bookmark.getPositionMillis());
@@ -1721,8 +1727,6 @@ public class SubsonicRESTController {
             b.setComment(bookmark.getComment());
             b.setCreated(jaxbWriter.convertDate(bookmark.getCreated()));
             b.setChanged(jaxbWriter.convertDate(bookmark.getChanged()));
-
-            MediaFile mediaFile = mediaFileService.getMediaFile(bookmark.getMediaFileId());
             b.setEntry(createJaxbChild(player, mediaFile, username));
         }
 
@@ -1843,7 +1847,10 @@ public class SubsonicRESTController {
 
         List<MediaFile> files = new ArrayList<MediaFile>();
         for (int id : getRequiredIntParameters(request, "id")) {
-            files.add(mediaFileService.getMediaFile(id));
+            MediaFile mediaFile = mediaFileService.getMediaFile(id);
+            if (mediaFile != null) {
+                files.add(mediaFile);
+            }
         }
 
         org.airsonic.player.domain.Share share = shareService.createShare(request, files);
