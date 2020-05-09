@@ -228,7 +228,7 @@ public class MediaScannerService {
                             .map(a -> CompletableFuture.runAsync(() -> albumDao.createOrUpdateAlbum(a), pool))
                             .toArray(CompletableFuture[]::new))
                     .thenRunAsync(() -> {
-                        LOG.info("Marking non-present albums.");
+                        LOG.debug("Marking non-present albums.");
                         albumDao.markNonPresent(statistics.getScanDate());
                     }, pool)
                     .thenRunAsync(() -> LOG.info("Album persistence complete"), pool);
@@ -239,7 +239,7 @@ public class MediaScannerService {
                             .map(a -> CompletableFuture.runAsync(() -> artistDao.createOrUpdateArtist(a), pool))
                             .toArray(CompletableFuture[]::new))
                     .thenRunAsync(() -> {
-                        LOG.info("Marking non-present artists.");
+                        LOG.debug("Marking non-present artists.");
                         artistDao.markNonPresent(statistics.getScanDate());
                     }, pool)
                     .thenRunAsync(() -> LOG.info("Artist persistence complete"), pool);
@@ -248,7 +248,7 @@ public class MediaScannerService {
             CompletableFuture<Void> mediaFilePersistence = CompletableFuture
                     .runAsync(() -> mediaFileDao.markPresent(encountered.keySet(), statistics.getScanDate()), pool)
                     .thenRunAsync(() -> {
-                        LOG.info("Marking non-present files.");
+                        LOG.debug("Marking non-present files.");
                         mediaFileDao.markNonPresent(statistics.getScanDate());
                     }, pool)
                     .thenRunAsync(() -> LOG.info("File marking complete"), pool);
@@ -256,21 +256,21 @@ public class MediaScannerService {
             LOG.info("Persisting genres");
             CompletableFuture<Void> genrePersistence = CompletableFuture
                     .runAsync(() -> {
-                        LOG.info("Updating genres");
+                        LOG.debug("Updating genres");
                         mediaFileDao.updateGenres(genres.getGenres());
                     }, pool)
                     .thenRunAsync(() -> LOG.info("Genre persistence complete"), pool);
 
             CompletableFuture.allOf(albumPersistence, artistPersistence, mediaFilePersistence, genrePersistence).join();
 
-            LOG.info("Completed media library scan.");
+            LOG.debug("Completed media library scan.");
 
         } catch (Throwable x) {
             LOG.error("Failed to scan media library.", x);
         } finally {
             mediaFileService.setMemoryCacheEnabled(true);
             indexManager.stopIndexing(statistics);
-            LOG.info("Media library scan took {}s", ChronoUnit.SECONDS.between(statistics.getScanDate().toInstant(), Instant.now()));
+            LOG.info("Completed media library scan in {}s.", ChronoUnit.SECONDS.between(statistics.getScanDate().toInstant(), Instant.now()));
         }
     }
 
