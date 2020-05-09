@@ -88,6 +88,8 @@ public class MediaScannerService {
 
     private AtomicInteger scanCount = new AtomicInteger(0);
 
+    private ForkJoinPool pool;
+
     @PostConstruct
     public void init() {
         indexManager.initializeIndexDirectory();
@@ -174,15 +176,19 @@ public class MediaScannerService {
         if (isScanning()) {
             return;
         }
+
         setScanning(true);
 
-        ForkJoinPool pool = new ForkJoinPool(scannerParallelism, mediaScannerThreadFactory, null, true);
+        if (pool == null) {
+            pool = new ForkJoinPool(scannerParallelism, mediaScannerThreadFactory, null, true);
+        }
 
         CompletableFuture.runAsync(() -> doScanLibrary(pool), pool)
                 .thenRunAsync(() -> playlistService.importPlaylists(), pool)
                 .thenRunAsync(() -> mediaFileDao.checkpoint(), pool)
                 .whenComplete((r, t) -> {
                     pool.shutdown();
+                    pool = null;
                     setScanning(false);
                 });
     }
