@@ -1,11 +1,15 @@
-<!--
-Thanks for reporting a problem with Airsonic! Please complete all of the
-following sections to make it easier to assist you.
--->
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: 'in: UNDEFINED, status: waiting-for-feedback, type: bug'
+assignees: ''
+
+---
 
 ## Problem description
 
-*Describe your problem here. Describe what you want to happen, and what happens
+*Describe your problem here. Describe what you want to happen, and what happens 
 if you try to do it. If you have a stack trace or any logs, please format them using
 github's triple-backquote notation, or if they are large you may also consider
 attaching them as a file or gist.*
@@ -31,6 +35,7 @@ files, ensure you are legally permitted to share copies!*
  * **Client**: *what browser and version you use to access the Airsonic web
    interface, or the name and version of another app you're using.*
  * **Language**: *which langauge/internationalization is in use*
+ * **Tomcat/standalone**: *which of Tomcat/standalone war is in use*
 
 ## Additional notes
 
