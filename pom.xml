@@ -354,6 +354,7 @@
                         <configuration>
                             <!-- #1186 Temporarily skip a test. -->
                             <excludes>
+                                <exclude>org.airsonic.player.dao.AlbumDaoTest.java</exclude>
                                 <exclude>org.airsonic.player.service.search.*TestCase.java</exclude>
                             </excludes>
                         </configuration>
