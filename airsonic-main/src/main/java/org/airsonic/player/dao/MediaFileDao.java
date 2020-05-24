@@ -728,17 +728,17 @@ public class MediaFileDao extends AbstractDao {
     }
 
     public List<Integer> getArtistExpungeCandidates() {
-        return queryForInts("select id from media_file where media_file.type = ? and not present",
+        return queryForInts("select id from media_file where media_file.type = ? and (not present or folder not in (select path from music_folder))",
                 MediaFile.MediaType.DIRECTORY.name());
     }
 
     public List<Integer> getAlbumExpungeCandidates() {
-        return queryForInts("select id from media_file where media_file.type = ? and not present",
+        return queryForInts("select id from media_file where media_file.type = ? and (not present or folder not in (select path from music_folder))",
                 MediaFile.MediaType.ALBUM.name());
     }
 
     public List<Integer> getSongExpungeCandidates() {
-        return queryForInts("select id from media_file where media_file.type in (?,?,?,?) and not present",
+        return queryForInts("select id from media_file where media_file.type in (?,?,?,?) and (not present or folder not in (select path from music_folder))",
                 MediaFile.MediaType.MUSIC.name(), MediaFile.MediaType.PODCAST.name(),
                 MediaFile.MediaType.AUDIOBOOK.name(), MediaFile.MediaType.VIDEO.name());
     }
@@ -749,7 +749,7 @@ public class MediaFileDao extends AbstractDao {
 
         final int batchSize = 1000;
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("delete from media_file where id between ? and ? and not present", id, id + batchSize);
+            update("delete from media_file where id between ? and ? and (not present or folder not in (select path from music_folder))", id, id + batchSize);
         }
     }
 

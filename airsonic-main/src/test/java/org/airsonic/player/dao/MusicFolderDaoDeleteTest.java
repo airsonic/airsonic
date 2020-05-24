@@ -97,9 +97,9 @@ public class MusicFolderDaoDeleteTest extends AbstractAirsonicHomeTest {
         albumDao.expunge();
 
         // All results should be 0.
-        assertEquals(3, mediaFileDao.getChildrenOf(musicFolder.getPath().getPath()).size());
-        assertEquals(4, artistDao.getAlphabetialArtists(0, Integer.MAX_VALUE, Arrays.asList(musicFolder)).size());
-        assertEquals(4, albumDao.getAlbumCount(Arrays.asList(musicFolder)));
+        assertEquals(0, mediaFileDao.getChildrenOf(musicFolder.getPath().getPath()).size());
+        assertEquals(0, artistDao.getAlphabetialArtists(0, Integer.MAX_VALUE, Arrays.asList(musicFolder)).size());
+        assertEquals(0, albumDao.getAlbumCount(Arrays.asList(musicFolder)));
 
     }
 

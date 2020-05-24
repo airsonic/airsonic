@@ -170,7 +170,7 @@ public class ArtistDao extends AbstractDao {
     }
 
     public List<Integer> getExpungeCandidates() {
-        return queryForInts("select id from artist where not present");
+        return queryForInts("select id from artist where (not present or folder_id not in (select id from music_folder))");
     }
 
     public void expunge() {
@@ -179,7 +179,7 @@ public class ArtistDao extends AbstractDao {
 
         final int batchSize = 1000;
         for (int id = minId; id <= maxId; id += batchSize) {
-            update("delete from artist where id between ? and ? and not present", id, id + batchSize);
+            update("delete from artist where id between ? and ? and (not present or folder_id not in (select id from music_folder))", id, id + batchSize);
         }
     }
 
