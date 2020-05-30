@@ -295,7 +295,11 @@ public class CoverArtController implements LastModified {
             try {
                 LOG.trace("Reading artwork from file {}", mediaFile);
                 artwork = jaudiotaggerParser.getArtwork(mediaFile);
-                is = new ByteArrayInputStream(artwork.getBinaryData());
+                byte[] binaryData = artwork.getBinaryData();
+                if( binaryData != null )                
+                	is = new ByteArrayInputStream(binaryData);
+                else
+                	is = new FileInputStream(file);
                 mimeType = artwork.getMimeType();
             } catch (Exception e) {
                 LOG.debug("Could not read artwork from file {}", mediaFile);
