@@ -336,6 +336,7 @@
                         </suppressionFiles>
                         <!-- disabled due to the poor quality of the data from this analyzer -->
                         <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                        <skipSystemScope>true</skipSystemScope>
                     </configuration>
                     <executions>
                         <execution>
