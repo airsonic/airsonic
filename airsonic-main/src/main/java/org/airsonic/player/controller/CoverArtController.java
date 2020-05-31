@@ -296,10 +296,10 @@ public class CoverArtController implements LastModified {
                 LOG.trace("Reading artwork from file {}", mediaFile);
                 artwork = jaudiotaggerParser.getArtwork(mediaFile);
                 byte[] binaryData = artwork.getBinaryData();
-                if( binaryData != null )                
-                	is = new ByteArrayInputStream(binaryData);
+                if (binaryData != null)
+                    is = new ByteArrayInputStream(binaryData);
                 else
-                	is = new FileInputStream(file);
+                    is = new FileInputStream(file);
                 mimeType = artwork.getMimeType();
             } catch (Exception e) {
                 LOG.debug("Could not read artwork from file {}", mediaFile);
