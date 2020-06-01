@@ -171,16 +171,7 @@
     }
 
     function setFrameHeight(height) {
-        <%-- Disable animation in Chrome. It stopped working in Chrome 44. --%>
-        var duration = navigator.userAgent.indexOf("Chrome") != -1 ? 0 : 400;
-
-        $("#dummy-animation-target").stop();
-        $("#dummy-animation-target").animate({"max-width": height}, {
-            step: function (now, fx) {
-                top.document.getElementById("playQueueFrameset").rows = "*," + now;
-            },
-            duration: duration
-        });
+        $("div.playqueue-container", window.parent.document).animate( { height: height + "px" }, { queue: false, duration: 400 } );
     }
 
     function startTimer() {
