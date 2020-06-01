@@ -161,11 +161,11 @@
     }
 
     function initAutoHide() {
-        $(window).mouseleave(function (event) {
+        $(".playlistframe").mouseleave(function (event) {
             if (event.clientY < 30) onHidePlayQueue();
         });
 
-        $(window).mouseenter(function () {
+        $(".playlistframe").mouseenter(function () {
             onShowPlayQueue();
         });
     }
