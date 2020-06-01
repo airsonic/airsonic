@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.seamless</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.1.0</version>
+    </parent>
+
+    <name>Seamless Utilities</name>
+    <artifactId>seamless-util</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.core.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>${javax.mail.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+        	<groupId>org.dbunit</groupId>
+        	<artifactId>dbunit</artifactId>
+        	<version>${dbunit.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit-addons</groupId>
+                    <artifactId>junit-addons</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>poi</groupId>
+                    <artifactId>poi</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+</project>

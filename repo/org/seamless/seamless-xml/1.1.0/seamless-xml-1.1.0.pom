@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.seamless</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.1.0</version>
+    </parent>
+
+    <name>Seamless XML</name>
+    <artifactId>seamless-xml</artifactId>
+    <packaging>jar</packaging>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/AllTests.tng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.sf.kxml</groupId>
+            <artifactId>kxml2</artifactId>
+            <version>${kxml.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ##################################################################################################### -->
+
+    <groupId>org.seamless</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.1.0</version>
+
+    <modules>
+        <module>util</module>
+        <module>xml</module>
+        <module>mock</module>
+        <module>http</module>
+        <module>javadoc</module>
+        <module>swing</module>
+        <module>gwt</module>
+        <module>cdi</module>
+    </modules>
+
+    <!-- ##################################################################################################### -->
+
+    <name>Seamless</name>
+    <url>http://seamless.org/</url>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 2 or later</name>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>Common Development and Distribution License, Version 1 or later</name>
+            <url>http://opensource.org/licenses/CDDL-1.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>4th Line GmbH, Switzerland</name>
+        <url>http://4thline.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>cb</id>
+            <name>Christian Bauer</name>
+            <email>cb_AT_4thline.com</email>
+            <organization>4th Line GmbH, Switzerland</organization>
+            <organizationUrl>http://4thline.com</organizationUrl>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>4thline.org</id>
+            <url>scpexe://4thline.org/webroot/vhosts/8080/4thline.org/m2/</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- ##################################################################################################### -->
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>5</maven.compiler.source>
+        <maven.compiler.target>5</maven.compiler.target>
+
+        <testng.version>6.2</testng.version>
+        <servlet.api.version>2.4</servlet.api.version>
+        <gwt.maven.plugin.version>2.4.0</gwt.maven.plugin.version>
+        <gwt.version>2.4.0</gwt.version>
+        <gin.version>1.5.0</gin.version>
+        <hibernate.core.version>3.6.0.Final</hibernate.core.version>
+        <javax.mail.version>1.4</javax.mail.version>
+        <dbunit.version>2.2</dbunit.version>
+        <weld.version>1.1.10.Final</weld.version>
+        <kxml.version>2.3.0</kxml.version>
+
+    </properties>
+
+    <!-- ##################################################################################################### -->
+
+    <repositories>
+        <repository>
+            <id>4thline-repo</id>
+            <url>http://4thline.org/m2</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>4thline-repo</id>
+            <url>http://4thline.org/m2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- ##################################################################################################### -->
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+
+                <!-- Assembly -->
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+
+                <!-- Unit tests -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.5</version>
+                    <configuration>
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                        <suiteXmlFiles>
+                            <suiteXmlFile>src/test/AllTests.tng.xml</suiteXmlFile>
+                        </suiteXmlFiles>
+                    </configuration>
+                </plugin>
+
+                <!-- Javadoc generation settings -->
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <quiet/>
+                        <!-- WTF! http://jira.codehaus.org/browse/MJAVADOC-268 -->
+                        <detectOfflineLinks>false</detectOfflineLinks>
+                    </configuration>
+                </plugin>
+
+                <!-- Source JARs -->
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                </plugin>
+
+                <!-- Cross-referenced source code -->
+                <plugin>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+
+                <!-- Deploy phase -->
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+            </plugins>
+
+        </pluginManagement>
+
+        <plugins>
+
+            <!-- Source JARs -->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+        <!-- Required for we-don't-care-about-compatibility-Maven3 'deploy' goal -->
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
+        </extensions>
+
+    </build>
+
+    <!-- ##################################################################################################### -->
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+    </reporting>
+
+    <!-- ##################################################################################################### -->
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ##################################################################################################### -->
+
+    <profiles>
+        <profile>
+            <id>tools-default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <file>
+                    <exists>${java.home}/../lib/tools.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
+            </properties>
+        </profile>
+        <profile>
+            <id>tools-osx-sundjdk</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <file>
+                    <exists>${java.home}/../Classes/classes.jar</exists>
+                </file>
+            </activation>
+            <properties>
+                <tools.jar>${java.home}/../Classes/classes.jar</tools.jar>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
