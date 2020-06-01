@@ -32,13 +32,6 @@
             <id>jaudiotagger-repository</id>
             <url>https://dl.bintray.com/ijabz/maven</url>
         </repository>
-        <repository>
-          <id>4thline-repo</id>
-          <url>http://4thline.org/m2</url>
-          <snapshots>
-              <enabled>false</enabled>
-          </snapshots>
-      </repository>
     </repositories>
 
     <pluginRepositories>

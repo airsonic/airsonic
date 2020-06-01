@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ##################################################################################################### -->
+    <!--
+
+    BUILD NOTES
+
+    Build only the manual of core (or other module), in root pom.xml's current directory (output in ./target/manual/)
+
+        mvn -N clean org.fourthline.lemma:lemma-maven-plugin:manual \
+            -Dmanual.templateFilename=cling-core-manual.xhtml \
+            -Dmanual.manualSourceDirectory=core/src/manual \
+            -Dmanual.testSourceDirectory=core/src/test
+
+    -->
+    <!-- ##################################################################################################### -->
+
+    <groupId>org.fourthline.cling</groupId>
+    <artifactId>cling</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.1</version>
+
+    <modules>
+        <module>core</module>
+        <module>demo</module>
+        <module>workbench</module>
+        <module>website</module>
+        <module>distribution</module>
+        <module>support</module>
+        <module>mediarenderer</module>
+    </modules>
+
+    <!-- ##################################################################################################### -->
+
+    <name>Cling</name>
+    <url>http://4thline.org/projects/cling/</url>
+
+    <licenses>
+        <license>
+            <name>GNU Lesser General Public License, Version 2.1 or later</name>
+            <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>4th Line GmbH, Switzerland</name>
+        <url>http://4thline.com</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>cb</id>
+            <name>Christian Bauer</name>
+            <email>cb_AT_4thline.com</email>
+            <organization>4th Line GmbH, Switzerland</organization>
+            <organizationUrl>http://4thline.com</organizationUrl>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <distributionManagement>
+        <repository>
+            <id>4thline.org</id>
+            <url>scpexe://4thline.org/webroot/vhosts/8080/4thline.org/m2/</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- ##################################################################################################### -->
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>6</maven.compiler.source>
+        <maven.compiler.target>6</maven.compiler.target>
+
+        <seamless.version>1.1.0</seamless.version>
+        <lemma.version>1.1.0</lemma.version>
+        <testng.version>6.2</testng.version>
+        <apache.httpcomponents.httpclient.version>4.2.2</apache.httpcomponents.httpclient.version>
+        <apache.httpcomponents.httpcore.version>4.2.3</apache.httpcomponents.httpcore.version>
+        <android.version>4.0.1.2</android.version>
+        <android.maven.plugin.version>4.0.0-rc.1</android.maven.plugin.version>
+        <jetty.version>8.1.8.v20121106</jetty.version>
+        <cdi.api.version>1.0-SP4</cdi.api.version>
+        <ejb.api.version>3.0</ejb.api.version>
+        <slf4j.version>1.6.1</slf4j.version>
+        <jna.version>3.2.5</jna.version>
+        <gstreamer.version>1.4</gstreamer.version>
+        <args4j.version>2.0.12</args4j.version>
+        <weld.version>1.1.10.Final</weld.version>
+        <javassist.version>3.14.0-GA</javassist.version>
+        <kxml.version>2.3.0</kxml.version>
+
+    </properties>
+
+    <!-- ##################################################################################################### -->
+
+    <repositories>
+        <repository>
+            <id>4thline-repo</id>
+            <url>http://4thline.org/m2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <url>http://download.java.net/maven/2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>4thline-repo</id>
+            <url>http://4thline.org/m2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>maven2-repository.dev.java.net</id>
+            <url>http://download.java.net/maven/2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>onejar-maven-plugin.googlecode.com</id>
+            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!-- ##################################################################################################### -->
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                
+                <!-- Assembly -->
+                <plugin>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2.1</version>
+                </plugin>
+
+                <!-- Unit tests -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.9</version>
+                    <configuration>
+                        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    </configuration>
+                </plugin>
+
+                <!-- Javadoc generation settings -->
+                <plugin>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.8</version>
+                    <configuration>
+                        <quiet>true</quiet>
+                    </configuration>
+                </plugin>
+
+                <!-- Source JARs -->
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.1.2</version>
+                </plugin>
+
+                <!-- Cross-referenced source code -->
+                <plugin>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+
+                <!-- Deploy phase -->
+                <plugin>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.7</version>
+                </plugin>
+
+                <!-- Ant fallback -->
+                <plugin>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <version>1.3</version>
+                </plugin>
+
+                <!-- Cleanup -->
+                <plugin>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>2.4.1</version>
+                </plugin>
+
+                <!-- Website lifecycle -->
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+                    <dependencies>
+                        <!-- We have raw XHTML files -->
+                        <dependency>
+                            <groupId>org.apache.maven.doxia</groupId>
+                            <artifactId>doxia-module-xhtml</artifactId>
+                            <version>1.1.2</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <!-- One-JAR executable -->
+                <plugin>
+                    <groupId>org.dstovall</groupId>
+                    <artifactId>onejar-maven-plugin</artifactId>
+                    <version>1.4.4</version>
+                </plugin>
+
+                <!-- Manual generation settings -->
+                <plugin>
+                    <groupId>org.fourthline.lemma</groupId>
+                    <artifactId>lemma-maven-plugin</artifactId>
+                    <version>${lemma.version}</version>
+                    <configuration>
+                        <!-- Generate unique identifiers for all citations
+                        TODO: Docs cleanup necessary for this
+                        <processXRefs>false</processXRefs>
+                        -->
+                    </configuration>
+                </plugin>
+
+                <!-- Fixing the versions so Maven stops looking for the latest online... -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-install-plugin</artifactId>
+                    <version>2.3.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>2.6</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+            </plugins>
+
+        </pluginManagement>
+
+        <!-- Required for we-don't-care-about-compatibility-Maven3 'deploy' goal -->
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-7</version>
+            </extension>
+        </extensions>
+
+    </build>
+
+    <!-- ##################################################################################################### -->
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+    </reporting>
+
+    <!-- ##################################################################################################### -->
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+    </dependencies>
+
+    <!-- ##################################################################################################### -->
+
+</project>
