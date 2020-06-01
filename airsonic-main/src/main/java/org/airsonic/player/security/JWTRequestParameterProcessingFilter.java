@@ -25,9 +25,11 @@ public class JWTRequestParameterProcessingFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(JWTRequestParameterProcessingFilter.class);
     private final AuthenticationManager authenticationManager;
     private final AuthenticationFailureHandler failureHandler;
+    private final JWTSecurityService jwtSecurityService;
 
-    protected JWTRequestParameterProcessingFilter(AuthenticationManager authenticationManager, String failureUrl) {
+    protected JWTRequestParameterProcessingFilter(AuthenticationManager authenticationManager, JWTSecurityService jwtSecurityService, String failureUrl) {
         this.authenticationManager = authenticationManager;
+        this.jwtSecurityService = jwtSecurityService;
         failureHandler = new SimpleUrlAuthenticationFailureHandler(failureUrl);
     }
 
@@ -39,10 +41,11 @@ public class JWTRequestParameterProcessingFilter implements Filter {
         throw new AuthenticationServiceException("Invalid auth method");
     }
 
-    private static Optional<JWTAuthenticationToken> findToken(HttpServletRequest request) {
+    private Optional<JWTAuthenticationToken> findToken(HttpServletRequest request) {
         String token = request.getParameter(JWTSecurityService.JWT_PARAM_NAME);
         if (!StringUtils.isEmpty(token)) {
-            return Optional.of(new JWTAuthenticationToken(AuthorityUtils.NO_AUTHORITIES, token, request.getRequestURI() + "?" + request.getQueryString()));
+            String username = jwtSecurityService.verify(token).getClaim(JWTSecurityService.CLAIM_USERNAME).asString();
+            return Optional.of(new JWTAuthenticationToken(AuthorityUtils.NO_AUTHORITIES, token, request.getRequestURI() + "?" + request.getQueryString(), username));
         }
         return Optional.empty();
     }
