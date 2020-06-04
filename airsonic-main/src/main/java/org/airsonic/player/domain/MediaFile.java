@@ -182,6 +182,10 @@ public class MediaFile {
         return mediaType == MediaType.ALBUM;
     }
 
+    public boolean isPodcast() {
+        return mediaType == MediaType.PODCAST;
+    }
+
     public String getTitle() {
         return title;
     }

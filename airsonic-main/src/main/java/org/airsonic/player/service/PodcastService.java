@@ -177,6 +177,15 @@ public class PodcastService {
     }
 
     /**
+     * Returns a single Podcast channel id by media file.
+     */
+    public int getChannelIdByMediaFile(MediaFile mediaFile) {
+        return podcastDao.getEpisodeByPath(mediaFile.getPath()).getChannelId();
+    }
+
+
+
+    /**
      * Returns all Podcast channels.
      *
      * @return Possibly empty list of all Podcast channels.

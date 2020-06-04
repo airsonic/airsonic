@@ -56,12 +56,20 @@ public class MainController {
     private RatingService ratingService;
     @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
+    private PodcastService podcastService;
 
     @GetMapping
     protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
                                                  HttpServletRequest request,
                                                  HttpServletResponse response) throws Exception {
         Map<String, Object> map = new HashMap<>();
+
+        //redirect if podcast channel
+        int[] requestParameterIds = ServletRequestUtils.getIntParameters(request, "id");
+        if (requestParameterIds.length == 1 && isPodcast(requestParameterIds[0])) {
+            return new ModelAndView(new RedirectView("/podcastChannel.view?id=" + getPodcastChannelId(requestParameterIds[0])));
+        }
 
         Player player = playerService.getPlayer(request, response);
         List<MediaFile> mediaFiles = getMediaFiles(request);
@@ -285,6 +293,16 @@ public class MainController {
             result.addAll(siblings.stream().filter(sibling -> sibling.isAlbum() && !sibling.equals(dir)).collect(Collectors.toList()));
         }
         return result;
+    }
+
+    private boolean isPodcast(int id) {
+        MediaFile mediaFile = mediaFileService.getMediaFile(id);
+        return mediaFile.isPodcast();
+    }
+
+    private int getPodcastChannelId(int id) {
+        MediaFile mediaFile = mediaFileService.getMediaFile(id);
+        return podcastService.getChannelIdByMediaFile(mediaFile);
     }
 
 }
