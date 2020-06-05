@@ -183,8 +183,6 @@ public class PodcastService {
         return podcastDao.getEpisodeByPath(mediaFile.getPath()).getChannelId();
     }
 
-
-
     /**
      * Returns all Podcast channels.
      *
