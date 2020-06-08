@@ -45,7 +45,7 @@ div.non-left-navigation-container {
     flex-direction: column;
     justify-content: flex-end;
     overflow-x: hidden;
-    max-height: 70vh;
+    max-height: 65vh;
 }
 .playqueue-container iframe {
     height: 100%;
