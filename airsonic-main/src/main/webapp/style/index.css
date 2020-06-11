@@ -21,8 +21,8 @@ iframe {
     height: 100%;
 }
 div.left-nav-container {
-    width: 15%;
-    min-width: 15%;
+    width: 16%;
+    min-width: 16%;
 }
 .left-navigation {
     width: 100%;
@@ -33,7 +33,7 @@ div.non-left-navigation-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 85%;
+    width: 84%;
 }
 .main-right-container {
     flex: 1;
