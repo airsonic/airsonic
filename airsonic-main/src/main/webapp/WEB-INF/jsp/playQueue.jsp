@@ -311,7 +311,9 @@
             if (isAudioPlayerPlaying()) {
                 onStop();
             } else {
-                isScrollToCurrentPlaying = true;
+                if (!isMouseOverTrackList()) {
+                    isScrollToCurrentPlaying = true;
+                }
                 onStart();
             }
         } else {
