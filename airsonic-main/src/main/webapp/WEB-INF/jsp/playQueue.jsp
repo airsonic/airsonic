@@ -28,8 +28,6 @@
 
 <body class="bgcolor2 playlistframe" onload="init()">
 
-<span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
-
 <script type="text/javascript" language="javascript">
 
     // These variables store the media player state, received from DWR in the
