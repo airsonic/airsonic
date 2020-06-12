@@ -337,7 +337,7 @@ public class CoverArtController implements LastModified {
         //crop image to correct size
         if (w > h) {
             int cropX = (w - h) - ((w - h) / 2);
-            image = image.getSubimage(cropX,0, h, h);
+            image = image.getSubimage(cropX, 0, h, h);
         } else if (h > w) {
             int cropY = (h - w) - ((h - w) / 2);
             image = image.getSubimage(0, cropY, w, w);
