@@ -2,8 +2,7 @@
 
 # Put this in your .config/fish/functions folder and you'll get an `airsonic`
 # command that you can use to interact with the rest api. If you just want to
-# play around with it, use `source airsonic.fish` which provides you the same
-# command in your current session.
+# play around with it, you can execute it directly.
 
 function _airsonic_usage
   echo 'Usage: airsonic [-h|--help] -u $user -p $pass [$url] $endpoint [...$params]'
@@ -56,4 +55,9 @@ function airsonic -d "Convenience helper for interacting with an airsonic / subs
   end
 
   http --follow -b $url/rest/$endpoint v==1.15.0 f==json u==$_flag_user  p==$_flag_pass c==airsonic-httpie $params
+end
+
+# execute command directly when not sourced
+if test (status current-command) != "source"
+  airsonic $argv
 end
