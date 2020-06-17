@@ -679,6 +679,13 @@ public class PlayQueueService {
         return convert(request, player, false);
     }
 
+    public void setIndex(int index) throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        Player player = getCurrentPlayer(request, response);
+        player.getPlayQueue().setIndex(index);
+    }
+
     private PlayQueueInfo convert(HttpServletRequest request, Player player, boolean serverSidePlaylist) {
         return convert(request, player, serverSidePlaylist, 0);
     }
