@@ -722,7 +722,6 @@
         // which allows the user to start playback by interacting with the
         // controls, without going through the Airsonic code.
         getMediaElementPlayer().src = song.streamUrl;
-        playQueueService.setIndex(currentSongIndex);
     }
 
     /**
@@ -786,7 +785,6 @@
 
         // Set the current song, index and URL as global variables
         currentSong = songs[index];
-        currentSongIndex = index;
         currentStreamUrl = currentSong.streamUrl;
 
         // Run player-specific preparation code
