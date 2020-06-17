@@ -369,9 +369,9 @@
         if (isJavaJukeboxPresent()) {
             updateJavaJukeboxPlayerControlBar(songs[index]);
         }
-        playQueueService.skip(index, playQueueCallback);
     </c:otherwise>
     </c:choose>
+        playQueueService.skip(index, playQueueCallback);
     }
     function onNext(wrap) {
         var index = parseInt(getCurrentSongIndex()) + 1;
