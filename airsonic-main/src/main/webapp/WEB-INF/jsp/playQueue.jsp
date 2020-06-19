@@ -31,7 +31,7 @@
 <script type="text/javascript" language="javascript">
 
     // These variables store the media player state, received from DWR in the
-    // playQueueCallback function below.onShowPlayQueue
+    // playQueueCallback function below.
 
     // List of songs (of type PlayQueueInfo.Entry)
     var songs = null;
