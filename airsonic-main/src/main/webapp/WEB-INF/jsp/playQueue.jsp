@@ -31,7 +31,7 @@
 <script type="text/javascript" language="javascript">
 
     // These variables store the media player state, received from DWR in the
-    // playQueueCallback function below.
+    // playQueueCallback function below.onShowPlayQueue
 
     // List of songs (of type PlayQueueInfo.Entry)
     var songs = null;
@@ -672,7 +672,9 @@
             jukeboxVolume.slider("option", "value", Math.floor(playQueue.gain * 100));
         }
 
-        setFrameHeight(getPlayerHeight());
+        if (isVisible) {
+            setFrameHeight(getPlayerHeight());
+        }
 
     <c:if test="${model.player.web}">
         triggerPlayer(playQueue.startPlayerAt, playQueue.startPlayerAtPosition);
