@@ -65,6 +65,9 @@
     // Initialize the Cast player (ChromeCast support)
     var CastPlayer = new CastPlayer();
 
+    // silent and empty sound, set when audio media player is stopped
+    const silentSound = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
+
     function init() {
         <c:if test="${model.autoHide}">initAutoHide();</c:if>
 
@@ -146,25 +149,25 @@
     }
 
     function onHidePlayQueue() {
-      setFrameHeight(50);
-      isVisible = false;
-      $(".playqueue-shown").hide();
-      $(".playqueue-hidden").show();
+        setFrameHeight(50);
+        isVisible = false;
+        $(".playqueue-shown").hide();
+        $(".playqueue-hidden").show();
     }
 
     function onShowPlayQueue() {
-      var height = $("body").height() + 25;
-      height = Math.min(height, window.top.innerHeight * 0.8);
-      setFrameHeight(height);
-      scrollToCurrentPlaying();
-      isVisible = true;
-      $(".playqueue-shown").show();
-      $(".playqueue-hidden").hide();
+        var height = $("body").height() + 25;
+        height = Math.min(height, window.top.innerHeight * 0.8);
+        setFrameHeight(height);
+        scrollToCurrentPlaying();
+        isVisible = true;
+        $(".playqueue-shown").show();
+        $(".playqueue-hidden").hide();
     }
 
     function onTogglePlayQueue() {
-      if (isVisible) onHidePlayQueue();
-      else onShowPlayQueue();
+        if (isVisible) onHidePlayQueue();
+        else onShowPlayQueue();
     }
 
     function initAutoHide() {
@@ -199,11 +202,11 @@
     function nowPlayingCallback(nowPlayingInfo) {
         if (nowPlayingInfo != null && nowPlayingInfo.streamUrl != currentStreamUrl) {
             getPlayQueue();
-        <c:if test="${not model.player.web}">
+            <c:if test="${not model.player.web}">
             currentStreamUrl = nowPlayingInfo.streamUrl;
             currentSong = null;
             onPlaying();
-        </c:if>
+            </c:if>
         }
     }
 
@@ -258,10 +261,11 @@
 
     function onClear() {
         var ok = true;
-    <c:if test="${model.partyMode}">
+        <c:if test="${model.partyMode}">
         ok = confirm("<fmt:message key="playlist.confirmclear"/>");
-    </c:if>
+        </c:if>
         if (ok) {
+            onStopMediaElementPlayer();
             playQueueService.clear(playQueueCallback);
         }
     }
@@ -294,6 +298,28 @@
             $('#audioPlayer').get(0).pause();
         } else {
             playQueueService.stop(playQueueCallback);
+        }
+    }
+
+    /**
+     * Stop HTML audio player and set silent audio as src attribute
+     */
+    function onStopMediaElementPlayer() {
+        var mediaElementPlayer = getMediaElementPlayer();
+        if (mediaElementPlayer) {
+            mediaElementPlayer.pause();
+            mediaElementPlayer.currentTime = 0;
+            setTimeout(function() {
+                mediaElementPlayer.src = silentSound;
+                playQueueService.stop(playQueueCallback);
+            }, 100);
+        }
+    }
+
+    function isMediaElementPlayerStopped() {
+        var mediaElementPlayer = getMediaElementPlayer();
+        if (mediaElementPlayer) {
+            return mediaElementPlayer.src == silentSound;
         }
     }
 
@@ -360,17 +386,17 @@
     }
 
     function onSkip(index) {
-    <c:choose>
-    <c:when test="${model.player.web}">
+        <c:choose>
+        <c:when test="${model.player.web}">
         loadPlayer(index);
-    </c:when>
-    <c:otherwise>
+        </c:when>
+        <c:otherwise>
         currentStreamUrl = songs[index].streamUrl;
         if (isJavaJukeboxPresent()) {
             updateJavaJukeboxPlayerControlBar(songs[index]);
         }
-    </c:otherwise>
-    </c:choose>
+        </c:otherwise>
+        </c:choose>
         playQueueService.skip(index, playQueueCallback);
     }
     function onNext(wrap) {
@@ -447,6 +473,9 @@
         onStar(getCurrentSongIndex());
     }
     function onRemove(index) {
+        if (index == getCurrentSongIndex()) {
+            onStopMediaElementPlayer();
+        }
         playQueueService.remove(index, playQueueCallback);
     }
     function onRemoveSelected() {
@@ -456,6 +485,9 @@
             var index = i + 1;
             if ($("#songIndex" + index).is(":checked")) {
                 indexes[counter++] = i;
+                if (i == getCurrentSongIndex()) {
+                    onStopMediaElementPlayer();
+                }
             }
         }
         playQueueService.removeMany(indexes, playQueueCallback);
@@ -503,7 +535,7 @@
         for (var i = 0; i < playlists.length; i++) {
             var playlist = playlists[i];
             $("<p class='dense'><b><a href='#' onclick='appendPlaylist(" + playlist.id + ")'>" + escapeHtml(playlist.name)
-                    + "</a></b></p>").appendTo("#dialog-select-playlist-list");
+                + "</a></b></p>").appendTo("#dialog-select-playlist-list");
         }
         $("#dialog-select-playlist").dialog("open");
     }
@@ -529,7 +561,11 @@
 
     function playQueueCallback(playQueue) {
         songs = playQueue.entries;
-        currentSongIndex = playQueue.index;
+        if (isMediaElementPlayerStopped()) {
+            currentSongIndex = -1;
+        } else {
+            currentSongIndex = playQueue.index;
+        }
         repeatEnabled = playQueue.repeatEnabled;
         shuffleRadioEnabled = playQueue.shuffleRadioEnabled;
         internetRadioEnabled = playQueue.internetRadioEnabled;
@@ -591,8 +627,8 @@
 
         // Delete all the rows except for the "pattern" row
         dwr.util.removeAllRows("playlistBody", { filter:function(tr) {
-            return (tr.id != "pattern");
-        }});
+                return (tr.id != "pattern");
+            }});
 
         // Create a new set cloned from the pattern row
         for (var i = 0; i < songs.length; i++) {
@@ -694,9 +730,9 @@
             jukeboxVolume.slider("option", "value", Math.floor(playQueue.gain * 100));
         }
 
-    <c:if test="${model.player.web}">
+        <c:if test="${model.player.web}">
         triggerPlayer(playQueue.startPlayerAt, playQueue.startPlayerAtPosition);
-    </c:if>
+        </c:if>
     }
 
     function triggerPlayer(index, positionMillis) {
@@ -1088,10 +1124,10 @@
                             <option id="loadPlayQueue"><fmt:message key="playlist.loadplayqueue"/></option>
                             <option id="savePlaylist"><fmt:message key="playlist.save"/></option>
                             <c:if test="${model.user.downloadRole}">
-                            <option id="downloadPlaylist"><fmt:message key="common.download"/></option>
+                                <option id="downloadPlaylist"><fmt:message key="common.download"/></option>
                             </c:if>
                             <c:if test="${model.user.shareRole}">
-                            <option id="sharePlaylist"><fmt:message key="main.more.share"/></option>
+                                <option id="sharePlaylist"><fmt:message key="main.more.share"/></option>
                             </c:if>
                             <option id="sortByTrack"><fmt:message key="playlist.more.sortbytrack"/></option>
                             <option id="sortByAlbum"><fmt:message key="playlist.more.sortbyalbum"/></option>
@@ -1110,12 +1146,12 @@
                     </td>
 
                     <c:if test="${not model.autoHide}">
-                    <td style="white-space:nowrap; text-align:right; width:100%; padding-right:1.5em">
-                      <a href="javascript:onTogglePlayQueue()">
-                        <img class="playqueue-shown" src="<spring:theme code='playQueueHide'/>" alt="Hide play queue" title="Hide play queue" style="cursor:pointer; height:18px;"/>
-                        <img class="playqueue-hidden" src="<spring:theme code='playQueueShow'/>" alt="Show play queue" title="Show play queue" style="cursor:pointer; height:18px; display: none;"/>
-                      </a>
-                    </td>
+                        <td style="white-space:nowrap; text-align:right; width:100%; padding-right:1.5em">
+                            <a href="javascript:onTogglePlayQueue()">
+                                <img class="playqueue-shown" src="<spring:theme code='playQueueHide'/>" alt="Hide play queue" title="Hide play queue" style="cursor:pointer; height:18px;"/>
+                                <img class="playqueue-hidden" src="<spring:theme code='playQueueShow'/>" alt="Show play queue" title="Show play queue" style="cursor:pointer; height:18px; display: none;"/>
+                            </a>
+                        </td>
                     </c:if>
 
                 </tr></table>
@@ -1131,56 +1167,56 @@
 
 <table class="music indent" style="cursor:pointer">
     <tbody id="playlistBody">
-        <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
-            <td class="fit">
-                <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code='ratingOffImage'/>"
-                     style="cursor:pointer;height:18px;" alt="" title=""></td>
-            <td class="fit">
-                <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code='removeImage'/>"
-                     style="cursor:pointer; height:18px;" alt="<fmt:message key='playlist.remove'/>" title="<fmt:message key='playlist.remove'/>"></td>
-            <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
+    <tr id="pattern" style="display:none;margin:0;padding:0;border:0">
+        <td class="fit">
+            <img id="starSong" onclick="onStar(this.id.substring(8) - 1)" src="<spring:theme code='ratingOffImage'/>"
+                 style="cursor:pointer;height:18px;" alt="" title=""></td>
+        <td class="fit">
+            <img id="removeSong" onclick="onRemove(this.id.substring(10) - 1)" src="<spring:theme code='removeImage'/>"
+                 style="cursor:pointer; height:18px;" alt="<fmt:message key='playlist.remove'/>" title="<fmt:message key='playlist.remove'/>"></td>
+        <td class="fit"><input type="checkbox" class="checkbox" id="songIndex"></td>
 
-            <c:if test="${model.visibility.trackNumberVisible}">
-                <td class="fit rightalign"><span class="detail" id="trackNumber">1</span></td>
-            </c:if>
+        <c:if test="${model.visibility.trackNumberVisible}">
+            <td class="fit rightalign"><span class="detail" id="trackNumber">1</span></td>
+        </c:if>
 
-            <td class="truncate">
-                <img id="currentImage" src="<spring:theme code='currentImage'/>" alt="" style="display:none;padding-right: 0.5em">
-                <c:choose>
-                    <c:when test="${model.player.externalWithPlaylist}">
-                        <span id="title" class="songTitle">Title</span>
-                    </c:when>
-                    <c:otherwise>
-                        <span class="songTitle"><a id="titleUrl" href="javascript:void(0)">Title</a></span>
-                    </c:otherwise>
-                </c:choose>
-            </td>
+        <td class="truncate">
+            <img id="currentImage" src="<spring:theme code='currentImage'/>" alt="" style="display:none;padding-right: 0.5em">
+            <c:choose>
+                <c:when test="${model.player.externalWithPlaylist}">
+                    <span id="title" class="songTitle">Title</span>
+                </c:when>
+                <c:otherwise>
+                    <span class="songTitle"><a id="titleUrl" href="javascript:void(0)">Title</a></span>
+                </c:otherwise>
+            </c:choose>
+        </td>
 
-            <c:if test="${model.visibility.albumVisible}">
-                <td class="truncate"><a id="albumUrl" target="main"><span id="album" class="detail">Album</span></a></td>
-            </c:if>
-            <c:if test="${model.visibility.artistVisible}">
-                <td class="truncate"><span id="artist" class="detail">Artist</span></td>
-            </c:if>
-            <c:if test="${model.visibility.genreVisible}">
-                <td class="truncate"><span id="genre" class="detail">Genre</span></td>
-            </c:if>
-            <c:if test="${model.visibility.yearVisible}">
-                <td class="fit rightalign"><span id="year" class="detail">Year</span></td>
-            </c:if>
-            <c:if test="${model.visibility.formatVisible}">
-                <td class="fit rightalign"><span id="format" class="detail">Format</span></td>
-            </c:if>
-            <c:if test="${model.visibility.fileSizeVisible}">
-                <td class="fit rightalign"><span id="fileSize" class="detail">Format</span></td>
-            </c:if>
-            <c:if test="${model.visibility.durationVisible}">
-                <td class="fit rightalign"><span id="duration" class="detail">Duration</span></td>
-            </c:if>
-            <c:if test="${model.visibility.bitRateVisible}">
-                <td class="fit rightalign"><span id="bitRate" class="detail">Bit Rate</span></td>
-            </c:if>
-        </tr>
+        <c:if test="${model.visibility.albumVisible}">
+            <td class="truncate"><a id="albumUrl" target="main"><span id="album" class="detail">Album</span></a></td>
+        </c:if>
+        <c:if test="${model.visibility.artistVisible}">
+            <td class="truncate"><span id="artist" class="detail">Artist</span></td>
+        </c:if>
+        <c:if test="${model.visibility.genreVisible}">
+            <td class="truncate"><span id="genre" class="detail">Genre</span></td>
+        </c:if>
+        <c:if test="${model.visibility.yearVisible}">
+            <td class="fit rightalign"><span id="year" class="detail">Year</span></td>
+        </c:if>
+        <c:if test="${model.visibility.formatVisible}">
+            <td class="fit rightalign"><span id="format" class="detail">Format</span></td>
+        </c:if>
+        <c:if test="${model.visibility.fileSizeVisible}">
+            <td class="fit rightalign"><span id="fileSize" class="detail">Format</span></td>
+        </c:if>
+        <c:if test="${model.visibility.durationVisible}">
+            <td class="fit rightalign"><span id="duration" class="detail">Duration</span></td>
+        </c:if>
+        <c:if test="${model.visibility.bitRateVisible}">
+            <td class="fit rightalign"><span id="bitRate" class="detail">Bit Rate</span></td>
+        </c:if>
+    </tr>
     </tbody>
 </table>
 
