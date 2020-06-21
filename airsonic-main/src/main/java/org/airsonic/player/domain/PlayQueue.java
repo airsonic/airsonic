@@ -215,16 +215,12 @@ public class PlayQueue {
     public synchronized void removeFileAt(int index) {
         makeBackup();
         index = Math.max(0, Math.min(index, size() - 1));
-        if (this.index == index) {
-            this.index = -1;
-        }
         if (this.index > index) {
             this.index--;
         }
         files.remove(index);
-        if (this.index != -1) {
-            this.index = Math.max(0, Math.min(this.index, size() - 1));
-        }
+
+        this.index = Math.max(0, Math.min(this.index, size() - 1));
     }
 
     /**
@@ -235,7 +231,7 @@ public class PlayQueue {
         files.clear();
         setRandomSearchCriteria(null);
         setInternetRadio(null);
-        index = -1;
+        index = 0;
     }
 
     /**
@@ -409,6 +405,9 @@ public class PlayQueue {
      */
     public synchronized void setStatus(Status status) {
         this.status = status;
+        if (index == -1) {
+            index = Math.max(0, Math.min(index, size() - 1));
+        }
     }
 
     /**
