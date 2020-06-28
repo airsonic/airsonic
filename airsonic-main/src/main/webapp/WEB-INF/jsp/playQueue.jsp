@@ -65,9 +65,6 @@
     // Initialize the Cast player (ChromeCast support)
     var CastPlayer = new CastPlayer();
 
-    // silent and empty sound, set when audio media player is stopped
-    const silentSound = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA';
-
     function init() {
         <c:if test="${model.autoHide}">initAutoHide();</c:if>
 
@@ -265,7 +262,6 @@
         ok = confirm("<fmt:message key="playlist.confirmclear"/>");
         </c:if>
         if (ok) {
-            onStopMediaElementPlayer();
             playQueueService.clear(playQueueCallback);
         }
     }
@@ -298,28 +294,6 @@
             $('#audioPlayer').get(0).pause();
         } else {
             playQueueService.stop(playQueueCallback);
-        }
-    }
-
-    /**
-     * Stop HTML audio player and set silent audio as src attribute
-     */
-    function onStopMediaElementPlayer() {
-        var mediaElementPlayer = getMediaElementPlayer();
-        if (mediaElementPlayer) {
-            mediaElementPlayer.pause();
-            mediaElementPlayer.currentTime = 0;
-            setTimeout(function() {
-                mediaElementPlayer.src = silentSound;
-                playQueueService.stop(playQueueCallback);
-            }, 100);
-        }
-    }
-
-    function isMediaElementPlayerStopped() {
-        var mediaElementPlayer = getMediaElementPlayer();
-        if (mediaElementPlayer) {
-            return mediaElementPlayer.src == silentSound;
         }
     }
 
@@ -473,9 +447,6 @@
         onStar(getCurrentSongIndex());
     }
     function onRemove(index) {
-        if (index == getCurrentSongIndex()) {
-            onStopMediaElementPlayer();
-        }
         playQueueService.remove(index, playQueueCallback);
     }
     function onRemoveSelected() {
@@ -485,9 +456,6 @@
             var index = i + 1;
             if ($("#songIndex" + index).is(":checked")) {
                 indexes[counter++] = i;
-                if (i == getCurrentSongIndex()) {
-                    onStopMediaElementPlayer();
-                }
             }
         }
         playQueueService.removeMany(indexes, playQueueCallback);
@@ -561,11 +529,7 @@
 
     function playQueueCallback(playQueue) {
         songs = playQueue.entries;
-        if (isMediaElementPlayerStopped()) {
-            currentSongIndex = -1;
-        } else {
-            currentSongIndex = playQueue.index;
-        }
+        currentSongIndex = playQueue.index;
         repeatEnabled = playQueue.repeatEnabled;
         shuffleRadioEnabled = playQueue.shuffleRadioEnabled;
         internetRadioEnabled = playQueue.internetRadioEnabled;
@@ -658,7 +622,7 @@
                 $("#songIndex" + id).hide();
             }
 
-            if (i == currentSongIndex && $("#currentImage" + id)) {
+            if (i == currentSongIndex && song.streamUrl == currentStreamUrl && $("#currentImage" + id)) {
                 $("#currentImage" + id).show();
                 $("#currentImage" + id).parents("tr").addClass("current-playing");
                 if (isJavaJukeboxPresent()) {
@@ -911,7 +875,7 @@
             var image = $("#currentImage" + id);
 
             if (image) {
-                if (i == currentSongIndex) {
+                if (i == currentSongIndex && song.streamUrl == currentStreamUrl) {
                     image.parents("tr").addClass("current-playing");
                     image.show();
                 } else {
