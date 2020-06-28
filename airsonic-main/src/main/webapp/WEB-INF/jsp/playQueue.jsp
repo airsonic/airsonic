@@ -602,7 +602,7 @@
                 $("#songIndex" + id).hide();
             }
 
-            if (i == currentSongIndex && $("#currentImage" + id)) {
+            if (i == currentSongIndex && song.streamUrl == currentStreamUrl && $("#currentImage" + id)) {
                 $("#currentImage" + id).show();
                 if (isJavaJukeboxPresent()) {
                     updateJavaJukeboxPlayerControlBar(song);
@@ -854,7 +854,7 @@
             var image = $("#currentImage" + id);
 
             if (image) {
-                if (i == currentSongIndex) {
+                if (i == currentSongIndex && song.streamUrl == currentStreamUrl) {
                     image.show();
                 } else {
                     image.hide();
