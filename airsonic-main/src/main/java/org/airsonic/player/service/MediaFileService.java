@@ -613,6 +613,32 @@ public class MediaFileService {
      * Finds a cover art image for the given directory, by looking for it on the disk.
      */
     private File findCoverArt(File[] candidates) {
+        File candidate = null;
+        CoverArtSource coverArtSource = settingsService.getCoverArtSource();
+        switch (coverArtSource) {
+            case TAGFILE:
+                candidate = findTagCover(candidates);
+                if (candidate != null) {
+                    return candidate;
+                } else {
+                    return findFileCover(candidates);
+                }
+            case FILE:
+                return findFileCover(candidates);
+            case TAG:
+                return findTagCover(candidates);
+            case FILETAG:
+            default:
+                candidate = findFileCover(candidates);
+                if (candidate != null) {
+                    return candidate;
+                } else {
+                    return findTagCover(candidates);
+                }
+        }
+    }
+
+    private File findFileCover(File[] candidates) {
         for (String mask : settingsService.getCoverArtFileTypesAsArray()) {
             for (File candidate : candidates) {
                 if (candidate.isFile() && candidate.getName().toUpperCase().endsWith(mask.toUpperCase()) && !candidate.getName().startsWith(".")) {
@@ -620,8 +646,10 @@ public class MediaFileService {
                 }
             }
         }
+        return null;
+    }
 
-        // Look for embedded images in audiofiles. (Only check first audio file encountered).
+    private File findTagCover(File[] candidates) {
         for (File candidate : candidates) {
             if (parser.isApplicable(candidate)) {
                 return JaudiotaggerParser.getArtwork(getMediaFile(candidate)) != null ? candidate : null;
