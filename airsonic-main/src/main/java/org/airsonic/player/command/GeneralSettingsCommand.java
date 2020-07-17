@@ -77,16 +77,16 @@ public class GeneralSettingsCommand {
         return coverArtFileTypes;
     }
 
+    public void setCoverArtFileTypes(String coverArtFileTypes) {
+        this.coverArtFileTypes = coverArtFileTypes;
+    }
+
     public CoverArtSource getCoverArtSource() {
         return coverArtSource;
     }
 
     public void setCoverArtSource(CoverArtSource coverArtSource) {
         this.coverArtSource = coverArtSource;
-    }
-
-    public void setCoverArtFileTypes(String coverArtFileTypes) {
-        this.coverArtFileTypes = coverArtFileTypes;
     }
 
     public String getIndex() {
