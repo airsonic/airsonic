@@ -151,7 +151,7 @@ public class MediaFileService {
 
     private MediaFile checkLastModified(MediaFile mediaFile, boolean useFastCache) {
         if (useFastCache || (mediaFile.getVersion() >= MediaFileDao.VERSION
-                && !settingsService.isIgnoreFileTimestamps()
+                && !settingsService.isFullScanOnce()
                 && mediaFile.getChanged().getTime() >= FileUtil.lastModified(mediaFile.getFile()))) {
             LOG.debug("Detected unmodified file (id {}, path {})", mediaFile.getId(), mediaFile.getPath());
             return mediaFile;
