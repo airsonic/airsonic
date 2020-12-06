@@ -16,9 +16,9 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.3.6</cxf.version>
+        <cxf.version>3.4.1</cxf.version>
         <jackson.version>2.11.0</jackson.version>
-        <tomcat.version>9.0.34</tomcat.version>
+        <tomcat.version>9.0.38</tomcat.version>
         <docker.container.repo>airsonic/airsonic</docker.container.repo>
     </properties>
 
@@ -86,7 +86,7 @@
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.2.7.RELEASE</version>
+                <version>2.2.11.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -106,6 +106,12 @@
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-core</artifactId>
                 <version>3.8.9</version>
+            </dependency>
+            <dependency>
+                <!-- Spring Boot ships an old version with a CVE -->
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>1.27</version>
             </dependency>
 
             <!-- Fix convergence issues -->
@@ -142,12 +148,12 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>28.2-jre</version>
+                <version>29.0-jre</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
-                <version>1.10.5</version>
+                <version>1.10.9</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
@@ -159,6 +165,11 @@
                 <groupId>org.jvnet.staxex</groupId>
                 <artifactId>stax-ex</artifactId>
                 <version>1.8.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>3.7.0</version>
             </dependency>
 
 
@@ -327,7 +338,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>5.3.2</version>
+                    <version>6.0.2</version>
                     <inherited>true</inherited>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
@@ -335,7 +346,9 @@
                             <suppressionFile>${project.basedir}/cve-suppressed.xml</suppressionFile>
                         </suppressionFiles>
                         <!-- disabled due to the poor quality of the data from this analyzer -->
-                        <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+			<ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+                        <!-- disabled due to https://github.com/jeremylong/DependencyCheck/issues/1914 -->
+                        <skipSystemScope>true</skipSystemScope>
                     </configuration>
                     <executions>
                         <execution>
