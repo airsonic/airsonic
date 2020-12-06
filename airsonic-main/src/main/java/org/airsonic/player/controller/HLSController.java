@@ -68,9 +68,6 @@ public class HLSController {
 
     @GetMapping
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        response.setHeader("Access-Control-Allow-Origin", "*");
-
         int id = ServletRequestUtils.getIntParameter(request, "id", 0);
         MediaFile mediaFile = mediaFileService.getMediaFile(id);
         Player player = playerService.getPlayer(request, response);

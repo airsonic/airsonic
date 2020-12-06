@@ -24,8 +24,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -151,12 +155,10 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-
             RESTRequestParameterProcessingFilter restAuthenticationFilter = new RESTRequestParameterProcessingFilter();
             restAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
             restAuthenticationFilter.setSecurityService(securityService);
             restAuthenticationFilter.setEventPublisher(eventPublisher);
-            http = http.addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
             // Try to load the 'remember me' key.
             //
@@ -185,6 +187,9 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
             }
 
             http
+                    .cors()
+                    .and()
+                    .addFilterBefore(restAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                     .csrf()
                     .requireCsrfProtectionMatcher(csrfSecurityRequestMatcher)
                     .and().headers()
@@ -231,5 +236,19 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
                     .and().rememberMe().key(rememberMeKey);
         }
 
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/rest/**", configuration);
+        source.registerCorsConfiguration("/stream/**", configuration);
+        source.registerCorsConfiguration("/ext/stream/**", configuration);
+        source.registerCorsConfiguration("/ext/hls/**", configuration);
+        source.registerCorsConfiguration("/ext/hls/**", configuration);
+        return source;
     }
 }

@@ -33,8 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Intercepts exceptions thrown by RESTController.
  *
- * Also adds the CORS response header (http://enable-cors.org)
- *
  * @author Sindre Mehus
  * @version $Revision: 1.1 $ $Date: 2006/03/01 16:58:08 $
  */
@@ -46,8 +44,6 @@ public class RESTFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) {
         try {
-            HttpServletResponse response = (HttpServletResponse) res;
-            response.setHeader("Access-Control-Allow-Origin", "*");
             chain.doFilter(req, res);
         } catch (Throwable x) {
             handleException(x, (HttpServletRequest) req, (HttpServletResponse) res);

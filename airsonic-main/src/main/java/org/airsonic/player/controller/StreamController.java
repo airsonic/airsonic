@@ -109,8 +109,6 @@ public class StreamController {
                 LOG.info("{}: Incoming Podcast request for playlist {}", request.getRemoteAddr(), playlistId);
             }
 
-            response.setHeader("Access-Control-Allow-Origin", "*");
-
             String contentType = StringUtil.getMimeType(request.getParameter("suffix"));
             response.setContentType(contentType);
 
