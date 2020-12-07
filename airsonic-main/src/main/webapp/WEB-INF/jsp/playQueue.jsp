@@ -28,8 +28,6 @@
 
 <body class="bgcolor2 playlistframe" onload="init()">
 
-<span id="dummy-animation-target" style="max-width: ${model.autoHide ? 50 : 150}px; display: none"></span>
-
 <script type="text/javascript" language="javascript">
 
     // These variables store the media player state, received from DWR in the
@@ -141,6 +139,7 @@
 
     function onHidePlayQueue() {
       setFrameHeight(50);
+      $("html").css("overflow-y", "hidden");
       isVisible = false;
       $(".playqueue-shown").hide();
       $(".playqueue-hidden").show();
@@ -150,6 +149,7 @@
       var height = $("body").height() + 25;
       height = Math.min(height, window.top.innerHeight * 0.8);
       setFrameHeight(height);
+      $("html").css("overflow-y", "");
       isVisible = true;
       $(".playqueue-shown").show();
       $(".playqueue-hidden").hide();
@@ -161,26 +161,26 @@
     }
 
     function initAutoHide() {
-        $(window).mouseleave(function (event) {
+        $(".playlistframe").mouseleave(function (event) {
             if (event.clientY < 30) onHidePlayQueue();
         });
 
-        $(window).mouseenter(function () {
+        $(".playlistframe").mouseenter(function () {
             onShowPlayQueue();
         });
+
+        $("html").css("overflow-y", "hidden");
     }
 
     function setFrameHeight(height) {
-        <%-- Disable animation in Chrome. It stopped working in Chrome 44. --%>
-        var duration = navigator.userAgent.indexOf("Chrome") != -1 ? 0 : 400;
-
-        $("#dummy-animation-target").stop();
-        $("#dummy-animation-target").animate({"max-width": height}, {
-            step: function (now, fx) {
-                top.document.getElementById("playQueueFrameset").rows = "*," + now;
-            },
-            duration: duration
-        });
+        $("div.playqueue-container", window.parent.document).stop();
+        $("div.playqueue-container", window.parent.document).animate(
+            {
+                height: height + "px"
+            }, {
+                queue: false,
+                duration: 400
+            });
     }
 
     function startTimer() {
