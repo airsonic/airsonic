@@ -251,6 +251,14 @@ table.music {
     width: 100%;
 }
 
+tr.current-playing {
+    background-color: #98aacd !important;
+}
+
+tr.current-playing:hover {
+    background-color: #879bc5 !important;
+}
+
 td.fit {
     width:1px;
     padding-left:4px;

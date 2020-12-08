@@ -694,6 +694,7 @@ public class PlayQueueService {
             entries = convertMediaFileList(request, player);
         }
 
+        int index = player.getPlayQueue().getIndex();
         boolean isCurrentPlayer = player.getIpAddress() != null && player.getIpAddress().equals(request.getRemoteAddr());
         boolean isStopEnabled = playQueue.getStatus() == PlayQueue.Status.PLAYING && !player.isExternalWithPlaylist();
         boolean m3uSupported = player.isExternal() || player.isExternalWithPlaylist();
@@ -703,6 +704,7 @@ public class PlayQueueService {
 
         return new PlayQueueInfo(
             entries,
+            index,
             isStopEnabled,
             playQueue.isRepeatEnabled(),
             playQueue.isShuffleRadioEnabled(),
