@@ -155,10 +155,27 @@ public class InternetRadioService {
      * @return a list of internet radio sources
      */
     private List<InternetRadioSource> retrieveInternetRadioSources(InternetRadio radio, int maxCount, long maxByteSize, int maxRedirects) throws Exception {
-        // Retrieve the remote playlist
-        String playlistUrl = radio.getStreamUrl();
-        LOG.debug("Parsing internet radio playlist at {}...", playlistUrl);
-        SpecificPlaylist inputPlaylist = retrievePlaylist(new URL(playlistUrl), maxByteSize, maxRedirects);
+        String streamUrl = radio.getStreamUrl();
+        LOG.debug("Parsing internet radio (playlist) at {}...", streamUrl);
+
+        SpecificPlaylist inputPlaylist = null;
+        HttpURLConnection urlConnection = connectToURLWithRedirects(new URL(streamUrl), maxRedirects);
+        try (InputStream in = urlConnection.getInputStream();
+             BoundedInputStream bin = new BoundedInputStream(in, maxByteSize);) {
+            String contentType = urlConnection.getContentType();
+            if ("audio/mpeg".equals(contentType)) {
+                //for direct binary streams, just return a collection with a single internet radio source
+                LOG.debug("Got direct source media at {}", streamUrl);
+                return Collections.singletonList(new InternetRadioSource(streamUrl));
+            }
+            String contentEncoding = urlConnection.getContentEncoding();
+            inputPlaylist = SpecificPlaylistFactory.getInstance().readFrom(bin, contentEncoding);
+        } finally {
+            urlConnection.disconnect();
+        }
+        if (inputPlaylist == null) {
+            throw new PlaylistFormatUnsupported("Unsupported playlist format " + streamUrl);
+        }
 
         // Retrieve stream URLs
         List<InternetRadioSource> entries = new ArrayList<>();
@@ -218,34 +235,6 @@ public class InternetRadioService {
         }
 
         return entries;
-    }
-
-    /**
-     * Retrieve playlist data from a given URL.
-     *
-     * @param url URL to the remote playlist
-     * @param maxByteSize maximum size of the response, in bytes, or 0 if unlimited
-     * @param maxRedirects maximum number of redirects, or 0 if unlimited
-     * @return the remote playlist data
-     */
-    protected SpecificPlaylist retrievePlaylist(URL url, long maxByteSize, int maxRedirects) throws IOException, PlaylistException {
-
-        SpecificPlaylist playlist;
-        HttpURLConnection urlConnection = connectToURLWithRedirects(url, maxRedirects);
-        try (InputStream in = urlConnection.getInputStream()) {
-            String contentEncoding = urlConnection.getContentEncoding();
-            if (maxByteSize > 0) {
-                playlist = SpecificPlaylistFactory.getInstance().readFrom(new BoundedInputStream(in, maxByteSize), contentEncoding);
-            } else {
-                playlist = SpecificPlaylistFactory.getInstance().readFrom(in, contentEncoding);
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
-        if (playlist == null) {
-            throw new PlaylistFormatUnsupported("Unsupported playlist format " + url.toString());
-        }
-        return playlist;
     }
 
     /**

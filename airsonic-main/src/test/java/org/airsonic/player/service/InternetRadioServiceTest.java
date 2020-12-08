@@ -47,6 +47,7 @@ public class InternetRadioServiceTest {
 
     InternetRadio radio1;
     InternetRadio radio2;
+    InternetRadio radioDirectBinary;
     InternetRadio radioMove;
     InternetRadio radioMoveLoop;
     InternetRadio radioLarge;
@@ -61,10 +62,11 @@ public class InternetRadioServiceTest {
         // Prepare a mock InternetRadio object
         radio1 = new InternetRadio(1, TEST_RADIO_NAME, TEST_PLAYLIST_URL_1, TEST_RADIO_HOMEPAGE, true, new Date());
         radio2 = new InternetRadio(2, TEST_RADIO_NAME, TEST_PLAYLIST_URL_2, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioMove = new InternetRadio(3, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioMoveLoop = new InternetRadio(3, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE_LOOP, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioLarge = new InternetRadio(4, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE, TEST_RADIO_HOMEPAGE, true, new Date());
-        radioLarge2 = new InternetRadio(5, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE_2, TEST_RADIO_HOMEPAGE, true, new Date());
+        radioDirectBinary = new InternetRadio(3, TEST_RADIO_NAME, TEST_STREAM_URL_1, TEST_RADIO_HOMEPAGE, true, new Date());
+        radioMove = new InternetRadio(4, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE, TEST_RADIO_HOMEPAGE, true, new Date());
+        radioMoveLoop = new InternetRadio(5, TEST_RADIO_NAME, TEST_PLAYLIST_URL_MOVE_LOOP, TEST_RADIO_HOMEPAGE, true, new Date());
+        radioLarge = new InternetRadio(6, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE, TEST_RADIO_HOMEPAGE, true, new Date());
+        radioLarge2 = new InternetRadio(7, TEST_RADIO_NAME, TEST_PLAYLIST_URL_LARGE_2, TEST_RADIO_HOMEPAGE, true, new Date());
 
         // Prepare the mocked URL connection for the simple playlist
         HttpURLConnection mockURLConnection1 = Mockito.mock(HttpURLConnection.class);
@@ -77,6 +79,12 @@ public class InternetRadioServiceTest {
         InputStream mockURLInputStream2 = new ByteArrayInputStream(TEST_STREAM_PLAYLIST_CONTENTS_2.getBytes());
         doReturn(mockURLInputStream2).when(mockURLConnection2).getInputStream();
         doReturn(HttpURLConnection.HTTP_OK).when(mockURLConnection2).getResponseCode();
+
+        // Prepare the mocked URL connection for direct binary stream
+        HttpURLConnection mockURLConnectionDirectBinary = Mockito.mock(HttpURLConnection.class);
+        InputStream mockURLInputStreamDirectBinary = new ByteArrayInputStream(TEST_STREAM_URL_1.getBytes());
+        doReturn(mockURLInputStreamDirectBinary).when(mockURLConnectionDirectBinary).getInputStream();
+        doReturn(mockURLConnectionDirectBinary.HTTP_OK).when(mockURLConnectionDirectBinary).getResponseCode();
 
         // Prepare the mocked URL connection for the redirection to simple playlist
         HttpURLConnection mockURLConnectionMove = Mockito.mock(HttpURLConnection.class);
@@ -118,6 +126,7 @@ public class InternetRadioServiceTest {
         // Prepare the mock 'connectToURL' method
         doReturn(mockURLConnection1).when(internetRadioService).connectToURL(eq(new URL(TEST_PLAYLIST_URL_1)));
         doReturn(mockURLConnection2).when(internetRadioService).connectToURL(eq(new URL(TEST_PLAYLIST_URL_2)));
+        doReturn(mockURLConnectionDirectBinary).when(internetRadioService).connectToURL(eq(new URL(TEST_STREAM_URL_1)));
         doReturn(mockURLConnectionMove).when(internetRadioService).connectToURL(eq(new URL(TEST_PLAYLIST_URL_MOVE)));
         doReturn(mockURLConnectionMoveLoop).when(internetRadioService).connectToURL(eq(new URL(TEST_PLAYLIST_URL_MOVE_LOOP)));
         doReturn(mockURLConnectionLarge).when(internetRadioService).connectToURL(eq(new URL(TEST_PLAYLIST_URL_LARGE)));
@@ -131,6 +140,14 @@ public class InternetRadioServiceTest {
         Assert.assertEquals(2, radioSources.size());
         Assert.assertEquals(TEST_STREAM_URL_1, radioSources.get(0).getStreamUrl());
         Assert.assertEquals(TEST_STREAM_URL_2, radioSources.get(1).getStreamUrl());
+    }
+
+    @Test
+    public void testDirectBinary() {
+        List<InternetRadioSource> radioSources = internetRadioService.getInternetRadioSources(radioDirectBinary);
+
+        Assert.assertEquals(1, radioSources.size());
+        Assert.assertEquals(TEST_STREAM_URL_1, radioSources.get(0).getStreamUrl());
     }
 
     @Test
