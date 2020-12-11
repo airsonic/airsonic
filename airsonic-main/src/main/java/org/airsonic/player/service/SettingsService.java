@@ -106,6 +106,11 @@ public class SettingsService {
     private static final String KEY_JWT_KEY = "JWTKey";
     private static final String KEY_REMEMBER_ME_KEY = "RememberMeKey";
 
+    // External Services Settings
+    private static final String KEY_EXTERNAL_SERVICES_CHROMECAST_ENABLED = "ExternalServicesChromecastEnabled";
+    private static final String KEY_EXTERNAL_SERVICES_LASTFM_ENABLED = "ExternalServicesLastfmEnabled";
+    private static final String KEY_EXTERNAL_SERVICES_CHARTLYRICS_ENABLED = "ExternalServicesChartlyricsEnabled";
+
     private static final String KEY_SMTP_SERVER = "SmtpServer";
     private static final String KEY_SMTP_ENCRYPTION = "SmtpEncryption";
     private static final String KEY_SMTP_PORT = "SmtpPort";
@@ -177,6 +182,9 @@ public class SettingsService {
     private static final String DEFAULT_LDAP_SEARCH_FILTER = "(sAMAccountName={0})";
     private static final boolean DEFAULT_LDAP_AUTO_SHADOWING = false;
     private static final boolean DEFAULT_GETTING_STARTED_ENABLED = true;
+    private static final boolean DEFAULT_EXTERNAL_SERVICES_CHROMECAST_ENABLED = false;
+    private static final boolean DEFAULT_EXTERNAL_SERVICES_LASTFM_ENABLED = false;
+    private static final boolean DEFAULT_EXTERNAL_SERVICES_CHARTLYRICS_ENABLED = false;
     private static final long DEFAULT_SETTINGS_CHANGED = 0L;
     private static final boolean DEFAULT_ORGANIZE_BY_FOLDER_STRUCTURE = true;
     private static final boolean DEFAULT_SORT_ALBUMS_BY_YEAR = true;
@@ -728,6 +736,30 @@ public class SettingsService {
 
     public void setGettingStartedEnabled(boolean isGettingStartedEnabled) {
         setBoolean(KEY_GETTING_STARTED_ENABLED, isGettingStartedEnabled);
+    }
+
+    public boolean isExternalServicesChromecastEnabled() {
+        return getBoolean(KEY_EXTERNAL_SERVICES_CHROMECAST_ENABLED, DEFAULT_EXTERNAL_SERVICES_CHROMECAST_ENABLED);
+    }
+
+    public void setExternalServicesChromecastEnabled(boolean externalServicesChromecastEnabled) {
+        setBoolean(KEY_EXTERNAL_SERVICES_CHROMECAST_ENABLED, externalServicesChromecastEnabled);
+    }
+
+    public boolean isExternalServicesLastfmEnabled() {
+        return getBoolean(KEY_EXTERNAL_SERVICES_LASTFM_ENABLED, DEFAULT_EXTERNAL_SERVICES_LASTFM_ENABLED);
+    }
+
+    public void setExternalServicesLastfmEnabled(boolean externalServicesLastfmEnabled) {
+        setBoolean(KEY_EXTERNAL_SERVICES_LASTFM_ENABLED, externalServicesLastfmEnabled);
+    }
+
+    public boolean isExternalServicesChartlyricsEnabled() {
+        return getBoolean(KEY_EXTERNAL_SERVICES_CHARTLYRICS_ENABLED, DEFAULT_EXTERNAL_SERVICES_CHARTLYRICS_ENABLED);
+    }
+
+    public void setExternalServicesChartlyricsEnabled(boolean externalServicesChartlyricsEnabled) {
+        setBoolean(KEY_EXTERNAL_SERVICES_CHARTLYRICS_ENABLED, externalServicesChartlyricsEnabled);
     }
 
     public long getSettingsChanged() {

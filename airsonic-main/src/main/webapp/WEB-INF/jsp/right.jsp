@@ -45,10 +45,12 @@
                 }
 
                 html += "<span class='songTitle'>" + nowPlaying[i].title + "</span></a><br/>";
+                <c:if test="${model.chartlyricsEnabled}">
                 if (nowPlaying[i].lyricsUrl != null) {
                     html += "<span class='forward'><a href='" + nowPlaying[i].lyricsUrl + "' onclick=\"return popupSize(this, 'lyrics', 500, 550)\">" +
                             "<fmt:message key="main.lyrics"/>" + "</a></span>";
                 }
+                </c:if>
                 html += "</td><td>" +
                         "<a title='" + nowPlaying[i].tooltip + "' target='main' href='" + nowPlaying[i].albumUrl + "'>" +
                         "<img alt='Cover art' src='" + nowPlaying[i].coverArtUrl + "' class='dropshadow' height='60' width='60'></a>" +
