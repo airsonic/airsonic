@@ -27,6 +27,10 @@ public class MusicFolderTestData {
         return (MusicFolderTestData.resolveBaseMediaPath() + "Music3");
     }
 
+    public static String resolveMultiFolderAlbumFolderPath() {
+        return (MusicFolderTestData.resolveBaseMediaPath() + "MultiFolderAlbum");
+    }
+
     public static List<MusicFolder> getTestMusicFolders() {
         List<MusicFolder> liste = new ArrayList<>();
         File musicDir = new File(MusicFolderTestData.resolveMusicFolderPath());
@@ -38,4 +42,13 @@ public class MusicFolderTestData {
         liste.add(musicFolder2);
         return liste;
     }
+
+    public static List<MusicFolder> getTestMusicFolderForMultiFolderAlbum() {
+        List<MusicFolder> liste = new ArrayList<>();
+        File musicDir = new File(MusicFolderTestData.resolveMultiFolderAlbumFolderPath());
+        MusicFolder musicFolder = new MusicFolder(1,musicDir,"Music",true,new Date());
+        liste.add(musicFolder);
+        return liste;
+    }
+
 }

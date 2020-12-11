@@ -41,10 +41,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -77,11 +79,15 @@ public class DownloadController implements LastModified {
 
     public long getLastModified(HttpServletRequest request) {
         try {
-            MediaFile mediaFile = getMediaFile(request);
-            if (mediaFile == null || mediaFile.isDirectory() || mediaFile.getChanged() == null) {
-                return -1;
+            List<MediaFile> mediaFiles = getMediaFiles(request);
+            long returnValue = -1L;
+            for (MediaFile mediaFile: mediaFiles) {
+                if (mediaFile != null && ! mediaFile.isDirectory() && mediaFile.getChanged() != null) {
+                    long changedTime = mediaFile.getChanged().getTime();
+                    returnValue = returnValue == -1 ? changedTime : Math.min(returnValue, changedTime);
+                }
             }
-            return mediaFile.getChanged().getTime();
+            return returnValue;
         } catch (ServletRequestBindingException e) {
             return -1;
         }
@@ -96,14 +102,14 @@ public class DownloadController implements LastModified {
 
             status = statusService.createDownloadStatus(playerService.getPlayer(request, response, false, false));
 
-            MediaFile mediaFile = getMediaFile(request);
+            List<MediaFile> mediaFiles = getMediaFiles(request);
 
             Integer playlistId = ServletRequestUtils.getIntParameter(request, "playlist");
             Integer playerId = ServletRequestUtils.getIntParameter(request, "player");
             int[] indexes = request.getParameter("i") == null ? null : ServletRequestUtils.getIntParameters(request, "i");
 
-            if (mediaFile != null) {
-                response.setIntHeader("ETag", mediaFile.getId());
+            if (mediaFiles.size() > 0) {
+                response.setHeader("ETag", mediaFiles.stream().map(mf -> Integer.toString(mf.getId())).collect(Collectors.joining("+")));
                 response.setHeader("Accept-Ranges", "bytes");
             }
 
@@ -113,19 +119,40 @@ public class DownloadController implements LastModified {
                 LOG.info("Got HTTP range: " + range);
             }
 
-            if (mediaFile != null) {
-                if (!securityService.isFolderAccessAllowed(mediaFile, user.getUsername())) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                            "Access to file " + mediaFile.getId() + " is forbidden for user " + user.getUsername());
-                    return;
+            if (mediaFiles.size() > 0) {
+                for (MediaFile mediaFile: mediaFiles) {
+                    if (!securityService.isFolderAccessAllowed(mediaFile, user.getUsername())) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN,
+                                           "Access to file " + mediaFile.getId() + " is forbidden for user " + user.getUsername());
+                        return;
+                    }
                 }
 
-                if (mediaFile.isFile()) {
-                    downloadFile(response, status, mediaFile.getFile(), range);
+                if (mediaFiles.size() == 1 && mediaFiles.get(0).isFile()) {
+                    downloadFile(response, status, mediaFiles.get(0).getFile(), range);
                 } else {
-                    List<MediaFile> children = mediaFileService.getChildrenOf(mediaFile, true, false, true);
-                    String zipFileName = FilenameUtils.getBaseName(mediaFile.getPath()) + ".zip";
-                    File coverArtFile = indexes == null ? mediaFile.getCoverArtFile() : null;
+                    List<MediaFile> children = new ArrayList<>();
+                    String fileNameBase = null;
+                    File coverArtFile = null;
+                    for (MediaFile mediaFile: mediaFiles) {
+                        if (mediaFile.isFile()) {
+                            children.add(mediaFile);
+                            if (fileNameBase == null) {
+                                fileNameBase = mediaFile.getFile().getName();
+                            }
+                        } else {
+                            children.addAll(mediaFileService.getChildrenOf(mediaFile, true, false, true));
+                            if (fileNameBase == null) {
+                                if (mediaFile.isAlbum() && mediaFile.getAlbumName() != null) {
+                                    fileNameBase = mediaFile.getAlbumName();
+                                } else {
+                                    fileNameBase = FilenameUtils.getBaseName(mediaFile.getPath());
+                                }
+                                coverArtFile = indexes == null ? mediaFile.getCoverArtFile() : null;
+                            }
+                        }
+                    }
+                    String zipFileName = fileNameBase + ".zip";
                     downloadFiles(response, status, children, indexes, coverArtFile, range, zipFileName);
                 }
 
@@ -149,9 +176,18 @@ public class DownloadController implements LastModified {
         }
     }
 
-    private MediaFile getMediaFile(HttpServletRequest request) throws ServletRequestBindingException {
-        Integer id = ServletRequestUtils.getIntParameter(request, "id");
-        return id == null ? null : mediaFileService.getMediaFile(id);
+    private List<MediaFile> getMediaFiles(HttpServletRequest request) throws ServletRequestBindingException {
+        List<MediaFile> returnValue = new ArrayList<>();
+        int[] ids = ServletRequestUtils.getIntParameters(request, "id");
+        if (ids != null) {
+            for (int id: ids) {
+                MediaFile file = mediaFileService.getMediaFile(id);
+                if (file != null) {
+                    returnValue.add(file);
+                }
+            }
+        }
+        return returnValue;
     }
 
     /**

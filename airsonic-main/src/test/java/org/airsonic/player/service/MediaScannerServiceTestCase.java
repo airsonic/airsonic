@@ -102,7 +102,7 @@ public class MediaScannerServiceTestCase {
      */
     @Test
     public void testScanLibrary() {
-        musicFolderDao.getAllMusicFolders().forEach(musicFolder -> musicFolderDao.deleteMusicFolder(musicFolder.getId()));
+        musicFolderDao.getAllMusicFolders().stream().forEach(musicFolder -> musicFolderDao.deleteMusicFolder(musicFolder.getId()));
         MusicFolderTestData.getTestMusicFolders().forEach(musicFolderDao::createMusicFolder);
         settingsService.clearMusicFolderCache();
 
@@ -147,6 +147,67 @@ public class MediaScannerServiceTestCase {
                 .convertDurationsTo(TimeUnit.MILLISECONDS)
                 .build();
         reporter.report();
+
+        System.out.print("End");
+    }
+
+    @Test
+    public void testScanMultiFolderAlbum() {
+        musicFolderDao.getAllMusicFolders().stream().forEach(musicFolder -> musicFolderDao.deleteMusicFolder(musicFolder.getId()));
+        MusicFolderTestData.getTestMusicFolderForMultiFolderAlbum().forEach(musicFolderDao::createMusicFolder);
+        settingsService.clearMusicFolderCache();
+
+        TestCaseUtils.execScan(mediaScannerService);
+
+        // Music Folder Music must have 1 children
+        List<MediaFile> listeMusicChildren = mediaFileDao.getChildrenOf(MusicFolderTestData.resolveMultiFolderAlbumFolderPath());
+        Assert.assertEquals(1, listeMusicChildren.size());
+
+        System.out.println("--- List of all artists ---");
+        System.out.println("artistName#albumCount");
+        List<Artist> allArtists = artistDao.getAlphabetialArtists(0, 0, musicFolderDao.getAllMusicFolders());
+        Assert.assertEquals(1,allArtists.size());
+        allArtists.forEach(artist -> System.out.println(artist.getName() + "#" + artist.getAlbumCount()));
+        Artist artist1 = allArtists.get(0);
+        Assert.assertEquals("Anonymous artist",artist1.getName());
+        System.out.println("--- *********************** ---");
+
+        System.out.println("--- List of all albums ---");
+        System.out.println("name#artist#songCount");
+        List<Album> allAlbums = albumDao.getAlphabeticalAlbums(0, 0, true, true, musicFolderDao.getAllMusicFolders());
+        allAlbums.forEach(album -> System.out.println(album.getName() + "#" + album.getArtist() + "#" + album.getSongCount()));
+        Assert.assertEquals(1, allAlbums.size());
+        Album album1 = allAlbums.get(0);
+        Assert.assertEquals("The ultimate album",album1.getName());
+        Assert.assertEquals("Anonymous artist",album1.getArtist());
+        List<MediaFile> songs = mediaFileDao.getSongsForAlbum(album1.getArtist(),album1.getName());
+        Assert.assertEquals(4,songs.size());
+        MediaFile track1 = songs.get(0);
+        Assert.assertEquals("Song 1",track1.getName());
+        Assert.assertEquals("Anonymous artist",track1.getArtist());
+        Assert.assertEquals("The ultimate album",track1.getAlbumName());
+        Assert.assertEquals(new Integer(1),track1.getTrackNumber());
+        Assert.assertEquals(new Integer(1),track1.getDiscNumber());
+        MediaFile track2 = songs.get(1);
+        Assert.assertEquals("Track 2",track2.getName());
+        Assert.assertEquals("Anonymous artist",track2.getArtist());
+        Assert.assertEquals("The ultimate album",track2.getAlbumName());
+        Assert.assertEquals(new Integer(2),track2.getTrackNumber());
+        Assert.assertEquals(new Integer(1),track2.getDiscNumber());
+        MediaFile track3 = songs.get(2);
+        Assert.assertEquals("Song 3",track3.getName());
+        Assert.assertEquals("Anonymous artist",track3.getArtist());
+        Assert.assertEquals("The ultimate album",track3.getAlbumName());
+        Assert.assertEquals(new Integer(1),track3.getTrackNumber());
+        Assert.assertEquals(new Integer(2),track3.getDiscNumber());
+        MediaFile track4 = songs.get(3);
+        Assert.assertEquals("Tune 4",track4.getName());
+        Assert.assertEquals("Anonymous artist",track4.getArtist());
+        Assert.assertEquals("The ultimate album",track4.getAlbumName());
+        Assert.assertEquals(new Integer(2),track4.getTrackNumber());
+        Assert.assertEquals(new Integer(2),track4.getDiscNumber());
+
+        System.out.println("--- *********************** ---");
 
         System.out.print("End");
     }
