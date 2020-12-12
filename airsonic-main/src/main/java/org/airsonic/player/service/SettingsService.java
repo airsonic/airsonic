@@ -84,6 +84,8 @@ public class SettingsService {
     private static final String KEY_PODCAST_EPISODE_DOWNLOAD_COUNT = "PodcastEpisodeDownloadCount";
     private static final String KEY_DOWNLOAD_BITRATE_LIMIT = "DownloadBitrateLimit";
     private static final String KEY_UPLOAD_BITRATE_LIMIT = "UploadBitrateLimit";
+    private static final String KEY_SPLIT_COMMAND = "SplitCommand";
+    private static final String KEY_DOWNSAMPLING_COMMAND = "DownsamplingCommand4";
     private static final String KEY_HLS_COMMAND = "HlsCommand3";
     private static final String KEY_JUKEBOX_COMMAND = "JukeboxCommand2";
     private static final String KEY_VIDEO_IMAGE_COMMAND = "VideoImageCommand";
@@ -167,6 +169,9 @@ public class SettingsService {
     private static final int DEFAULT_PODCAST_EPISODE_DOWNLOAD_COUNT = 1;
     private static final long DEFAULT_DOWNLOAD_BITRATE_LIMIT = 0;
     private static final long DEFAULT_UPLOAD_BITRATE_LIMIT = 0;
+    private static final boolean DEFAULT_ENABLE_SEEK = true;
+    private static final String DEFAULT_SPLIT_COMMAND = "ffmpeg -ss %o -t %d -i %s -vcodec copy -acodec copy -f %f -";
+    private static final String DEFAULT_DOWNSAMPLING_COMMAND = "ffmpeg -i %s -map 0:0 -b:a %bk -v 0 -f mp3 -";
     private static final String DEFAULT_HLS_COMMAND = "ffmpeg -ss %o -t %d -i %s -async 1 -b:v %bk -s %wx%h -ar 44100 -ac 2 -v 0 -f mpegts -c:v libx264 -preset superfast -c:a libmp3lame -threads 0 -";
     private static final String DEFAULT_JUKEBOX_COMMAND = "ffmpeg -ss %o -i %s -map 0:0 -v 0 -ar 44100 -ac 2 -f s16be -";
     private static final String DEFAULT_VIDEO_IMAGE_COMMAND = "ffmpeg -r 1 -ss %o -t 1 -i %s -s %wx%h -v 0 -f mjpeg -";
@@ -246,6 +251,7 @@ public class SettingsService {
     private String[] cachedCoverArtFileTypesArray;
     private String[] cachedMusicFileTypesArray;
     private String[] cachedVideoFileTypesArray;
+    private String[] cachedPlayableFileTypesArray;
     private List<MusicFolder> cachedMusicFolders;
     private final ConcurrentMap<String, List<MusicFolder>> cachedMusicFoldersPerUser = new ConcurrentHashMap<>();
 
@@ -464,6 +470,17 @@ public class SettingsService {
         return cachedVideoFileTypesArray;
     }
 
+    public synchronized String[] getPlayableFileTypesAsArray() {
+        // make sure to regenerate cached result if either KEY_VIDEO_FILE_TYPES or KEY_MUSIC_FILE_TYPES
+        // has been changed
+        if (cachedPlayableFileTypesArray == null
+            || cachedMusicFileTypesArray == null
+            || cachedVideoFileTypesArray == null) {
+            cachedPlayableFileTypesArray = toStringArray(getMusicFileTypes().join(" ", getVideoFileTypes()));
+        }
+        return cachedPlayableFileTypesArray;
+    }
+
     public synchronized String getCoverArtFileTypes() {
         return getProperty(KEY_COVER_ART_FILE_TYPES, DEFAULT_COVER_ART_FILE_TYPES);
     }
@@ -646,6 +663,22 @@ public class SettingsService {
      */
     public void setUploadBitrateLimit(long limit) {
         setLong(KEY_UPLOAD_BITRATE_LIMIT, limit);
+    }
+
+    public String getSplitCommand() {
+        return getProperty(KEY_SPLIT_COMMAND, DEFAULT_SPLIT_COMMAND);
+    }
+
+    public void setSplitCommand(String command) {
+        setProperty(KEY_SPLIT_COMMAND, command);
+    }
+
+    public String getDownsamplingCommand() {
+        return getProperty(KEY_DOWNSAMPLING_COMMAND, DEFAULT_DOWNSAMPLING_COMMAND);
+    }
+
+    public void setDownsamplingCommand(String command) {
+        setProperty(KEY_DOWNSAMPLING_COMMAND, command);
     }
 
     public String getHlsCommand() {

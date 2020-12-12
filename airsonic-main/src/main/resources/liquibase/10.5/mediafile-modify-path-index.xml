@@ -1,0 +1,14 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="dropuniqueindexpath_001" author="yetangitu">
+        <dropIndex tableName="media_file" indexName="idx_media_file_path" />
+    </changeSet>
+    <changeSet id="adduniqueindexpathstartposition_001">
+        <createIndex tableName="media_file" indexName="idx_media_file_path_start_position" unique="true">
+            <column name="path"/>
+            <column name="start_position"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
