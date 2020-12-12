@@ -19,6 +19,8 @@
  */
 package org.airsonic.player.dao;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.airsonic.player.domain.Genre;
 import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.domain.MusicFolder;
@@ -206,6 +208,12 @@ public class MediaFileDao extends AbstractDao {
 
     public void deleteMediaFile(String path) {
         update("update media_file set present=false, children_last_updated=? where path=?", new Date(0L), path);
+    }
+
+    public void deleteMediaFiles(Collection<String> paths) {
+        if (!paths.isEmpty()) {
+            namedUpdate("update media_file set present=false, children_last_updated=:updatedate where path in (:paths)", ImmutableMap.of("updatedate", new Date(0L), "paths", paths));
+        }
     }
 
     public List<Genre> getGenres(boolean sortByAlbum) {
@@ -714,17 +722,17 @@ public class MediaFileDao extends AbstractDao {
         update("update media_file set present=?, last_scanned = ? where path=?", true, lastScanned, path);
     }
 
-    public void markNonPresent(Date lastScanned) {
-        int minId = queryForInt("select min(id) from media_file where last_scanned < ? and present", 0, lastScanned);
-        int maxId = queryForInt("select max(id) from media_file where last_scanned < ? and present", 0, lastScanned);
-
-        final int batchSize = 1000;
-        Date childrenLastUpdated = new Date(0L);  // Used to force a children rescan if file is later resurrected.
-        for (int id = minId; id <= maxId; id += batchSize) {
-            update("update media_file set present=false, children_last_updated=? where id between ? and ? and " +
-                            "last_scanned < ? and present",
-                   childrenLastUpdated, id, id + batchSize, lastScanned);
+    public void markPresent(Collection<String> paths, Date lastScanned) {
+        if (!paths.isEmpty()) {
+            namedUpdate("update media_file set present=true, last_scanned = :lastScanned where path in (:paths)", ImmutableMap.of("lastScanned", lastScanned, "paths", paths));
         }
+    }
+
+    public void markNonPresent(Date lastScanned) {
+        Date childrenLastUpdated = new Date(0L);  // Used to force a children rescan if file is later resurrected.
+
+        update("update media_file set present=false, children_last_updated=? where last_scanned < ? and present",
+                childrenLastUpdated, lastScanned);
     }
 
     public List<Integer> getArtistExpungeCandidates() {
