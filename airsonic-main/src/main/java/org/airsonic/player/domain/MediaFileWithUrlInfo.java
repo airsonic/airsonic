@@ -126,8 +126,8 @@ public class MediaFileWithUrlInfo {
         file.setAlbumArtist(albumArtist);
     }
 
-    public String getName() {
-        return file.getName();
+    public String getDisplayName() {
+        return file.getDisplayName();
     }
 
     public Integer getDiscNumber() {

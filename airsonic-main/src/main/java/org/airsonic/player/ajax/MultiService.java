@@ -96,7 +96,7 @@ public class MultiService {
         SimilarArtist[] result = new SimilarArtist[similarArtists.size()];
         for (int i = 0; i < result.length; i++) {
             MediaFile similarArtist = similarArtists.get(i);
-            result[i] = new SimilarArtist(similarArtist.getId(), similarArtist.getName());
+            result[i] = new SimilarArtist(similarArtist.getId(), similarArtist.getDisplayName());
         }
         return Arrays.asList(result);
     }

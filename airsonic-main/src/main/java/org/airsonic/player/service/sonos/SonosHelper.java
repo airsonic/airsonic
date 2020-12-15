@@ -229,13 +229,13 @@ public class SonosHelper {
             MediaMetadata shuffle = new MediaMetadata();
             shuffle.setItemType(ItemType.PROGRAM);
             shuffle.setId(SonosService.ID_SHUFFLE_ARTIST_PREFIX + mediaFileId);
-            shuffle.setTitle(String.format("Shuffle Play  - %s", dir.getName()));
+            shuffle.setTitle(String.format("Shuffle Play  - %s", dir.getDisplayName()));
             result.add(0, shuffle);
 
             MediaMetadata radio = new MediaMetadata();
             radio.setItemType(ItemType.PROGRAM);
             radio.setId(SonosService.ID_RADIO_ARTIST_PREFIX + mediaFileId);
-            radio.setTitle(String.format("Artist Radio - %s", dir.getName()));
+            radio.setTitle(String.format("Artist Radio - %s", dir.getDisplayName()));
             result.add(1, radio);
         }
 
@@ -251,7 +251,7 @@ public class SonosHelper {
         if (dir.isAlbum()) {
             mediaCollection.setItemType(ItemType.ALBUM);
             mediaCollection.setArtist(dir.getArtist());
-            mediaCollection.setTitle(dir.getName());
+            mediaCollection.setTitle(dir.getDisplayName());
             mediaCollection.setCanPlay(true);
 
             AlbumArtUrl albumArtURI = new AlbumArtUrl();
@@ -259,7 +259,7 @@ public class SonosHelper {
             mediaCollection.setAlbumArtURI(albumArtURI);
         } else {
             mediaCollection.setItemType(ItemType.CONTAINER);
-            mediaCollection.setTitle(dir.getName());
+            mediaCollection.setTitle(dir.getDisplayName());
         }
         return mediaCollection;
     }
