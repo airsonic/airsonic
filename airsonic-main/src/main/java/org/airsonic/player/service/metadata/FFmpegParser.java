@@ -25,6 +25,7 @@ import org.airsonic.player.domain.MediaFile;
 import org.airsonic.player.service.SettingsService;
 import org.airsonic.player.service.TranscodingService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -101,6 +103,78 @@ public class FFmpegParser extends MetaDataParser {
                     break;
                 }
             }
+
+            /*
+             * Find tags, if any
+             * tag names are forced to lower case
+             */
+            final JsonNode tags = result.at("/format/tags");
+            if (tags != null) {
+                Iterator<String> it = tags.fieldNames();
+                String key = null;
+                String value = null;
+                while (it.hasNext()) {
+                    key = it.next();
+                    value = tags.get(key).asText();
+                    // skip empty tags
+                    if (StringUtils.isBlank(value)) {
+                        continue;
+                    }
+                    switch (key.toLowerCase()) {
+                        case "title":
+                            metaData.setTitle(value);
+                            break;
+
+                        case "artist":
+                            metaData.setArtist(value);
+                            break;
+
+                        case "album_artist":
+                        case "album artist":
+                            metaData.setAlbumArtist(value);
+                            break;
+
+                        case "album":
+                        case "wm/albumtitle":
+                            metaData.setAlbumName(value);
+                            break;
+
+                        case "date":
+                        case "year":
+                        case "wm/year":
+                            metaData.setYear(parseYear(value));
+                            break;
+
+                        case "disc":
+                        case "discnumber":
+                        case "wm/partofset":
+                            metaData.setDiscNumber(parseTrackNumber(value));
+                            break;
+
+                        case "track":
+                            metaData.setTrackNumber(parseTrackNumber(value));
+                            break;
+
+                        case "genre":
+                        case "wm/genre":
+                            metaData.setGenre(mapGenre(value));
+                            break;
+
+                        case "musicbrainz album id":
+                        case "musicbrainz_albumid":
+                        case "musicbrainz/album id":
+                            metaData.setMusicBrainzReleaseId(value);
+                            break;
+                    }
+                }
+
+                if (StringUtils.isBlank(metaData.getArtist())) {
+                    metaData.setArtist(metaData.getAlbumArtist());
+                }
+                if (StringUtils.isBlank(metaData.getAlbumArtist())) {
+                    metaData.setAlbumArtist(metaData.getArtist());
+                }
+            }
         } catch (Throwable x) {
             LOG.warn("Error when parsing metadata in " + file, x);
         }
@@ -141,7 +215,7 @@ public class FFmpegParser extends MetaDataParser {
     public boolean isApplicable(File file) {
         String format = FilenameUtils.getExtension(file.getName()).toLowerCase();
 
-        for (String s : settingsService.getVideoFileTypesAsArray()) {
+        for (String s : settingsService.getPlayableFileTypesAsArray()) {
             if (format.equals(s)) {
                 return true;
             }

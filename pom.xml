@@ -127,17 +127,29 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
+<<<<<<< HEAD
+                <version>2.10.0.pr3</version>
+=======
                 <version>${jackson.version}</version>
+>>>>>>> upstream/master
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+<<<<<<< HEAD
+                <version>2.10.0.pr3</version>
+=======
                 <version>${jackson.version}</version>
+>>>>>>> upstream/master
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
+<<<<<<< HEAD
+                <version>2.10.0.pr3</version>
+=======
                 <version>${jackson.version}</version>
+>>>>>>> upstream/master
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
