@@ -40,3 +40,20 @@ function updateQueryStringParameter(uri, key, value) {
         return uri + separator + key + "=" + value;
     }
 }
+
+function getJQueryUiDialogPlaylistSize(origin) {
+    var width = window.localStorage.getItem("dialog-select-playlist-" + origin + "-width");
+    var height = window.localStorage.getItem("dialog-select-playlist-" + origin + "-height");
+    if (!width) {
+        width = 300;
+    }
+    if (!height) {
+        height = 250;
+    }
+    return {width: width, height: height};
+}
+
+function setJQueryUiDialogPlaylistSize(origin, size) {
+    window.localStorage.setItem("dialog-select-playlist-" + origin + "-width", parseInt(size.width));
+    window.localStorage.setItem("dialog-select-playlist-" + origin + "-height", parseInt(size.height));
+}
