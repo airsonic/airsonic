@@ -157,6 +157,11 @@ public class PodcastDao extends AbstractDao {
         return queryOne(sql, episodeRowMapper, url);
     }
 
+    public PodcastEpisode getEpisodeByPath(String path) {
+        String sql = "select " + EPISODE_QUERY_COLUMNS + " from podcast_episode where path=?";
+        return queryOne(sql, episodeRowMapper, path);
+    }
+
     /**
      * Updates the given Podcast episode.
      *
