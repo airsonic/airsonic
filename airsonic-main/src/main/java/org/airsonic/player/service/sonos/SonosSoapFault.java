@@ -30,7 +30,8 @@ public class SonosSoapFault extends RuntimeException {
     // Must match values in strings.xml
     private final int sonosError;
 
-    protected SonosSoapFault(String faultCode, int sonosError) {
+    protected SonosSoapFault(String message, String faultCode, int sonosError) {
+        super(message);
         this.faultCode = faultCode;
         this.sonosError = sonosError;
     }
@@ -46,14 +47,21 @@ public class SonosSoapFault extends RuntimeException {
     public static class LoginInvalid extends SonosSoapFault {
 
         public LoginInvalid() {
-            super("Client.LoginInvalid", 0);
+            super("Login invalid", "Client.LoginInvalid", 0);
         }
     }
 
     public static class LoginUnauthorized extends SonosSoapFault {
 
         public LoginUnauthorized() {
-            super("Client.LoginUnauthorized", 1);
+            super("Login unauthorized","Client.LoginUnauthorized", 1);
+        }
+    }
+
+    public static class NotLinkedRetry extends SonosSoapFault {
+
+        public NotLinkedRetry() {
+            super("Cannot find link code, retry", "Client.NOT_LINKED_RETRY", 5);
         }
     }
 }

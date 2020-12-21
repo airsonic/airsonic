@@ -187,6 +187,11 @@
                 <artifactId>jakarta.jws-api</artifactId>
                 <version>1.1.1</version>
             </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.11.3</version>
+            </dependency>
 
             <!-- Tomcat dependencies are normally managed by Spring Boot, but we handle
                  patch version updates ourselves in order to fix CVEs. -->
@@ -448,6 +453,7 @@
                                 <!-- Needed by Apache CXF -->
                                 <ignoredUnusedDeclaredDependency>jakarta.xml.ws:jakarta.xml.ws-api</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>jakarta.xml.bind:jakarta.xml.bind-api</ignoredUnusedDeclaredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.cxf:cxf-rt-frontend-jaxws</ignoredUnusedDeclaredDependency>
                             </ignoredUnusedDeclaredDependencies>
                         </configuration>
                     </execution>

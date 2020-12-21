@@ -17,9 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class JWTAuthenticationProvider implements AuthenticationProvider {
 
@@ -41,6 +39,7 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
         String rawToken = (String) auth.getCredentials();
         DecodedJWT token = JWTSecurityService.verify(jwtKey, rawToken);
         Claim path = token.getClaim(JWTSecurityService.CLAIM_PATH);
+        Claim username = token.getClaim(JWTSecurityService.CLAIM_USERNAME);
         authentication.setAuthenticated(true);
 
         // TODO:AD This is super unfortunate, but not sure there is a better way when using JSP
@@ -54,7 +53,7 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("IS_AUTHENTICATED_FULLY"));
         authorities.add(new SimpleGrantedAuthority("ROLE_TEMP"));
-        return new JWTAuthenticationToken(authorities, rawToken, authentication.getRequestedPath());
+        return new JWTAuthenticationToken(authorities, rawToken, authentication.getRequestedPath(), username.asString());
     }
 
     private static boolean roughlyEqual(String expectedRaw, String requestedPathRaw) {
@@ -73,8 +72,21 @@ public class JWTAuthenticationProvider implements AuthenticationProvider {
                 return false;
             }
 
-            MapDifference<String, List<String>> difference = Maps.difference(expected.getQueryParams(),
-                    requested.getQueryParams());
+            Map<String, List<String>> left = new HashMap<>(expected.getQueryParams());
+            Map<String, List<String>> right = new HashMap<>(requested.getQueryParams());
+
+            /*
+                If the equality test uses the size parameter on the request, it is possible that the equality test will fail because Sonos
+                changes the size parameter according to the client.
+
+                All parameters should be removed, but this would require too much retrofit work throughout the code.
+
+                Translated with www.DeepL.com/Translator
+             */
+            left.remove("size");
+            right.remove("size");
+
+            MapDifference<String, List<String>> difference = Maps.difference(left, right);
 
             if (!difference.entriesDiffering().isEmpty() ||
                     !difference.entriesOnlyOnLeft().isEmpty() ||

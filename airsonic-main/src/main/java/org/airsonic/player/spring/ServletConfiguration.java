@@ -3,6 +3,7 @@ package org.airsonic.player.spring;
 import org.airsonic.player.controller.PodcastController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.view.JstlView;
 import java.util.Properties;
 
 @Configuration
+@ImportResource({"classpath:applicationContext-sonos.xml"})
 public class ServletConfiguration implements WebMvcConfigurer {
 
     @Bean

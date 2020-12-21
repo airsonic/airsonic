@@ -9,13 +9,13 @@ public class JWTAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String token;
     private String requestedPath;
+    private final String username;
 
-    public static final String USERNAME_ANONYMOUS = "anonymous";
-
-    public JWTAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String token, String requestedPath) {
+    public JWTAuthenticationToken(Collection<? extends GrantedAuthority> authorities, String token, String requestedPath, String username) {
         super(authorities);
         this.token = token;
         this.requestedPath = requestedPath;
+        this.username = username;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class JWTAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return USERNAME_ANONYMOUS;
+        return username;
     }
 
     public String getRequestedPath() {

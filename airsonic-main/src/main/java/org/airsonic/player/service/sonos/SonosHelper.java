@@ -69,6 +69,8 @@ public class SonosHelper {
     private LastFmService lastFmService;
     @Autowired
     private PodcastService podcastService;
+    @Autowired
+    private JWTSecurityService jwtSecurityService;
 
     public List<AbstractMedia> forRoot() {
         MediaMetadata shuffle = new MediaMetadata();
@@ -606,7 +608,8 @@ public class SonosHelper {
     }
 
     private String getCoverArtUrl(String id, HttpServletRequest request) {
-        return getBaseUrl(request) + "coverArt.view?id=" + id + "&size=" + CoverArtScheme.LARGE.getSize();
+        String uri = getBaseUrl(request) + "ext/coverArt.view?id=" + id + "&size=" + CoverArtScheme.LARGE.getSize();
+        return jwtSecurityService.addJWTToken(uri);
     }
 
     public static MediaList createSubList(int index, int count, List<? extends AbstractMedia> mediaCollections) {
@@ -638,10 +641,18 @@ public class SonosHelper {
     }
 
     public String getMediaURI(int mediaFileId, String username, HttpServletRequest request) {
-        Player player = createPlayerIfNecessary(username);
-        MediaFile song = mediaFileService.getMediaFile(mediaFileId);
+        return getMediaURI(getMediaFile(mediaFileId), username, request);
+    }
 
-        return NetworkService.getBaseUrl(request) + "stream?id=" + song.getId() + "&player=" + player.getId();
+    public String getMediaURI(MediaFile song, String username, HttpServletRequest request) {
+        Player player = createPlayerIfNecessary(username);
+        String uri = getBaseUrl(request) + "ext/stream?id=" + song.getId() + "&player=" + player.getId();
+        return jwtSecurityService.addJWTToken(uri);
+    }
+
+
+    public MediaFile getMediaFile(int mediaFileId) {
+        return mediaFileService.getMediaFile(mediaFileId);
     }
 
     private Player createPlayerIfNecessary(String username) {
@@ -656,6 +667,10 @@ public class SonosHelper {
             player.setTechnology(PlayerTechnology.EXTERNAL_WITH_PLAYLIST);
             playerService.createPlayer(player);
             players = playerService.getPlayersForUserAndClientId(username, AIRSONIC_CLIENT_ID);
+
+            // @FIXME when a new transcoding choice can be set we can put the right transcoding here for Sonos player.
+            // Now, we remove transcoding for Sonos player
+            transcodingService.setTranscodingsForPlayer(players.get(0), new int[0]);
         }
 
         return players.get(0);
