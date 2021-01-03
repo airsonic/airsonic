@@ -1,0 +1,98 @@
+### Note: you must configure access to your media folder. This example uses an NFS mount ###
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airsonic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airsonic
+  template:
+    metadata:
+      labels:
+        app: airsonic
+    spec:
+      containers:
+      - image: airsonic/airsonic:latest #tested with airsonic/airsonic:10.6.2-RELEASE
+        env:
+        - name: AIRSONIC_PORT
+          value: "4040"
+        - name: JAVA_OPTS
+          value: -Xmx512m
+        name: airsonic
+        ports:
+        - containerPort: 4040
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - wget -q http://localhost:"$AIRSONIC_PORT""$CONTEXT_PATH"rest/ping -O /dev/null || exit 1
+          periodSeconds: 15
+          timeoutSeconds: 3
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "2"
+        volumeMounts:
+        - mountPath: /airsonic/data
+          name: data
+        - mountPath: /airsonic/music
+          name: music
+        - mountPath: /airsonic/playlists
+          name: playlists
+      restartPolicy: Always
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: airsonic-data
+      - name: playlists
+        persistentVolumeClaim:
+          claimName: airsonic-playlists
+
+      # Please configure for your media share
+      # See this document for additional volume types: https://kubernetes.io/docs/concepts/storage/volumes/
+      - name: music
+        nfs:
+          server: <nfs.server.address>
+          path: <nfs.share.path>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: airsonic
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 4040
+  selector:
+    app: airsonic
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airsonic-data
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airsonic-playlists
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
