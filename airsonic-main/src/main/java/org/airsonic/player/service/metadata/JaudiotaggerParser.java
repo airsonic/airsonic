@@ -29,7 +29,6 @@ import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.images.Artwork;
-import org.jaudiotagger.tag.reference.GenreTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +36,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.LogManager;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Parses meta data from audio files using the Jaudiotagger library
@@ -54,9 +49,6 @@ import java.util.regex.Pattern;
 public class JaudiotaggerParser extends MetaDataParser {
 
     private static final Logger LOG = LoggerFactory.getLogger(JaudiotaggerParser.class);
-    private static final Pattern GENRE_PATTERN = Pattern.compile("\\((\\d+)\\).*");
-    private static final Pattern TRACK_NUMBER_PATTERN = Pattern.compile("(\\d+)/\\d+");
-    private static final Pattern YEAR_NUMBER_PATTERN = Pattern.compile("(\\d{4}).*");
     @Autowired
     private final SettingsService settingsService;
 
