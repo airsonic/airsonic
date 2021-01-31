@@ -209,7 +209,7 @@
 			<groupId>org.checkerframework</groupId>
 			<artifactId>checker-qual</artifactId>
 			<scope>compile</scope>
-			<version>2.10.0</version>
+			<version>3.5.0</version>
 		</dependency>
 
         <dependency>
@@ -220,6 +220,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <!-- <version>4.5.13</version> -->
         </dependency>
 
         <dependency>
@@ -252,10 +253,16 @@
             </exclusions>
         </dependency>
 
-        <dependency>
+         <!-- <dependency>
             <groupId>net.jthink</groupId>
             <artifactId>jaudiotagger</artifactId>
-            <version>2.2.5</version>
+            <version>2.2.6-PATHRIK</version>
+        </dependency> -->
+
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>3.0.3</version>
         </dependency>
 
         <dependency>
@@ -554,7 +561,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.2.12</version>
+            <version>42.2.18</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -604,7 +611,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.2.7.RELEASE</version>
+                <version>2.3.8.RELEASE</version>
                 <configuration>
                     <mainClass>org.airsonic.player.Application</mainClass>
                     <layout>WAR</layout>
