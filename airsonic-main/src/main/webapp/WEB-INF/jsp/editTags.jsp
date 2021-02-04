@@ -122,14 +122,14 @@
             <a href="javascript:resetTrack()"><fmt:message key="edittags.reset.short"/></a></th>
         <th class="ruleTableHeader"><a href="javascript:suggestTitle()"><fmt:message key="edittags.suggest"/></a> |
             <a href="javascript:resetTitle()"><fmt:message key="edittags.reset"/></a></th>
-        <th class="ruleTableHeader" style="white-space: nowrap"><input type="text" name="artistAll" size="15" onkeypress="dwr.util.onReturn(event, setArtist)" value="${model.defaultArtist}"/>&nbsp;<a href="javascript:setArtist()"><fmt:message key="edittags.set"/></a></th>
-        <th class="ruleTableHeader" style="white-space: nowrap"><input type="text" name="albumAll" size="15" onkeypress="dwr.util.onReturn(event, setAlbum)" value="${model.defaultAlbum}"/>&nbsp;<a href="javascript:setAlbum()"><fmt:message key="edittags.set"/></a></th>
+        <th class="ruleTableHeader" style="white-space: nowrap"><input type="text" name="artistAll" size="15" onkeypress="dwr.util.onReturn(event, setArtist)" value="${fn:escapeXml(model.defaultArtist)}"/>&nbsp;<a href="javascript:setArtist()"><fmt:message key="edittags.set"/></a></th>
+        <th class="ruleTableHeader" style="white-space: nowrap"><input type="text" name="albumAll" size="15" onkeypress="dwr.util.onReturn(event, setAlbum)" value="${fn:escapeXml(model.defaultAlbum)}"/>&nbsp;<a href="javascript:setAlbum()"><fmt:message key="edittags.set"/></a></th>
         <th class="ruleTableHeader" style="white-space: nowrap"><input type="text" name="yearAll" size="5" onkeypress="dwr.util.onReturn(event, setYear)" value="${model.defaultYear}"/>&nbsp;<a href="javascript:setYear()"><fmt:message key="edittags.set"/></a></th>
         <th class="ruleTableHeader" style="white-space: nowrap">
             <select name="genreAll" style="width:7em">
                 <option value=""/>
                 <c:forEach items="${model.allGenres}" var="genre">
-                    <option ${genre eq model.defaultGenre ? "selected" : ""} value="${genre}">${genre}</option>
+                    <option ${genre eq model.defaultGenre ? "selected" : ""} value="${fn:escapeXml(genre)}">${fn:escapeXml(genre)}</option>
                 </c:forEach>
             </select>
 
@@ -142,17 +142,17 @@
         <tr>
             <str:truncateNicely lower="25" upper="25" var="fileName">${song.fileName}</str:truncateNicely>
             <input type="hidden" name="id${loopStatus.count - 1}" value="${song.id}"/>
-            <input type="hidden" name="suggestedTitle${loopStatus.count - 1}" value="${song.suggestedTitle}"/>
-            <input type="hidden" name="originalTitle${loopStatus.count - 1}" value="${song.title}"/>
+            <input type="hidden" name="suggestedTitle${loopStatus.count - 1}" value="${fn:escapeXml(song.suggestedTitle)}"/>
+            <input type="hidden" name="originalTitle${loopStatus.count - 1}" value="${fn:escapeXml(song.title)}"/>
             <input type="hidden" name="suggestedTrack${loopStatus.count - 1}" value="${song.suggestedTrack}"/>
             <input type="hidden" name="originalTrack${loopStatus.count - 1}" value="${song.track}"/>
-            <td class="ruleTableCell" title="${song.fileName}">${fileName}</td>
+            <td class="ruleTableCell" title="${fn:escapeXml(song.fileName)}">${fn:escapeXml(fileName)}</td>
             <td class="ruleTableCell"><input type="text" size="5" name="track${loopStatus.count - 1}" value="${song.track}"/></td>
-            <td class="ruleTableCell"><input type="text" size="30" name="title${loopStatus.count - 1}" value="${song.title}"/></td>
-            <td class="ruleTableCell"><input type="text" size="15" name="artist${loopStatus.count - 1}" value="${song.artist}"/></td>
-            <td class="ruleTableCell"><input type="text" size="15" name="album${loopStatus.count - 1}" value="${song.album}"/></td>
+            <td class="ruleTableCell"><input type="text" size="30" name="title${loopStatus.count - 1}" value="${fn:escapeXml(song.title)}"/></td>
+            <td class="ruleTableCell"><input type="text" size="15" name="artist${loopStatus.count - 1}" value="${fn:escapeXml(song.artist)}"/></td>
+            <td class="ruleTableCell"><input type="text" size="15" name="album${loopStatus.count - 1}" value="${fn:escapeXml(song.album)}"/></td>
             <td class="ruleTableCell"><input type="text" size="5"  name="year${loopStatus.count - 1}" value="${song.year}"/></td>
-            <td class="ruleTableCell"><input type="text" name="genre${loopStatus.count - 1}" value="${song.genre}" style="width:7em"/></td>
+            <td class="ruleTableCell"><input type="text" name="genre${loopStatus.count - 1}" value="${fn:escapeXml(song.genre)}" style="width:7em"/></td>
             <td class="ruleTableCell"><div id="status${loopStatus.count - 1}"/></td>
         </tr>
     </c:forEach>
