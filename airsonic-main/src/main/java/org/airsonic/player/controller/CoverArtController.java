@@ -333,8 +333,17 @@ public class CoverArtController implements LastModified {
     public static BufferedImage scale(BufferedImage image, int width, int height) {
         int w = image.getWidth();
         int h = image.getHeight();
-        BufferedImage thumb = image;
 
+        //crop image to correct size
+        if (w > h) {
+            int cropX = (w - h) - ((w - h) / 2);
+            image = image.getSubimage(cropX, 0, h, h);
+        } else if (h > w) {
+            int cropY = (h - w) - ((h - w) / 2);
+            image = image.getSubimage(0, cropY, w, w);
+        }
+
+        BufferedImage thumb = image;
         // For optimal results, use step by step bilinear resampling - halfing the size at each step.
         do {
             w /= 2;
