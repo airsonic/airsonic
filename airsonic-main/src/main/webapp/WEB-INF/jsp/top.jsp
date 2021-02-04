@@ -28,44 +28,31 @@
         }
 
         function showLeftFrame() {
-            $("#show-left-frame").hide();
-            $("#hide-left-frame").show();
-            toggleLeftFrame(230);
-            multiService.setShowSideBar(true);
-            showSideBar = true;
+            $("div.left-nav-container", window.parent.document).show('slide', {direction:"left"}, 100, function() {
+                $("#show-left-frame").hide();
+                $("#hide-left-frame").show();
+                multiService.setShowSideBar(true);
+                showSideBar = true;
+            });
         }
 
         function hideLeftFrame() {
-            $("#hide-left-frame").hide();
-            $("#show-left-frame").show();
-            toggleLeftFrame(0);
-            multiService.setShowSideBar(false);
-            showSideBar = false;
+            $("div.left-nav-container", window.parent.document).hide('slide', {direction:"left"}, 100, function() {
+                $("#hide-left-frame").hide();
+                $("#show-left-frame").show();
+                multiService.setShowSideBar(false);
+                showSideBar = false;
+            });
         }
 
         function toggleLeftFrameVisible() {
             if (showSideBar) hideLeftFrame();
             else showLeftFrame();
         }
-
-        function toggleLeftFrame(width) {
-            <%-- Disable animation in Chrome. It stopped working in Chrome 44. --%>
-            var duration = navigator.userAgent.indexOf("Chrome") != -1 ? 0 : 400;
-
-            $("#dummy-animation-target").stop();
-            $("#dummy-animation-target").animate({"max-width": width}, {
-                step: function (now, fx) {
-                    top.document.getElementById("mainFrameset").cols = now + ",*";
-                },
-                duration: duration
-            });
-        }
     </script>
 </head>
 
 <body class="bgcolor2 topframe" style="margin:0.4em 1em 0 1em;">
-
-<span id="dummy-animation-target" style="max-width:0;display: none"></span>
 
 <fmt:message key="top.home" var="home"/>
 <fmt:message key="top.now_playing" var="nowPlaying"/>
