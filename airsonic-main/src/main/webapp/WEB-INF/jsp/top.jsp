@@ -132,7 +132,7 @@
         </td>
 
         <td style="padding-left:15pt;padding-right:5pt;vertical-align: middle;width: 100%;text-align: center">
-            <c:if test="${model.user.settingsRole}"><a href="personalSettings.view" target="main"></c:if>
+            <c:if test="${model.user.settingsRole}"><a href="personalSettings.view" target="main" style="display: inline-block;"></c:if>
             <c:choose>
                 <c:when test="${model.showAvatar}">
                     <sub:url value="avatar.view" var="avatarUrl">
