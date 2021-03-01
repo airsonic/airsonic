@@ -19,6 +19,7 @@
  */
 package org.airsonic.player.domain;
 
+import org.airsonic.player.service.InternetRadioService;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
@@ -37,6 +38,7 @@ public class PlayQueue {
 
     private RandomSearchCriteria randomSearchCriteria;
     private InternetRadio internetRadio;
+    private InternetRadioService internetRadioService = new InternetRadioService();
 
     /**
      * The index of the current song, or -1 is the end of the playlist is reached.
@@ -129,7 +131,11 @@ public class PlayQueue {
      * @return The number of songs in the playlists.
      */
     public synchronized int size() {
-        return files.size();
+        if (internetRadio == null) {
+            return files.size();
+        } else {
+            return internetRadioService.getInternetRadioSources(internetRadio).size();
+        }
     }
 
     /**
