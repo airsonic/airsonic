@@ -210,6 +210,12 @@ public class MediaScannerService {
 
             LOG.info("Completed media library scan.");
 
+            if (settingsService.isFullScanOnce()) {
+                settingsService.setFullScanOnce(false);
+                settingsService.save();
+                LOG.info("Full scan once property got reset.");
+            }
+
         } catch (Throwable x) {
             LOG.error("Failed to scan media library.", x);
         } finally {

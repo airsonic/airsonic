@@ -54,6 +54,7 @@ public class GeneralSettingsController {
     protected void formBackingObject(Model model) {
         GeneralSettingsCommand command = new GeneralSettingsCommand();
         command.setCoverArtFileTypes(settingsService.getCoverArtFileTypes());
+        command.setCoverArtSource(settingsService.getCoverArtSource());
         command.setIgnoredArticles(settingsService.getIgnoredArticles());
         command.setShortcuts(settingsService.getShortcuts());
         command.setIndex(settingsService.getIndexString());
@@ -110,6 +111,10 @@ public class GeneralSettingsController {
                 || !settingsService.getThemeId().equals(theme.getId())
                 || !settingsService.getLocale().equals(locale));
 
+        if (settingsService.getCoverArtSource() != command.getCoverArtSource()) {
+            settingsService.setFullScanOnce(true);
+        }
+
         settingsService.setIndexString(command.getIndex());
         settingsService.setIgnoredArticles(command.getIgnoredArticles());
         settingsService.setShortcuts(command.getShortcuts());
@@ -117,6 +122,7 @@ public class GeneralSettingsController {
         settingsService.setMusicFileTypes(command.getMusicFileTypes());
         settingsService.setVideoFileTypes(command.getVideoFileTypes());
         settingsService.setCoverArtFileTypes(command.getCoverArtFileTypes());
+        settingsService.setCoverArtSource(command.getCoverArtSource());
         settingsService.setSortAlbumsByYear(command.isSortAlbumsByYear());
         settingsService.setGettingStartedEnabled(command.isGettingStartedEnabled());
         settingsService.setWelcomeTitle(command.getWelcomeTitle());
