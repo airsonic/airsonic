@@ -41,7 +41,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.plugins.jpeg.JPEGImageWriteParam;
+import javax.imageio.stream.FileImageOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -236,7 +241,16 @@ public class CoverArtController implements LastModified {
 
     private File getCachedImage(CoverArtRequest request, int size) throws IOException {
         String hash = DigestUtils.md5Hex(request.getKey());
-        String encoding = request.getCoverArt() != null ? "jpeg" : "png";
+        String encoding = null;
+        ImageWriteParam params = null;
+        if (request.getCoverArt() != null) {
+            encoding = "jpeg";
+            params = new JPEGImageWriteParam(null);
+            params.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            params.setCompressionQuality(0.95f);
+        } else {
+            encoding = "png";
+        }
         File cachedImage = new File(getImageCacheDirectory(size), hash + "." + encoding);
 
         // Synchronize to avoid concurrent writing to the same file.
@@ -245,26 +259,26 @@ public class CoverArtController implements LastModified {
             // Is cache missing or obsolete?
             if (!cachedImage.exists() || request.lastModified() > cachedImage.lastModified()) {
 //                LOG.info("Cache MISS - " + request + " (" + size + ")");
-                OutputStream out = null;
+                ImageWriter writer = ImageIO.getImageWritersByFormatName(encoding).next();
                 try {
                     semaphore.acquire();
                     BufferedImage image = request.createImage(size);
                     if (image == null) {
                         throw new Exception("Unable to decode image.");
                     }
-                    out = new FileOutputStream(cachedImage);
-                    ImageIO.write(image, encoding, out);
 
+                    writer.setOutput(new FileImageOutputStream(cachedImage));
+                    writer.write(null, new IIOImage(image, null, null), params);
                 } catch (Throwable x) {
                     // Delete corrupt (probably empty) thumbnail cache.
                     LOG.warn("Failed to create thumbnail for " + request, x);
-                    FileUtil.closeQuietly(out);
+                    writer.dispose();
                     cachedImage.delete();
                     throw new IOException("Failed to create thumbnail for " + request + ". " + x.getMessage());
 
                 } finally {
                     semaphore.release();
-                    FileUtil.closeQuietly(out);
+                    writer.dispose();
                 }
             } else {
 //                LOG.info("Cache HIT - " + request + " (" + size + ")");
