@@ -242,6 +242,8 @@ public class SettingsService {
     private AvatarDao avatarDao;
     @Autowired
     private ApacheCommonsConfigurationService configurationService;
+    @Autowired
+    private SecurityService securityService;
 
     private String[] cachedCoverArtFileTypesArray;
     private String[] cachedMusicFileTypesArray;
@@ -944,6 +946,9 @@ public class SettingsService {
      */
     public List<MusicFolder> getMusicFoldersForUser(String username) {
         List<MusicFolder> result = cachedMusicFoldersPerUser.get(username);
+        if (securityService.isAdmin(username)) {
+            result = getAllMusicFolders(true, false);
+        }
         if (result == null) {
             result = musicFolderDao.getMusicFoldersForUser(username);
             result.retainAll(getAllMusicFolders(false, false));
