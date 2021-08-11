@@ -10,6 +10,10 @@ Airsonic
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/airsonic/airsonic.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/airsonic/airsonic/context:java)
 [![codecov.io coverage](https://codecov.io/gh/airsonic/airsonic/branch/master/graph/badge.svg)](https://codecov.io/gh/airsonic/airsonic)
 
+## Airsonic isn't maintained anymore, you should migrate to [airsonic-advanced](https://github.com/airsonic-advanced/airsonic-advanced) instead.
+
+---
+
 What is Airsonic?
 -----------------
 
