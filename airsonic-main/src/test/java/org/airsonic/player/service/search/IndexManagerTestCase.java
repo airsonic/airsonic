@@ -116,10 +116,9 @@ public class IndexManagerTestCase extends AbstractAirsonicHomeTest {
         assertEquals(2, candidates.size());
 
         // album
-        result = searchService.search(criteria, musicFolders, IndexType.ALBUM);
-        assertEquals(2, result.getMediaFiles().size());
+        result = searchService.search(criteriaAlbumId3, musicFolders, IndexType.ALBUM);
+        assertEquals(1, result.getMediaFiles().size());
         assertEquals("_DIR_ Ravel - Complete Piano Works", result.getMediaFiles().get(0).getName());
-        assertEquals("_DIR_ Ravel - Chamber Music With Voice", result.getMediaFiles().get(1).getName());
 
         candidates = mediaFileDao.getAlbumExpungeCandidates();
         assertEquals(0, candidates.size());
@@ -127,7 +126,7 @@ public class IndexManagerTestCase extends AbstractAirsonicHomeTest {
         result.getMediaFiles().forEach(a -> mediaFileDao.deleteMediaFile(a.getPath()));
 
         candidates = mediaFileDao.getAlbumExpungeCandidates();
-        assertEquals(2, candidates.size());
+        assertEquals(1, candidates.size());
 
         // song
         result = searchService.search(criteriaSong, musicFolders, IndexType.SONG);
@@ -182,7 +181,7 @@ public class IndexManagerTestCase extends AbstractAirsonicHomeTest {
         result = searchService.search(criteria, musicFolders, IndexType.ARTIST);
         assertEquals(0, result.getMediaFiles().size());
 
-        result = searchService.search(criteria, musicFolders, IndexType.ALBUM);
+        result = searchService.search(criteriaAlbumId3, musicFolders, IndexType.ALBUM);
         assertEquals(0, result.getMediaFiles().size());
 
         result = searchService.search(criteriaSong, musicFolders, IndexType.SONG);
