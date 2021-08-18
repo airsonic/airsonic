@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.airsonic.player.domain.SonosLink;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -23,6 +24,11 @@ public class JWTSecurityService {
 
     public static final String JWT_PARAM_NAME = "jwt";
     public static final String CLAIM_PATH = "path";
+
+    public static final String CLAIM_USERNAME = "username";
+    public static final String CLAIM_HOUSEHOLDID = "householdid";
+    public static final String CLAIM_LINKCODE = "linkcode";
+
     // TODO make this configurable
     public static final int DEFAULT_DAYS_VALID_FOR = 7;
     private static SecureRandom secureRandom = new SecureRandom();
@@ -43,12 +49,12 @@ public class JWTSecurityService {
         return Algorithm.HMAC256(jwtKey);
     }
 
-    private static String createToken(String jwtKey, String path, Date expireDate) {
+    private static String createToken(String jwtKey, String path, Date expireDate, String username) {
         UriComponents components = UriComponentsBuilder.fromUriString(path).build();
         String query = components.getQuery();
         String claim = components.getPath() + (!StringUtils.isBlank(query) ? "?" + components.getQuery() : "");
-        LOG.debug("Creating token with claim " + claim);
         return JWT.create()
+                .withClaim(CLAIM_USERNAME, username)
                 .withClaim(CLAIM_PATH, claim)
                 .withExpiresAt(expireDate)
                 .sign(getAlgorithm(jwtKey));
@@ -63,10 +69,12 @@ public class JWTSecurityService {
     }
 
     public UriComponentsBuilder addJWTToken(UriComponentsBuilder builder, Date expires) {
+        String username = SecurityService.getLoginUser();
         String token = JWTSecurityService.createToken(
                 settingsService.getJWTKey(),
                 builder.toUriString(),
-                expires);
+                expires,
+                username);
         builder.queryParam(JWTSecurityService.JWT_PARAM_NAME, token);
         return builder;
     }
@@ -79,5 +87,24 @@ public class JWTSecurityService {
 
     public DecodedJWT verify(String credentials) {
         return verify(settingsService.getJWTKey(), credentials);
+    }
+
+
+    /**
+     * Create an unexpiring token
+     */
+    public String createSonosToken(String username, String householdId, String linkCode) {
+        return JWT.create()
+                .withClaim(CLAIM_USERNAME, username)
+                .withClaim(CLAIM_HOUSEHOLDID, householdId)
+                .withClaim(CLAIM_LINKCODE, linkCode)
+                .sign(getAlgorithm(settingsService.getJWTKey()));
+    }
+
+
+    public SonosLink verifySonosLink(String sonosLinkToken) {
+        DecodedJWT jwt = verify(sonosLinkToken);
+        return new SonosLink(jwt.getClaim(CLAIM_USERNAME).asString(),
+                jwt.getClaim(CLAIM_HOUSEHOLDID).asString(), jwt.getClaim(CLAIM_LINKCODE).asString());
     }
 }
