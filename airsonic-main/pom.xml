@@ -253,7 +253,7 @@
         </dependency>
 
         <dependency>
-            <groupId>net.jthink</groupId>
+            <groupId>org.bitbucket.ijabz</groupId>
             <artifactId>jaudiotagger</artifactId>
             <version>2.2.5</version>
         </dependency>
