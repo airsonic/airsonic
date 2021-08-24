@@ -9,6 +9,7 @@ import org.springframework.core.io.support.PropertiesLoaderUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -71,13 +72,19 @@ public class LegacyHsqlUtil {
         // Check the database driver version
         String driverVersion = null;
         try {
-            Driver driver = DriverManager.getDriver(SettingsService.getDefaultJDBCUrl());
+            Driver driver = (Driver) Class.forName("org.hsqldb.jdbc.JDBCDriver", true, LegacyHsqlUtil.class.getClassLoader()).getDeclaredConstructor().newInstance();
             driverVersion = String.format("%d.%d", driver.getMajorVersion(), driver.getMinorVersion());
             if (driver.getMajorVersion() != 2) {
                 LOG.warn("HSQLDB database driver version {} is untested ; trying to connect anyway, this may upgrade the database from version {}", driverVersion, currentVersion);
                 return true;
             }
-        } catch (SQLException e) {
+        } catch (InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException
+                | NoSuchMethodException
+                | SecurityException
+                | ClassNotFoundException e) {
             LOG.warn("HSQLDB database driver version cannot be determined ; trying to connect anyway, this may upgrade the database from version {}", currentVersion, e);
             return true;
         }
