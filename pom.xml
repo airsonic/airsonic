@@ -185,7 +185,7 @@
             <dependency>
                 <groupId>jakarta.jws</groupId>
                 <artifactId>jakarta.jws-api</artifactId>
-                <version>1.1.1</version>
+                <version>3.0.0</version>
             </dependency>
 
             <!-- Tomcat dependencies are normally managed by Spring Boot, but we handle
