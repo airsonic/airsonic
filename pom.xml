@@ -16,9 +16,9 @@
     <properties>
         <failOnDependencyWarning>true</failOnDependencyWarning>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cxf.version>3.3.6</cxf.version>
+        <cxf.version>3.3.8</cxf.version>
         <jackson.version>2.11.0</jackson.version>
-        <tomcat.version>9.0.34</tomcat.version>
+        <tomcat.version>9.0.41</tomcat.version>
         <docker.container.repo>airsonic/airsonic</docker.container.repo>
     </properties>
 
@@ -28,10 +28,10 @@
             <name>Local Repository</name>
             <url>file://${project.basedir}/../repo</url>
         </repository>
-        <repository>
+        <!-- <repository>
             <id>jaudiotagger-repository</id>
-            <url>https://dl.bintray.com/ijabz/maven</url>
-        </repository>
+            <url>https://dl.bintray.com/pathrik/PathriK</url>
+        </repository> -->
         <repository>
           <id>4thline-repo</id>
           <url>http://4thline.org/m2</url>
@@ -86,7 +86,7 @@
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.2.7.RELEASE</version>
+                <version>2.3.8.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -142,12 +142,12 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>28.2-jre</version>
+                <version>30.1-jre</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
-                <version>1.10.5</version>
+                <version>1.10.9</version>
                 <scope>runtime</scope>
             </dependency>
             <dependency>
@@ -327,7 +327,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
-                    <version>5.3.2</version>
+                    <version>6.1.0</version>
                     <inherited>true</inherited>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
