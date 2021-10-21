@@ -126,7 +126,7 @@ public class StreamController {
             // In that case, create a separate playlist (in order to support multiple parallel streams).
             // Also, enable partial download (HTTP byte range).
             MediaFile file = getSingleFile(request);
-            boolean isSingleFile = file != null;
+            boolean isSingleFile = file != null && file.isFile();
             HttpRange range = null;
             Long fileLengthExpected = null;
 
