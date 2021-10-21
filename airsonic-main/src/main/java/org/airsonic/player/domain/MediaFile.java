@@ -214,12 +214,16 @@ public class MediaFile {
         this.albumArtist = albumArtist;
     }
 
-    public String getName() {
-        if (isFile()) {
-            return title != null ? title : FilenameUtils.getBaseName(path);
-        }
+    public String getDisplayName() {
+        String displayName;
 
-        return FilenameUtils.getName(path);
+        if (isFile()) {
+            displayName = title != null ? title : FilenameUtils.getBaseName(path);
+        }
+        else {
+            displayName = FilenameUtils.getName(path);
+        }
+        return displayName.replace('_', ' ').trim().replaceAll("\\s+", " ");
     }
 
     public Integer getDiscNumber() {
@@ -443,7 +447,7 @@ public class MediaFile {
 
     @Override
     public String toString() {
-        return getName();
+        return getDisplayName();
     }
 
     public static List<Integer> toIdList(List<MediaFile> from) {

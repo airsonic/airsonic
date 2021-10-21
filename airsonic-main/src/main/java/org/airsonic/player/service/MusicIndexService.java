@@ -167,14 +167,14 @@ public class MusicIndexService {
             MediaFile root = mediaFileService.getMediaFile(folder.getPath(), !refresh);
             List<MediaFile> children = mediaFileService.getChildrenOf(root, false, true, true, !refresh);
             for (MediaFile child : children) {
-                if (shortcutSet.contains(child.getName())) {
+                if (shortcutSet.contains(child.getDisplayName())) {
                     continue;
                 }
 
-                String sortableName = createSortableName(child.getName(), ignoredArticles);
+                String sortableName = createSortableName(child.getDisplayName(), ignoredArticles);
                 MusicIndex.SortableArtistWithMediaFiles artist = artistMap.get(sortableName);
                 if (artist == null) {
-                    artist = new MusicIndex.SortableArtistWithMediaFiles(child.getName(), sortableName, collator);
+                    artist = new MusicIndex.SortableArtistWithMediaFiles(child.getDisplayName(), sortableName, collator);
                     artistMap.put(sortableName, artist);
                 }
                 artist.addMediaFile(child);
