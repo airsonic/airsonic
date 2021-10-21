@@ -37,6 +37,7 @@ public class MusicFolderSettingsCommand {
     private String interval;
     private String hour;
     private boolean scanning;
+    private boolean fullScanOnce;
     private boolean fastCache;
     private boolean organizeByFolderStructure;
     private List<MusicFolderInfo> musicFolders;
@@ -66,6 +67,14 @@ public class MusicFolderSettingsCommand {
 
     public void setScanning(boolean scanning) {
         this.scanning = scanning;
+    }
+
+    public boolean isFullScanOnce() {
+        return fullScanOnce;
+    }
+
+    public void setFullScanOnce(boolean fullScanOnce) {
+        this.fullScanOnce = fullScanOnce;
     }
 
     public boolean isFastCache() {

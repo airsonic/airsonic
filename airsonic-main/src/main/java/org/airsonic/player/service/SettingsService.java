@@ -65,6 +65,7 @@ public class SettingsService {
     private static final String KEY_MUSIC_FILE_TYPES = "MusicFileTypes";
     private static final String KEY_VIDEO_FILE_TYPES = "VideoFileTypes";
     private static final String KEY_COVER_ART_FILE_TYPES = "CoverArtFileTypes2";
+    private static final String KEY_COVER_ART_SOURCE = "CoverArtSource";
     private static final String KEY_COVER_ART_CONCURRENCY = "CoverArtConcurrency";
     private static final String KEY_WELCOME_TITLE = "WelcomeTitle";
     private static final String KEY_WELCOME_SUBTITLE = "WelcomeSubtitle";
@@ -77,7 +78,7 @@ public class SettingsService {
     private static final String KEY_INDEX_CREATION_INTERVAL = "IndexCreationInterval";
     private static final String KEY_INDEX_CREATION_HOUR = "IndexCreationHour";
     private static final String KEY_FAST_CACHE_ENABLED = "FastCacheEnabled";
-    private static final String KEY_IGNORE_FILE_TIMESTAMPS = "IgnoreFileTimestamps";
+    private static final String KEY_FULL_SCAN_ONCE = "FullScanOnce";
     private static final String KEY_PODCAST_UPDATE_INTERVAL = "PodcastUpdateInterval";
     private static final String KEY_PODCAST_FOLDER = "PodcastFolder";
     private static final String KEY_PODCAST_EPISODE_RETENTION_COUNT = "PodcastEpisodeRetentionCount";
@@ -141,6 +142,7 @@ public class SettingsService {
     private static final String DEFAULT_MUSIC_FILE_TYPES = "mp3 ogg oga aac m4a m4b flac wav wma aif aiff ape mpc shn mka opus";
     private static final String DEFAULT_VIDEO_FILE_TYPES = "flv avi mpg mpeg mp4 m4v mkv mov wmv ogv divx m2ts webm";
     private static final String DEFAULT_COVER_ART_FILE_TYPES = "cover.jpg cover.png cover.gif folder.jpg jpg jpeg gif png";
+    private static final String DEFAULT_COVER_ART_SOURCE = "FILETAG";
     private static final int DEFAULT_COVER_ART_CONCURRENCY = 4;
     private static final String DEFAULT_WELCOME_TITLE = "Welcome to Airsonic!";
     private static final String DEFAULT_WELCOME_SUBTITLE = null;
@@ -160,7 +162,7 @@ public class SettingsService {
     private static final int DEFAULT_INDEX_CREATION_INTERVAL = 1;
     private static final int DEFAULT_INDEX_CREATION_HOUR = 3;
     private static final boolean DEFAULT_FAST_CACHE_ENABLED = false;
-    private static final boolean DEFAULT_IGNORE_FILE_TIMESTAMPS = false;
+    private static final boolean DEFAULT_FULL_SCAN_ONCE = false;
     private static final int DEFAULT_PODCAST_UPDATE_INTERVAL = 24;
     private static final String DEFAULT_PODCAST_FOLDER = Util.getDefaultPodcastFolder();
     private static final int DEFAULT_PODCAST_EPISODE_RETENTION_COUNT = 10;
@@ -480,6 +482,18 @@ public class SettingsService {
         return cachedCoverArtFileTypesArray;
     }
 
+    public CoverArtSource getCoverArtSource() {
+        try {
+            return CoverArtSource.valueOf(getProperty(KEY_COVER_ART_SOURCE, DEFAULT_COVER_ART_SOURCE));
+        } catch (Exception exception) {
+            return CoverArtSource.valueOf(DEFAULT_COVER_ART_SOURCE);
+        }
+    }
+
+    public void setCoverArtSource(CoverArtSource source) {
+        setProperty(KEY_COVER_ART_SOURCE, source.name());
+    }
+
     public int getCoverArtConcurrency() {
         return getInt(KEY_COVER_ART_CONCURRENCY, DEFAULT_COVER_ART_CONCURRENCY);
     }
@@ -554,12 +568,12 @@ public class SettingsService {
         setBoolean(KEY_FAST_CACHE_ENABLED, enabled);
     }
 
-    public boolean isIgnoreFileTimestamps() {
-        return getBoolean(KEY_IGNORE_FILE_TIMESTAMPS, DEFAULT_IGNORE_FILE_TIMESTAMPS);
+    public boolean isFullScanOnce() {
+        return getBoolean(KEY_FULL_SCAN_ONCE, DEFAULT_FULL_SCAN_ONCE);
     }
 
-    public void setIgnoreFileTimestamps(boolean ignore) {
-        setBoolean(KEY_IGNORE_FILE_TIMESTAMPS, ignore);
+    public void setFullScanOnce(boolean enabled) {
+        setBoolean(KEY_FULL_SCAN_ONCE, enabled);
     }
 
     /**

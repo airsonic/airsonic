@@ -78,6 +78,12 @@
      	<form:label path="ignoreSymLinks"><fmt:message key="musicfoldersettings.ignoresymlinks"/></form:label>
     </div>
 
+    <div>
+        <form:checkbox path="fullScanOnce" cssClass="checkbox" id="fullScanOnce"/>
+        <form:label path="fullScanOnce"><fmt:message key="musicfoldersettings.fullscanonce"/></form:label>
+        <c:import url="helpToolTip.jsp"><c:param name="topic" value="fullscanonce"/></c:import>
+    </div>
+
     <div style="padding-top: 0.5em;padding-bottom: 0.3em">
         <span style="white-space: nowrap">
             <fmt:message key="musicfoldersettings.scan"/>
