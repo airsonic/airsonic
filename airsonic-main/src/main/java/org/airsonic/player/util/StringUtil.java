@@ -29,6 +29,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.text.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -325,13 +326,33 @@ public final class StringUtil {
      *
      * @param s The string to decode.
      * @return The decoded string.
+     * @throws Exception If an error occurs.
+     */
+    public static String utf8HexDecode(String s) throws Exception {
+        if (s == null) {
+            return null;
+        }
+        return new String(Hex.decodeHex(s.toCharArray()), StandardCharsets.UTF_8);
+    }
+
+    /**
+     * Calculates the MD5 digest and returns the value as a 32 character hex string.
+     *
+     * @param s Data to digest.
+     * @return MD5 digest as a hex string.
      * @throws DecoderException If an error occurs.
      */
     public static String utf8HexDecode(String s) throws DecoderException {
         if (s == null) {
             return null;
         }
-        return new String(Hex.decodeHex(s.toCharArray()), StandardCharsets.UTF_8);
+
+        try {
+            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            return new String(Hex.encodeHex(md5.digest(s.getBytes(StandardCharsets.UTF_8))));
+        } catch (Exception x) {
+            throw new RuntimeException(x.getMessage(), x);
+        }
     }
 
     /**
