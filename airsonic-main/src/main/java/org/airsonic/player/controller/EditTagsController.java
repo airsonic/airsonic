@@ -57,9 +57,12 @@ public class EditTagsController {
     @GetMapping
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        int id = ServletRequestUtils.getRequiredIntParameter(request, "id");
-        MediaFile dir = mediaFileService.getMediaFile(id);
-        List<MediaFile> files = mediaFileService.getChildrenOf(dir, true, false, true, false);
+        int[] ids = ServletRequestUtils.getIntParameters(request, "id");
+        List<MediaFile> files = new ArrayList<>();
+        for (int id: ids) {
+            MediaFile dir = mediaFileService.getMediaFile(id);
+            files.addAll(mediaFileService.getChildrenOf(dir, true, false, true, false));
+        }
 
         Map<String, Object> map = new HashMap<String, Object>();
         if (!files.isEmpty()) {
@@ -74,7 +77,7 @@ public class EditTagsController {
         for (int i = 0; i < files.size(); i++) {
             songs.add(createSong(files.get(i), i));
         }
-        map.put("id", id);
+        map.put("id", ids[0]);
         map.put("songs", songs);
 
         return new ModelAndView("editTags","model",map);

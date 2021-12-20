@@ -26,6 +26,7 @@ import org.airsonic.player.util.StringUtil;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -68,6 +69,7 @@ public class MediaFile {
     private Date childrenLastUpdated;
     private boolean present;
     private int version;
+    private List<String> albumDiscIds = null;
     private String musicBrainzReleaseId;
     private String musicBrainzRecordingId;
 
@@ -424,6 +426,41 @@ public class MediaFile {
 
     public int getVersion() {
         return version;
+    }
+
+    /**
+     * Returns the parsed display name for this MediaFile.
+     */
+    public String getDisplayName() {
+        if (isAlbum()) {
+            return getTitle() == null ? getAlbumName() : getTitle();
+        } else {
+            return getName();
+        }
+    }
+
+    public List<String> getAlbumDiscIds() {
+        return albumDiscIds;
+    }
+
+    public void setAlbumDiscIds(List<String> albumDiscIds) {
+        this.albumDiscIds = albumDiscIds;
+    }
+
+    public String getIdListString() {
+        if (albumDiscIds != null) {
+            return "[" + String.join(",", albumDiscIds) + "]";
+        } else {
+            return "[" + Integer.toString(getId()) + "]";
+        }
+    }
+
+    public List<String> getIdList() {
+        if (albumDiscIds != null) {
+            return albumDiscIds;
+        } else {
+            return Arrays.asList(Integer.toString(getId()));
+        }
     }
 
     @Override

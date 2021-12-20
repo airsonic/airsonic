@@ -140,8 +140,11 @@ PARAMETERS
         $("#${imgId}").animate({opacity: 1.0}, 150);
     });
     $("#${playId}").click(function () {
-        <c:if test="${not empty param.albumId}">
+        <c:if test="${empty param.albumIdList and not empty param.albumId}">
         top.playQueue.onPlay(${param.albumId});
+        </c:if>
+        <c:if test="${not empty param.albumIdList}">
+        top.playQueue.onPlayIdList(${param.albumIdList});
         </c:if>
         <c:if test="${not empty param.playlistId}">
         top.playQueue.onPlayPlaylist(${param.playlistId});

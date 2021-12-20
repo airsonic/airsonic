@@ -18,7 +18,9 @@
     <sub:param name="id" value="${model.dir.id}"/>
 </sub:url>
 <sub:url value="download.view" var="downloadUrl">
-    <sub:param name="id" value="${model.dir.id}"/>
+    <c:forEach var="id" items="${model.dir.idList}">
+        <sub:param name="id" value="${id}"/>
+    </c:forEach>
 </sub:url>
 
 <script type="text/javascript" language="javascript">
@@ -114,15 +116,15 @@
     }
 
     function playAll() {
-        top.playQueue.onPlay(${model.dir.id});
+        top.playQueue.onPlayIdList(${model.dir.idListString});
     }
 
     function playRandom() {
-        top.playQueue.onPlayRandom(${model.dir.id}, 40);
+        top.playQueue.onPlayRandomFromParents(${model.dir.idListString}, 40);
     }
 
     function addAll() {
-        top.playQueue.onAdd(${model.dir.id});
+        top.playQueue.onAddIdList(${model.dir.idListString});
     }
 
     function playSimilar() {
@@ -173,7 +175,14 @@
                 </sub:url>
                 <a href="${ancestorUrl}">${fn:escapeXml(ancestor.name)}</a> &raquo;
             </c:forEach>
-            ${fn:escapeXml(model.dir.name)}
+            <c:choose>
+                <c:when test="${fn:length(model.allDiscs) > 1}">
+                    <c:out value="${model.dir.albumName}"/> - (<c:out value="${fn:length(model.allDiscs)}"/> discs)
+                </c:when>
+                <c:otherwise>
+                    ${fn:escapeXml(model.dir.name)}
+                </c:otherwise>
+            </c:choose>
         </span>
 
         <c:if test="${model.averageRating gt 0}">
@@ -211,7 +220,9 @@
 
             <c:if test="${model.user.coverArtRole}">
                 <sub:url value="editTags.view" var="editTagsUrl">
-                    <sub:param name="id" value="${model.dir.id}"/>
+                    <c:forEach var="id" items="${model.dir.idList}">
+                        <sub:param name="id" value="${id}"/>
+                    </c:forEach>
                 </sub:url>
                 <c:if test="${needSep}">|</c:if>
                 <span class="header"><a href="${editTagsUrl}"><fmt:message key="main.tags"/></a></span>
@@ -253,7 +264,7 @@
         </sub:url>
         <sub:url value="https://www.allmusic.com/search/albums/%22${fn:escapeXml(model.artist)}%22+%22${fn:escapeXml(model.album)}%22" var="allmusicUrl">
         </sub:url>
-        
+
         <sub:url value="https://www.last.fm/search" var="lastFmUrl" encoding="UTF-8">
             <sub:param name="q" value='"${fn:escapeXml(model.artist)}" "${fn:escapeXml(model.album)}"'/>
             <sub:param name="type" value="album"/>
@@ -303,25 +314,28 @@
     }
 </script>
 
-
 <table cellpadding="0" style="width:100%;padding-top: 0.3em;padding-bottom: 1em">
     <tr style="vertical-align:top;">
         <td style="vertical-align:top;padding-bottom: 1em">
-            <table class="music" style="width: 100%">
-                <c:forEach items="${model.files}" var="song" varStatus="loopStatus">
-                    <%--@elvariable id="song" type="org.airsonic.player.domain.MediaFile"--%>
-                    <tr style="margin:0;padding:0;border:0">
-                        <c:import url="playButtons.jsp">
-                            <c:param name="id" value="${song.id}"/>
-                            <c:param name="video" value="${song.video and model.player.web}"/>
-                            <c:param name="playEnabled" value="${model.user.streamRole and not model.partyMode}"/>
-                            <c:param name="addEnabled" value="${model.user.streamRole and (not model.partyMode or not song.directory)}"/>
-                            <c:param name="starEnabled" value="true"/>
-                            <c:param name="starred" value="${not empty song.starredDate}"/>
-                            <c:param name="asTable" value="true"/>
-                        </c:import>
+            <c:forEach items="${model.allDiscs}" var="discEntry" varStatus="discStatus">
+                <c:if test="${fn:length(model.allDiscs) > 1}">
+                    Disc ${discStatus.count}<br>
+                </c:if>
+                <table class="music" style="width: 100%">
+                    <c:forEach items="${discEntry.value}" var="song" varStatus="loopStatus">
+                        <%--@elvariable id="song" type="org.airsonic.player.domain.MediaFile"--%>
+                        <tr style="margin:0;padding:0;border:0">
+                            <c:import url="playButtons.jsp">
+                                <c:param name="id" value="${song.id}"/>
+                                <c:param name="video" value="${song.video and model.player.web}"/>
+                                <c:param name="playEnabled" value="${model.user.streamRole and not model.partyMode}"/>
+                                <c:param name="addEnabled" value="${model.user.streamRole and (not model.partyMode or not song.directory)}"/>
+                                <c:param name="starEnabled" value="true"/>
+                                <c:param name="starred" value="${not empty song.starredDate}"/>
+                                <c:param name="asTable" value="true"/>
+                            </c:import>
 
-                        <td class="fit"><input type="checkbox" id="songIndex${loopStatus.count - 1}">
+                            <td class="fit"><input type="checkbox" id="songIndex${loopStatus.count - 1}">
                             <span id="songId${loopStatus.count - 1}" style="display: none">${song.id}</span></td>
 
                         <c:if test="${model.visibility.trackNumberVisible}">
@@ -391,6 +405,7 @@
                     </tr>
                 </c:forEach>
             </table>
+        </c:forEach>
         </td>
 
         <td class="fit" style="vertical-align:top;" rowspan="3">
@@ -459,6 +474,7 @@
 
     </tr>
 </table>
+
 <c:if test="${model.thereIsMore}">
     <input id="showAllButton" class="albumOverflowButton" type="button" value="<fmt:message key='main.showall'/>" onclick="showAllAlbums()">
 </c:if>

@@ -438,6 +438,28 @@ public class PlayQueueService {
         return doPlay(request, player, songs).setStartPlayerAt(0);
     }
 
+    /**
+     * Plays all of the MediaFiles indicated from the given ids. If they
+     * are songs the songs are played, if they are directories or albums
+     * all of the songs in the directory/album are played.
+     */
+    public PlayQueueInfo playIdList(int[] ids) throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+
+        List<MediaFile> songs = new ArrayList<>();
+        for (int id: ids) {
+            MediaFile file = mediaFileService.getMediaFile(id);
+            if (file.isFile()) {
+                songs.add(file);
+            } else {
+                songs.addAll(mediaFileService.getDescendantsOf(file, true));
+            }
+        }
+        Player player = getCurrentPlayer(request, response);
+        return doPlay(request, player, songs).setStartPlayerAt(0);
+    }
+
     private PlayQueueInfo doPlay(HttpServletRequest request, Player player, List<MediaFile> files) {
         if (player.isWeb()) {
             mediaFileService.removeVideoFiles(files);
@@ -475,6 +497,23 @@ public class PlayQueueService {
         return convert(request, player, true).setStartPlayerAt(0);
     }
 
+    public PlayQueueInfo playRandomFromParents(int[] ids, int count) throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        List<MediaFile> randomFiles = new ArrayList<>();
+        for (int id: ids) {
+            MediaFile file = mediaFileService.getMediaFile(id);
+            List<MediaFile> subList = mediaFileService.getRandomSongsForParent(file, count);
+            randomFiles.addAll(subList);
+        }
+        Collections.shuffle(randomFiles);
+
+        Player player = getCurrentPlayer(request, response);
+        player.getPlayQueue().addFiles(false, randomFiles);
+        player.getPlayQueue().setRandomSearchCriteria(null);
+        return convert(request, player, true).setStartPlayerAt(0);
+    }
+
     public PlayQueueInfo playSimilar(int id, int count) throws Exception {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
@@ -493,6 +532,12 @@ public class PlayQueueService {
         HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
         HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
         return doAdd(request, response, new int[]{id}, null);
+    }
+
+    public PlayQueueInfo addIdList(int[] idList) throws Exception {
+        HttpServletRequest request = WebContextFactory.get().getHttpServletRequest();
+        HttpServletResponse response = WebContextFactory.get().getHttpServletResponse();
+        return doAdd(request, response, idList, null);
     }
 
     public PlayQueueInfo addAt(int id, int index) throws Exception {
