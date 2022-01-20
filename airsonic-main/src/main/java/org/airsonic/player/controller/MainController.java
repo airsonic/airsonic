@@ -164,6 +164,7 @@ public class MainController {
         if (isVideoOnly(children)) {
             view = "videoMain";
         } else if (dir.isAlbum()) {
+            map.put("lastfmEnabled", settingsService.isExternalServicesLastfmEnabled());
             view = "albumMain";
         } else {
             view = "artistMain";
