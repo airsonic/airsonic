@@ -52,6 +52,18 @@ public class MediaFileDao extends AbstractDao {
     private static final String QUERY_COLUMNS = "id, " + INSERT_COLUMNS;
     private static final String GENRE_COLUMNS = "name, song_count, album_count";
 
+    // LIKE queries treat `\` as a special character in some databases (MariaDB and PostgreSQL),
+    // which fails path checks on Windows where it is the default path separator.
+    //
+    // For Windows platforms, using '/' is safe because it is also disallowed in paths.
+    // For Linux platforms, using '\' is allowed (a media folder with '\' in it would have issues), but not likely.
+    //
+    // Most tested databases (HSQLDB, PostgreSQL, MariaDB, sqlite,...) support the ESCAPE keyword
+    // after a LIKE clause for specifying another character and avoiding this issue.
+    //
+    // See https://github.com/airsonic/airsonic/pull/1704
+    private static final String LIKE_PATH_ESCAPE_CHARACTER = "\\".equals(File.separator) ? "/" : "\\";
+
     public static final int VERSION = 4;
 
     private final RowMapper<MediaFile> rowMapper = new MediaFileMapper();
@@ -642,9 +654,9 @@ public class MediaFileDao extends AbstractDao {
         return query(
                 "SELECT " + prefix(QUERY_COLUMNS, "media_file") + " FROM media_file " +
                 "WHERE media_file.path != media_file.folder " +
-                "AND media_file.path NOT LIKE concat(media_file.folder, concat(?, '%')) " +
+                "AND media_file.path NOT LIKE media_file.folder || ? || '%' ESCAPE ?" +
                 "ORDER BY media_file.id LIMIT ?",
-                rowMapper, File.separator, count);
+                rowMapper, File.separator, LIKE_PATH_ESCAPE_CHARACTER, count);
     }
 
     /**
@@ -655,8 +667,8 @@ public class MediaFileDao extends AbstractDao {
         return queryForInt(
                 "SELECT count(media_file.id) FROM media_file " +
                 "WHERE media_file.path != media_file.folder " +
-                "AND media_file.path NOT LIKE concat(media_file.folder, '/%')",
-                0);
+                "AND media_file.path NOT LIKE media_file.folder || ? || '%' ESCAPE ?",
+                0, File.separator, LIKE_PATH_ESCAPE_CHARACTER);
     }
 
     public int getAlbumCount(final List<MusicFolder> musicFolders) {
