@@ -139,12 +139,6 @@ public class StreamController {
                     return;
                 }
 
-                // Update the index of the currently playing media file. At
-                // this point we haven't yet modified the play queue to support
-                // multiple streams, so the current play queue is the real one.
-                int currentIndex = player.getPlayQueue().getFiles().indexOf(file);
-                player.getPlayQueue().setIndex(currentIndex);
-
                 // Create a new, fake play queue that only contains the
                 // currently playing media file, in case multiple streams want
                 // to use the same player.
