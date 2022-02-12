@@ -56,6 +56,8 @@ public class MainController {
     private RatingService ratingService;
     @Autowired
     private MediaFileService mediaFileService;
+    @Autowired
+    private PodcastService podcastService;
 
     @GetMapping
     protected ModelAndView handleRequestInternal(@RequestParam(name = "showAll", required = false) Boolean showAll,
@@ -71,6 +73,12 @@ public class MainController {
         }
 
         MediaFile dir = mediaFiles.get(0);
+
+        //redirect to podcastChannel view if first media is podcast
+        if (dir.isPodcast()) {
+            return new ModelAndView(new RedirectView("podcastChannel.view?id=" + podcastService.getChannelIdByMediaFile(dir)));
+        }
+
         if (dir.isFile()) {
             dir = mediaFileService.getParentOf(dir);
         }
